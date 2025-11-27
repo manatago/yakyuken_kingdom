@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>じゃんけんゲーム</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div id="app">
+        <!-- ゲーム画面 -->
+        <header class="game-header">
+            <h1>じゃんけんゲーム</h1>
+        </header>
+
+        <!-- 相手エリア -->
+        <section class="opponent-area">
+            <div class="opponent-info">
+                <h2>コンピュータ</h2>
+                <div class="coin-display" id="opponent-coins">
+                    <span class="coin-label">服:</span>
+                    <span class="coin-count" id="opponent-coin-count">3</span>
+                </div>
+            </div>
+            <div class="opponent-hand-count">
+                <span class="hand-label">手札:</span>
+                <span class="hand-count" id="opponent-hand-count">6</span>
+            </div>
+        </section>
+
+        <!-- デッキエリア（使用済カード） -->
+        <section class="deck-area">
+            <h3>使用済カード</h3>
+            <div class="deck-container" id="deck-container">
+                <!-- DeckComponentがここに描画 -->
+            </div>
+            <div class="deck-count">
+                <span id="deck-count">0</span> 枚
+            </div>
+        </section>
+
+        <!-- 対戦カード表示エリア -->
+        <section class="battle-area" id="battle-area">
+            <div class="battle-cards">
+                <div class="battle-card battle-card--opponent" id="opponent-battle-card">
+                    <!-- 相手の選択カード -->
+                </div>
+                <div class="battle-vs">VS</div>
+                <div class="battle-card battle-card--player" id="player-battle-card">
+                    <!-- プレイヤーの選択カード -->
+                </div>
+            </div>
+            <div class="result-message" id="result-message">
+                <!-- 対戦結果メッセージ -->
+            </div>
+        </section>
+
+        <!-- プレイヤーエリア -->
+        <section class="player-area">
+            <div class="player-info">
+                <h2>あなた</h2>
+                <div class="coin-display" id="player-coins">
+                    <span class="coin-label">服:</span>
+                    <span class="coin-count" id="player-coin-count">3</span>
+                </div>
+            </div>
+            <div class="hand-area" id="hand-area">
+                <!-- CardComponentがここに描画 -->
+            </div>
+        </section>
+
+        <!-- コントロールエリア -->
+        <footer class="control-area">
+            <button id="reset-button" class="reset-button">リセット</button>
+        </footer>
+    </div>
+
+    <!-- JavaScriptモジュール読み込み -->
+    <script type="module" src="scripts/main.js"></script>
+</body>
+</html>
