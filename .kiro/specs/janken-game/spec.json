@@ -1,0 +1,22 @@
+{
+  "feature_name": "janken-game",
+  "created_at": "2025-11-16T00:00:00Z",
+  "updated_at": "2025-11-17T09:30:00Z",
+  "language": "ja",
+  "phase": "tasks-generated",
+  "approvals": {
+    "requirements": {
+      "generated": true,
+      "approved": true
+    },
+    "design": {
+      "generated": true,
+      "approved": true
+    },
+    "tasks": {
+      "generated": true,
+      "approved": true
+    }
+  },
+  "ready_for_implementation": true
+}

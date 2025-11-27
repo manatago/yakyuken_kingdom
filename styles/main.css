@@ -1,0 +1,427 @@
+/* じゃんけんゲーム - メインスタイルシート */
+
+/* CSS変数（カラーテーマ） */
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --accent-color: #e74c3c;
+    --success-color: #27ae60;
+    --bg-color: #ecf0f1;
+    --card-bg: #ffffff;
+    --text-color: #2c3e50;
+    --border-color: #bdc3c7;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* リセット */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* メインコンテナ */
+#app {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ヘッダー */
+.game-header {
+    text-align: center;
+    padding: 20px 0;
+    border-bottom: 2px solid var(--border-color);
+    margin-bottom: 20px;
+}
+
+.game-header h1 {
+    color: var(--primary-color);
+    font-size: 2rem;
+}
+
+/* セクション共通スタイル */
+section {
+    margin: 15px 0;
+    padding: 20px;
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+}
+
+/* 相手エリア */
+.opponent-area {
+    text-align: center;
+}
+
+.opponent-info h2 {
+    color: var(--accent-color);
+    margin-bottom: 10px;
+}
+
+.opponent-hand-count {
+    margin-top: 10px;
+    font-size: 1.1rem;
+}
+
+/* デッキエリア */
+.deck-area {
+    text-align: center;
+    height: 250px;
+    min-height: 250px;
+    max-height: 250px;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+.deck-area h3 {
+    margin-bottom: 15px;
+    color: var(--primary-color);
+}
+
+.deck-container {
+    min-height: 150px;
+    max-height: 150px;
+    height: 150px;
+    overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px;
+    border: 2px dashed var(--border-color);
+    border-radius: 8px;
+}
+
+.deck-count {
+    margin-top: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+/* 対戦エリア */
+.battle-area {
+    text-align: center;
+    height: 350px;
+    min-height: 350px;
+    max-height: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 30px 20px;
+    margin: 15px 0;
+    flex-shrink: 0;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background-color: #ff0000 !important; /* デバッグ用：赤色 */
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+}
+
+.battle-area--active {
+    /* 常に表示なので特に何もしない */
+}
+
+.battle-cards {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.battle-card {
+    min-width: 150px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.battle-card__card {
+    width: 120px;
+    height: 150px;
+    font-size: 1.1rem;
+    opacity: 1 !important;
+    background-color: var(--card-bg) !important;
+    border-color: var(--primary-color) !important;
+    border-width: 3px !important;
+}
+
+.battle-card__card .card__emoji {
+    font-size: 3rem;
+    opacity: 1 !important;
+}
+
+.battle-card__card .card__label {
+    opacity: 1 !important;
+    color: var(--text-color) !important;
+    font-weight: bold !important;
+}
+
+.battle-vs {
+    font-size: 4rem !important;
+    font-weight: bold !important;
+    color: #00ff00 !important; /* デバッグ用：緑色 */
+    background-color: #000000 !important; /* デバッグ用：黒背景 */
+    padding: 20px !important;
+    animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.8; }
+}
+
+.result-message {
+    text-align: center;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.result-message--player-win {
+    color: var(--success-color);
+    animation: celebrate 0.5s ease-in-out;
+}
+
+.result-message--computer-win {
+    color: var(--accent-color);
+}
+
+.result-message--draw {
+    color: var(--secondary-color);
+}
+
+@keyframes celebrate {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* プレイヤーエリア */
+.player-area {
+    text-align: center;
+}
+
+.player-info h2 {
+    color: var(--success-color);
+    margin-bottom: 10px;
+}
+
+.hand-area {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+/* コイン表示 */
+.coin-display {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.coin-label {
+    color: var(--text-color);
+}
+
+.coin-count {
+    color: var(--secondary-color);
+    margin-left: 5px;
+}
+
+/* コントロールエリア */
+.control-area {
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 20px;
+}
+
+.reset-button {
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: var(--secondary-color);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow);
+}
+
+.reset-button:hover {
+    background-color: #2980b9;
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
+}
+
+.reset-button:active {
+    transform: translateY(0);
+}
+
+/* カードスタイル */
+.card {
+    width: 100px;
+    height: 130px;
+    padding: 10px;
+    background-color: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.card:hover:not(:disabled) {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--secondary-color);
+}
+
+.card:active:not(:disabled) {
+    transform: translateY(-2px);
+}
+
+.card--selected {
+    border-color: var(--secondary-color);
+    border-width: 3px;
+    background-color: #e3f2fd;
+}
+
+.card--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* 対戦カード表示時はdisabledでも濃く表示 */
+.battle-card__card.card--disabled {
+    opacity: 1 !important;
+}
+
+.battle-card__card.card--disabled .card__emoji,
+.battle-card__card.card--disabled .card__label {
+    opacity: 1 !important;
+}
+
+.card__emoji {
+    font-size: 2.5rem;
+}
+
+.card__label {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+/* デッキカードスタイル */
+.deck__empty {
+    color: #95a5a6;
+    font-style: italic;
+    padding: 20px;
+}
+
+.deck__card {
+    width: 60px;
+    height: 80px;
+    background-color: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    box-shadow: var(--shadow);
+    padding: 5px;
+}
+
+.deck__card-emoji {
+    font-size: 1.5rem;
+}
+
+.deck__card-label {
+    font-size: 0.6rem;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+/* コインカウントスタイル */
+.coin-count--zero {
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+.coin-count--low {
+    color: #e67e22;
+    font-weight: bold;
+}
+
+/* ゲームオーバースタイル */
+.game-over {
+    text-align: center;
+}
+
+.game-over__title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.game-over__reason {
+    font-size: 1.2rem;
+    color: #7f8c8d;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    #app {
+        padding: 10px;
+    }
+
+    .game-header h1 {
+        font-size: 1.5rem;
+    }
+
+    section {
+        padding: 15px;
+    }
+
+    .hand-area {
+        gap: 10px;
+    }
+
+    .card {
+        width: 80px;
+        height: 110px;
+    }
+
+    .card__emoji {
+        font-size: 2rem;
+    }
+
+    .card__label {
+        font-size: 0.8rem;
+    }
+}
