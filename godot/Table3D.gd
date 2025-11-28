@@ -7,8 +7,6 @@ extends Node3D
 @onready var result_label = $HUD/ResultLabel
 @onready var restart_button = $HUD/RestartButton
 @onready var opponent_image = $HUD/OpponentImage
-@onready var dialogue_panel = $HUD/DialoguePanel
-@onready var dialogue_label = $HUD/DialoguePanel/DialogueLabel
 @onready var card_top_marker = $Screen/CardTopMarker
 
 func _ready():
@@ -30,12 +28,11 @@ func _ready():
 	if main_scene:
 		main_scene.ui_updated.connect(_on_ui_updated)
 		main_scene.result_updated.connect(_on_result_updated)
-		main_scene.opponent_spoke.connect(_on_opponent_spoke)
 		main_scene.game_over.connect(_on_game_over)
+		main_scene.opponent_updated.connect(_on_opponent_updated)
 
 	# Initialize label state
 	_on_result_updated("")
-	dialogue_panel.visible = false
 	restart_button.visible = false
 
 	# Setup button styles
@@ -95,21 +92,13 @@ func _on_result_updated(text):
 	result_label.offset_top = -60
 	result_label.offset_bottom = 60
 
-func _on_opponent_spoke(text):
-	dialogue_panel.visible = true
-	dialogue_label.text = text
-	dialogue_label.visible_ratio = 0.0
-
-	var tween = create_tween()
-	var duration = text.length() * 0.1 # 0.1s per character
-	tween.tween_property(dialogue_label, "visible_ratio", 1.0, duration)
-
-	# Hide after some time (duration + 2 seconds)
-	tween.tween_interval(2.0)
-	tween.tween_callback(func(): dialogue_panel.visible = false)
 
 func _on_game_over(result_text):
 	restart_button.visible = true
+
+func _on_opponent_updated(data):
+	if data and data.portrait:
+		opponent_image.texture = data.portrait
 
 func _on_restart_pressed():
 	restart_button.visible = false
@@ -129,3 +118,20 @@ func _process(delta):
 	var gap = 0
 	opponent_image.position.x = screen_pos.x - opponent_image.size.x / 2
 	opponent_image.position.y = screen_pos.y - opponent_image.size.y - gap
+
+	# Update Dialogic text box position to overlap with opponent image
+	var text_nodes = get_tree().get_nodes_in_group('dialogic_dialog_text')
+	if text_nodes.size() > 0:
+		var text_node = text_nodes[0]
+		# Access textbox_root safely
+		if "textbox_root" in text_node and text_node.textbox_root:
+			var textbox = text_node.textbox_root
+
+			# Center horizontally relative to opponent image
+			var target_x = opponent_image.global_position.x + (opponent_image.size.x - textbox.size.x) / 2
+
+			# Position vertically to overlap the bottom of the image
+			# We align the bottom of the textbox with the bottom of the image, minus some padding
+			var target_y = opponent_image.global_position.y + opponent_image.size.y - textbox.size.y - 20
+
+			textbox.global_position = Vector2(target_x, target_y)

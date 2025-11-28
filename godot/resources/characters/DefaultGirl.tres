@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=3 format=3 uid="uid://bybwjdssameqp"]
+
+[ext_resource type="Script" uid="uid://dsh1ubagbkkrm" path="res://resources/CharacterData.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://c5t7wxlk8usga" path="res://assets/girl.png" id="2_texture"]
+
+[resource]
+script = ExtResource("1_script")
+name = "Girl"
+portrait = ExtResource("2_texture")
+lose_quotes = Array[String](["くっ...やるわね", "負けちゃった...", "次は負けない！"])
+draw_quotes = Array[String](["気が合うわね", "むむ...", "やるじゃない"])
+game_win_quotes = Array[String](["私の勝ち！", "出直してきなさい", "弱いわね..."])
+game_lose_quotes = Array[String](["完敗ね...おめでとう", "強い...！", "次は負けないから！"])
