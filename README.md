@@ -1,25 +1,25 @@
 # Yakyuken Kingdom (じゃんけんキングダム)
 
-A 3D Card-based Janken (Rock-Paper-Scissors) game made with Godot 4.
+Godot 4 で制作された、3Dカードバトル形式のじゃんけんゲームです。
 
-## Features
+## 特徴
 
-- **3D Table View**: Immersive card battles on a 3D table.
-- **Card System**: Strategic gameplay with a limited hand of cards.
-- **Dynamic Camera**: Smooth camera movements and interactions.
-- **Responsive UI**: Clean HUD with restart functionality.
+- **3Dテーブルビュー**: 没入感のある3D空間でのカードバトル。
+- **カードシステム**: 限られた手札を使った戦略的な駆け引き。
+- **ダイナミックなカメラ**: スムーズなカメラワークと演出。
+- **レスポンシブなUI**: 使いやすいHUDとリスタート機能。
 
-## How to Play
+## 遊び方
 
-1. Select a card (Rock, Paper, or Scissors) from your hand.
-2. The CPU will select a card.
-3. Watch the battle unfold!
-4. Win 3 turns to claim victory.
+1. 手札からカード（グー、チョキ、パー）を1枚選びます。
+2. CPUもカードを選びます。
+3. バトルの結果を見守りましょう！
+4. 3ターン勝負で勝ち越せば勝利です。
 
-## Development
+## 開発環境
 
-Built with Godot Engine 4.x.
+Godot Engine 4.x を使用しています。
 
-### Assets
-- Card images and textures are located in `godot/assets/`.
-- Main game logic is in `godot/Main.gd` and `godot/Table3D.gd`.
+### アセット
+- カード画像やテクスチャは `godot/assets/` にあります。
+- メインのゲームロジックは `godot/Main.gd` と `godot/Table3D.gd` に記述されています。
