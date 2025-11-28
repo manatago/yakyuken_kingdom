@@ -52,7 +52,7 @@ func _ready():
 	result_label.visible = false
 
 	# Initialize game (deal cards, show UI)
-	await start_game()
+	await start_game(false)
 
 	# Ensure styles are applied after UI is built
 	_setup_styles()
@@ -113,7 +113,7 @@ func _setup_styles():
 	$VBoxContainer/BattleArea/CPUSlot.add_theme_stylebox_override("panel", style)
 	$VBoxContainer/BattleArea/PlayerSlot.add_theme_stylebox_override("panel", style)
 
-func start_game():
+func start_game(show_prompt: bool = true):
 	player_hand = _generate_hand()
 	cpu_hand = _generate_hand()
 	player_wins = 0
@@ -129,7 +129,8 @@ func start_game():
 
 	# Wait a frame to ensure Table3D is ready to receive the signal
 	await get_tree().process_frame
-	result_updated.emit("カードを選んでください")
+	if show_prompt:
+		result_updated.emit("カードを選んでください")
 
 func _generate_hand():
 	var hand = []

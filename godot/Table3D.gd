@@ -130,8 +130,35 @@ func _process(delta):
 			# Center horizontally relative to opponent image
 			var target_x = opponent_image.global_position.x + (opponent_image.size.x - textbox.size.x) / 2
 
-			# Position vertically to overlap the bottom of the image
-			# We align the bottom of the textbox with the bottom of the image, minus some padding
-			var target_y = opponent_image.global_position.y + opponent_image.size.y - textbox.size.y - 20
+			# Position vertically to overlap the bottom of the image (Overlay)
+			# Move it up so it's inside the image area
+			var target_y = opponent_image.global_position.y + opponent_image.size.y - textbox.size.y - 50
 
 			textbox.global_position = Vector2(target_x, target_y)
+
+			# Apply semi-transparent style if not already applied
+			if "panel" in textbox:
+				var style = textbox.get_theme_stylebox("panel")
+				if style is StyleBoxFlat:
+					# Clone to avoid affecting other instances if shared (though usually unique per node)
+					# But here we just modify the existing one or create a new one if it's not Flat
+					style.bg_color.a = 0.3 # Semi-transparent (Lighter)
+				else:
+					# Create a new semi-transparent style
+					var new_style = StyleBoxFlat.new()
+					new_style.bg_color = Color(0, 0, 0, 0.3)
+					new_style.set_corner_radius_all(10)
+					new_style.content_margin_left = 20
+					new_style.content_margin_right = 20
+					new_style.content_margin_top = 10
+					new_style.content_margin_bottom = 10
+					textbox.add_theme_stylebox_override("panel", new_style)
+
+			# Ensure Dialogic is drawn on top of HUD (which is a CanvasLayer)
+			var parent = textbox.get_parent()
+			while parent:
+				if parent is CanvasLayer:
+					if parent.layer <= 1: # Assuming HUD is layer 1
+						parent.layer = 10
+					break
+				parent = parent.get_parent()
