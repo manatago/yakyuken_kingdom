@@ -4,6 +4,9 @@ signal ui_updated(turn, max_turns, player_wins, cpu_wins, draws)
 signal result_updated(text)
 signal opponent_spoke(text)
 signal game_over(result_text)
+signal opponent_updated(data)
+
+@export var opponent_data: CharacterData
 
 @onready var info_label = $VBoxContainer/InfoLabel
 @onready var result_label = $VBoxContainer/ResultLabel
@@ -32,22 +35,67 @@ var draws = 0
 var turn_count = 0
 const MAX_TURNS = 3
 
+var is_dialogue_active = false
+
 func _ready():
 	restart_button.pressed.connect(_on_restart_pressed)
-	# Dialogic.start("start") # Dialogic is installed but we need to make sure it works first
+
+	# Load default character if none selected
+	if not opponent_data:
+		opponent_data = load("res://resources/characters/DefaultGirl.tres")
+
+	# Notify listeners about the opponent
+	opponent_updated.emit(opponent_data)
 
 	# Hide internal labels as we use HUD now
 	info_label.visible = false
 	result_label.visible = false
 
+	# Initialize game (deal cards, show UI)
+	await start_game()
+
+	# Ensure styles are applied after UI is built
 	_setup_styles()
-	start_game()
+
+	# Initial greeting
+	Dialogic.start("res://timelines/start.dtl")
+
+func _process(delta):
+	# Poll Dialogic state to handle input locking
+	var dialogic_active = (Dialogic.current_timeline != null)
+
+	if dialogic_active != is_dialogue_active:
+		is_dialogue_active = dialogic_active
+		_set_hand_enabled(!is_dialogue_active)
+
+		if is_dialogue_active:
+			# Don't hide the result message (WIN/LOSE) when dialogue starts
+			pass
+		else:
+			result_updated.emit("カードを選んでください")
+			# Check if game over happened while dialogue was playing
+			if turn_count > MAX_TURNS:
+				_end_game()
+
+func _on_timeline_started():
+	is_dialogue_active = true
+	_set_hand_enabled(false)
+	# result_updated.emit("") # Don't hide prompt
+
+func _on_timeline_ended():
+	is_dialogue_active = false
+	_set_hand_enabled(true)
+	result_updated.emit("カードを選んでください")
+
+	# Check if game over happened while dialogue was playing
+	if turn_count > MAX_TURNS:
+		_end_game()
 
 func _setup_styles():
 	var style = StyleBoxFlat.new()
 	style.bg_color = Color(0, 0, 0, 0)
 	style.border_width_left = 2
-	style.border_width_top = 2
+	style.border_width_top = 4 # Thicker top border to prevent cutoff
 	style.border_width_right = 2
 	style.border_width_bottom = 2
 	style.border_color = Color.WHITE
@@ -74,10 +122,8 @@ func start_game():
 	turn_count = 1
 
 	restart_button.visible = false
-	# battle_area.visible = false # Keep visible to reserve space
 	player_played_card.texture = null
 	cpu_played_card.texture = null
-	# result_label.text = "カードを選んでください"
 	result_updated.emit("")
 	_update_ui()
 
@@ -92,8 +138,6 @@ func _generate_hand():
 	return hand
 
 func _update_ui():
-	# Update Info Label
-	# info_label.text = "ターン: %d / %d\nスコア - あなた: %d  CPU: %d" % [min(turn_count, MAX_TURNS), MAX_TURNS, player_wins, cpu_wins]
 	ui_updated.emit(min(turn_count, MAX_TURNS), MAX_TURNS, player_wins, cpu_wins, draws)
 
 	# Update CPU Hand (Show back of cards)
@@ -127,7 +171,7 @@ func _update_ui():
 			card.set_anchors_preset(Control.PRESET_FULL_RECT)
 
 func _on_card_selected(index):
-	if turn_count > MAX_TURNS:
+	if turn_count > MAX_TURNS or is_dialogue_active:
 		return
 
 	# Disable input immediately
@@ -187,21 +231,11 @@ func _on_card_selected(index):
 	# Update score (emit ui_updated with new values)
 	ui_updated.emit(min(turn_count, MAX_TURNS), MAX_TURNS, player_wins, cpu_wins, draws)
 
-	# Wait 3 seconds to show result
-	await get_tree().create_timer(3.0).timeout
-
-	# Hide result and clear cards
-	result_updated.emit("")
-	player_played_card.texture = null
-	cpu_played_card.texture = null
-
 	turn_count += 1
-	if turn_count > MAX_TURNS:
-		_end_game()
-	else:
-		# Prepare for next turn
-		result_updated.emit("カードを選んでください")
-		_set_hand_enabled(true)
+
+	# Note: We don't wait for Dialogic here anymore.
+	# Dialogic.start() was called in _evaluate_turn.
+	# The _on_timeline_started signal will handle locking input.
 
 func _set_hand_enabled(enabled: bool):
 	for slot in player_hand_container.get_children():
@@ -275,34 +309,30 @@ func _animate_hand_shift(gap_index: int, container: Control):
 func _evaluate_turn(p, c):
 	if p == c:
 		draws += 1
-		_speak_random(["気が合うわね", "むむ...", "やるじゃない"])
+		Dialogic.start("res://timelines/draw.dtl")
 		return "DRAW"
 	elif (p == Hand.ROCK and c == Hand.SCISSORS) or \
 		 (p == Hand.SCISSORS and c == Hand.PAPER) or \
 		 (p == Hand.PAPER and c == Hand.ROCK):
 		player_wins += 1
-		_speak_random(["くっ...やるわね", "負けちゃった...", "次は負けない！"])
+		Dialogic.start("res://timelines/win.dtl")
 		return "WIN"
 	else:
 		cpu_wins += 1
-		_speak_random(["私の勝ちね！", "まだまだね", "ふふふ..."])
+		Dialogic.start("res://timelines/lose.dtl")
 		return "LOSE"
-
-func _speak_random(options):
-	var text = options.pick_random()
-	opponent_spoke.emit(text)
 
 func _end_game():
 	var final_result = ""
 	if player_wins > cpu_wins:
 		final_result = "You Win!"
-		_speak_random(["完敗ね...おめでとう", "強い...！", "次は負けないから！"])
+		# Dialogic.start("game_win") # Create this timeline later
 	elif cpu_wins > player_wins:
 		final_result = "You Lose..."
-		_speak_random(["私の勝ち！", "出直してきなさい", "弱いわね..."])
+		# Dialogic.start("game_lose") # Create this timeline later
 	else:
 		final_result = "Draw"
-		_speak_random(["いい勝負だったわ", "引き分けね", "またやりましょう"])
+		# Dialogic.start("game_draw") # Create this timeline later
 
 	# result_label.text = final_result
 	result_updated.emit(final_result)
