@@ -8,6 +8,11 @@ signal opponent_updated(data)
 
 @export var opponent_data: CharacterData
 
+@export_group("Win Rates")
+@export_range(0.0, 1.0) var player_win_rate: float = 0.7
+@export_range(0.0, 1.0) var draw_rate: float = 0.2
+@export_range(0.0, 1.0) var player_lose_rate: float = 0.1
+
 @onready var info_label = $VBoxContainer/InfoLabel
 @onready var result_label = $VBoxContainer/ResultLabel
 @onready var cpu_hand_container = $VBoxContainer/CPUHandContainer
@@ -182,9 +187,46 @@ func _on_card_selected(index):
 	result_updated.emit("")
 
 	var player_card = player_hand.pop_at(index)
-	# CPU picks a random card from their hand
-	var cpu_card_index = randi() % cpu_hand.size()
+
+	# --- Determine CPU Card based on Win Rates ---
+	var r = randf()
+	var desired_outcome = "" # "WIN", "LOSE", "DRAW" relative to PLAYER
+
+	if r < player_win_rate:
+		desired_outcome = "WIN"
+	elif r < player_win_rate + draw_rate:
+		desired_outcome = "DRAW"
+	else:
+		desired_outcome = "LOSE"
+
+	var target_cpu_card = -1
+
+	if desired_outcome == "DRAW":
+		target_cpu_card = player_card
+	elif desired_outcome == "WIN":
+		# Player wins, so CPU needs to lose
+		# Rock(0) beats Scissors(1), Scissors(1) beats Paper(2), Paper(2) beats Rock(0)
+		if player_card == Hand.ROCK: target_cpu_card = Hand.SCISSORS
+		elif player_card == Hand.SCISSORS: target_cpu_card = Hand.PAPER
+		elif player_card == Hand.PAPER: target_cpu_card = Hand.ROCK
+	else: # LOSE
+		# Player loses, so CPU needs to win
+		if player_card == Hand.ROCK: target_cpu_card = Hand.PAPER
+		elif player_card == Hand.SCISSORS: target_cpu_card = Hand.ROCK
+		elif player_card == Hand.PAPER: target_cpu_card = Hand.SCISSORS
+
+	# Check if CPU has the target card
+	var cpu_card_index = -1
+	if target_cpu_card in cpu_hand:
+		cpu_card_index = cpu_hand.find(target_cpu_card)
+	else:
+		# Cheat! Replace a random card in CPU hand with target card
+		cpu_card_index = randi() % cpu_hand.size()
+		cpu_hand[cpu_card_index] = target_cpu_card
+		print("DEBUG: Cheated to force outcome: ", desired_outcome)
+
 	var cpu_card = cpu_hand.pop_at(cpu_card_index)
+	# ---------------------------------------------
 
 	# Get references to the actual card nodes before they are removed/hidden
 	var player_card_node = player_hand_container.get_child(index).get_child(0)
