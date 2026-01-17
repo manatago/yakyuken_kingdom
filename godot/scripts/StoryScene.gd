@@ -36,6 +36,12 @@ var _waiting_for_input := false
 var _current_sequence_id := ""
 var _character_side_cache: Dictionary = {}
 var _character_position_cache: Dictionary = {}
+var _character_portrait_cache: Dictionary = {}
+var _active_character_tweens: Dictionary = {}
+var _pending_signal_relays: Array = []
+var _portrait_animation_data: Dictionary = {}
+var _portrait_animation_timers: Dictionary = {}
+var _suppress_animation_reset := false
 
 func _ready():
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -116,8 +122,18 @@ func _trigger_advance():
 	_waiting_for_input = false
 	advance_requested.emit()
 
+
 func _show_character(character_data: StoryCharacter, portrait_name: String, side: String, position_mode: String = "", position_value: Vector2 = Vector2.ZERO):
-	var texture_path: String = character_data.get_portrait_path(portrait_name)
+	var resolved_portrait := portrait_name
+	if resolved_portrait.is_empty():
+		if not character_data.id.is_empty() and _character_portrait_cache.has(character_data.id):
+			resolved_portrait = _character_portrait_cache[character_data.id]
+		else:
+			resolved_portrait = character_data.default_portrait
+	var texture_path: String = character_data.get_portrait_path(resolved_portrait)
+	if texture_path.is_empty() and resolved_portrait != character_data.default_portrait:
+		resolved_portrait = character_data.default_portrait
+		texture_path = character_data.get_portrait_path(resolved_portrait)
 	if texture_path.is_empty():
 		return null
 	var tex := _get_texture(texture_path)
@@ -126,46 +142,65 @@ func _show_character(character_data: StoryCharacter, portrait_name: String, side
 	var target_rect := _get_rect_for_side(side)
 	if target_rect == null:
 		return null
+	var was_visible := target_rect.visible
 	target_rect.texture = tex
 	target_rect.visible = true
-	_reset_character_transform(target_rect)
-	var target_pos := _resolve_character_position(side, position_mode, position_value)
-	target_rect.position = target_pos
+	if not was_visible:
+		_reset_character_transform(target_rect)
+	var character_id := character_data.id if character_data else ""
+	var target_pos := _resolve_character_position(character_id, side, position_mode, position_value)
+	var has_position_override := not position_mode.strip_edges().is_empty()
+	if not was_visible or has_position_override:
+		target_rect.position = target_pos
 	if character_data and not character_data.id.is_empty():
+		if not _suppress_animation_reset:
+			_stop_portrait_animation_by_id(character_data.id)
 		_character_side_cache[character_data.id] = side
 		_character_position_cache[character_data.id] = target_pos
+		_character_portrait_cache[character_data.id] = resolved_portrait
 	return target_rect
 
 func hide_character_entry(entry: StoryHideCharacterCommand):
 	var side := _resolve_character_side(entry.character_id, entry.side_override)
 	var target_rect := _get_rect_for_side(side)
 	if not target_rect:
-		return
+		return null
 	var target_pos: Vector2 = _character_position_cache.get(entry.character_id, _default_side_position(side))
-	if not _apply_character_exit_effect(target_rect, entry, side, entry.character_id, target_pos):
-		_hide_character_control(target_rect, side, entry.character_id)
+	var tween := _apply_character_exit_effect(target_rect, entry, side, entry.character_id, target_pos)
+	if tween:
+		if entry.wait_for_exit:
+			return _wrap_signal_with_delay(tween.finished, entry.wait_after)
+		elif entry.wait_after > 0.0:
+			return _create_delay_signal(entry.wait_after)
+		return null
+	_hide_character_control(target_rect, side, entry.character_id)
+	if entry.wait_after > 0.0:
+		return _create_delay_signal(entry.wait_after)
+	return null
 
 func _hide_character_by_side(side: String):
 	var target_rect := _get_rect_for_side(side)
 	if target_rect:
 		target_rect.visible = false
 
-func _apply_character_exit_effect(target_rect: TextureRect, entry: StoryHideCharacterCommand, side: String, character_id: String, target_pos: Vector2) -> bool:
+func _apply_character_exit_effect(target_rect: TextureRect, entry: StoryHideCharacterCommand, side: String, character_id: String, target_pos: Vector2) -> Tween:
 	if target_rect == null:
-		return false
+		return null
 	var effect := entry.exit_effect.strip_edges().to_lower()
 	if effect.is_empty():
-		return false
+		return null
 	var duration: float = max(entry.exit_duration, 0.0)
 	if duration <= 0.0:
-		return false
+		return null
 	var default_pos: Vector2 = target_pos
+	_cancel_character_tween(target_rect)
 	var tween := create_tween()
 	if effect == "fade":
 		tween.tween_property(target_rect, "modulate:a", 0.0, duration)
 		tween.finished.connect(func():
 			_hide_character_control(target_rect, side, character_id))
-		return true
+		_register_character_tween(target_rect, tween)
+		return tween
 	var direction := entry.exit_to.strip_edges().to_lower()
 	if direction.is_empty():
 		direction = "right" if side == "right" else "left"
@@ -188,36 +223,177 @@ func _apply_character_exit_effect(target_rect: TextureRect, entry: StoryHideChar
 		tween.tween_property(target_rect, "position", end_pos, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 		tween.finished.connect(func():
 			_hide_character_control(target_rect, side, character_id))
-		return true
+		_register_character_tween(target_rect, tween)
+		return tween
 	elif effect == "fade_slide":
 		tween.tween_property(target_rect, "position", end_pos, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 		tween.parallel().tween_property(target_rect, "modulate:a", 0.0, duration)
 		tween.finished.connect(func():
 			_hide_character_control(target_rect, side, character_id))
-		return true
+		_register_character_tween(target_rect, tween)
+		return tween
+	elif effect == "shrink" or effect == "fade_shrink":
+		target_rect.pivot_offset = target_rect.size * 0.5
+		var scale_tween := tween.tween_property(target_rect, "scale", Vector2.ZERO, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+		if effect == "fade_shrink":
+			tween.parallel().tween_property(target_rect, "modulate:a", 0.0, duration)
+		tween.finished.connect(func():
+			_hide_character_control(target_rect, side, character_id))
+		_register_character_tween(target_rect, tween)
+		return tween
 	else:
-		return false
+		return null
 
 func _hide_character_control(target_rect: TextureRect, side: String, character_id: String):
 	if target_rect == null:
 		return
+	_cancel_character_tween(target_rect)
 	target_rect.visible = false
 	target_rect.modulate = Color.WHITE
+	target_rect.scale = Vector2.ONE
+	target_rect.pivot_offset = Vector2.ZERO
 	target_rect.position = _default_side_position(side)
 	if not character_id.is_empty():
 		_character_side_cache.erase(character_id)
 		_character_position_cache.erase(character_id)
+		_character_portrait_cache.erase(character_id)
+		_stop_portrait_animation_by_id(character_id)
+
+func start_portrait_animation(entry: StoryAnimatePortraitCommand):
+	if entry == null or entry.character_id.is_empty():
+		return
+	_stop_portrait_animation_by_id(entry.character_id)
+	var frames: Array[String] = []
+	for portrait in entry.portrait_ids:
+		if typeof(portrait) == TYPE_STRING and not portrait.is_empty():
+			frames.append(portrait)
+	if frames.is_empty():
+		return
+	var data = {
+		"frames": frames,
+		"index": 0,
+		"frame_duration": max(entry.frame_duration, 0.05),
+		"loop_count": max(entry.loop_count, 0),
+		"completed_cycles": 0,
+	}
+	_portrait_animation_data[entry.character_id] = data
+	_apply_portrait_frame(entry.character_id, frames[0])
+	if frames.size() > 1:
+		_schedule_next_portrait_frame(entry.character_id)
+
+func stop_portrait_animation(entry: StoryStopPortraitAnimationCommand):
+	if entry == null:
+		return
+	_stop_portrait_animation_by_id(entry.character_id)
+
+func _stop_portrait_animation_by_id(character_id: String):
+	if character_id.is_empty():
+		return
+	var timer: Timer = _portrait_animation_timers.get(character_id, null)
+	if timer:
+		timer.stop()
+		timer.queue_free()
+		_portrait_animation_timers.erase(character_id)
+	_portrait_animation_data.erase(character_id)
+
+func _schedule_next_portrait_frame(character_id: String):
+	var data = _portrait_animation_data.get(character_id, null)
+	if data == null:
+		return
+	var timer := Timer.new()
+	timer.one_shot = true
+	timer.wait_time = data.frame_duration
+	add_child(timer)
+	timer.timeout.connect(func(): _on_portrait_animation_tick(character_id), CONNECT_ONE_SHOT)
+	timer.start()
+	_portrait_animation_timers[character_id] = timer
+
+func _on_portrait_animation_tick(character_id: String):
+	var timer: Timer = _portrait_animation_timers.get(character_id, null)
+	if timer:
+		timer.queue_free()
+		_portrait_animation_timers.erase(character_id)
+	var data = _portrait_animation_data.get(character_id, null)
+	if data == null:
+		return
+	var frames: Array = data.frames
+	if frames.is_empty():
+		_portrait_animation_data.erase(character_id)
+		return
+	data.index = (data.index + 1) % frames.size()
+	if data.index == 0 and data.loop_count > 0:
+		data.completed_cycles += 1
+		if data.completed_cycles >= data.loop_count:
+			_portrait_animation_data.erase(character_id)
+			return
+	_apply_portrait_frame(character_id, frames[data.index])
+	_schedule_next_portrait_frame(character_id)
+
+func _apply_portrait_frame(character_id: String, portrait_name: String):
+	if character_id.is_empty():
+		return
+	var character_data: StoryCharacter = _cast.get_character(character_id)
+	if character_data == null:
+		return
+	var side: String = _character_side_cache.get(character_id, character_data.default_side)
+	_suppress_animation_reset = true
+	_show_character(character_data, portrait_name, side)
+	_suppress_animation_reset = false
 
 func _reset_character_transform(target_rect: Control):
 	if target_rect == null:
 		return
 	target_rect.modulate = Color.WHITE
+	target_rect.scale = Vector2.ONE
+	target_rect.pivot_offset = Vector2.ZERO
 	if target_rect == right_char:
 		target_rect.position = right_char_default_pos
 	elif target_rect == center_char:
 		target_rect.position = center_char_default_pos
 	else:
 		target_rect.position = left_char_default_pos
+
+func _cancel_character_tween(target_rect: TextureRect):
+	if target_rect == null:
+		return
+	var tween = _active_character_tweens.get(target_rect, null)
+	if tween:
+		tween.kill()
+		_active_character_tweens.erase(target_rect)
+
+func _register_character_tween(target_rect: TextureRect, tween):
+	if target_rect == null or tween == null:
+		return
+	_active_character_tweens[target_rect] = tween
+	tween.finished.connect(func():
+		if _active_character_tweens.get(target_rect) == tween:
+			_active_character_tweens.erase(target_rect))
+
+func _create_delay_signal(duration: float):
+	if duration <= 0.0:
+		return null
+	return get_tree().create_timer(duration).timeout
+
+func _wrap_signal_with_delay(base_signal: Signal, delay: float):
+	if base_signal == null:
+		return null
+	if delay <= 0.0:
+		return base_signal
+	var relay := _SignalRelay.new()
+	_pending_signal_relays.append(relay)
+	base_signal.connect(func():
+		var timer := get_tree().create_timer(delay)
+		timer.timeout.connect(func():
+			_emit_signal_relay(relay), CONNECT_ONE_SHOT)
+	, CONNECT_ONE_SHOT)
+	return relay.completed
+
+func _emit_signal_relay(relay: _SignalRelay):
+	if relay == null:
+		return
+	if relay in _pending_signal_relays:
+		_pending_signal_relays.erase(relay)
+	relay.completed.emit()
 
 func show_background_entry(entry: StoryBackgroundCommand):
 	if entry.path.is_empty():
@@ -301,11 +477,24 @@ func _apply_character_entry_effect(target_rect: TextureRect, entry: StoryShowCha
 	var duration: float = max(entry.appear_duration, 0.0)
 	if duration <= 0.0:
 		return
+	_cancel_character_tween(target_rect)
 	var default_pos: Vector2 = target_pos
 	if effect == "fade":
 		var tween := create_tween()
 		target_rect.modulate = Color(1, 1, 1, 0)
 		tween.tween_property(target_rect, "modulate:a", 1.0, duration)
+		_register_character_tween(target_rect, tween)
+		return
+	elif effect == "grow" or effect == "fade_grow":
+		var tween := create_tween()
+		target_rect.pivot_offset = target_rect.size * 0.5
+		target_rect.scale = Vector2.ZERO
+		if effect == "fade_grow":
+			target_rect.modulate = Color(1, 1, 1, 0)
+		tween.tween_property(target_rect, "scale", Vector2.ONE, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		if effect == "fade_grow":
+			tween.parallel().tween_property(target_rect, "modulate:a", 1.0, duration)
+		_register_character_tween(target_rect, tween)
 		return
 	var direction := entry.appear_from.strip_edges().to_lower()
 	if direction.is_empty():
@@ -329,12 +518,17 @@ func _apply_character_entry_effect(target_rect: TextureRect, entry: StoryShowCha
 		var tween := create_tween()
 		target_rect.position = start_pos
 		tween.tween_property(target_rect, "position", default_pos, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		_register_character_tween(target_rect, tween)
 	elif effect == "fade_slide":
 		var tween := create_tween()
 		target_rect.position = start_pos
 		target_rect.modulate = Color(1, 1, 1, 0)
 		tween.tween_property(target_rect, "position", default_pos, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 		tween.parallel().tween_property(target_rect, "modulate:a", 1.0, duration)
+		_register_character_tween(target_rect, tween)
+	elif effect == "grow" or effect == "fade_grow":
+		# Already handled earlier
+		pass
 	else:
 		# Unknown effect; snap to default
 		target_rect.position = default_pos
@@ -426,7 +620,7 @@ func _resolve_character_side(character_id: String, requested_side: String) -> St
 		return "center"
 	return "left"
 
-func _resolve_character_position(side: String, position_mode: String, position_value: Vector2) -> Vector2:
+func _resolve_character_position(character_id: String, side: String, position_mode: String, position_value: Vector2) -> Vector2:
 	var mode := position_mode.strip_edges().to_lower()
 	var base := _default_side_position(side)
 	match mode:
@@ -438,4 +632,10 @@ func _resolve_character_position(side: String, position_mode: String, position_v
 			var size := get_viewport_rect().size
 			return Vector2(size.x * position_value.x, size.y * position_value.y)
 		_:
+			if not character_id.is_empty() and _character_position_cache.has(character_id):
+				return _character_position_cache[character_id]
 			return base
+
+class _SignalRelay:
+	extends RefCounted
+	signal completed

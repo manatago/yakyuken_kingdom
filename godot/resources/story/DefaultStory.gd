@@ -5,6 +5,11 @@ const StoryCharacterResource := preload("res://resources/story/StoryCharacter.gd
 const PrologueChapterScript := preload("res://resources/story/chapters/PrologueChapter.gd")
 const Stage1ChapterScript := preload("res://resources/story/chapters/Stage1Chapter.gd")
 
+var _chapters = [
+	PrologueChapterScript.new(),
+	Stage1ChapterScript.new(),
+]
+
 func _init() -> void:
 	var cast := StoryCast.new()
 	cast.add_characters([
@@ -13,40 +18,55 @@ func _init() -> void:
 			"サトシ",
 			"Default",
 			{
-				"Default": "res://assets/characters/char01-1_main_character.png",
-				"Isekai": "res://assets/characters/char01-2_main_character.png",
-				"Teleport": "res://assets/characters/char01-3_main_character.png",
-				"Naked": "res://assets/characters/char01-4_main_character.png",
-				"Surprised": "res://assets/characters/char01-5_main_character.png"
+				"deefault": "res://assets/characters/char01-001_smile.png",
+				"default_smile": "res://assets/characters/char01-001_smile.png",
+				"default_surprise": "res://assets/characters/char01-002_surprise.png",
+				"default_annoyed": "res://assets/characters/char01-003_annoyed.png",
+				"default_thinking": "res://assets/characters/char01-004_thinking.png",
+				"default_smirk": "res://assets/characters/char01-005_smirk.png",
+				"default_surprise2": "res://assets/characters/char01-006_surprise2.png",
+				"default_white_coat": "res://assets/characters/char01-007_white_coat.png",
+				"default_white_coat_surprise": "res://assets/characters/char01-008_white_coat_surprise.png",
+				"default_white_coat_surprise_closed_eyes": "res://assets/characters/char01-008-2_white_coat_surprise.png",
+				"teleport_white_coat": "res://assets/characters/char01-009_teleport_white_coat.png",
+				"teleport_naked": "res://assets/characters/char01-010_teleport_naked.png",
+				"naked": "res://assets/characters/char01-011_naked.png",
+				"isekai_anxious": "res://assets/characters/char01-012_isekai_anxious.png",
 			}
 		),
 		_character(
 			"heroine",
 			"みのり",
-			"Default",
+			"default",
 			{
-				"Default": "res://assets/characters/char02-1_childhood_friend.png"
+				"default": "res://assets/characters/char02-1_childhood_friend.png"
+			}
+		),
+		_character(
+			"guard",
+			"番兵",
+			"default",
+			{
+				"default": "res://assets/characters/char03-1_guard.png"
 			}
 		),
 		_character(
 			"matilda",
 			"マチルダ",
-			"Default",
+			"default",
 			{
-				"Default": "res://assets/characters/char03-1_prison_guard.png"
+				"default": "res://assets/characters/char04-1_prison_guard.png"
 			}
 		)
 	])
 	set_cast(cast)
 
-	register_sequences([
-		PrologueChapterScript.build(cast),
-		Stage1ChapterScript.build_intro(cast),
-		Stage1ChapterScript.build_win(cast),
-		Stage1ChapterScript.build_battle_draw(cast),
-		Stage1ChapterScript.build_battle_win(cast),
-		Stage1ChapterScript.build_battle_lose(cast)
-	])
+	_register_chapters(cast)
+
+func _register_chapters(cast: StoryCast) -> void:
+	for chapter in _chapters:
+		if chapter:
+			chapter.register_sequences(self, cast)
 
 func _character(id: String, display_name: String, default_portrait: String, portraits: Dictionary, default_side: String = "") -> StoryCharacter:
 	var data := StoryCharacterResource.new()

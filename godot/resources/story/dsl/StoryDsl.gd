@@ -8,6 +8,8 @@ const StoryPauseCommand := preload("res://resources/story/commands/StoryPauseCom
 const StoryShowCharacterCommand := preload("res://resources/story/commands/StoryShowCharacterCommand.gd")
 const StoryBandCommand := preload("res://resources/story/commands/StoryBandCommand.gd")
 const StoryHideDialogueCommand := preload("res://resources/story/commands/StoryHideDialogueCommand.gd")
+const StoryAnimatePortraitCommand := preload("res://resources/story/commands/StoryAnimatePortraitCommand.gd")
+const StoryStopPortraitAnimationCommand := preload("res://resources/story/commands/StoryStopPortraitAnimationCommand.gd")
 const StorySequence := preload("res://resources/story/StorySequence.gd")
 const StoryCharacterHandle := preload("res://resources/story/dsl/StoryCharacterHandle.gd")
 
@@ -67,6 +69,8 @@ func hide_character(character_id: String, extra: Dictionary = {}):
 	entry.exit_to = extra.get("exit_to", "")
 	entry.exit_duration = extra.get("exit_duration", 0.0)
 	entry.exit_distance = extra.get("exit_distance", 200.0)
+	entry.wait_for_exit = extra.get("wait_for_exit", false)
+	entry.wait_after = extra.get("wait_after", 0.0)
 	return entry
 
 func band(text: String, extra: Dictionary = {}):
@@ -97,6 +101,23 @@ func band_clear_text():
 
 func hide_dialogue():
 	return StoryHideDialogueCommand.new()
+
+func animate_portrait(character_id: String, portraits: Array, frame_duration: float = 0.15, loop_count: int = 0):
+	var entry := StoryAnimatePortraitCommand.new()
+	entry.character_id = character_id
+	var frames: Array[String] = []
+	for item in portraits:
+		if typeof(item) == TYPE_STRING:
+			frames.append(item)
+	entry.portrait_ids = frames
+	entry.frame_duration = frame_duration
+	entry.loop_count = loop_count
+	return entry
+
+func stop_portrait_animation(character_id: String):
+	var entry := StoryStopPortraitAnimationCommand.new()
+	entry.character_id = character_id
+	return entry
 
 func set_protagonist_id(id: String):
 	if id.is_empty():
@@ -169,6 +190,12 @@ class _CommandCollector:
 
 	func hide_dialogue():
 		_add_command(_dsl.hide_dialogue())
+
+	func animate_portrait(character_id: String, portraits: Array, frame_duration: float = 0.15, loop_count: int = 0):
+		_add_command(_dsl.animate_portrait(character_id, portraits, frame_duration, loop_count))
+
+	func stop_portrait_animation(character_id: String):
+		_add_command(_dsl.stop_portrait_animation(character_id))
 
 func get_cast() -> StoryCast:
 	return _cast
