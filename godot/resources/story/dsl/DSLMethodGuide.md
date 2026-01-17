@@ -58,7 +58,7 @@ hero.say("ここが噂の研究施設…", {"portrait": "Isekai"})
 `show()` の拡張版で、登場演出や配置を指定します。主なオプション:
 
 - `side`: `"left"` / `"center"` / `"right"`（使用するスロット。省略時は空いている側を自動使用）
-- `appear_effect`: `"fade"`（デフォルト） / `"slide"` / `"fade_slide"`
+- `appear_effect`: `"fade"`（デフォルト） / `"slide"` / `"fade_slide"` / `"grow"` / `"fade_grow"`
 - `appear_duration`: 演出にかける秒数（例: `0.35`）
 - `appear_from`: スライド元方向（`"left"`, `"right"`, `"top"`, `"bottom"` など）
 - `appear_distance`: スライド距離（ピクセル、既定 200）
@@ -78,6 +78,13 @@ hero.appear({
 	"position": Vector2(0, -20),
 	"portrait": "Isekai"
 })
+
+hero.appear({
+	"side": "center",
+	"appear_effect": "fade_grow",
+	"appear_duration": 0.5,
+	"portrait": "teleport_white_coat"
+})
 ```
 
 ### `stay_left()` / `stay_right()` / `set_portrait()`
@@ -86,16 +93,20 @@ hero.appear({
 ### `leave(extra := {})`
 キャラを退場させます。オプションでフェードアウトやスライド方向を指定できます。
 
-- `exit_effect`: `"fade"` / `"slide"` / `"fade_slide"`
+- `exit_effect`: `"fade"` / `"slide"` / `"fade_slide"` / `"shrink"` / `"fade_shrink"`
 - `exit_duration`: 演出時間（秒）
 - `exit_to`: スライド方向（`"left"`, `"right"`, `"top"`, `"bottom"`）
 - `exit_distance`: 移動距離（ピクセル、既定 200）
+- `wait_for_exit`: `true` で退場アニメ完了を待ってから次のコマンドへ
+- `wait_after`: 退場完了後に待つ追加秒数（`wait_for_exit` と組み合わせるとフェード後の余韻に使用可能）
 
 ```gdscript
 matilda.leave({
 	"exit_effect": "fade_slide",
 	"exit_to": "right",
-	"exit_duration": 0.5
+	"exit_duration": 0.5,
+	"wait_for_exit": true,
+	"wait_after": 0.2
 })
 ```
 

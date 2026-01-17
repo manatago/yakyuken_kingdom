@@ -49,6 +49,12 @@ func stay_right():
 func set_portrait(portrait_id: String):
 	return _record(_dsl.show_character(_character_id, {"portrait": portrait_id}))
 
+func animate_portrait(portrait_ids: Array, frame_duration: float = 0.15, loop_count: int = 0):
+	return _record(_dsl.animate_portrait(_character_id, portrait_ids, frame_duration, loop_count))
+
+func stop_portrait_animation():
+	return _record(_dsl.stop_portrait_animation(_character_id))
+
 func leave(extra: Dictionary = {}):
 	var options := extra.duplicate()
 	if not options.has("side"):

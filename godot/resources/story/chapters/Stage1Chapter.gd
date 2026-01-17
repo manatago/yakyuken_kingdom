@@ -1,16 +1,18 @@
-extends RefCounted
+extends StoryChapterBase
 class_name Stage1Chapter
 
-const StoryDsl := preload("res://resources/story/dsl/StoryDsl.gd")
-const StoryCast := preload("res://resources/story/StoryCast.gd")
-const StorySequence := preload("res://resources/story/StorySequence.gd")
 const StoryCharacterHandle := preload("res://resources/story/dsl/StoryCharacterHandle.gd")
 
-static func build_intro(cast: StoryCast) -> StorySequence:
-	var dsl := StoryDsl.new(cast)
-	return dsl.build("stage1_intro", Callable(Stage1Chapter, "_build_intro"))
+func get_sequence_builders() -> Array:
+	return [
+		sequence_builder("stage1_intro", "_build_intro"),
+		sequence_builder("stage1_win", "_build_win"),
+		sequence_builder("battle_draw", "_build_battle_draw"),
+		sequence_builder("battle_win", "_build_battle_win"),
+		sequence_builder("battle_lose", "_build_battle_lose"),
+	]
 
-static func _build_intro(b):
+func _build_intro(b):
 	var hero: StoryCharacterHandle = b.character("main")
 	var matilda: StoryCharacterHandle = b.character("matilda")
 
@@ -27,11 +29,7 @@ static func _build_intro(b):
 	hero.say("俺は数学オタクだぞ？　数字は親友だ。", {"portrait": "Isekai"})
 	matilda.say("じゃあ、初戦だ。異世界野球拳、始め！")
 
-static func build_win(cast: StoryCast) -> StorySequence:
-	var dsl := StoryDsl.new(cast)
-	return dsl.build("stage1_win", Callable(Stage1Chapter, "_build_win"))
-
-static func _build_win(b):
+func _build_win(b):
 	var hero: StoryCharacterHandle = b.character("main")
 	var matilda: StoryCharacterHandle = b.character("matilda")
 
@@ -47,11 +45,7 @@ static func _build_win(b):
 	matilda.say("ああ、今度は王都の中央アリーナでね。さっさと四天王への道を切り開いてきな。")
 	hero.say("了解。異世界野球拳ロード、始まったばかりだ。", {"portrait": "Isekai"})
 
-static func build_battle_draw(cast: StoryCast) -> StorySequence:
-	var dsl := StoryDsl.new(cast)
-	return dsl.build("battle_draw", Callable(Stage1Chapter, "_build_battle_draw"))
-
-static func _build_battle_draw(b):
+func _build_battle_draw(b):
 	var hero: StoryCharacterHandle = b.character("main")
 	var matilda: StoryCharacterHandle = b.character("matilda")
 
@@ -60,11 +54,7 @@ static func _build_battle_draw(b):
 	matilda.say("おっと、気が合いますね！　あいこです。もう一度、勝負しましょう！")
 	hero.say("そう簡単には譲らないさ。", {"portrait": "Isekai"})
 
-static func build_battle_win(cast: StoryCast) -> StorySequence:
-	var dsl := StoryDsl.new(cast)
-	return dsl.build("battle_win", Callable(Stage1Chapter, "_build_battle_win"))
-
-static func _build_battle_win(b):
+func _build_battle_win(b):
 	var hero: StoryCharacterHandle = b.character("main")
 	var matilda: StoryCharacterHandle = b.character("matilda")
 
@@ -73,11 +63,7 @@ static func _build_battle_win(b):
 	matilda.say("くっ……やりましたね！　私の読みが外れるなんて……次は負けませんよ！")
 	hero.say("この調子で畳みかける。", {"portrait": "Isekai"})
 
-static func build_battle_lose(cast: StoryCast) -> StorySequence:
-	var dsl := StoryDsl.new(cast)
-	return dsl.build("battle_lose", Callable(Stage1Chapter, "_build_battle_lose"))
-
-static func _build_battle_lose(b):
+func _build_battle_lose(b):
 	var hero: StoryCharacterHandle = b.character("main")
 	var matilda: StoryCharacterHandle = b.character("matilda")
 

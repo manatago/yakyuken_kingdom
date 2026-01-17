@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://testdisplay001"]
+
+[ext_resource type="Script" path="res://scripts/TestDisplay.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://storyscene001" path="res://StoryScene.tscn" id="2_scene"]
+
+[node name="TestDisplay" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="StoryScene" parent="." instance=ExtResource("2_scene")]
+layout_mode = 1
+debug_preview_enabled = true
+debug_left_character_path = "res://characters/MainCharacter.dch"
+debug_left_portrait = "Default"
+debug_right_character_path = "res://characters/Matilda.dch"
+debug_right_portrait = "Default"
+debug_background_path = "res://assets/prologue/backgrounds/dungeon.png"
