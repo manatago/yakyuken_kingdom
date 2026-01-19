@@ -5,6 +5,8 @@ const StoryCast := preload("res://resources/story/StoryCast.gd")
 const StoryShowCharacterCommand := preload("res://resources/story/commands/StoryShowCharacterCommand.gd")
 const StoryHideDialogueCommand := preload("res://resources/story/commands/StoryHideDialogueCommand.gd")
 const StoryHideCharacterCommand := preload("res://resources/story/commands/StoryHideCharacterCommand.gd")
+const StoryMicroMotionCommand := preload("res://resources/story/commands/StoryMicroMotionCommand.gd")
+const MicroMotionShowcaseScene := preload("res://resources/story/micromotion/MicroMotionShowcase.tscn")
 
 
 signal sequence_started(sequence_id)
@@ -42,6 +44,7 @@ var _pending_signal_relays: Array = []
 var _portrait_animation_data: Dictionary = {}
 var _portrait_animation_timers: Dictionary = {}
 var _suppress_animation_reset := false
+var _micro_motion_showcase: MicroMotionShowcase = null
 
 func _ready():
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -54,6 +57,7 @@ func _ready():
 	left_bubble.visible = false
 	center_bubble.visible = false
 	right_bubble.visible = false
+	_ensure_micro_motion_showcase()
 
 func _unhandled_input(event):
 	if not _waiting_for_input:
@@ -101,6 +105,15 @@ func play_line(entry: StoryLineCommand):
 		return get_tree().create_timer(entry.duration).timeout
 	return null
 
+func play_micro_motion(entry: StoryMicroMotionCommand):
+	if entry == null:
+		return null
+	_ensure_micro_motion_showcase()
+	if _micro_motion_showcase == null:
+		return null
+	var params := entry.params if entry.params else {}
+	return _micro_motion_showcase.play(entry.mode, params)
+
 func _prepare_wait_for_advance(min_duration: float) -> Signal:
 	_waiting_for_input = false
 	if min_duration > 0.0:
@@ -121,6 +134,17 @@ func _trigger_advance():
 		return
 	_waiting_for_input = false
 	advance_requested.emit()
+
+
+func _ensure_micro_motion_showcase() -> void:
+	if _micro_motion_showcase:
+		return
+	if MicroMotionShowcaseScene == null:
+		return
+	_micro_motion_showcase = MicroMotionShowcaseScene.instantiate()
+	add_child(_micro_motion_showcase)
+	move_child(_micro_motion_showcase, get_child_count() - 1)
+	_micro_motion_showcase.visible = false
 
 
 func _show_character(character_data: StoryCharacter, portrait_name: String, side: String, position_mode: String = "", position_value: Vector2 = Vector2.ZERO):

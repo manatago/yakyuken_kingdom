@@ -1,0 +1,153 @@
+[gd_scene load_steps=16 format=3 uid="uid://micromotion_showcase"]
+
+[ext_resource type="Script" path="res://resources/story/micromotion/MicroMotionShowcase.gd" id="1"]
+[ext_resource type="Texture2D" path="res://assets/characters/samples/sample01-001.png" id="2"]
+[ext_resource type="Texture2D" path="res://assets/characters/samples/sample01-002.png" id="3"]
+[ext_resource type="Texture2D" path="res://assets/characters/samples/sample01-003.png" id="4"]
+[ext_resource type="Texture2D" path="res://assets/characters/samples/sample02-001.png" id="5"]
+[ext_resource type="Texture2D" path="res://assets/characters/samples/sample02-002.png" id="6"]
+[ext_resource type="Texture2D" path="res://assets/characters/samples/sample03-001.png" id="7"]
+[ext_resource type="Texture2D" path="res://assets/characters/samples/sample03-002.png" id="8"]
+[ext_resource type="Texture2D" path="res://assets/characters/samples/sample03-003.png" id="9"]
+[ext_resource type="Texture2D" path="res://assets/characters/samples/sample03-004.png" id="10"]
+[ext_resource type="Texture2D" path="res://assets/characters/samples/sample04-001.png" id="11"]
+[ext_resource type="Texture2D" path="res://assets/characters/samples/sample05-001.png" id="12"]
+[ext_resource type="Shader" path="res://shaders/micro_motion_wind.gdshader" id="13"]
+
+[sub_resource type="ShaderMaterial" id="1"]
+shader = ExtResource("13")
+shader_parameter/amplitude = 6.0
+shader_parameter/frequency = 2.5
+shader_parameter/speed_multiplier = 1.0
+shader_parameter/vertical_scale = 2.5
+
+[node name="MicroMotionShowcase" type="Control"]
+visible = false
+script = ExtResource("1")
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+modulate = Color(1, 1, 1, 0.0)
+
+[node name="Backdrop" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.4)
+visible = false
+mouse_filter = 2
+
+[node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 0.25
+offset_bottom = 200.0
+grow_horizontal = 2
+size_flags_vertical = 0
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 180)
+theme_override_constants/separation = 8
+
+[node name="TitleLabel" type="Label" parent="Panel/Margin/VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+text = "Micro Motion Sample"
+theme_override_font_sizes/font_size = 32
+
+[node name="DescriptionLabel" type="Label" parent="Panel/Margin/VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+autowrap_mode = 3
+text = ""
+theme_override_font_sizes/font_size = 24
+
+[node name="Samples" type="Node2D" parent="."]
+position = Vector2(640, 520)
+
+[node name="PropertySample" type="Node2D" parent="Samples"]
+visible = false
+position = Vector2(-260, 20)
+
+[node name="Face" type="Sprite2D" parent="Samples/PropertySample"]
+texture = ExtResource("2")
+
+[node name="Mouth" type="Sprite2D" parent="Samples/PropertySample"]
+texture = ExtResource("4")
+position = Vector2(0, 90)
+
+[node name="BreathingSample" type="Node2D" parent="Samples"]
+visible = false
+position = Vector2(0, 0)
+
+[node name="Body" type="Sprite2D" parent="Samples/BreathingSample"]
+texture = ExtResource("5")
+
+[node name="Head" type="Sprite2D" parent="Samples/BreathingSample"]
+texture = ExtResource("6")
+position = Vector2(0, -140)
+
+[node name="DeformSample" type="Node2D" parent="Samples"]
+visible = false
+position = Vector2(270, 50)
+
+[node name="Skeleton2D" type="Skeleton2D" parent="Samples/DeformSample"]
+
+[node name="TorsoBone" type="Bone2D" parent="Samples/DeformSample/Skeleton2D"]
+
+[node name="BodyPolygon" type="Polygon2D" parent="Samples/DeformSample/Skeleton2D/TorsoBone"]
+texture = ExtResource("7")
+polygon = PackedVector2Array(-128, -256, 128, -256, 128, 256, -128, 256)
+uv = PackedVector2Array(0, 0, 1, 0, 1, 1, 0, 1)
+
+[node name="HeadBone" type="Bone2D" parent="Samples/DeformSample/Skeleton2D/TorsoBone"]
+position = Vector2(0, -200)
+
+[node name="HeadSprite" type="Sprite2D" parent="Samples/DeformSample/Skeleton2D/TorsoBone/HeadBone"]
+texture = ExtResource("8")
+position = Vector2(0, -120)
+
+[node name="ArmBone" type="Bone2D" parent="Samples/DeformSample/Skeleton2D/TorsoBone"]
+position = Vector2(100, -50)
+
+[node name="ArmSprite" type="Sprite2D" parent="Samples/DeformSample/Skeleton2D/TorsoBone/ArmBone"]
+texture = ExtResource("9")
+position = Vector2(80, -20)
+
+[node name="CapeBone" type="Bone2D" parent="Samples/DeformSample/Skeleton2D/TorsoBone"]
+position = Vector2(-90, -20)
+
+[node name="CapeSprite" type="Sprite2D" parent="Samples/DeformSample/Skeleton2D/TorsoBone/CapeBone"]
+texture = ExtResource("10")
+position = Vector2(-60, -10)
+
+[node name="WindSample" type="Node2D" parent="Samples"]
+visible = false
+position = Vector2(-260, 20)
+
+[node name="WindSprite" type="Sprite2D" parent="Samples/WindSample"]
+texture = ExtResource("11")
+material = SubResource("1")
+
+[node name="TweenSample" type="Node2D" parent="Samples"]
+visible = false
+position = Vector2(260, 0)
+
+[node name="TweenSprite" type="Sprite2D" parent="Samples/TweenSample"]
+texture = ExtResource("12")
