@@ -12,6 +12,7 @@ const StoryAnimatePortraitCommand := preload("res://resources/story/commands/Sto
 const StoryStopPortraitAnimationCommand := preload("res://resources/story/commands/StoryStopPortraitAnimationCommand.gd")
 const StorySequence := preload("res://resources/story/StorySequence.gd")
 const StoryCharacterHandle := preload("res://resources/story/dsl/StoryCharacterHandle.gd")
+const StoryMicroMotionCommand := preload("res://resources/story/commands/StoryMicroMotionCommand.gd")
 
 var _cast: StoryCast
 var _protagonist_id: String = ""
@@ -101,6 +102,12 @@ func band_clear_text():
 
 func hide_dialogue():
 	return StoryHideDialogueCommand.new()
+
+func micro_motion(mode: String, extra: Dictionary = {}):
+	var entry := StoryMicroMotionCommand.new()
+	entry.mode = mode
+	entry.params = extra.duplicate()
+	return entry
 
 func animate_portrait(character_id: String, portraits: Array, frame_duration: float = 0.15, loop_count: int = 0):
 	var entry := StoryAnimatePortraitCommand.new()
@@ -196,6 +203,9 @@ class _CommandCollector:
 
 	func stop_portrait_animation(character_id: String):
 		_add_command(_dsl.stop_portrait_animation(character_id))
+
+	func micro_motion(mode: String, extra: Dictionary = {}):
+		_add_command(_dsl.micro_motion(mode, extra))
 
 func get_cast() -> StoryCast:
 	return _cast
