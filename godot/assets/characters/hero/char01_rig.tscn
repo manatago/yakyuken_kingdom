@@ -1,0 +1,49 @@
+[gd_scene load_steps=5 format=3 uid="uid://b8yxmd13eea8d"]
+
+[ext_resource type="Texture2D" uid="uid://d2wpr46odx8bl" path="res://assets/characters/hero/char01_body.png" id="1_body"]
+[ext_resource type="Texture2D" uid="uid://1tn7m556vlek" path="res://assets/characters/hero/char01_head.png" id="2_head"]
+[ext_resource type="Texture2D" uid="uid://wtahebnm6d3d" path="res://assets/characters/hero/char01_arm_r.png" id="3_arm_r"]
+[ext_resource type="Texture2D" uid="uid://bgftjskso6qtc" path="res://assets/characters/hero/char01_arm_l.png" id="4_arm_l"]
+
+[node name="CharacterRig" type="Node2D"]
+position = Vector2(1087, -955)
+
+[node name="Sprites" type="Node2D" parent="."]
+
+[node name="SpriteArmR" type="Sprite2D" parent="Sprites"]
+z_index = -1
+position = Vector2(-335.5, -278)
+texture = ExtResource("3_arm_r")
+
+[node name="SpriteBody" type="Sprite2D" parent="Sprites"]
+position = Vector2(97.5, -359)
+texture = ExtResource("1_body")
+
+[node name="SpriteArmL" type="Sprite2D" parent="Sprites"]
+z_index = 1
+position = Vector2(442.5, -300)
+texture = ExtResource("4_arm_l")
+
+[node name="SpriteHead" type="Sprite2D" parent="Sprites"]
+z_index = 2
+position = Vector2(69.5, -1296)
+texture = ExtResource("2_head")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="Skeleton2D" type="Skeleton2D" parent="."]
+
+[node name="BoneSpine" type="Bone2D" parent="Skeleton2D"]
+rest = Transform2D(1, 0, 0, 1, 0, 0)
+
+[node name="BoneHead" type="Bone2D" parent="Skeleton2D/BoneSpine"]
+position = Vector2(26, -1100)
+rest = Transform2D(1, 0, 0, 1, 26, -1100)
+
+[node name="BoneArmR" type="Bone2D" parent="Skeleton2D/BoneSpine"]
+position = Vector2(-322, -883)
+rest = Transform2D(1, 0, 0, 1, -322, -883)
+
+[node name="BoneArmL" type="Bone2D" parent="Skeleton2D/BoneSpine"]
+position = Vector2(404, -882)
+rest = Transform2D(1, 0, 0, 1, 404, -882)

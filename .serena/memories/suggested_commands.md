@@ -1,0 +1,4 @@
+- Launch Godot 4.2+, open `godot/project.godot`, and run `Main.tscn` to manually verify the full battle flow.
+- For HUD/story-only debugging, run `TestDisplay.tscn` inside the Godot editor.
+- Run automated Godot tests from Windows PowerShell with `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; ./run_tests_wsl.ps1` (script wraps Godot `--headless --run TestRunner` for `godot/tests/TestRunner.gd`).
+- When preparing exports, use `Project > Export` from the Godot editor, then `Project > Tools > Reimport` before packaging assets.

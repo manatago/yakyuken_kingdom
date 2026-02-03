@@ -1,0 +1,14 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+*.md
+!README.md
+
+# IDE
+.vscode
+.idea
+
+# Godot cache (will be regenerated)
+.godot
