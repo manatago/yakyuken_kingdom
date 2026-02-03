@@ -317,16 +317,15 @@ func _on_story_sequence_finished(_sequence_id):
 func _setup_styles():
 	var style = StyleBoxFlat.new()
 	style.bg_color = Color(0, 0, 0, 0)
-	style.border_width_left = 2
-	style.border_width_top = 4 # Thicker top border to prevent cutoff
-	style.border_width_right = 2
-	style.border_width_bottom = 2
-	style.border_color = Color.WHITE
-	# Add margins so the card is inside the border
-	style.content_margin_left = 4
-	style.content_margin_top = 4
-	style.content_margin_right = 4
-	style.content_margin_bottom = 4
+	style.border_width_left = 0
+	style.border_width_top = 0
+	style.border_width_right = 0
+	style.border_width_bottom = 0
+	style.border_color = Color.TRANSPARENT
+	style.content_margin_left = 0
+	style.content_margin_top = 0
+	style.content_margin_right = 0
+	style.content_margin_bottom = 0
 
 	for slot in cpu_hand_container.get_children():
 		if slot is PanelContainer: slot.add_theme_stylebox_override("panel", style)

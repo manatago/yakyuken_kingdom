@@ -15,7 +15,11 @@ func _ready():
 		StorySequenceRuntimeTests.new(),
 		StorySceneTests.new()
 	]
-	_run_all()
+	# tree_enteredの後に非同期テストを開始
+	_start_tests.call_deferred()
+
+func _start_tests() -> void:
+	await _run_all()
 
 func _run_all() -> void:
 	var total := 0
@@ -24,7 +28,7 @@ func _run_all() -> void:
 	for suite in _suites:
 		suite.set_context(self)
 		print_rich("[color=yellow]Suite: %s[/color]" % suite.get_name())
-		var result := _run_suite(suite)
+		var result := await _run_suite(suite)
 		total += result.get("total", 0)
 		failed += result.get("failed", 0)
 	var summary := "Tests: %d, Failed: %d" % [total, failed]
@@ -44,11 +48,10 @@ func _run_suite(suite: TestSuite) -> Dictionary:
 		suite.before_each()
 		var passed := false
 		if callable.is_valid():
-			var result = callable.call()
+			var result = await _call_test(callable)
 			passed = bool(result)
 		else:
 			push_error("Invalid callable for %s" % name)
-		passed = passed and true
 		suite.after_each()
 		if passed:
 			print_rich("[color=green][PASS][/color] %s/%s" % [suite.get_name(), name])
@@ -59,3 +62,6 @@ func _run_suite(suite: TestSuite) -> Dictionary:
 		"total": suite_total,
 		"failed": suite_failed
 	}
+
+func _call_test(callable: Callable):
+	return await callable.call()

@@ -18,7 +18,7 @@ func _init() -> void:
 			"サトシ",
 			"Default",
 			{
-				"deefault": "res://assets/characters/char01-001_smile.png",
+				"Default": "res://assets/characters/char01-001_smile.png",
 				"default_smile": "res://assets/characters/char01-001_smile.png",
 				"default_surprise": "res://assets/characters/char01-002_surprise.png",
 				"default_annoyed": "res://assets/characters/char01-003_annoyed.png",

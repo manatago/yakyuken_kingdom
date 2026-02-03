@@ -1,0 +1,24 @@
+services:
+  godot:
+    build: .
+    volumes:
+      - ../godot:/project
+    working_dir: /project
+    stdin_open: true
+    tty: true
+
+  # Run tests
+  test:
+    build: .
+    volumes:
+      - ../godot:/project
+    working_dir: /project
+    command: sh -c "godot --headless --import && godot --headless --script res://tests/TestRunnerMain.gd"
+
+  # Validate project (check for errors)
+  validate:
+    build: .
+    volumes:
+      - ../godot:/project
+    working_dir: /project
+    command: godot --headless --import

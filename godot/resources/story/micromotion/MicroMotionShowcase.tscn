@@ -16,10 +16,10 @@
 
 [sub_resource type="ShaderMaterial" id="1"]
 shader = ExtResource("13")
-shader_parameter/amplitude = 6.0
+shader_parameter/amplitude = 18.0
 shader_parameter/frequency = 2.5
-shader_parameter/speed_multiplier = 1.0
-shader_parameter/vertical_scale = 2.5
+shader_parameter/speed_multiplier = 1.8
+shader_parameter/vertical_scale = 4.5
 
 [node name="MicroMotionShowcase" type="Control"]
 visible = false
@@ -110,6 +110,7 @@ position = Vector2(270, 50)
 [node name="Skeleton2D" type="Skeleton2D" parent="Samples/DeformSample"]
 
 [node name="TorsoBone" type="Bone2D" parent="Samples/DeformSample/Skeleton2D"]
+rest = Transform2D(1, 0, 0, 1, 0, 0)
 
 [node name="BodyPolygon" type="Polygon2D" parent="Samples/DeformSample/Skeleton2D/TorsoBone"]
 texture = ExtResource("7")
@@ -117,6 +118,7 @@ polygon = PackedVector2Array(-128, -256, 128, -256, 128, 256, -128, 256)
 uv = PackedVector2Array(0, 0, 1, 0, 1, 1, 0, 1)
 
 [node name="HeadBone" type="Bone2D" parent="Samples/DeformSample/Skeleton2D/TorsoBone"]
+rest = Transform2D(1, 0, 0, 1, 0, -200)
 position = Vector2(0, -200)
 
 [node name="HeadSprite" type="Sprite2D" parent="Samples/DeformSample/Skeleton2D/TorsoBone/HeadBone"]
@@ -124,6 +126,7 @@ texture = ExtResource("8")
 position = Vector2(0, -120)
 
 [node name="ArmBone" type="Bone2D" parent="Samples/DeformSample/Skeleton2D/TorsoBone"]
+rest = Transform2D(1, 0, 0, 1, 100, -50)
 position = Vector2(100, -50)
 
 [node name="ArmSprite" type="Sprite2D" parent="Samples/DeformSample/Skeleton2D/TorsoBone/ArmBone"]
@@ -131,6 +134,7 @@ texture = ExtResource("9")
 position = Vector2(80, -20)
 
 [node name="CapeBone" type="Bone2D" parent="Samples/DeformSample/Skeleton2D/TorsoBone"]
+rest = Transform2D(1, 0, 0, 1, -90, -20)
 position = Vector2(-90, -20)
 
 [node name="CapeSprite" type="Sprite2D" parent="Samples/DeformSample/Skeleton2D/TorsoBone/CapeBone"]
