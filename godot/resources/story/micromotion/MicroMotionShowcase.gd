@@ -6,6 +6,7 @@ signal action_finished
 const PROPERTY_OPEN := preload("res://assets/characters/samples/sample01-001.png")
 const PROPERTY_BLINK := preload("res://assets/characters/samples/sample01-002.png")
 const PROPERTY_TALK := preload("res://assets/characters/samples/sample01-003.png")
+const CHARACTER_RIG_SCENE := preload("res://assets/characters/hero/char01_rig.tscn")
 
 @onready var _title_label: Label = $Panel/Margin/VBox/TitleLabel
 @onready var _description_label: Label = $Panel/Margin/VBox/DescriptionLabel
@@ -37,6 +38,9 @@ const PROPERTY_TALK := preload("res://assets/characters/samples/sample01-003.png
 
 @onready var _tween_sample: Node2D = $Samples/TweenSample
 @onready var _tween_sprite: Sprite2D = $Samples/TweenSample/TweenSprite
+
+var _arm_swing_sample: Node2D = null
+var _character_rig: Node2D = null
 
 var _sample_defaults: Dictionary = {}
 var _head_default_rotation := 0.0
@@ -84,6 +88,8 @@ func _run_showcase(mode: String, params: Dictionary) -> void:
 			await _play_wind_animation()
 		"tween_transition":
 			await _play_tween_animation()
+		"arm_swing":
+			await _play_arm_swing_animation(params)
 		_:
 			await _sleep(0.5)
 	await _sleep(params.get("linger", 0.35))
@@ -114,6 +120,11 @@ func reset_samples() -> void:
 		_wind_sprite.material.set_shader_parameter("speed_multiplier", 1.0)
 		_wind_sprite.material.set_shader_parameter("frequency", 2.5)
 	_tween_sprite.modulate = Color(1, 1, 1, 1)
+	# 腕振りサンプルをリセット
+	if _arm_swing_sample:
+		_arm_swing_sample.visible = false
+	if _character_rig:
+		_character_rig.reset_arms()
 
 func _show_sample(sample_node: Node2D) -> void:
 	for node in _samples:
@@ -203,6 +214,72 @@ func _play_tween_animation() -> void:
 	await tween.finished
 	_tween_sample.position = _sample_defaults[_tween_sample].position
 	_tween_sprite.modulate = Color(1, 1, 1, 1)
+
+func _play_arm_swing_animation(params: Dictionary) -> void:
+	# CharacterRigサンプルを動的に作成
+	_ensure_arm_swing_sample()
+	if _arm_swing_sample == null or _character_rig == null:
+		await _sleep(0.5)
+		return
+
+	# 他のサンプルを非表示にし、腕振りサンプルを表示
+	for node in _samples:
+		node.visible = false
+	_arm_swing_sample.visible = true
+
+	# パラメータを取得
+	var arm: String = params.get("arm", "right")
+	var angle_min: float = params.get("angle_min", -10.0)
+	var angle_max: float = params.get("angle_max", 10.0)
+	var repeat_count: int = params.get("repeat_count", 3)
+	var duration: float = params.get("duration", 1.0)
+
+	# モードを決定
+	var mode: String = "right_only"
+	if arm == "left":
+		mode = "left_only"
+	elif arm == "both":
+		mode = "alternate"
+
+	# 腕振りを開始
+	_character_rig.start_arm_swing({
+		"angle_min": angle_min,
+		"angle_max": angle_max,
+		"duration": duration,
+		"loop": true,
+		"repeat_count": repeat_count,
+		"mode": mode,
+		"easing": "ease_in_out",
+	})
+
+	# アニメーション時間を計算して待つ
+	var total_time: float = duration * repeat_count + 0.5
+	await _sleep(total_time)
+
+	# リセット
+	_character_rig.stop_arm_swing()
+	_character_rig.reset_arms()
+	_arm_swing_sample.visible = false
+
+func _ensure_arm_swing_sample() -> void:
+	if _arm_swing_sample != null:
+		return
+
+	# サンプルノードを作成
+	_arm_swing_sample = Node2D.new()
+	_arm_swing_sample.name = "ArmSwingSample"
+	_arm_swing_sample.visible = false
+	$Samples.add_child(_arm_swing_sample)
+
+	# CharacterRigをインスタンス化
+	if CHARACTER_RIG_SCENE:
+		_character_rig = CHARACTER_RIG_SCENE.instantiate()
+		_arm_swing_sample.add_child(_character_rig)
+		# スケールを調整して画面に収まるように（キャラクターは約2000px高さ）
+		_character_rig.scale = Vector2(0.3, 0.3)
+		# キャラクターの中心がy=-500付近なので、画面中央に来るよう調整
+		# $Samplesは(640, 520)にあるので、そこからの相対位置
+		_arm_swing_sample.position = Vector2(-50, 200)
 
 func _sleep(duration: float) -> Signal:
 	return get_tree().create_timer(duration).timeout
