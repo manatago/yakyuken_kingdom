@@ -4,9 +4,9 @@ class_name DefaultStory
 const StoryCharacterResource := preload("res://resources/story/StoryCharacter.gd")
 const PrologueChapterScript := preload("res://resources/story/chapters/PrologueChapter.gd")
 const Stage1ChapterScript := preload("res://resources/story/chapters/Stage1Chapter.gd")
-const MicroMotionDemoChapterScript := preload("res://resources/story/chapters/MicroMotionDemoChapter.gd")
+const DemoChapterScript := preload("res://resources/story/chapters/DemoChapter.gd")
 
-const ENABLE_MICRO_MOTION_DEMO := true # デモが不要な場合は false にするか、_chapters から削除してください。
+const ENABLE_DEMO := true # デモが不要な場合は false にするか、_chapters から削除してください。
 
 var _chapters: Array = []
 
@@ -66,8 +66,8 @@ func _init() -> void:
 
 func _build_chapters(cast: StoryCast) -> void:
 	_chapters.clear()
-	if ENABLE_MICRO_MOTION_DEMO and MicroMotionDemoChapterScript:
-		_chapters.append(MicroMotionDemoChapterScript.new())
+	if ENABLE_DEMO and DemoChapterScript:
+		_chapters.append(DemoChapterScript.new())
 	_chapters.append(PrologueChapterScript.new())
 	_chapters.append(Stage1ChapterScript.new())
 

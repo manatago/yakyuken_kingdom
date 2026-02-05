@@ -1,37 +1,52 @@
-[gd_scene load_steps=5 format=3 uid="uid://b8yxmd13eea8d"]
+[gd_scene load_steps=6 format=3 uid="uid://b8yxmd13eea8d"]
 
 [ext_resource type="Texture2D" uid="uid://d2wpr46odx8bl" path="res://assets/characters/hero/char01_body.png" id="1_body"]
 [ext_resource type="Texture2D" uid="uid://1tn7m556vlek" path="res://assets/characters/hero/char01_head.png" id="2_head"]
 [ext_resource type="Texture2D" uid="uid://wtahebnm6d3d" path="res://assets/characters/hero/char01_arm_r.png" id="3_arm_r"]
 [ext_resource type="Texture2D" uid="uid://bgftjskso6qtc" path="res://assets/characters/hero/char01_arm_l.png" id="4_arm_l"]
+[ext_resource type="Script" uid="uid://c67tue4a6wwtd" path="res://scripts/CharacterRig.gd" id="5_script"]
 
 [node name="CharacterRig" type="Node2D"]
-position = Vector2(1087, -955)
-
-[node name="Sprites" type="Node2D" parent="."]
-
-[node name="SpriteArmR" type="Sprite2D" parent="Sprites"]
-z_index = -1
-position = Vector2(-335.5, -278)
-texture = ExtResource("3_arm_r")
-
-[node name="SpriteBody" type="Sprite2D" parent="Sprites"]
-position = Vector2(97.5, -359)
-texture = ExtResource("1_body")
-
-[node name="SpriteArmL" type="Sprite2D" parent="Sprites"]
-z_index = 1
-position = Vector2(442.5, -300)
-texture = ExtResource("4_arm_l")
-
-[node name="SpriteHead" type="Sprite2D" parent="Sprites"]
-z_index = 2
-position = Vector2(69.5, -1296)
-texture = ExtResource("2_head")
+script = ExtResource("5_script")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 
 [node name="Skeleton2D" type="Skeleton2D" parent="."]
+
+[node name="PolygonArmR" type="Polygon2D" parent="Skeleton2D"]
+position = Vector2(-295, -893)
+texture = ExtResource("3_arm_r")
+skeleton = NodePath("..")
+polygon = PackedVector2Array(11, -124, -57, -50, -94, 84, -130, 492, -149, 578, -158, 706, -158, 706, -164, 921, -146, 1058, -149, 1184, -115, 1285, -51, 1328, -5, 1313, 14, 1255, -35, 1178, -20, 1052, 23, 924, 29, 810, 75, 458, 99, 164, 103, -57)
+uv = PackedVector2Array(207.61897, -16.531797, 118.316055, 72.68457, 81.316055, 206.68457, 45.316055, 614.6846, 26.316055, 700.6846, 17.316055, 828.6846, 17.316055, 828.6846, 11.316055, 1043.6846, 29.316055, 1180.6846, 26.316055, 1306.6846, 60.316055, 1407.6846, 124.316055, 1450.6846, 170.31606, 1435.6846, 189.31606, 1377.6846, 140.31606, 1300.6846, 155.31606, 1174.6846, 195.27278, 1061.9009, 204.31606, 932.6846, 268.57568, 580.6846, 329.09497, 289.72784, 299.61896, 44.381653)
+bones = ["BoneSpine", PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), "BoneSpine/BoneHead", PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), "BoneSpine/BoneArmR", PackedFloat32Array(0.5, 0.5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.5), "BoneSpine/BoneArmL", PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)]
+
+[node name="PolygonBody" type="Polygon2D" parent="Skeleton2D"]
+z_index = 1
+position = Vector2(97.5, -359)
+texture = ExtResource("1_body")
+skeleton = NodePath("..")
+polygon = PackedVector2Array(-384.5, 810, -381.5, 366, -405.5, 311, -359.5, -81, -369.5, -247, -430.5, -602, -329.5, -669, -274.5, -740, -142.5, -798, 90.5, -804, 243.5, -764, 295.5, -685, 307.5, -587, 283.5, 54, 271.5, 188, 295.5, 280, 286.5, 384, 289.5, 813)
+uv = PackedVector2Array(18.938982, 1669.6827, 27.44235, 1258.7029, 3.44235, 1203.7029, 49.442356, 811.703, 22.932255, 618.1862, -21.55765, 290.70294, 79.44236, 223.70294, 145.44908, 86.662544, 277.47803, 34.136967, 502.1796, 25.4287, 635.93225, 84.67599, 792.4962, 262.73657, 815.5029, 454.29382, 730.9659, 710.0582, 674.93896, 987.14575, 704.4423, 1172.7029, 695.4423, 1276.7029, 659.91876, 1672.6827)
+bones = ["BoneSpine", PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1), "BoneSpine/BoneHead", PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), "BoneSpine/BoneArmR", PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), "BoneSpine/BoneArmL", PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)]
+
+[node name="PolygonArmL" type="Polygon2D" parent="Skeleton2D"]
+z_index = 2
+position = Vector2(404, -882)
+texture = ExtResource("4_arm_l")
+skeleton = NodePath("..")
+polygon = PackedVector2Array(20, -159, 84, -107, 155, 123, 222, 635, 201, 938, 164, 1073, 161, 1205, 121, 1287, 32, 1342, -32, 1352, -38, 1223, -11, 1094, 23, 1033, 11, 941, -2, 901, 1, 684, -97, 264, -78, -36)
+uv = PackedVector2Array(87.50078, -7.0256996, 231.2084, 63.95231, 287.026, 320.5215, 361.6172, 821.1347, 340.6172, 1108.9524, 303.6172, 1243.9524, 308.2084, 1375.9524, 268.2084, 1457.9524, 179.2084, 1512.9524, 115.208405, 1522.9524, 109.208405, 1393.9524, 136.2084, 1264.9524, 170.2084, 1203.9524, 158.2084, 1111.9524, 145.2084, 1071.9524, 138.7194, 832.17865, 2.7633858, 357.1425, 4.683182, 131.15671)
+bones = ["BoneSpine", PackedFloat32Array(0.51, 0.51, 0.51, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.51, 0.51), "BoneSpine/BoneHead", PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), "BoneSpine/BoneArmR", PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), "BoneSpine/BoneArmL", PackedFloat32Array(0.73, 0.73, 0.52, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0.73, 0.73)]
+
+[node name="PolygonHead" type="Polygon2D" parent="Skeleton2D"]
+z_index = 3
+position = Vector2(69.5, -1296)
+texture = ExtResource("2_head")
+skeleton = NodePath("..")
+polygon = PackedVector2Array(-322.5, 240, -230.5, 170, -123.5, 136, -187.5, 44, -261.5, -51, -310.5, -235, -230.5, -391, -43.5, -489, 149.5, -443, 265.5, -281, 268.5, -79, 152.5, 81, 118.5, 127, 274.5, 170, 375.5, 286, 265.5, 405, 130.5, 479, -34.5, 534, -157.5, 522, -239.5, 451, -328.5, 338)
+uv = PackedVector2Array(55.78131, 734.4464, 147.78131, 664.4464, 254.78131, 630.4464, 190.78131, 538.4464, 116.78131, 443.44644, 67.78131, 259.44644, 147.78131, 103.44644, 334.7813, 5.4464417, 527.7813, 51.44644, 643.7813, 213.44644, 646.7813, 415.44644, 530.7813, 575.4464, 496.7813, 621.4464, 652.7813, 664.4464, 753.7813, 780.4464, 643.7813, 899.4464, 508.7813, 967.4892, 367.61005, 983.7675, 238.65286, 974.7461, 132.82411, 933.53204, 5.102413, 805.6391)
+bones = ["BoneSpine", PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1), "BoneSpine/BoneHead", PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), "BoneSpine/BoneArmR", PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), "BoneSpine/BoneArmL", PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)]
 
 [node name="BoneSpine" type="Bone2D" parent="Skeleton2D"]
 rest = Transform2D(1, 0, 0, 1, 0, 0)
@@ -41,9 +56,10 @@ position = Vector2(26, -1100)
 rest = Transform2D(1, 0, 0, 1, 26, -1100)
 
 [node name="BoneArmR" type="Bone2D" parent="Skeleton2D/BoneSpine"]
-position = Vector2(-322, -883)
-rest = Transform2D(1, 0, 0, 1, -322, -883)
+position = Vector2(-295, -893)
+rest = Transform2D(1, 0, 0, 1, -295, -893)
 
 [node name="BoneArmL" type="Bone2D" parent="Skeleton2D/BoneSpine"]
 position = Vector2(404, -882)
+rotation = -0.045378562
 rest = Transform2D(1, 0, 0, 1, 404, -882)

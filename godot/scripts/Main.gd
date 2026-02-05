@@ -216,10 +216,10 @@ func get_battle_background_path() -> String:
 # --- SCENARIO & STAGES ---
 
 func scenario():
-	# Play the prologue and jump straight into the first card battle
-	var micro_motion_sequence := story_script.get_sequence("micro_motion_demo")
-	if micro_motion_sequence:
-		await story_scene_instance.play_sequence(micro_motion_sequence, {"id": "micro_motion_demo"})
+	# Play the demo and jump straight into the first card battle
+	var demo_sequence := story_script.get_sequence("demo")
+	if demo_sequence:
+		await story_scene_instance.play_sequence(demo_sequence, {"id": "demo"})
 
 	await _play_stage("prologue", MAX_TURNS, "stage1_win")
 
