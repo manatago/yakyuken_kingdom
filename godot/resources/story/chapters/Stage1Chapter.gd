@@ -51,7 +51,7 @@ func _build_battle_draw(b):
 
 	hero.appear({"side": "left"})
 	matilda.appear({"side": "right"})
-	matilda.say("おっと、気が合うじゃないか！　あいこだ。もう一度勝負だよ！")
+	matilda.say("おっと、気が合いますね！　あいこです。もう一度、勝負しましょう！")
 	hero.say("そう簡単には譲らないさ。", {"portrait": "Isekai"})
 
 func _build_battle_win(b):
@@ -60,7 +60,7 @@ func _build_battle_win(b):
 
 	hero.appear({"side": "left"})
 	matilda.appear({"side": "right"})
-	matilda.say("くっ……やるじゃないか！　私の読みが外れるなんて……次は負けないよ！")
+	matilda.say("くっ……やりましたね！　私の読みが外れるなんて……次は負けませんよ！")
 	hero.say("この調子で畳みかける。", {"portrait": "Isekai"})
 
 func _build_battle_lose(b):
@@ -69,5 +69,5 @@ func _build_battle_lose(b):
 
 	hero.appear({"side": "left"})
 	matilda.appear({"side": "right"})
-	matilda.say("あらあら、残念だったね。私の勝ちさ。もっと修行して出直してきな。")
+	matilda.say("あらあら、残念でしたね。私の勝ちです！　もっと修行して出直してきてくださいね。")
 	hero.say("まだまだこれからだ……！", {"portrait": "Isekai"})
