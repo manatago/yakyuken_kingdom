@@ -19,13 +19,15 @@ func _build_intro(b):
 	b.background("res://assets/backgrounds/bg06_prison_arena.png", 0.5)
 	hero.appear({"side": "left"})
 	matilda.appear({"side": "right"})
-	matilda.say("さあ、ここで勝負だ。ルールは単純だよ。お互いカードを出し合って、負けたほうが一枚脱ぐ。先に全部剥がされたほうが負けさ。")
-	hero.say("つまり、じゃんけんで脱がせ合い……やっぱり野球拳じゃないか。", {"portrait": "Isekai"})
-	matilda.say("だからヤキュウケンは知らないって。あんたの手札は、さっきの基本デッキ5枚だ。グー・チョキ・パーの相性はわかるね？")
-	hero.say("そのくらい子供でも知ってるさ。", {"portrait": "Isekai"})
-	matilda.say("ふふ、チップを入れたばかりなのに余裕の顔だね。でもね、実戦はただの確率じゃない。相手の手の癖を読み、裏をかく駆け引きさ。")
-	hero.say("駆け引き……まさに俺の専門だ。数学オタクをなめるなよ。", {"portrait": "Isekai"})
-	matilda.say("じゃあ見せてもらおうか。異世界野球拳、始め！")
+	hero.say("こぢんまりしてるけど、観客の視線が熱いな。王都の野球拳熱は本物か。", {"portrait": "Isekai"})
+	matilda.say("ここが牢前の闘技スペース。床の白い円の中から出たら反則負けだよ。")
+	matilda.say("ルールは単純。お互いのカード九枚で三本勝負。負けたら一枚脱ぎ、四枚剥けたら敗北。あんたが勝てばギルド通りの通行証を出す。")
+	hero.say("そっちが看守なら、当然カード運用にも慣れてるんだろ？", {"portrait": "Isekai"})
+	matilda.say("私は門番、つまりここを抜ける冒険者の尺度。手加減はしない。牢抜け新人に情けをかけたら、外で即死するからね。")
+	hero.say("望むところ。さっそく初期デッキ十五枚の中から、勝率が高い並びを組んでみた。", {"portrait": "Isekai"})
+	matilda.say("ふふ、数値化スキルを手に入れたばかりなのに、もう余裕の笑みか。だったらしばらく数字に振り回されてな。")
+	hero.say("俺は数学オタクだぞ？　数字は親友だ。", {"portrait": "Isekai"})
+	matilda.say("じゃあ、初戦だ。異世界野球拳、始め！")
 
 func _build_win(b):
 	var hero: StoryCharacterHandle = b.character("main")
@@ -34,12 +36,14 @@ func _build_win(b):
 	b.background("res://assets/backgrounds/bg06_prison_arena.png", 0.5)
 	hero.appear({"side": "left"})
 	matilda.appear({"side": "right"})
-	matilda.say("……やるじゃないか。本当に数学で勝率を上げるなんてね。ちょっと信じられないよ。")
-	hero.say("理論は裏切らないのさ。", {"portrait": "Isekai"})
-	matilda.say("はいはい。約束通り、あんたを出してやるよ。外ではこれを持ちなさい。最低限の装備だ。")
-	hero.say("……パンツ一枚？　HPが1って、つまり一回負けたら全裸ってことか。", {"portrait": "Isekai"})
-	matilda.say("贅沢言うんじゃないよ。タダで出してやるだけありがたいと思いな。ギルド通りに出たら、まずは冒険者ギルドで登録することだ。")
-	hero.say("みのり、心配すんな。俺はたぶん、正しい場所に来たみたいだ。", {"portrait": "Isekai"})
+	matilda.say("くっ……本当に勝っちまうとはね。運値の差を読み切って、あっという間に四枚剥がされたよ。")
+	hero.say("約束通り、外へ出してもらう。", {"portrait": "Isekai"})
+	matilda.say("わかった。これがギルド通りの通行証。それと、牢番特製のカードケース。落とすんじゃないよ。")
+	hero.say("サンキュー。あんたのカード運用、いいデータになった。", {"portrait": "Isekai"})
+	matilda.say("次に会う時は門番じゃなく観客として応援してやるさ。だけど油断するな。ギルドで待ってる連中は、私とは比べものにならないよ。")
+	hero.say("そっちも鍛えておけよ。どうせまた勝負するんだろ？", {"portrait": "Isekai"})
+	matilda.say("ああ、今度は王都の中央アリーナでね。さっさと四天王への道を切り開いてきな。")
+	hero.say("了解。異世界野球拳ロード、始まったばかりだ。", {"portrait": "Isekai"})
 
 func _build_battle_draw(b):
 	var hero: StoryCharacterHandle = b.character("main")
@@ -47,7 +51,7 @@ func _build_battle_draw(b):
 
 	hero.appear({"side": "left"})
 	matilda.appear({"side": "right"})
-	matilda.say("おっと、気が合うじゃないか！　あいこだ。もう一度勝負だよ！")
+	matilda.say("おっと、気が合いますね！　あいこです。もう一度、勝負しましょう！")
 	hero.say("そう簡単には譲らないさ。", {"portrait": "Isekai"})
 
 func _build_battle_win(b):
@@ -56,7 +60,7 @@ func _build_battle_win(b):
 
 	hero.appear({"side": "left"})
 	matilda.appear({"side": "right"})
-	matilda.say("くっ……やるじゃないか！　私の読みが外れるなんて……次は負けないよ！")
+	matilda.say("くっ……やりましたね！　私の読みが外れるなんて……次は負けませんよ！")
 	hero.say("この調子で畳みかける。", {"portrait": "Isekai"})
 
 func _build_battle_lose(b):
@@ -65,5 +69,5 @@ func _build_battle_lose(b):
 
 	hero.appear({"side": "left"})
 	matilda.appear({"side": "right"})
-	matilda.say("あらあら、残念だったね。私の勝ちさ。もっと修行して出直してきな。")
+	matilda.say("あらあら、残念でしたね。私の勝ちです！　もっと修行して出直してきてくださいね。")
 	hero.say("まだまだこれからだ……！", {"portrait": "Isekai"})
