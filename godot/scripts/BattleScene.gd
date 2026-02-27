@@ -41,6 +41,8 @@ const PANEL_THEMES = {
 		"inner_bg": Color(0.1, 0.11, 0.16, 0.9),
 		"inner_border": Color(0.7, 0.73, 0.78, 0.7),
 	},
+	
+	
 }
 
 # === カード設定 ===

@@ -25,6 +25,15 @@ signal advance_requested
 @onready var left_char_default_pos: Vector2 = left_char.position
 @onready var center_char_default_pos: Vector2 = center_char.position
 @onready var right_char_default_pos: Vector2 = right_char.position
+@onready var _left_char_default_offset_left: float = left_char.offset_left
+@onready var _left_char_default_offset_right: float = left_char.offset_right
+@onready var _left_char_default_offset_top: float = left_char.offset_top
+@onready var _right_char_default_offset_left: float = right_char.offset_left
+@onready var _right_char_default_offset_right: float = right_char.offset_right
+@onready var _right_char_default_offset_top: float = right_char.offset_top
+@onready var _center_char_default_offset_left: float = center_char.offset_left
+@onready var _center_char_default_offset_right: float = center_char.offset_right
+@onready var _center_char_default_offset_top: float = center_char.offset_top
 @onready var dialogue_band := $DialogueBand
 @onready var dialogue_band_speaker := $DialogueBand/VBox/SpeakerLabel
 @onready var dialogue_band_body := $DialogueBand/VBox/BodyLabel
@@ -170,12 +179,27 @@ func _show_character(character_data: StoryCharacter, portrait_name: String, side
 	target_rect.texture = tex
 	target_rect.visible = true
 	if not was_visible:
-		_reset_character_transform(target_rect)
+		target_rect.modulate = Color.WHITE
+		target_rect.scale = Vector2.ONE
+		target_rect.pivot_offset = Vector2.ZERO
+	# Always reset offsets to defaults, then recompute position and display adjustments.
+	# This ensures display_scale and display_offset_y are applied consistently
+	# regardless of prior position overrides.
+	_reset_rect_width(target_rect)
 	var character_id := character_data.id if character_data else ""
 	var target_pos := _resolve_character_position(character_id, side, position_mode, position_value)
-	var has_position_override := not position_mode.strip_edges().is_empty()
-	if not was_visible or has_position_override:
-		target_rect.position = target_pos
+	# Apply position as offset delta instead of setting position directly.
+	# Setting Control.position recalculates ALL four offsets (including offset_bottom),
+	# which causes height to shrink on each call due to offset_bottom accumulation.
+	var default_pos := _default_side_position(side)
+	var pos_delta := target_pos - default_pos
+	if not pos_delta.is_zero_approx():
+		target_rect.offset_left += pos_delta.x
+		target_rect.offset_top += pos_delta.y
+	var char_scale: float = character_data.display_scale if character_data else 1.0
+	_apply_display_scale(target_rect, char_scale)
+	var char_offset_y: float = character_data.display_offset_y if character_data else 0.0
+	_apply_display_offset_y(target_rect, char_offset_y)
 	if character_data and not character_data.id.is_empty():
 		if not _suppress_animation_reset:
 			_stop_portrait_animation_by_id(character_data.id)
@@ -231,26 +255,36 @@ func _apply_character_exit_effect(target_rect: TextureRect, entry: StoryHideChar
 	var distance := entry.exit_distance
 	if distance <= 0.0:
 		distance = 200.0
-	var end_pos := default_pos
+	# Use offset-based animation to preserve display_scale adjustments.
+	var offset_delta_x: float = 0.0
+	var offset_delta_y: float = 0.0
 	match direction:
 		"left":
-			end_pos.x = default_pos.x - distance
+			offset_delta_x = -distance
 		"right":
-			end_pos.x = default_pos.x + distance
+			offset_delta_x = distance
 		"up", "top":
-			end_pos.y = default_pos.y - distance
+			offset_delta_y = -distance
 		"down", "bottom":
-			end_pos.y = default_pos.y + distance
+			offset_delta_y = distance
 		_:
 			pass
+	var end_offset_left: float = target_rect.offset_left + offset_delta_x
+	var end_offset_top: float = target_rect.offset_top + offset_delta_y
 	if effect == "slide":
-		tween.tween_property(target_rect, "position", end_pos, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+		if not is_zero_approx(offset_delta_x):
+			tween.tween_property(target_rect, "offset_left", end_offset_left, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+		if not is_zero_approx(offset_delta_y):
+			tween.parallel().tween_property(target_rect, "offset_top", end_offset_top, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 		tween.finished.connect(func():
 			_hide_character_control(target_rect, side, character_id))
 		_register_character_tween(target_rect, tween)
 		return tween
 	elif effect == "fade_slide":
-		tween.tween_property(target_rect, "position", end_pos, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+		if not is_zero_approx(offset_delta_x):
+			tween.tween_property(target_rect, "offset_left", end_offset_left, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+		if not is_zero_approx(offset_delta_y):
+			tween.parallel().tween_property(target_rect, "offset_top", end_offset_top, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 		tween.parallel().tween_property(target_rect, "modulate:a", 0.0, duration)
 		tween.finished.connect(func():
 			_hide_character_control(target_rect, side, character_id))
@@ -370,12 +404,58 @@ func _reset_character_transform(target_rect: Control):
 	target_rect.modulate = Color.WHITE
 	target_rect.scale = Vector2.ONE
 	target_rect.pivot_offset = Vector2.ZERO
+	_reset_rect_width(target_rect)
 	if target_rect == right_char:
 		target_rect.position = right_char_default_pos
 	elif target_rect == center_char:
 		target_rect.position = center_char_default_pos
 	else:
 		target_rect.position = left_char_default_pos
+
+func _apply_display_scale(target_rect: Control, scale_factor: float) -> void:
+	if scale_factor <= 0.0 or is_equal_approx(scale_factor, 1.0):
+		return
+	# Compute extra width as delta from default rect width.
+	# Expand directionally to avoid screen-edge clipping:
+	#   RightChar: expand leftward only (right edge stays fixed)
+	#   LeftChar:  expand rightward only (left edge stays fixed)
+	#   CenterChar: expand symmetrically
+	var default_width: float
+	if target_rect == left_char:
+		default_width = _left_char_default_offset_right - _left_char_default_offset_left
+	elif target_rect == right_char:
+		default_width = _right_char_default_offset_right - _right_char_default_offset_left
+	elif target_rect == center_char:
+		default_width = _center_char_default_offset_right - _center_char_default_offset_left
+	else:
+		return
+	var extra_width: float = default_width * (scale_factor - 1.0)
+	if target_rect == right_char:
+		target_rect.offset_left -= extra_width
+	elif target_rect == left_char:
+		target_rect.offset_right += extra_width
+	else:
+		target_rect.offset_left -= extra_width / 2.0
+		target_rect.offset_right += extra_width / 2.0
+
+func _reset_rect_width(target_rect: Control) -> void:
+	if target_rect == left_char:
+		target_rect.offset_left = _left_char_default_offset_left
+		target_rect.offset_right = _left_char_default_offset_right
+		target_rect.offset_top = _left_char_default_offset_top
+	elif target_rect == right_char:
+		target_rect.offset_left = _right_char_default_offset_left
+		target_rect.offset_right = _right_char_default_offset_right
+		target_rect.offset_top = _right_char_default_offset_top
+	elif target_rect == center_char:
+		target_rect.offset_left = _center_char_default_offset_left
+		target_rect.offset_right = _center_char_default_offset_right
+		target_rect.offset_top = _center_char_default_offset_top
+
+func _apply_display_offset_y(target_rect: Control, offset_y: float) -> void:
+	if is_zero_approx(offset_y):
+		return
+	target_rect.offset_top += offset_y
 
 func _cancel_character_tween(target_rect: TextureRect):
 	if target_rect == null:
@@ -526,36 +606,49 @@ func _apply_character_entry_effect(target_rect: TextureRect, entry: StoryShowCha
 	var distance := entry.appear_distance
 	if distance <= 0.0:
 		distance = 200.0
-	var start_pos := default_pos
+	# Use offset-based animation instead of position-based.
+	# Setting Control.position recalculates ALL four offsets, which destroys
+	# display_scale and display_offset_y adjustments applied by _show_character.
+	var end_offset_left: float = target_rect.offset_left
+	var end_offset_top: float = target_rect.offset_top
+	var offset_delta_x: float = 0.0
+	var offset_delta_y: float = 0.0
 	match direction:
 		"left":
-			start_pos.x = default_pos.x - distance
+			offset_delta_x = -distance
 		"right":
-			start_pos.x = default_pos.x + distance
+			offset_delta_x = distance
 		"up", "top":
-			start_pos.y = default_pos.y - distance
+			offset_delta_y = -distance
 		"down", "bottom":
-			start_pos.y = default_pos.y + distance
+			offset_delta_y = distance
 		_:
 			pass
 	if effect == "slide":
 		var tween := create_tween()
-		target_rect.position = start_pos
-		tween.tween_property(target_rect, "position", default_pos, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		target_rect.offset_left = end_offset_left + offset_delta_x
+		target_rect.offset_top = end_offset_top + offset_delta_y
+		if not is_zero_approx(offset_delta_x):
+			tween.tween_property(target_rect, "offset_left", end_offset_left, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		if not is_zero_approx(offset_delta_y):
+			tween.parallel().tween_property(target_rect, "offset_top", end_offset_top, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 		_register_character_tween(target_rect, tween)
 	elif effect == "fade_slide":
 		var tween := create_tween()
-		target_rect.position = start_pos
+		target_rect.offset_left = end_offset_left + offset_delta_x
+		target_rect.offset_top = end_offset_top + offset_delta_y
 		target_rect.modulate = Color(1, 1, 1, 0)
-		tween.tween_property(target_rect, "position", default_pos, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		if not is_zero_approx(offset_delta_x):
+			tween.tween_property(target_rect, "offset_left", end_offset_left, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		if not is_zero_approx(offset_delta_y):
+			tween.parallel().tween_property(target_rect, "offset_top", end_offset_top, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 		tween.parallel().tween_property(target_rect, "modulate:a", 1.0, duration)
 		_register_character_tween(target_rect, tween)
 	elif effect == "grow" or effect == "fade_grow":
 		# Already handled earlier
 		pass
 	else:
-		# Unknown effect; snap to default
-		target_rect.position = default_pos
+		# Unknown effect; keep current offsets (display adjustments intact)
 		target_rect.modulate = Color.WHITE
 
 func apply_band_command(entry: StoryBandCommand):
