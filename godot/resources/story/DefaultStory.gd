@@ -16,11 +16,17 @@ func _init() -> void:
 		_character("main", "サトシ",
 			"res://assets/characters/char01-001_smile.png", {}),
 		_character("heroine", "みのり",
-			"res://assets/characters/char02-1_childhood_friend.png", {}, "", 1.45, 40.0),
+			"res://assets/characters/char02-1_childhood_friend.png", {}),
 		_character("guard", "番兵",
 			"res://assets/characters/char03-1_guard.png", {}),
 		_character("matilda", "マチルダ",
-			"res://assets/characters/char04-1_prison_guard.png", {})
+			"res://assets/characters/char04-1_prison_guard.png", {}),
+		_character("receptionist", "受付嬢",
+			"", {}),
+		_character("passerby_male", "通行人の男性",
+			"", {}),
+		_character("passerby_female", "通行人の女性",
+			"", {})
 	])
 	set_cast(cast)
 

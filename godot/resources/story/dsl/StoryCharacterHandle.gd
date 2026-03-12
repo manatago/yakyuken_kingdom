@@ -46,8 +46,19 @@ func stay_left():
 func stay_right():
 	return _record(_dsl.show_character(_character_id, {"side": "right"}))
 
-func set_portrait(portrait_id: String):
-	return _record(_dsl.show_character(_character_id, {"portrait": portrait_id}))
+func set_portrait(portrait_id: String, scale: float = 0.0, duration: float = 0.3, position: Variant = null, transition: String = "cross_fade", flip: int = -1):
+	var opts := {"portrait": portrait_id}
+	if scale > 0.0:
+		opts["portrait_scale"] = scale
+	if position != null and position is Vector2:
+		opts["position_mode"] = "offset"
+		opts["position"] = position
+	if not transition.is_empty() and duration > 0.0:
+		opts["transition"] = transition
+		opts["transition_duration"] = duration
+	if flip >= 0:
+		opts["flip"] = flip
+	return _record(_dsl.show_character(_character_id, opts))
 
 func animate_portrait(portrait_ids: Array, frame_duration: float = 0.15, loop_count: int = 0):
 	return _record(_dsl.animate_portrait(_character_id, portrait_ids, frame_duration, loop_count))

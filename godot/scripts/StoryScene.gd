@@ -22,21 +22,17 @@ signal advance_requested
 @onready var left_bubble_default_pos: Vector2 = left_bubble.position
 @onready var center_bubble_default_pos: Vector2 = center_bubble.position
 @onready var right_bubble_default_pos: Vector2 = right_bubble.position
-@onready var left_char_default_pos: Vector2 = left_char.position
-@onready var center_char_default_pos: Vector2 = center_char.position
-@onready var right_char_default_pos: Vector2 = right_char.position
-@onready var _left_char_default_offset_left: float = left_char.offset_left
-@onready var _left_char_default_offset_right: float = left_char.offset_right
-@onready var _left_char_default_offset_top: float = left_char.offset_top
-@onready var _right_char_default_offset_left: float = right_char.offset_left
-@onready var _right_char_default_offset_right: float = right_char.offset_right
-@onready var _right_char_default_offset_top: float = right_char.offset_top
-@onready var _center_char_default_offset_left: float = center_char.offset_left
-@onready var _center_char_default_offset_right: float = center_char.offset_right
-@onready var _center_char_default_offset_top: float = center_char.offset_top
+const _CHAR_MARGIN := 100.0
 @onready var dialogue_band := $DialogueBand
 @onready var dialogue_band_speaker := $DialogueBand/VBox/SpeakerLabel
 @onready var dialogue_band_body := $DialogueBand/VBox/BodyLabel
+@onready var dialogue_band_left := $DialogueBand/InnerLeft
+@onready var dialogue_band_left_speaker := $DialogueBand/SpeakerLabelLeft
+@onready var dialogue_band_left_body := $DialogueBand/InnerLeft/BodyLabel
+@onready var dialogue_band_right := $DialogueBand/InnerRight
+@onready var dialogue_band_right_speaker := $DialogueBand/SpeakerLabelRight
+@onready var dialogue_band_right_body := $DialogueBand/InnerRight/BodyLabel
+@onready var _menu_bar := $DialogueBand/MenuBar
 @onready var background_rect := $Background
 @onready var background_next_rect := $BackgroundNext
 
@@ -45,9 +41,11 @@ var _texture_cache: Dictionary = {}
 var _sequence_playing := false
 var _waiting_for_input := false
 var _current_sequence_id := ""
+var _current_sequence: StorySequence = null
 var _character_side_cache: Dictionary = {}
 var _character_position_cache: Dictionary = {}
 var _character_portrait_cache: Dictionary = {}
+var _character_portrait_scale_cache: Dictionary = {}
 var _active_character_tweens: Dictionary = {}
 var _pending_signal_relays: Array = []
 var _portrait_animation_data: Dictionary = {}
@@ -67,6 +65,7 @@ func _ready():
 	center_bubble.visible = false
 	right_bubble.visible = false
 	_ensure_micro_motion_showcase()
+	_menu_bar.get_node("SkipButton").pressed.connect(_on_skip_pressed)
 
 func _unhandled_input(event):
 	if not _waiting_for_input:
@@ -86,12 +85,14 @@ func play_sequence(sequence: StorySequence, metadata: Dictionary = {}):
 	if sequence == null:
 		return
 	_sequence_playing = true
+	_current_sequence = sequence
 	var resolved_id: String = metadata.get("id", sequence.id)
 	_current_sequence_id = resolved_id
 	sequence_started.emit(resolved_id)
 	await sequence.play(self)
 	_hide_bubbles()
 	_current_sequence_id = ""
+	_current_sequence = null
 	_sequence_playing = false
 	sequence_finished.emit(resolved_id)
 
@@ -144,6 +145,62 @@ func _trigger_advance():
 	_waiting_for_input = false
 	advance_requested.emit()
 
+func _trigger_skip_advance():
+	_cleanup_for_skip()
+	_waiting_for_input = false
+	advance_requested.emit()
+
+func _on_skip_pressed():
+	if _current_sequence:
+		_current_sequence.skip_to_next_background()
+		_cleanup_for_skip()
+		_trigger_advance()
+
+func _cleanup_for_skip():
+	# 全アクティブtweenを即座に停止
+	for rect in _active_character_tweens.keys():
+		var tween = _active_character_tweens[rect]
+		if tween:
+			tween.kill()
+	_active_character_tweens.clear()
+
+	# キャラクターを非表示にしてリセット
+	for rect in [left_char, center_char, right_char]:
+		rect.visible = false
+		rect.modulate = Color.WHITE
+		rect.scale = Vector2.ONE
+		rect.pivot_offset = Vector2.ZERO
+
+	# クロスフェードのスナップショットを削除（動的に追加されたTextureRectのみ）
+	var known_rects := [left_char, center_char, right_char, background_rect, background_next_rect]
+	for child in get_children():
+		if child == null:
+			continue
+		if child is TextureRect and child not in known_rects and child.owner == null:
+			child.queue_free()
+
+	# 背景フェードを即座に完了
+	if background_next_rect.visible:
+		background_rect.texture = background_next_rect.texture
+		background_rect.modulate = Color.WHITE
+		background_next_rect.visible = false
+		background_next_rect.modulate = Color(1, 1, 1, 0)
+
+	# 吹き出し・バンドテキストをクリア
+	_hide_bubbles()
+	_hide_inner_bands()
+
+	# ポートレイトアニメーション停止
+	var anim_ids := _portrait_animation_timers.keys().duplicate()
+	for char_id in anim_ids:
+		_stop_portrait_animation_by_id(char_id)
+
+	# キャラクターキャッシュをクリア
+	_character_side_cache.clear()
+	_character_position_cache.clear()
+	_character_portrait_cache.clear()
+	_character_portrait_scale_cache.clear()
+
 
 func _ensure_micro_motion_showcase() -> void:
 	if _micro_motion_showcase:
@@ -156,7 +213,7 @@ func _ensure_micro_motion_showcase() -> void:
 	_micro_motion_showcase.visible = false
 
 
-func _show_character(character_data: StoryCharacter, portrait_name: String, side: String, position_mode: String = "", position_value: Vector2 = Vector2.ZERO):
+func _show_character(character_data: StoryCharacter, portrait_name: String, side: String, position_mode: String = "", position_value: Vector2 = Vector2.ZERO, portrait_scale: float = 0.0):
 	var resolved_portrait := portrait_name
 	if resolved_portrait.is_empty():
 		if not character_data.id.is_empty() and _character_portrait_cache.has(character_data.id):
@@ -180,31 +237,33 @@ func _show_character(character_data: StoryCharacter, portrait_name: String, side
 	target_rect.visible = true
 	if not was_visible:
 		target_rect.modulate = Color.WHITE
-		target_rect.scale = Vector2.ONE
-		target_rect.pivot_offset = Vector2.ZERO
-	# Always reset offsets to defaults, then recompute position and display adjustments.
-	# This ensures display_scale and display_offset_y are applied consistently
-	# regardless of prior position overrides.
-	_reset_rect_width(target_rect)
+	# 1. Resolve scale
 	var character_id := character_data.id if character_data else ""
-	var target_pos := _resolve_character_position(character_id, side, position_mode, position_value)
-	# Apply position as offset delta instead of setting position directly.
-	# Setting Control.position recalculates ALL four offsets (including offset_bottom),
-	# which causes height to shrink on each call due to offset_bottom accumulation.
-	var default_pos := _default_side_position(side)
-	var pos_delta := target_pos - default_pos
-	if not pos_delta.is_zero_approx():
-		target_rect.offset_left += pos_delta.x
-		target_rect.offset_top += pos_delta.y
-	var char_scale: float = character_data.display_scale if character_data else 1.0
-	_apply_display_scale(target_rect, char_scale)
+	if portrait_scale > 0.0:
+		if not character_id.is_empty():
+			_character_portrait_scale_cache[character_id] = portrait_scale
+	var char_scale: float
+	if portrait_scale > 0.0:
+		char_scale = portrait_scale
+	elif not character_id.is_empty() and _character_portrait_scale_cache.has(character_id):
+		char_scale = _character_portrait_scale_cache[character_id]
+	else:
+		char_scale = character_data.display_scale if character_data else 1.0
+	# 2. Apply scale, then compute position from visual size
+	_reset_rect_with_scale(target_rect, side, char_scale)
+	# 3. Resolve position offset
+	var base_pos := target_rect.position
+	var target_pos := _resolve_character_position(character_id, side, position_mode, position_value, base_pos)
+	if not target_pos.is_equal_approx(base_pos):
+		target_rect.position = target_pos
+	# 4. Apply display_offset_y
 	var char_offset_y: float = character_data.display_offset_y if character_data else 0.0
 	_apply_display_offset_y(target_rect, char_offset_y)
 	if character_data and not character_data.id.is_empty():
 		if not _suppress_animation_reset:
 			_stop_portrait_animation_by_id(character_data.id)
 		_character_side_cache[character_data.id] = side
-		_character_position_cache[character_data.id] = target_pos
+		_character_position_cache[character_data.id] = target_pos - base_pos
 		_character_portrait_cache[character_data.id] = resolved_portrait
 	return target_rect
 
@@ -213,7 +272,8 @@ func hide_character_entry(entry: StoryHideCharacterCommand):
 	var target_rect := _get_rect_for_side(side)
 	if not target_rect:
 		return null
-	var target_pos: Vector2 = _character_position_cache.get(entry.character_id, _default_side_position(side))
+	var pos_offset: Vector2 = _character_position_cache.get(entry.character_id, Vector2.ZERO)
+	var target_pos: Vector2 = _default_side_position(side) + pos_offset
 	var tween := _apply_character_exit_effect(target_rect, entry, side, entry.character_id, target_pos)
 	if tween:
 		if entry.wait_for_exit:
@@ -255,44 +315,48 @@ func _apply_character_exit_effect(target_rect: TextureRect, entry: StoryHideChar
 	var distance := entry.exit_distance
 	if distance <= 0.0:
 		distance = 200.0
-	# Use offset-based animation to preserve display_scale adjustments.
-	var offset_delta_x: float = 0.0
-	var offset_delta_y: float = 0.0
+	var delta_x: float = 0.0
+	var delta_y: float = 0.0
 	match direction:
 		"left":
-			offset_delta_x = -distance
+			delta_x = -distance
 		"right":
-			offset_delta_x = distance
+			delta_x = distance
 		"up", "top":
-			offset_delta_y = -distance
+			delta_y = -distance
 		"down", "bottom":
-			offset_delta_y = distance
+			delta_y = distance
 		_:
 			pass
-	var end_offset_left: float = target_rect.offset_left + offset_delta_x
-	var end_offset_top: float = target_rect.offset_top + offset_delta_y
+	var end_x: float = target_rect.position.x + delta_x
+	var end_y: float = target_rect.position.y + delta_y
 	if effect == "slide":
-		if not is_zero_approx(offset_delta_x):
-			tween.tween_property(target_rect, "offset_left", end_offset_left, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
-		if not is_zero_approx(offset_delta_y):
-			tween.parallel().tween_property(target_rect, "offset_top", end_offset_top, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+		if not is_zero_approx(delta_x):
+			tween.tween_property(target_rect, "position:x", end_x, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+		if not is_zero_approx(delta_y):
+			tween.parallel().tween_property(target_rect, "position:y", end_y, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 		tween.finished.connect(func():
 			_hide_character_control(target_rect, side, character_id))
 		_register_character_tween(target_rect, tween)
 		return tween
 	elif effect == "fade_slide":
-		if not is_zero_approx(offset_delta_x):
-			tween.tween_property(target_rect, "offset_left", end_offset_left, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
-		if not is_zero_approx(offset_delta_y):
-			tween.parallel().tween_property(target_rect, "offset_top", end_offset_top, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+		if not is_zero_approx(delta_x):
+			tween.tween_property(target_rect, "position:x", end_x, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+		if not is_zero_approx(delta_y):
+			tween.parallel().tween_property(target_rect, "position:y", end_y, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 		tween.parallel().tween_property(target_rect, "modulate:a", 0.0, duration)
 		tween.finished.connect(func():
 			_hide_character_control(target_rect, side, character_id))
 		_register_character_tween(target_rect, tween)
 		return tween
 	elif effect == "shrink" or effect == "fade_shrink":
-		target_rect.pivot_offset = target_rect.size * 0.5
-		var scale_tween := tween.tween_property(target_rect, "scale", Vector2.ZERO, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+		# pivot不使用: 見た目の中心に向かってscaleと位置を同時にアニメーション
+		var current_scale := target_rect.scale
+		var current_pos := target_rect.position
+		var visual_center := current_pos + target_rect.size * current_scale * 0.5
+		target_rect.pivot_offset = Vector2.ZERO
+		tween.tween_property(target_rect, "scale", Vector2.ZERO, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+		tween.parallel().tween_property(target_rect, "position", visual_center, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
 		if effect == "fade_shrink":
 			tween.parallel().tween_property(target_rect, "modulate:a", 0.0, duration)
 		tween.finished.connect(func():
@@ -315,6 +379,7 @@ func _hide_character_control(target_rect: TextureRect, side: String, character_i
 		_character_side_cache.erase(character_id)
 		_character_position_cache.erase(character_id)
 		_character_portrait_cache.erase(character_id)
+		_character_portrait_scale_cache.erase(character_id)
 		_stop_portrait_animation_by_id(character_id)
 
 func start_portrait_animation(entry: StoryAnimatePortraitCommand):
@@ -402,60 +467,65 @@ func _reset_character_transform(target_rect: Control):
 	if target_rect == null:
 		return
 	target_rect.modulate = Color.WHITE
-	target_rect.scale = Vector2.ONE
+	var side := "left"
+	if target_rect == right_char:
+		side = "right"
+	elif target_rect == center_char:
+		side = "center"
+	_reset_rect_with_scale(target_rect, side, 1.0)
+
+func _reset_rect_with_scale(target_rect: Control, side: String, scale_factor: float) -> void:
+	# 1. Reset transform
 	target_rect.pivot_offset = Vector2.ZERO
-	_reset_rect_width(target_rect)
-	if target_rect == right_char:
-		target_rect.position = right_char_default_pos
-	elif target_rect == center_char:
-		target_rect.position = center_char_default_pos
-	else:
-		target_rect.position = left_char_default_pos
-
-func _apply_display_scale(target_rect: Control, scale_factor: float) -> void:
-	if scale_factor <= 0.0 or is_equal_approx(scale_factor, 1.0):
-		return
-	# Compute extra width as delta from default rect width.
-	# Expand directionally to avoid screen-edge clipping:
-	#   RightChar: expand leftward only (right edge stays fixed)
-	#   LeftChar:  expand rightward only (left edge stays fixed)
-	#   CenterChar: expand symmetrically
-	var default_width: float
+	# 2. Set size to texture size
+	var tex: Texture2D = target_rect.texture if target_rect is TextureRect else null
+	var tex_size := tex.get_size() if tex else target_rect.size
+	target_rect.size = tex_size
+	# 3. Apply scale (pivot at origin, no tricks)
+	var s := scale_factor if scale_factor > 0.0 else 1.0
+	target_rect.scale = Vector2(s, s)
+	# 4. Compute position from visual (scaled) size
+	var vp_size := get_viewport_rect().size
+	var visual_w := tex_size.x * s
+	var visual_h := tex_size.y * s
+	target_rect.position.y = vp_size.y - visual_h
 	if target_rect == left_char:
-		default_width = _left_char_default_offset_right - _left_char_default_offset_left
+		target_rect.position.x = _CHAR_MARGIN
 	elif target_rect == right_char:
-		default_width = _right_char_default_offset_right - _right_char_default_offset_left
+		target_rect.position.x = vp_size.x - visual_w - _CHAR_MARGIN
 	elif target_rect == center_char:
-		default_width = _center_char_default_offset_right - _center_char_default_offset_left
-	else:
-		return
-	var extra_width: float = default_width * (scale_factor - 1.0)
-	if target_rect == right_char:
-		target_rect.offset_left -= extra_width
-	elif target_rect == left_char:
-		target_rect.offset_right += extra_width
-	else:
-		target_rect.offset_left -= extra_width / 2.0
-		target_rect.offset_right += extra_width / 2.0
+		target_rect.position.x = (vp_size.x - visual_w) / 2.0
 
-func _reset_rect_width(target_rect: Control) -> void:
-	if target_rect == left_char:
-		target_rect.offset_left = _left_char_default_offset_left
-		target_rect.offset_right = _left_char_default_offset_right
-		target_rect.offset_top = _left_char_default_offset_top
-	elif target_rect == right_char:
-		target_rect.offset_left = _right_char_default_offset_left
-		target_rect.offset_right = _right_char_default_offset_right
-		target_rect.offset_top = _right_char_default_offset_top
-	elif target_rect == center_char:
-		target_rect.offset_left = _center_char_default_offset_left
-		target_rect.offset_right = _center_char_default_offset_right
-		target_rect.offset_top = _center_char_default_offset_top
+func _create_cross_fade_snapshot(source: TextureRect) -> TextureRect:
+	var snapshot := TextureRect.new()
+	snapshot.texture = source.texture
+	snapshot.size = source.size
+	snapshot.position = source.position
+	snapshot.scale = source.scale
+	snapshot.pivot_offset = source.pivot_offset
+	snapshot.modulate = source.modulate
+	snapshot.flip_h = source.flip_h
+	snapshot.expand_mode = source.expand_mode
+	snapshot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(snapshot)
+	move_child(snapshot, source.get_index())
+
+
+	return snapshot
+
+func _run_cross_fade(old_snapshot: TextureRect, new_rect: TextureRect, duration: float) -> void:
+	# Old stays fully opaque behind; new fades in on top → no transparency gap
+	new_rect.modulate = Color(1, 1, 1, 0)
+	var tween := create_tween()
+	tween.tween_property(new_rect, "modulate:a", 1.0, duration)
+	tween.finished.connect(func():
+		if is_instance_valid(old_snapshot):
+			old_snapshot.queue_free())
 
 func _apply_display_offset_y(target_rect: Control, offset_y: float) -> void:
 	if is_zero_approx(offset_y):
 		return
-	target_rect.offset_top += offset_y
+	target_rect.position.y += offset_y
 
 func _cancel_character_tween(target_rect: TextureRect):
 	if target_rect == null:
@@ -566,11 +636,29 @@ func show_character_command(entry: StoryShowCharacterCommand):
 	if char_data == null:
 		return
 	var side := _resolve_character_side(entry.character_id, entry.side_override)
-	var target_rect: TextureRect = _show_character(char_data, entry.portrait_id, side, entry.position_mode, entry.position)
-	if target_rect == null:
+	var target_rect := _get_rect_for_side(side)
+	# Cross-fade: snapshot old state before swapping texture
+	var do_cross_fade := entry.transition == "cross_fade" and target_rect != null and target_rect.visible and target_rect.texture != null
+	var old_snapshot: TextureRect = null
+	if do_cross_fade:
+		old_snapshot = _create_cross_fade_snapshot(target_rect)
+	var result_rect: TextureRect = _show_character(char_data, entry.portrait_id, side, entry.position_mode, entry.position, entry.portrait_scale)
+	if result_rect == null:
+		if old_snapshot:
+			old_snapshot.queue_free()
 		return
-	var target_pos: Vector2 = _character_position_cache.get(entry.character_id, target_rect.position)
-	_apply_character_entry_effect(target_rect, entry, target_pos, side)
+	# Apply flip override (-1 = side default, 0 = no flip, 1 = flip)
+	if entry.flip >= 0:
+		result_rect.flip_h = (entry.flip == 1)
+	elif side == "right":
+		result_rect.flip_h = true
+	else:
+		result_rect.flip_h = false
+	if do_cross_fade and old_snapshot:
+		_run_cross_fade(old_snapshot, result_rect, entry.transition_duration)
+	else:
+		var target_pos: Vector2 = result_rect.position
+		_apply_character_entry_effect(result_rect, entry, target_pos, side)
 
 func _apply_character_entry_effect(target_rect: TextureRect, entry: StoryShowCharacterCommand, target_pos: Vector2, side: String):
 	if target_rect == null:
@@ -591,11 +679,19 @@ func _apply_character_entry_effect(target_rect: TextureRect, entry: StoryShowCha
 		return
 	elif effect == "grow" or effect == "fade_grow":
 		var tween := create_tween()
-		target_rect.pivot_offset = target_rect.size * 0.5
+		# _show_characterで設定された最終状態を保存
+		var final_scale := target_rect.scale
+		var final_pos := target_rect.position
+		# 見た目の中心点を計算（最終状態での中心）
+		var visual_center := final_pos + target_rect.size * final_scale * 0.5
+		# pivot不使用: scale=0の開始位置を中心点に合わせる
+		target_rect.pivot_offset = Vector2.ZERO
 		target_rect.scale = Vector2.ZERO
+		target_rect.position = visual_center
 		if effect == "fade_grow":
 			target_rect.modulate = Color(1, 1, 1, 0)
-		tween.tween_property(target_rect, "scale", Vector2.ONE, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		tween.tween_property(target_rect, "scale", final_scale, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		tween.parallel().tween_property(target_rect, "position", final_pos, duration).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 		if effect == "fade_grow":
 			tween.parallel().tween_property(target_rect, "modulate:a", 1.0, duration)
 		_register_character_tween(target_rect, tween)
@@ -606,42 +702,39 @@ func _apply_character_entry_effect(target_rect: TextureRect, entry: StoryShowCha
 	var distance := entry.appear_distance
 	if distance <= 0.0:
 		distance = 200.0
-	# Use offset-based animation instead of position-based.
-	# Setting Control.position recalculates ALL four offsets, which destroys
-	# display_scale and display_offset_y adjustments applied by _show_character.
-	var end_offset_left: float = target_rect.offset_left
-	var end_offset_top: float = target_rect.offset_top
-	var offset_delta_x: float = 0.0
-	var offset_delta_y: float = 0.0
+	var end_x: float = target_rect.position.x
+	var end_y: float = target_rect.position.y
+	var delta_x: float = 0.0
+	var delta_y: float = 0.0
 	match direction:
 		"left":
-			offset_delta_x = -distance
+			delta_x = -distance
 		"right":
-			offset_delta_x = distance
+			delta_x = distance
 		"up", "top":
-			offset_delta_y = -distance
+			delta_y = -distance
 		"down", "bottom":
-			offset_delta_y = distance
+			delta_y = distance
 		_:
 			pass
 	if effect == "slide":
 		var tween := create_tween()
-		target_rect.offset_left = end_offset_left + offset_delta_x
-		target_rect.offset_top = end_offset_top + offset_delta_y
-		if not is_zero_approx(offset_delta_x):
-			tween.tween_property(target_rect, "offset_left", end_offset_left, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-		if not is_zero_approx(offset_delta_y):
-			tween.parallel().tween_property(target_rect, "offset_top", end_offset_top, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		target_rect.position.x = end_x + delta_x
+		target_rect.position.y = end_y + delta_y
+		if not is_zero_approx(delta_x):
+			tween.tween_property(target_rect, "position:x", end_x, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		if not is_zero_approx(delta_y):
+			tween.parallel().tween_property(target_rect, "position:y", end_y, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 		_register_character_tween(target_rect, tween)
 	elif effect == "fade_slide":
 		var tween := create_tween()
-		target_rect.offset_left = end_offset_left + offset_delta_x
-		target_rect.offset_top = end_offset_top + offset_delta_y
+		target_rect.position.x = end_x + delta_x
+		target_rect.position.y = end_y + delta_y
 		target_rect.modulate = Color(1, 1, 1, 0)
-		if not is_zero_approx(offset_delta_x):
-			tween.tween_property(target_rect, "offset_left", end_offset_left, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-		if not is_zero_approx(offset_delta_y):
-			tween.parallel().tween_property(target_rect, "offset_top", end_offset_top, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		if not is_zero_approx(delta_x):
+			tween.tween_property(target_rect, "position:x", end_x, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		if not is_zero_approx(delta_y):
+			tween.parallel().tween_property(target_rect, "position:y", end_y, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 		tween.parallel().tween_property(target_rect, "modulate:a", 1.0, duration)
 		_register_character_tween(target_rect, tween)
 	elif effect == "grow" or effect == "fade_grow":
@@ -651,28 +744,87 @@ func _apply_character_entry_effect(target_rect: TextureRect, entry: StoryShowCha
 		# Unknown effect; keep current offsets (display adjustments intact)
 		target_rect.modulate = Color.WHITE
 
+func set_inner_band_color(color: Color) -> void:
+	var style_left: StyleBoxFlat = dialogue_band_left.get_theme_stylebox("panel").duplicate()
+	style_left.bg_color = color
+	dialogue_band_left.add_theme_stylebox_override("panel", style_left)
+	var style_right: StyleBoxFlat = dialogue_band_right.get_theme_stylebox("panel").duplicate()
+	style_right.bg_color = color
+	dialogue_band_right.add_theme_stylebox_override("panel", style_right)
+	# ボタンにも同じ色を適用
+	var hover_color := Color(color.r + 0.12, color.g + 0.12, color.b + 0.12, color.a)
+	for btn in _menu_bar.get_children():
+		if btn is Button:
+			var style_normal: StyleBoxFlat = btn.get_theme_stylebox("normal").duplicate()
+			style_normal.bg_color = color
+			btn.add_theme_stylebox_override("normal", style_normal)
+			var style_hover: StyleBoxFlat = btn.get_theme_stylebox("hover").duplicate()
+			style_hover.bg_color = hover_color
+			btn.add_theme_stylebox_override("hover", style_hover)
+
+func _hide_inner_bands() -> void:
+	dialogue_band_left.visible = false
+	dialogue_band_right.visible = false
+	dialogue_band_left_speaker.visible = false
+	dialogue_band_right_speaker.visible = false
+
+func _set_narrator_vbox_visible(vis: bool) -> void:
+	for child in dialogue_band.get_node("VBox").get_children():
+		child.visible = vis
+
 func apply_band_command(entry: StoryBandCommand):
 	if not dialogue_band:
 		return null
-	dialogue_band.visible = entry.visible
+
 	if not entry.visible:
+		dialogue_band.visible = false
+		_hide_inner_bands()
 		return null
-	if entry.clear_text or not entry.text.is_empty():
-		dialogue_band_body.text = entry.text
+
+	dialogue_band.visible = true
 
 	var char_data: StoryCharacter = null
-	if not entry.speaker_id.is_empty():
+	var side := ""
+	if not entry.speaker_id.is_empty() and entry.speaker_id != "narrator":
 		char_data = _cast.get_character(entry.speaker_id)
+		if char_data:
+			side = _resolve_character_side(entry.speaker_id, entry.side_override)
+
+	# Pick the appropriate band based on character side
+	var band_speaker: Label
+	var band_body: Label
+	if side == "left" or side == "right":
+		_set_narrator_vbox_visible(false)
+		if side == "left":
+			dialogue_band_left.visible = true
+			dialogue_band_right.visible = false
+			band_speaker = dialogue_band_left_speaker
+			band_body = dialogue_band_left_body
+			dialogue_band_right_speaker.visible = false
+		else:
+			dialogue_band_left.visible = false
+			dialogue_band_right.visible = true
+			band_speaker = dialogue_band_right_speaker
+			band_body = dialogue_band_right_body
+			dialogue_band_left_speaker.visible = false
+	else:
+		_hide_inner_bands()
+		_set_narrator_vbox_visible(true)
+		band_speaker = dialogue_band_speaker
+		band_body = dialogue_band_body
+
+	if entry.clear_text or not entry.text.is_empty():
+		band_body.text = entry.text
+
 	if char_data:
-		var side := _resolve_character_side(entry.speaker_id, entry.side_override)
 		_show_character(char_data, entry.portrait_id, side)
 		if not char_data.display_name.is_empty():
-			dialogue_band_speaker.visible = true
-			dialogue_band_speaker.text = char_data.display_name
+			band_speaker.visible = true
+			band_speaker.text = char_data.display_name
 		else:
-			dialogue_band_speaker.visible = false
+			band_speaker.visible = false
 	else:
-		dialogue_band_speaker.visible = false
+		band_speaker.visible = false
 
 	if entry.wait_for_input:
 		return _prepare_wait_for_advance(entry.min_duration)
@@ -714,15 +866,24 @@ func _get_rect_for_side(side: String) -> TextureRect:
 			return left_char
 
 func _default_side_position(side: String) -> Vector2:
+	var rect := _get_rect_for_side(side)
+	var vp_size := get_viewport_rect().size
+	var tex: Texture2D = rect.texture if rect is TextureRect and rect.texture else null
+	var tex_size := tex.get_size() if tex else (rect.size if rect else Vector2.ZERO)
+	var s: float = rect.scale.x if rect else 1.0
+	var visual_w := tex_size.x * s
+	var visual_h := tex_size.y * s
+	var x: float
 	match side:
 		"left":
-			return left_char_default_pos
+			x = _CHAR_MARGIN
 		"right":
-			return right_char_default_pos
+			x = vp_size.x - visual_w - _CHAR_MARGIN
 		"center":
-			return center_char_default_pos
+			x = (vp_size.x - visual_w) / 2.0
 		_:
-			return left_char_default_pos
+			x = _CHAR_MARGIN
+	return Vector2(x, vp_size.y - visual_h)
 
 func _resolve_character_side(character_id: String, requested_side: String) -> String:
 	if not requested_side.is_empty():
@@ -737,20 +898,19 @@ func _resolve_character_side(character_id: String, requested_side: String) -> St
 		return "center"
 	return "left"
 
-func _resolve_character_position(character_id: String, side: String, position_mode: String, position_value: Vector2) -> Vector2:
+func _resolve_character_position(character_id: String, side: String, position_mode: String, position_value: Vector2, base: Vector2 = Vector2.ZERO) -> Vector2:
 	var mode := position_mode.strip_edges().to_lower()
-	var base := _default_side_position(side)
 	match mode:
 		"absolute":
 			return position_value
 		"offset":
 			return base + position_value
 		"normalized":
-			var size := get_viewport_rect().size
-			return Vector2(size.x * position_value.x, size.y * position_value.y)
+			var vp_size := get_viewport_rect().size
+			return Vector2(vp_size.x * position_value.x, vp_size.y * position_value.y)
 		_:
 			if not character_id.is_empty() and _character_position_cache.has(character_id):
-				return _character_position_cache[character_id]
+				return base + _character_position_cache[character_id]
 			return base
 
 class _SignalRelay:

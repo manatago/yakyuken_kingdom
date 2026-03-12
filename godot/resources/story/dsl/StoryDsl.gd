@@ -13,9 +13,22 @@ const StoryStopPortraitAnimationCommand := preload("res://resources/story/comman
 const StorySequence := preload("res://resources/story/StorySequence.gd")
 const StoryCharacterHandle := preload("res://resources/story/dsl/StoryCharacterHandle.gd")
 const StoryMicroMotionCommand := preload("res://resources/story/commands/StoryMicroMotionCommand.gd")
+const StoryBandColorCommand := preload("res://resources/story/commands/StoryBandColorCommand.gd")
 
 var _cast: StoryCast
 var _protagonist_id: String = ""
+var _band_colors: Dictionary = {
+	"amber": Color(0.50, 0.38, 0.18, 0.85),
+	"teal": Color(0.15, 0.35, 0.42, 0.85),
+	"royal_blue": Color(0.18, 0.25, 0.55, 0.85),
+	"terracotta": Color(0.55, 0.30, 0.20, 0.85),
+	"wine": Color(0.50, 0.20, 0.25, 0.85),
+	"rose": Color(0.48, 0.28, 0.30, 0.85),
+	"sand_gold": Color(0.48, 0.40, 0.22, 0.85),
+	"slate_blue": Color(0.28, 0.32, 0.48, 0.85),
+	"indigo": Color(0.12, 0.10, 0.28, 0.85),
+	"deep_purple": Color(0.30, 0.20, 0.45, 0.85),
+}
 
 func _init(cast: StoryCast) -> void:
 	_cast = cast
@@ -60,6 +73,10 @@ func show_character(character_id: String, extra: Dictionary = {}):
 	entry.appear_from = extra.get("appear_from", "")
 	entry.appear_duration = extra.get("appear_duration", 0.0)
 	entry.appear_distance = extra.get("appear_distance", 200.0)
+	entry.portrait_scale = extra.get("portrait_scale", 0.0)
+	entry.transition = extra.get("transition", "")
+	entry.transition_duration = extra.get("transition_duration", 0.3)
+	entry.flip = extra.get("flip", -1)
 	return entry
 
 func hide_character(character_id: String, extra: Dictionary = {}):
@@ -124,6 +141,19 @@ func animate_portrait(character_id: String, portraits: Array, frame_duration: fl
 func stop_portrait_animation(character_id: String):
 	var entry := StoryStopPortraitAnimationCommand.new()
 	entry.character_id = character_id
+	return entry
+
+func register_band_color(name: String, color: Color) -> void:
+	_band_colors[name] = color
+
+func band_color(color_or_name) -> StoryBandColorCommand:
+	var entry := StoryBandColorCommand.new()
+	if color_or_name is Color:
+		entry.color = color_or_name
+	elif color_or_name is String and _band_colors.has(color_or_name):
+		entry.color = _band_colors[color_or_name]
+	else:
+		push_warning("band_color: unknown color '%s'" % str(color_or_name))
 	return entry
 
 func set_protagonist_id(id: String):
@@ -194,6 +224,12 @@ class _CommandCollector:
 
 	func clear_band_text():
 		_add_command(_dsl.band_clear_text())
+
+	func register_band_color(name: String, color: Color):
+		_dsl.register_band_color(name, color)
+
+	func band_color(color_or_name):
+		_add_command(_dsl.band_color(color_or_name))
 
 	func hide_dialogue():
 		_add_command(_dsl.hide_dialogue())
