@@ -17,7 +17,7 @@ var opponent_path: String = "res://assets/characters/char04-003.png"
 var opponent_position_ratio: Vector2 = Vector2(0.4, 0.05)  # 画面比率
 
 # テーブル
-var table_path: String = "res://assets/props/furniture/table01-001.png"
+var table_path: String = "res://assets/battle/table01-001.png"
 var table_position_ratio: Vector2 = Vector2(0.04, 0.18)  # 画面比率
 var table_scale: Vector2 = Vector2(3.0, 3.0)
 
@@ -98,7 +98,7 @@ const PANEL_THEMES = {
 }
 
 # === カード設定 ===
-var card_back_path: String = "res://assets/cards/card_back.png"
+var card_back_path: String = "res://assets/battle/cards/card_back.png"
 
 # カード配置設定（画面比率）
 # 各カードは以下のパラメータを持つ:
@@ -170,9 +170,9 @@ var hand_cards: Array = [
 # プレイヤーの手札（画面下部、元の画像比率で表示）
 
 # プレイヤーカードの画像パス
-var card_rock_path: String = "res://assets/cards/rock.png"
-var card_scissors_path: String = "res://assets/cards/scissors.png"
-var card_paper_path: String = "res://assets/cards/paper.png"
+var card_rock_path: String = "res://assets/battle/cards/rock.png"
+var card_scissors_path: String = "res://assets/battle/cards/scissors.png"
+var card_paper_path: String = "res://assets/battle/cards/paper.png"
 
 # カード画像は 288x462 なので height_ratio = 462/288 ≈ 1.60
 var player_cards: Array = [
