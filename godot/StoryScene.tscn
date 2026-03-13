@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://storyscene001"]
 
-[ext_resource type="Script" path="res://scripts/StoryScene.gd" id="1_script"]
+[ext_resource type="Script" path="res://game/StoryScene.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://assets/backgrounds/prologue/bg01_university.png" id="1_bg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_band_bg"]

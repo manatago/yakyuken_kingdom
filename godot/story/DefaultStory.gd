@@ -1,9 +1,9 @@
 extends RefCounted
 class_name DefaultStory
 
-const StoryDsl := preload("res://resources/story/StoryCommands.gd")
-const StoryCharacterResource := preload("res://resources/story/StoryCharacter.gd")
-const PrologueChapterScript := preload("res://resources/story/chapters/PrologueChapter.gd")
+const StoryDsl := preload("res://story/StoryCommands.gd")
+const StoryCharacterResource := preload("res://story/StoryCharacter.gd")
+const PrologueChapterScript := preload("res://story/chapters/PrologueChapter.gd")
 
 
 var _cast: Dictionary = {}  # character_id -> StoryCharacter

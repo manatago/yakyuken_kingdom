@@ -1,6 +1,6 @@
 extends Control
 
-const DefaultStoryScript := preload("res://resources/story/DefaultStory.gd")
+const DefaultStoryScript := preload("res://story/DefaultStory.gd")
 
 signal result_updated(text)
 
