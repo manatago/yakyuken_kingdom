@@ -42,7 +42,7 @@ func _show_dialogue_updates_bubbles() -> bool:
 
 func _show_character_applies_texture() -> bool:
 	var char_data = _story_script.get_cast().get("main")
-	_story_scene._show_character(char_data, "Default", "left")
+	_story_scene._show_character(char_data, "res://assets/characters/prologue/char01_pg_000.png", "left")
 	return (
 		expect_true(_story_scene.left_char.visible, "Left character should be visible")
 		and expect_true(_story_scene.left_char.texture != null, "Texture should be applied")

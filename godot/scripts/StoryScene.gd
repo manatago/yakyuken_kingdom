@@ -2,7 +2,6 @@ extends Control
 class_name StoryScene
 
 const Cmd = preload("res://resources/story/StoryCommands.gd")
-const MicroMotionShowcaseScene := preload("res://resources/story/micromotion/MicroMotionShowcase.tscn")
 
 signal sequence_started(sequence_id)
 signal sequence_finished(sequence_id)
@@ -46,7 +45,7 @@ var _pending_signal_relays: Array = []
 var _portrait_animation_data: Dictionary = {}
 var _portrait_animation_timers: Dictionary = {}
 var _suppress_animation_reset := false
-var _micro_motion_showcase: MicroMotionShowcase = null
+var _micro_motion_showcase = null
 
 func _ready():
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -59,7 +58,6 @@ func _ready():
 	left_bubble.visible = false
 	center_bubble.visible = false
 	right_bubble.visible = false
-	_ensure_micro_motion_showcase()
 	_menu_bar.get_node("SkipButton").pressed.connect(_on_skip_pressed)
 
 func _unhandled_input(event):
@@ -122,15 +120,6 @@ func play_line(entry: Cmd.Line):
 	elif entry.duration > 0.0:
 		return get_tree().create_timer(entry.duration).timeout
 	return null
-
-func play_micro_motion(entry: Cmd.MicroMotion):
-	if entry == null:
-		return null
-	_ensure_micro_motion_showcase()
-	if _micro_motion_showcase == null:
-		return null
-	var params := entry.params if entry.params else {}
-	return _micro_motion_showcase.play(entry.mode, params)
 
 # --- Input handling ---
 
@@ -197,16 +186,6 @@ func _cleanup_for_skip():
 	_character_position_cache.clear()
 	_character_portrait_cache.clear()
 	_character_portrait_scale_cache.clear()
-
-func _ensure_micro_motion_showcase() -> void:
-	if _micro_motion_showcase:
-		return
-	if MicroMotionShowcaseScene == null:
-		return
-	_micro_motion_showcase = MicroMotionShowcaseScene.instantiate()
-	add_child(_micro_motion_showcase)
-	move_child(_micro_motion_showcase, get_child_count() - 1)
-	_micro_motion_showcase.visible = false
 
 # --- Character display ---
 

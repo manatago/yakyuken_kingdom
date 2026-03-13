@@ -1,7 +1,7 @@
 extends CardBattleChapterBase
 class_name PrologueBattleChapter
 
-const OPPONENT_PATH := "res://resources/characters/DefaultGirl.tres"
+const OPPONENT_PATH := ""
 const CARD_ROCK := "res://assets/battle/cards/rock.jpg"
 const CARD_SCISSORS := "res://assets/battle/cards/scissors.jpg"
 const CARD_PAPER := "res://assets/battle/cards/paper.jpg"

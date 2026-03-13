@@ -2,8 +2,6 @@
 
 [ext_resource type="Script" path="res://scripts/StoryScene.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://assets/backgrounds/prologue/bg01_university.png" id="1_bg"]
-[ext_resource type="Texture2D" path="res://assets/characters/char_1.png" id="2_c1"]
-[ext_resource type="Texture2D" path="res://assets/characters/char_2.png" id="3_c2"]
 [ext_resource type="PackedScene" uid="uid://dd2xgh4sby82w" path="res://SpeechBubble.tscn" id="4_bubble_scene"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_band_bg"]
@@ -91,7 +89,6 @@ stretch_mode = 6
 [node name="LeftChar" type="TextureRect" parent="."]
 visible = false
 layout_mode = 0
-texture = ExtResource("2_c1")
 expand_mode = 0
 
 [node name="SpeechBubbleLeft" parent="LeftChar" instance=ExtResource("4_bubble_scene")]
@@ -106,7 +103,6 @@ text = "こんにちは！"
 [node name="CenterChar" type="TextureRect" parent="."]
 visible = false
 layout_mode = 0
-texture = ExtResource("2_c1")
 expand_mode = 0
 
 [node name="SpeechBubbleCenter" parent="CenterChar" instance=ExtResource("4_bubble_scene")]
@@ -121,7 +117,6 @@ text = "センターです"
 [node name="RightChar" type="TextureRect" parent="."]
 visible = false
 layout_mode = 0
-texture = ExtResource("3_c2")
 expand_mode = 0
 flip_h = true
 

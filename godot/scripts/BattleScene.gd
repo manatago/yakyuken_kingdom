@@ -13,7 +13,7 @@ signal battle_finished(result: Dictionary)
 var background_path: String = "res://assets/backgrounds/prologue/bg06_prison_arena.png"
 
 # 対戦相手
-var opponent_path: String = "res://assets/characters/char04-003.png"
+var opponent_path: String = ""
 var opponent_position_ratio: Vector2 = Vector2(0.4, 0.05)  # 画面比率
 
 # テーブル

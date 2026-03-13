@@ -5,9 +5,6 @@ const StoryDsl := preload("res://resources/story/dsl/StoryDsl.gd")
 const StoryCharacterResource := preload("res://resources/story/StoryCharacter.gd")
 const PrologueChapterScript := preload("res://resources/story/chapters/PrologueChapter.gd")
 const Stage1ChapterScript := preload("res://resources/story/chapters/Stage1Chapter.gd")
-const DemoChapterScript := preload("res://resources/story/chapters/DemoChapter.gd")
-
-const ENABLE_DEMO := false
 
 var _cast: Dictionary = {}  # character_id -> StoryCharacter
 var _sequences: Dictionary = {}  # sequence_id -> Cmd.Sequence
@@ -25,14 +22,12 @@ func _init() -> void:
 	_build_chapters()
 
 func _build_chapters() -> void:
-	var chapters := []
-	if ENABLE_DEMO and DemoChapterScript:
-		chapters.append(DemoChapterScript.new())
-	chapters.append(PrologueChapterScript.new())
-	chapters.append(Stage1ChapterScript.new())
+	var chapters := [
+		PrologueChapterScript.new(),
+		Stage1ChapterScript.new(),
+	]
 	for chapter in chapters:
-		if chapter:
-			_register_chapter(chapter)
+		_register_chapter(chapter)
 
 func _register_chapter(chapter) -> void:
 	for definition in chapter.get_sequence_builders():

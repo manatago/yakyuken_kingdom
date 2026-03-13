@@ -1,7 +1,6 @@
 extends Control
 
 const DefaultStoryScript := preload("res://resources/story/DefaultStory.gd")
-const DefaultOpponentData := preload("res://resources/characters/DefaultGirl.tres")
 const DefaultRockTexture := preload("res://assets/battle/cards/rock.jpg")
 const DefaultScissorsTexture := preload("res://assets/battle/cards/scissors.jpg")
 const DefaultPaperTexture := preload("res://assets/battle/cards/paper.jpg")
@@ -19,7 +18,7 @@ signal battle_chapter_applied(chapter)
 @export_file("*.gd") var battle_chapter_script_path: String = DefaultBattleChapterPath
 @export var enable_story_playback := true
 
-var opponent_data: CharacterData = DefaultOpponentData
+var opponent_data = null
 
 var player_win_rate: float = 0.7
 var draw_rate: float = 0.2
@@ -119,7 +118,7 @@ func _create_story_scene():
 	story_scene_instance.sequence_finished.connect(_on_story_sequence_finished)
 
 func _apply_default_battle_assets():
-	opponent_data = DefaultOpponentData
+	opponent_data = null
 	player_win_rate = 0.7
 	draw_rate = 0.2
 	player_lose_rate = 0.1
