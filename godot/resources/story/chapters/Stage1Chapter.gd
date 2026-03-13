@@ -14,7 +14,7 @@ func _build_intro(b):
 	var hero = b.character("main")
 	var matilda = b.character("matilda")
 
-	b.background("res://assets/backgrounds/bg06_prison_arena.png", 0.5)
+	b.background("res://assets/backgrounds/prologue/bg06_prison_arena.png", 0.5)
 	hero.appear({"side": "left"})
 	matilda.appear({"side": "right"})
 	hero.say("こぢんまりしてるけど、観客の視線が熱いな。王都の野球拳熱は本物か。", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
@@ -31,7 +31,7 @@ func _build_win(b):
 	var hero = b.character("main")
 	var matilda = b.character("matilda")
 
-	b.background("res://assets/backgrounds/bg06_prison_arena.png", 0.5)
+	b.background("res://assets/backgrounds/prologue/bg06_prison_arena.png", 0.5)
 	hero.appear({"side": "left"})
 	matilda.appear({"side": "right"})
 	matilda.say("くっ……本当に勝っちまうとはね。運値の差を読み切って、あっという間に四枚剥がされたよ。")

@@ -5,7 +5,7 @@ func get_sequence_builders() -> Array:
 	return [{"id": "demo", "builder": "_build_demo"}]
 
 func _build_demo(b):
-	b.background("res://assets/backgrounds/bg01_university.png", 0.4)
+	b.background("res://assets/backgrounds/prologue/bg01_university.png", 0.4)
 	b.show_band()
 	b.band("キャラクターリグ腕振りデモを開始します。", {"speaker_id": "narrator"})
 

@@ -6,7 +6,7 @@ const DefaultRockTexture := preload("res://assets/battle/cards/rock.jpg")
 const DefaultScissorsTexture := preload("res://assets/battle/cards/scissors.jpg")
 const DefaultPaperTexture := preload("res://assets/battle/cards/paper.jpg")
 const DefaultCardBackTexture := preload("res://assets/battle/cards/card_back.png")
-const DefaultBattleBackgroundTexture := preload("res://assets/backgrounds/bg06_prison_arena.png")
+const DefaultBattleBackgroundTexture := preload("res://assets/backgrounds/prologue/bg06_prison_arena.png")
 const DefaultBattleChapterPath := "res://resources/battle/chapters/PrologueBattleChapter.gd"
 
 signal ui_updated(turn, max_turns, player_wins, cpu_wins, draws)

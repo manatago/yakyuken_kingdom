@@ -6,7 +6,7 @@ const CARD_ROCK := "res://assets/battle/cards/rock.jpg"
 const CARD_SCISSORS := "res://assets/battle/cards/scissors.jpg"
 const CARD_PAPER := "res://assets/battle/cards/paper.jpg"
 const CARD_BACK := "res://assets/battle/cards/card_back.png"
-const BATTLE_BG := "res://assets/backgrounds/bg06_prison_arena.png"
+const BATTLE_BG := "res://assets/backgrounds/prologue/bg06_prison_arena.png"
 
 func get_id() -> String:
     return "prologue"

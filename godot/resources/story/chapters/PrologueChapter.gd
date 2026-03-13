@@ -17,7 +17,7 @@ func _build_prologue(b):
 	# 内部バンドの色を設定（プリセット: StoryDsl.gd の _band_colors を参照）
 	b.band_color("royal_blue")
 
-	b.background("res://assets/backgrounds/bg01_university.png", 0.5)
+	b.background("res://assets/backgrounds/prologue/bg01_university.png", 0.5)
 	b.show_band()
 	hero.appear({
 		"side": "left",
@@ -119,7 +119,7 @@ func _build_prologue(b):
 		"exit_duration": 0.8,
 	})
 
-	b.background("res://assets/backgrounds/bg02_room.png", 0.5)
+	b.background("res://assets/backgrounds/prologue/bg02_room.png", 0.5)
 	hero.appear({
 		"side": "left",
 		"appear_effect": "fade_slide",
@@ -169,7 +169,7 @@ func _build_prologue(b):
 		"exit_duration": 0.8,
 	})
 
-	b.background("res://assets/backgrounds/bg03-1_lab.png", 0.5)
+	b.background("res://assets/backgrounds/prologue/bg03-1_lab.png", 0.5)
 
 	hero.appear({
 		"side": "left",
@@ -238,7 +238,7 @@ func _build_prologue(b):
 
 
 
-	b.background("res://assets/backgrounds/bg03-2_lab.png", 0.4)
+	b.background("res://assets/backgrounds/prologue/bg03-2_lab.png", 0.4)
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_019.png", 0.5)
 	hero.band("うわっ！")
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_020.png", 0.5)
@@ -280,7 +280,7 @@ func _build_prologue(b):
 		"wait_for_exit": true
 	})
 
-	b.background("res://assets/backgrounds/bg04-1_teleport_square.png", 0.5)
+	b.background("res://assets/backgrounds/prologue/bg04-1_teleport_square.png", 0.5)
 	hero.appear({
 		"side": "center",
 		"appear_effect": "fade_grow",
@@ -302,7 +302,7 @@ func _build_prologue(b):
 	})
 
 
-	b.background("res://assets/backgrounds/bg04-2_teleport_square2.png", 0.5)
+	b.background("res://assets/backgrounds/prologue/bg04-2_teleport_square2.png", 0.5)
 	hero.appear({
 		"side": "left",
 		"appear_effect": "fade_slide",
@@ -412,7 +412,7 @@ func _build_prologue(b):
 		"wait_for_exit": true
 	})
 
-	b.background("res://assets/backgrounds/bg05_prison_cell.png", 0.5)
+	b.background("res://assets/backgrounds/prologue/bg05_prison_cell.png", 0.5)
 	b.narrator_band("サトシが気が付くと、そこは牢の中だった。服が着せられていた。")
 
 	hero.appear({
@@ -510,8 +510,8 @@ func _build_prologue(b):
 
 	b.narrator_band("サトシが心のなかで「テーブルオープン」と言った瞬間、視界が一変した")
 
-	# b.background("res://assets/backgrounds/bg05_prison_cell.png", 0.5)
-	b.background("res://assets/backgrounds/bg05_prison_cell.png", 0.5)
+	# b.background("res://assets/backgrounds/prologue/bg05_prison_cell.png", 0.5)
+	b.background("res://assets/backgrounds/prologue/bg05_prison_cell.png", 0.5)
 
 	# matilda.say("おいそこの新入り。ここは牢獄前闘技場だ。勝率を見せな。")
 	# hero.say("（すらっとした女看守。肩章からして階級も高い。いきなりラスボスの風格じゃないか。）", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
@@ -536,7 +536,7 @@ func _build_prologue(b):
 	# matilda.say("ただし一度勝ったくらいで調子に乗ると、すぐ丸裸だ。ここの観衆は勝率の上下に飢えてるからね。")
 	# hero.say("そっちの勝率も味わってもらうさ。", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
 
-	# b.background("res://assets/backgrounds/bg05_prison_cell.png", 0.5)
+	# b.background("res://assets/backgrounds/prologue/bg05_prison_cell.png", 0.5)
 	# matilda.say("控室へ連れていこう。そこでスキルチュートリアルをやる。")
 	# hero.say("スキルチュートリアル……俺のMMO脳がうずく。", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
 	# matilda.say("はい、これが『確率計算』の第1段階。手札の勝率をざっくり表示する。使えば期待値がわかるよ。")

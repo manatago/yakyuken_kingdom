@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://b8j4k5l6m7n8o"]
 
 [ext_resource type="Script" uid="uid://fafw3nkogiya" path="res://scripts/Main.gd" id="1_main"]
-[ext_resource type="Texture2D" uid="uid://bjvvcux1g32qn" path="res://assets/backgrounds/bg06_prison_arena.png" id="2_bg"]
+[ext_resource type="Texture2D" uid="uid://bjvvcux1g32qn" path="res://assets/backgrounds/prologue/bg06_prison_arena.png" id="2_bg"]
 
 [node name="Main" type="Control"]
 layout_mode = 3

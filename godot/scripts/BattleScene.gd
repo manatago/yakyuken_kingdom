@@ -10,7 +10,7 @@ signal battle_finished(result: Dictionary)
 # 位置は画面サイズに対する比率（0.0〜1.0）で指定
 
 # 背景
-var background_path: String = "res://assets/backgrounds/bg06_prison_arena.png"
+var background_path: String = "res://assets/backgrounds/prologue/bg06_prison_arena.png"
 
 # 対戦相手
 var opponent_path: String = "res://assets/characters/char04-003.png"
