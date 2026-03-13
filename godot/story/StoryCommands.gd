@@ -168,7 +168,10 @@ func show_character(character_id: String, extra: Dictionary = {}):
 	entry.portrait_id = extra.get("portrait", "")
 	entry.side_override = extra.get("side", "")
 	entry.position_mode = extra.get("position_mode", "")
-	entry.position = extra.get("position", Vector2.ZERO)
+	var pos = extra.get("position", Vector2.ZERO)
+	if pos is Array and pos.size() >= 2:
+		pos = Vector2(pos[0], pos[1])
+	entry.position = pos
 	entry.appear_effect = extra.get("appear_effect", "")
 	entry.appear_from = extra.get("appear_from", "")
 	entry.appear_duration = extra.get("appear_duration", 0.0)
@@ -343,18 +346,24 @@ class CharacterHandle:
 	func stay_right():
 		return _record(_dsl.show_character(_character_id, {"side": "right"}))
 
-	func set_portrait(portrait_id: String, scale: float = 0.0, duration: float = 0.3, position: Variant = null, transition: String = "cross_fade", flip: int = -1):
+	func set_portrait(portrait_id: String, extra: Dictionary = {}):
 		var opts := {"portrait": portrait_id}
-		if scale > 0.0:
-			opts["portrait_scale"] = scale
-		if position != null and position is Vector2:
-			opts["position_mode"] = "offset"
-			opts["position"] = position
+		if extra.has("scale") and extra["scale"] > 0.0:
+			opts["portrait_scale"] = extra["scale"]
+		var position = extra.get("position", null)
+		if position != null:
+			if position is Array and position.size() >= 2:
+				position = Vector2(position[0], position[1])
+			if position is Vector2:
+				opts["position_mode"] = "offset"
+				opts["position"] = position
+		var transition: String = extra.get("transition", "cross_fade")
+		var duration: float = extra.get("duration", 0.3)
 		if not transition.is_empty() and duration > 0.0:
 			opts["transition"] = transition
 			opts["transition_duration"] = duration
-		if flip >= 0:
-			opts["flip"] = flip
+		if extra.has("flip"):
+			opts["flip"] = extra["flip"]
 		return _record(_dsl.show_character(_character_id, opts))
 
 	func animate_portrait(portrait_ids: Array, frame_duration: float = 0.15, loop_count: int = 0):
