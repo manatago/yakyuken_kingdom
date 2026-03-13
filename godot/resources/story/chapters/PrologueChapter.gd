@@ -514,7 +514,7 @@ func _build_prologue(b):
 	b.narrator_band("サトシが心のなかで「テーブルオープン」と言った瞬間、視界が一変した")
 
 	# b.background("res://assets/backgrounds/bg05_prison_cell.png", 0.5)
-
+	b.background("res://assets/backgrounds/bg05_prison_cell.png", 0.5)
 
 	# matilda.say("おいそこの新入り。ここは牢獄前闘技場だ。勝率を見せな。")
 	# hero.say("（すらっとした女看守。肩章からして階級も高い。いきなりラスボスの風格じゃないか。）", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
