@@ -17,7 +17,7 @@ var opponent_path: String = "res://assets/characters/char04-003.png"
 var opponent_position_ratio: Vector2 = Vector2(0.4, 0.05)  # 画面比率
 
 # テーブル
-var table_path: String = "res://assets/battle/table01-001.png"
+var table_path: String = "res://assets/battle/decks/table01-001.png"
 var table_position_ratio: Vector2 = Vector2(0.04, 0.18)  # 画面比率
 var table_scale: Vector2 = Vector2(3.0, 3.0)
 
