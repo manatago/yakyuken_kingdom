@@ -5,7 +5,7 @@ const DefaultOpponentData := preload("res://resources/characters/DefaultGirl.tre
 const DefaultRockTexture := preload("res://assets/cards/rock.jpg")
 const DefaultScissorsTexture := preload("res://assets/cards/scissors.jpg")
 const DefaultPaperTexture := preload("res://assets/cards/paper.jpg")
-const DefaultCardBackTexture := preload("res://assets/ui/card_back.png")
+const DefaultCardBackTexture := preload("res://assets/cards/card_back.png")
 const DefaultBattleBackgroundTexture := preload("res://assets/backgrounds/bg06_prison_arena.png")
 const DefaultBattleChapterPath := "res://resources/battle/chapters/PrologueBattleChapter.gd"
 

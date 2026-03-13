@@ -98,7 +98,7 @@ const PANEL_THEMES = {
 }
 
 # === カード設定 ===
-var card_back_path: String = "res://assets/ui/card_back.png"
+var card_back_path: String = "res://assets/cards/card_back.png"
 
 # カード配置設定（画面比率）
 # 各カードは以下のパラメータを持つ:

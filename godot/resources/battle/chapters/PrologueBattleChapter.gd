@@ -5,7 +5,7 @@ const OPPONENT_PATH := "res://resources/characters/DefaultGirl.tres"
 const CARD_ROCK := "res://assets/cards/rock.jpg"
 const CARD_SCISSORS := "res://assets/cards/scissors.jpg"
 const CARD_PAPER := "res://assets/cards/paper.jpg"
-const CARD_BACK := "res://assets/ui/card_back.png"
+const CARD_BACK := "res://assets/cards/card_back.png"
 const BATTLE_BG := "res://assets/backgrounds/bg06_prison_arena.png"
 
 func get_id() -> String:
