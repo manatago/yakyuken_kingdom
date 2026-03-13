@@ -2,5 +2,15 @@
 .godot/
 /android/
 
+# Image assets (managed outside Git)
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+*.bmp
+*.svg
+*.import
+
 # Local OneDrive dump accidentally inside the project tree
 OneDrive - shinya/
