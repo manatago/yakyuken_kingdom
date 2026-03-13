@@ -14,7 +14,7 @@ func _build_prologue(b):
 	var matilda = b.character("matilda")
 
 	b.set_protagonist("main")
-	# 内部バンドの色を設定（プリセット: StoryDsl.gd の _band_colors を参照）
+	# 内部バンドの色を設定（プリセット: StoryCommands.gd の _band_colors を参照）
 	b.band_color("royal_blue")
 
 	b.background("res://assets/backgrounds/prologue/bg01_university.png", 0.5)

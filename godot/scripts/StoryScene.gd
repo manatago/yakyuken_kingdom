@@ -1,7 +1,7 @@
 extends Control
 class_name StoryScene
 
-const Cmd = preload("res://resources/story/dsl/StoryDsl.gd")
+const Cmd = preload("res://resources/story/StoryCommands.gd")
 
 signal sequence_started(sequence_id)
 signal sequence_finished(sequence_id)

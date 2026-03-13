@@ -1,7 +1,7 @@
 extends RefCounted
 class_name DefaultStory
 
-const StoryDsl := preload("res://resources/story/dsl/StoryDsl.gd")
+const StoryDsl := preload("res://resources/story/StoryCommands.gd")
 const StoryCharacterResource := preload("res://resources/story/StoryCharacter.gd")
 const PrologueChapterScript := preload("res://resources/story/chapters/PrologueChapter.gd")
 

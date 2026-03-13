@@ -3,7 +3,7 @@ class_name StorySceneTests
 
 const StoryScenePacked := preload("res://StoryScene.tscn")
 const StoryScriptResource := preload("res://resources/story/DefaultStory.gd")
-const Cmd := preload("res://resources/story/dsl/StoryDsl.gd")
+const Cmd := preload("res://resources/story/StoryCommands.gd")
 
 var _story_scene = null
 var _story_script = null

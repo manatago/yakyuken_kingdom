@@ -2,7 +2,7 @@ extends TestSuite
 class_name StoryScriptTests
 
 const StoryScriptResource := preload("res://resources/story/DefaultStory.gd")
-const Cmd := preload("res://resources/story/dsl/StoryDsl.gd")
+const Cmd := preload("res://resources/story/StoryCommands.gd")
 
 func get_name() -> String:
 	return "StoryScript"

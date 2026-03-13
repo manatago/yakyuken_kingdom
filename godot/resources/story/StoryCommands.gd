@@ -1,5 +1,5 @@
 extends RefCounted
-class_name StoryDsl
+class_name StoryCommands
 
 # --- Command classes (data) ---
 
@@ -298,11 +298,11 @@ func _resolve_protagonist_id() -> String:
 # --- CharacterHandle ---
 
 class CharacterHandle:
-	var _dsl: StoryDsl
+	var _dsl: StoryCommands
 	var _character_id: String
 	var _on_command: Callable = Callable()
 
-	func _init(dsl: StoryDsl, character_id: String, on_command: Callable = Callable()) -> void:
+	func _init(dsl: StoryCommands, character_id: String, on_command: Callable = Callable()) -> void:
 		_dsl = dsl
 		_character_id = character_id
 		_on_command = on_command
@@ -386,10 +386,10 @@ class CharacterHandle:
 # --- _CommandCollector (proxy for build()) ---
 
 class _CommandCollector:
-	var _dsl: StoryDsl
+	var _dsl: StoryCommands
 	var _commands: Array
 
-	func _init(dsl: StoryDsl, commands: Array) -> void:
+	func _init(dsl: StoryCommands, commands: Array) -> void:
 		_dsl = dsl
 		_commands = commands
 
