@@ -14,14 +14,10 @@ var _sequences: Dictionary = {}  # sequence_id -> Cmd.Sequence
 
 func _init() -> void:
 	_cast = {
-		"main": _character("main", "サトシ",
-			"res://assets/characters/char01-001_smile.png"),
-		"heroine": _character("heroine", "みのり",
-			"res://assets/characters/char02-1_childhood_friend.png"),
-		"guard": _character("guard", "番兵",
-			"res://assets/characters/char03-1_guard.png"),
-		"matilda": _character("matilda", "マチルダ",
-			"res://assets/characters/char04-1_prison_guard.png"),
+		"main": _character("main", "サトシ", ""),
+		"heroine": _character("heroine", "みのり", ""),
+		"guard": _character("guard", "番兵", ""),
+		"matilda": _character("matilda", "マチルダ", ""),
 		"receptionist": _character("receptionist", "受付嬢", ""),
 		"passerby_male": _character("passerby_male", "通行人の男性", ""),
 		"passerby_female": _character("passerby_female", "通行人の女性", ""),
