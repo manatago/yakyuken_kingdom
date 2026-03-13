@@ -31,6 +31,9 @@ npm-debug.log*
 # Godot
 .godot/
 
+# Asset archives (managed outside Git)
+archives/
+
 # Asset backups
 *.zip
 *_backup.png
