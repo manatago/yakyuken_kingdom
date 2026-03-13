@@ -1,13 +1,8 @@
 extends Control
 class_name StoryScene
 
-const StoryCast := preload("res://resources/story/StoryCast.gd")
-const StoryShowCharacterCommand := preload("res://resources/story/commands/StoryShowCharacterCommand.gd")
-const StoryHideDialogueCommand := preload("res://resources/story/commands/StoryHideDialogueCommand.gd")
-const StoryHideCharacterCommand := preload("res://resources/story/commands/StoryHideCharacterCommand.gd")
-const StoryMicroMotionCommand := preload("res://resources/story/commands/StoryMicroMotionCommand.gd")
+const Cmd = preload("res://resources/story/StoryCommands.gd")
 const MicroMotionShowcaseScene := preload("res://resources/story/micromotion/MicroMotionShowcase.tscn")
-
 
 signal sequence_started(sequence_id)
 signal sequence_finished(sequence_id)
@@ -36,12 +31,12 @@ const _CHAR_MARGIN := 100.0
 @onready var background_rect := $Background
 @onready var background_next_rect := $BackgroundNext
 
-var _cast: StoryCast = StoryCast.new()
+var _cast: Dictionary = {}  # character_id -> StoryCharacter
 var _texture_cache: Dictionary = {}
 var _sequence_playing := false
 var _waiting_for_input := false
 var _current_sequence_id := ""
-var _current_sequence: StorySequence = null
+var _current_sequence: Cmd.Sequence = null
 var _character_side_cache: Dictionary = {}
 var _character_position_cache: Dictionary = {}
 var _character_portrait_cache: Dictionary = {}
@@ -75,13 +70,15 @@ func _unhandled_input(event):
 	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		_trigger_advance()
 
-func set_cast(cast: StoryCast) -> void:
-	_cast = cast if cast else StoryCast.new()
+func set_cast(cast: Dictionary) -> void:
+	_cast = cast if cast else {}
 
 func is_sequence_playing() -> bool:
 	return _sequence_playing
 
-func play_sequence(sequence: StorySequence, metadata: Dictionary = {}):
+# --- Sequence playback (merged from StorySequence.gd) ---
+
+func play_sequence(sequence: Cmd.Sequence, metadata: Dictionary = {}):
 	if sequence == null:
 		return
 	_sequence_playing = true
@@ -89,33 +86,44 @@ func play_sequence(sequence: StorySequence, metadata: Dictionary = {}):
 	var resolved_id: String = metadata.get("id", sequence.id)
 	_current_sequence_id = resolved_id
 	sequence_started.emit(resolved_id)
-	await sequence.play(self)
+	# Play all commands in the sequence
+	for entry in sequence.entries:
+		if entry == null:
+			continue
+		if sequence._skipping and entry is Cmd.Background:
+			sequence._skipping = false
+		var result = entry.execute(self)
+		if result is Signal:
+			if sequence._skipping:
+				_trigger_skip_advance()
+			else:
+				await result
 	_hide_bubbles()
 	_current_sequence_id = ""
 	_current_sequence = null
 	_sequence_playing = false
 	sequence_finished.emit(resolved_id)
 
-func play_line(entry: StoryLineCommand):
+# --- Command handlers ---
+
+func play_line(entry: Cmd.Line):
 	var character_id := entry.speaker_id
 	var side := _resolve_character_side(character_id, entry.side_override)
 	var character_data: StoryCharacter = null
 	if not character_id.is_empty():
-		character_data = _cast.get_character(character_id)
+		character_data = _cast.get(character_id)
 	if character_data:
 		_show_character(character_data, entry.portrait_id, side)
 	elif side.is_empty():
 		side = "left"
-
 	show_dialogue(side, entry.text, entry.offset)
-
 	if entry.wait_for_input:
 		return _prepare_wait_for_advance(entry.min_duration)
 	elif entry.duration > 0.0:
 		return get_tree().create_timer(entry.duration).timeout
 	return null
 
-func play_micro_motion(entry: StoryMicroMotionCommand):
+func play_micro_motion(entry: Cmd.MicroMotion):
 	if entry == null:
 		return null
 	_ensure_micro_motion_showcase()
@@ -123,6 +131,8 @@ func play_micro_motion(entry: StoryMicroMotionCommand):
 		return null
 	var params := entry.params if entry.params else {}
 	return _micro_motion_showcase.play(entry.mode, params)
+
+# --- Input handling ---
 
 func _prepare_wait_for_advance(min_duration: float) -> Signal:
 	_waiting_for_input = false
@@ -157,50 +167,36 @@ func _on_skip_pressed():
 		_trigger_advance()
 
 func _cleanup_for_skip():
-	# 全アクティブtweenを即座に停止
 	for rect in _active_character_tweens.keys():
 		var tween = _active_character_tweens[rect]
 		if tween:
 			tween.kill()
 	_active_character_tweens.clear()
-
-	# キャラクターを非表示にしてリセット
 	for rect in [left_char, center_char, right_char]:
 		rect.visible = false
 		rect.modulate = Color.WHITE
 		rect.scale = Vector2.ONE
 		rect.pivot_offset = Vector2.ZERO
-
-	# クロスフェードのスナップショットを削除（動的に追加されたTextureRectのみ）
 	var known_rects := [left_char, center_char, right_char, background_rect, background_next_rect]
 	for child in get_children():
 		if child == null:
 			continue
 		if child is TextureRect and child not in known_rects and child.owner == null:
 			child.queue_free()
-
-	# 背景フェードを即座に完了
 	if background_next_rect.visible:
 		background_rect.texture = background_next_rect.texture
 		background_rect.modulate = Color.WHITE
 		background_next_rect.visible = false
 		background_next_rect.modulate = Color(1, 1, 1, 0)
-
-	# 吹き出し・バンドテキストをクリア
 	_hide_bubbles()
 	_hide_inner_bands()
-
-	# ポートレイトアニメーション停止
 	var anim_ids := _portrait_animation_timers.keys().duplicate()
 	for char_id in anim_ids:
 		_stop_portrait_animation_by_id(char_id)
-
-	# キャラクターキャッシュをクリア
 	_character_side_cache.clear()
 	_character_position_cache.clear()
 	_character_portrait_cache.clear()
 	_character_portrait_scale_cache.clear()
-
 
 func _ensure_micro_motion_showcase() -> void:
 	if _micro_motion_showcase:
@@ -212,6 +208,7 @@ func _ensure_micro_motion_showcase() -> void:
 	move_child(_micro_motion_showcase, get_child_count() - 1)
 	_micro_motion_showcase.visible = false
 
+# --- Character display ---
 
 func _show_character(character_data: StoryCharacter, portrait_name: String, side: String, position_mode: String = "", position_value: Vector2 = Vector2.ZERO, portrait_scale: float = 0.0):
 	var resolved_portrait := portrait_name
@@ -237,7 +234,6 @@ func _show_character(character_data: StoryCharacter, portrait_name: String, side
 	target_rect.visible = true
 	if not was_visible:
 		target_rect.modulate = Color.WHITE
-	# 1. Resolve scale
 	var character_id := character_data.id if character_data else ""
 	if portrait_scale > 0.0:
 		if not character_id.is_empty():
@@ -249,14 +245,11 @@ func _show_character(character_data: StoryCharacter, portrait_name: String, side
 		char_scale = _character_portrait_scale_cache[character_id]
 	else:
 		char_scale = character_data.display_scale if character_data else 1.0
-	# 2. Apply scale, then compute position from visual size
 	_reset_rect_with_scale(target_rect, side, char_scale)
-	# 3. Resolve position offset
 	var base_pos := target_rect.position
 	var target_pos := _resolve_character_position(character_id, side, position_mode, position_value, base_pos)
 	if not target_pos.is_equal_approx(base_pos):
 		target_rect.position = target_pos
-	# 4. Apply display_offset_y
 	var char_offset_y: float = character_data.display_offset_y if character_data else 0.0
 	_apply_display_offset_y(target_rect, char_offset_y)
 	if character_data and not character_data.id.is_empty():
@@ -267,7 +260,7 @@ func _show_character(character_data: StoryCharacter, portrait_name: String, side
 		_character_portrait_cache[character_data.id] = resolved_portrait
 	return target_rect
 
-func hide_character_entry(entry: StoryHideCharacterCommand):
+func hide_character_entry(entry: Cmd.HideCharacter):
 	var side := _resolve_character_side(entry.character_id, entry.side_override)
 	var target_rect := _get_rect_for_side(side)
 	if not target_rect:
@@ -291,7 +284,7 @@ func _hide_character_by_side(side: String):
 	if target_rect:
 		target_rect.visible = false
 
-func _apply_character_exit_effect(target_rect: TextureRect, entry: StoryHideCharacterCommand, side: String, character_id: String, target_pos: Vector2) -> Tween:
+func _apply_character_exit_effect(target_rect: TextureRect, entry: Cmd.HideCharacter, side: String, character_id: String, target_pos: Vector2) -> Tween:
 	if target_rect == null:
 		return null
 	var effect := entry.exit_effect.strip_edges().to_lower()
@@ -350,7 +343,6 @@ func _apply_character_exit_effect(target_rect: TextureRect, entry: StoryHideChar
 		_register_character_tween(target_rect, tween)
 		return tween
 	elif effect == "shrink" or effect == "fade_shrink":
-		# pivot不使用: 見た目の中心に向かってscaleと位置を同時にアニメーション
 		var current_scale := target_rect.scale
 		var current_pos := target_rect.position
 		var visual_center := current_pos + target_rect.size * current_scale * 0.5
@@ -382,7 +374,9 @@ func _hide_character_control(target_rect: TextureRect, side: String, character_i
 		_character_portrait_scale_cache.erase(character_id)
 		_stop_portrait_animation_by_id(character_id)
 
-func start_portrait_animation(entry: StoryAnimatePortraitCommand):
+# --- Portrait animation ---
+
+func start_portrait_animation(entry: Cmd.AnimatePortrait):
 	if entry == null or entry.character_id.is_empty():
 		return
 	_stop_portrait_animation_by_id(entry.character_id)
@@ -404,7 +398,7 @@ func start_portrait_animation(entry: StoryAnimatePortraitCommand):
 	if frames.size() > 1:
 		_schedule_next_portrait_frame(entry.character_id)
 
-func stop_portrait_animation(entry: StoryStopPortraitAnimationCommand):
+func stop_portrait_animation(entry: Cmd.StopPortraitAnimation):
 	if entry == null:
 		return
 	_stop_portrait_animation_by_id(entry.character_id)
@@ -455,13 +449,15 @@ func _on_portrait_animation_tick(character_id: String):
 func _apply_portrait_frame(character_id: String, portrait_name: String):
 	if character_id.is_empty():
 		return
-	var character_data: StoryCharacter = _cast.get_character(character_id)
+	var character_data: StoryCharacter = _cast.get(character_id)
 	if character_data == null:
 		return
 	var side: String = _character_side_cache.get(character_id, character_data.default_side)
 	_suppress_animation_reset = true
 	_show_character(character_data, portrait_name, side)
 	_suppress_animation_reset = false
+
+# --- Rect/position utilities ---
 
 func _reset_character_transform(target_rect: Control):
 	if target_rect == null:
@@ -475,16 +471,12 @@ func _reset_character_transform(target_rect: Control):
 	_reset_rect_with_scale(target_rect, side, 1.0)
 
 func _reset_rect_with_scale(target_rect: Control, side: String, scale_factor: float) -> void:
-	# 1. Reset transform
 	target_rect.pivot_offset = Vector2.ZERO
-	# 2. Set size to texture size
 	var tex: Texture2D = target_rect.texture if target_rect is TextureRect else null
 	var tex_size := tex.get_size() if tex else target_rect.size
 	target_rect.size = tex_size
-	# 3. Apply scale (pivot at origin, no tricks)
 	var s := scale_factor if scale_factor > 0.0 else 1.0
 	target_rect.scale = Vector2(s, s)
-	# 4. Compute position from visual (scaled) size
 	var vp_size := get_viewport_rect().size
 	var visual_w := tex_size.x * s
 	var visual_h := tex_size.y * s
@@ -509,12 +501,9 @@ func _create_cross_fade_snapshot(source: TextureRect) -> TextureRect:
 	snapshot.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(snapshot)
 	move_child(snapshot, source.get_index())
-
-
 	return snapshot
 
 func _run_cross_fade(old_snapshot: TextureRect, new_rect: TextureRect, duration: float) -> void:
-	# Old stays fully opaque behind; new fades in on top → no transparency gap
 	new_rect.modulate = Color(1, 1, 1, 0)
 	var tween := create_tween()
 	tween.tween_property(new_rect, "modulate:a", 1.0, duration)
@@ -569,7 +558,9 @@ func _emit_signal_relay(relay: _SignalRelay):
 		_pending_signal_relays.erase(relay)
 	relay.completed.emit()
 
-func show_background_entry(entry: StoryBackgroundCommand):
+# --- Background ---
+
+func show_background_entry(entry: Cmd.Background):
 	if entry.path.is_empty():
 		return
 	var tex := _get_texture(entry.path)
@@ -600,10 +591,12 @@ func show_background_entry(entry: StoryBackgroundCommand):
 	tween.tween_property(background_next_rect, "modulate:a", 1.0, fade_time)
 	tween.tween_property(background_rect, "modulate:a", 0.0, fade_time)
 
-func pause_entry(entry: StoryPauseCommand):
+func pause_entry(entry: Cmd.Pause):
 	if entry.duration <= 0.0:
 		return null
 	return get_tree().create_timer(entry.duration).timeout
+
+# --- Dialogue ---
 
 func _hide_bubbles():
 	left_bubble.visible = false
@@ -626,18 +619,19 @@ func show_dialogue(side: String, text: String, offset: Vector2 = Vector2.ZERO):
 	target.position = default_pos + offset
 	target.visible = true
 
-func hide_dialogue_command(_entry: StoryHideDialogueCommand):
+func hide_dialogue_command(_entry: Cmd.HideDialogue):
 	_hide_bubbles()
 
-func show_character_command(entry: StoryShowCharacterCommand):
+# --- ShowCharacter command ---
+
+func show_character_command(entry: Cmd.ShowCharacter):
 	if entry.character_id.is_empty():
 		return
-	var char_data: StoryCharacter = _cast.get_character(entry.character_id)
+	var char_data: StoryCharacter = _cast.get(entry.character_id)
 	if char_data == null:
 		return
 	var side := _resolve_character_side(entry.character_id, entry.side_override)
 	var target_rect := _get_rect_for_side(side)
-	# Cross-fade: snapshot old state before swapping texture
 	var do_cross_fade := entry.transition == "cross_fade" and target_rect != null and target_rect.visible and target_rect.texture != null
 	var old_snapshot: TextureRect = null
 	if do_cross_fade:
@@ -647,7 +641,6 @@ func show_character_command(entry: StoryShowCharacterCommand):
 		if old_snapshot:
 			old_snapshot.queue_free()
 		return
-	# Apply flip override (-1 = side default, 0 = no flip, 1 = flip)
 	if entry.flip >= 0:
 		result_rect.flip_h = (entry.flip == 1)
 	elif side == "right":
@@ -660,7 +653,7 @@ func show_character_command(entry: StoryShowCharacterCommand):
 		var target_pos: Vector2 = result_rect.position
 		_apply_character_entry_effect(result_rect, entry, target_pos, side)
 
-func _apply_character_entry_effect(target_rect: TextureRect, entry: StoryShowCharacterCommand, target_pos: Vector2, side: String):
+func _apply_character_entry_effect(target_rect: TextureRect, entry: Cmd.ShowCharacter, target_pos: Vector2, side: String):
 	if target_rect == null:
 		return
 	var effect := entry.appear_effect.strip_edges().to_lower()
@@ -679,12 +672,9 @@ func _apply_character_entry_effect(target_rect: TextureRect, entry: StoryShowCha
 		return
 	elif effect == "grow" or effect == "fade_grow":
 		var tween := create_tween()
-		# _show_characterで設定された最終状態を保存
 		var final_scale := target_rect.scale
 		var final_pos := target_rect.position
-		# 見た目の中心点を計算（最終状態での中心）
 		var visual_center := final_pos + target_rect.size * final_scale * 0.5
-		# pivot不使用: scale=0の開始位置を中心点に合わせる
 		target_rect.pivot_offset = Vector2.ZERO
 		target_rect.scale = Vector2.ZERO
 		target_rect.position = visual_center
@@ -737,12 +727,10 @@ func _apply_character_entry_effect(target_rect: TextureRect, entry: StoryShowCha
 			tween.parallel().tween_property(target_rect, "position:y", end_y, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 		tween.parallel().tween_property(target_rect, "modulate:a", 1.0, duration)
 		_register_character_tween(target_rect, tween)
-	elif effect == "grow" or effect == "fade_grow":
-		# Already handled earlier
-		pass
 	else:
-		# Unknown effect; keep current offsets (display adjustments intact)
 		target_rect.modulate = Color.WHITE
+
+# --- Band ---
 
 func set_inner_band_color(color: Color) -> void:
 	var style_left: StyleBoxFlat = dialogue_band_left.get_theme_stylebox("panel").duplicate()
@@ -751,7 +739,6 @@ func set_inner_band_color(color: Color) -> void:
 	var style_right: StyleBoxFlat = dialogue_band_right.get_theme_stylebox("panel").duplicate()
 	style_right.bg_color = color
 	dialogue_band_right.add_theme_stylebox_override("panel", style_right)
-	# ボタンにも同じ色を適用
 	var hover_color := Color(color.r + 0.12, color.g + 0.12, color.b + 0.12, color.a)
 	for btn in _menu_bar.get_children():
 		if btn is Button:
@@ -772,25 +759,20 @@ func _set_narrator_vbox_visible(vis: bool) -> void:
 	for child in dialogue_band.get_node("VBox").get_children():
 		child.visible = vis
 
-func apply_band_command(entry: StoryBandCommand):
+func apply_band_command(entry: Cmd.Band):
 	if not dialogue_band:
 		return null
-
 	if not entry.visible:
 		dialogue_band.visible = false
 		_hide_inner_bands()
 		return null
-
 	dialogue_band.visible = true
-
 	var char_data: StoryCharacter = null
 	var side := ""
 	if not entry.speaker_id.is_empty() and entry.speaker_id != "narrator":
-		char_data = _cast.get_character(entry.speaker_id)
+		char_data = _cast.get(entry.speaker_id)
 		if char_data:
 			side = _resolve_character_side(entry.speaker_id, entry.side_override)
-
-	# Pick the appropriate band based on character side
 	var band_speaker: Label
 	var band_body: Label
 	if side == "left" or side == "right":
@@ -812,10 +794,8 @@ func apply_band_command(entry: StoryBandCommand):
 		_set_narrator_vbox_visible(true)
 		band_speaker = dialogue_band_speaker
 		band_body = dialogue_band_body
-
 	if entry.clear_text or not entry.text.is_empty():
 		band_body.text = entry.text
-
 	if char_data:
 		_show_character(char_data, entry.portrait_id, side)
 		if not char_data.display_name.is_empty():
@@ -825,10 +805,11 @@ func apply_band_command(entry: StoryBandCommand):
 			band_speaker.visible = false
 	else:
 		band_speaker.visible = false
-
 	if entry.wait_for_input:
 		return _prepare_wait_for_advance(entry.min_duration)
 	return null
+
+# --- Texture loading ---
 
 func _get_texture(path: String) -> Texture2D:
 	if _texture_cache.has(path):
@@ -853,6 +834,8 @@ func _load_texture(resource_path: String) -> Texture2D:
 	if err == OK:
 		return ImageTexture.create_from_image(image)
 	return null
+
+# --- Side/position resolution ---
 
 func _get_rect_for_side(side: String) -> TextureRect:
 	match side:

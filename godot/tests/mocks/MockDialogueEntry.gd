@@ -1,4 +1,4 @@
-extends "res://resources/story/commands/StoryCommand.gd"
+extends Resource
 class_name MockDialogueEntry
 
 const MockSignalSource := preload("res://tests/mocks/MockSignalSource.gd")

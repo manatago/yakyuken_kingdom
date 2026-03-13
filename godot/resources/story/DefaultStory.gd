@@ -1,57 +1,72 @@
-extends "res://resources/story/StoryScript.gd"
+extends RefCounted
 class_name DefaultStory
 
+const StoryDsl := preload("res://resources/story/dsl/StoryDsl.gd")
 const StoryCharacterResource := preload("res://resources/story/StoryCharacter.gd")
 const PrologueChapterScript := preload("res://resources/story/chapters/PrologueChapter.gd")
 const Stage1ChapterScript := preload("res://resources/story/chapters/Stage1Chapter.gd")
 const DemoChapterScript := preload("res://resources/story/chapters/DemoChapter.gd")
 
-const ENABLE_DEMO := false # デモが不要な場合は false にするか、_chapters から削除してください。
+const ENABLE_DEMO := false
 
-var _chapters: Array = []
+var _cast: Dictionary = {}  # character_id -> StoryCharacter
+var _sequences: Dictionary = {}  # sequence_id -> Cmd.Sequence
 
 func _init() -> void:
-	var cast := StoryCast.new()
-	cast.add_characters([
-		_character("main", "サトシ",
-			"res://assets/characters/char01-001_smile.png", {}),
-		_character("heroine", "みのり",
-			"res://assets/characters/char02-1_childhood_friend.png", {}),
-		_character("guard", "番兵",
-			"res://assets/characters/char03-1_guard.png", {}),
-		_character("matilda", "マチルダ",
-			"res://assets/characters/char04-1_prison_guard.png", {}),
-		_character("receptionist", "受付嬢",
-			"", {}),
-		_character("passerby_male", "通行人の男性",
-			"", {}),
-		_character("passerby_female", "通行人の女性",
-			"", {})
-	])
-	set_cast(cast)
+	_cast = {
+		"main": _character("main", "サトシ",
+			"res://assets/characters/char01-001_smile.png"),
+		"heroine": _character("heroine", "みのり",
+			"res://assets/characters/char02-1_childhood_friend.png"),
+		"guard": _character("guard", "番兵",
+			"res://assets/characters/char03-1_guard.png"),
+		"matilda": _character("matilda", "マチルダ",
+			"res://assets/characters/char04-1_prison_guard.png"),
+		"receptionist": _character("receptionist", "受付嬢", ""),
+		"passerby_male": _character("passerby_male", "通行人の男性", ""),
+		"passerby_female": _character("passerby_female", "通行人の女性", ""),
+	}
+	_build_chapters()
 
-	_build_chapters(cast)
-	_register_chapters(cast)
-
-func _build_chapters(cast: StoryCast) -> void:
-	_chapters.clear()
+func _build_chapters() -> void:
+	var chapters := []
 	if ENABLE_DEMO and DemoChapterScript:
-		_chapters.append(DemoChapterScript.new())
-	_chapters.append(PrologueChapterScript.new())
-	_chapters.append(Stage1ChapterScript.new())
-
-func _register_chapters(cast: StoryCast) -> void:
-	for chapter in _chapters:
+		chapters.append(DemoChapterScript.new())
+	chapters.append(PrologueChapterScript.new())
+	chapters.append(Stage1ChapterScript.new())
+	for chapter in chapters:
 		if chapter:
-			chapter.register_sequences(self, cast)
+			_register_chapter(chapter)
 
-func _character(id: String, display_name: String, default_portrait: String, portraits: Dictionary, default_side: String = "", p_display_scale: float = 1.0, p_display_offset_y: float = 0.0) -> StoryCharacter:
+func _register_chapter(chapter) -> void:
+	for definition in chapter.get_sequence_builders():
+		var sequence_id: String = definition.get("id", "")
+		var builder_name: String = definition.get("builder", "")
+		if sequence_id.is_empty() or builder_name.is_empty():
+			continue
+		if not chapter.has_method(builder_name):
+			push_warning("Missing builder method %s" % builder_name)
+			continue
+		var dsl := StoryDsl.new(_cast)
+		var sequence = dsl.build(sequence_id, Callable(chapter, builder_name))
+		if sequence:
+			_sequences[sequence_id] = sequence
+
+func get_cast() -> Dictionary:
+	return _cast
+
+func get_sequence(sequence_id: String):
+	return _sequences.get(sequence_id, null)
+
+func get_sequence_ids() -> Array:
+	return _sequences.keys()
+
+func _character(id: String, display_name: String, default_portrait: String, default_side: String = "", p_display_scale: float = 1.0, p_display_offset_y: float = 0.0) -> StoryCharacter:
 	var data := StoryCharacterResource.new()
 	data.id = id
 	data.display_name = display_name
 	data.default_side = default_side
 	data.default_portrait = default_portrait
-	data.portraits = portraits
 	data.display_scale = p_display_scale
 	data.display_offset_y = p_display_offset_y
 	return data

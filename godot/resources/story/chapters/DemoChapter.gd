@@ -1,8 +1,8 @@
-extends StoryChapterBase
+extends RefCounted
 class_name DemoChapter
 
 func get_sequence_builders() -> Array:
-	return [sequence_builder("demo", "_build_demo")]
+	return [{"id": "demo", "builder": "_build_demo"}]
 
 func _build_demo(b):
 	b.background("res://assets/backgrounds/bg01_university.png", 0.4)

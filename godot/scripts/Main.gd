@@ -1,6 +1,6 @@
 extends Control
 
-const StoryScriptResource := preload("res://resources/story/DefaultStory.gd")
+const DefaultStoryScript := preload("res://resources/story/DefaultStory.gd")
 const DefaultOpponentData := preload("res://resources/characters/DefaultGirl.tres")
 const DefaultRockTexture := preload("res://assets/cards/rock.jpg")
 const DefaultScissorsTexture := preload("res://assets/cards/scissors.jpg")
@@ -38,7 +38,7 @@ var player_lose_rate: float = 0.1
 
 var story_scene_scene = preload("res://StoryScene.tscn")
 var story_scene_instance
-var story_script: StoryScript
+var story_script: DefaultStory
 
 enum GameState { INTRO, BATTLE, RESULT }
 var current_state = GameState.INTRO
@@ -113,7 +113,7 @@ func _create_story_scene():
 		move_child(story_scene_instance, insert_index)
 	else:
 		move_child(story_scene_instance, 0)
-	story_script = StoryScriptResource.new()
+	story_script = DefaultStoryScript.new()
 	story_scene_instance.set_cast(story_script.get_cast())
 	story_scene_instance.sequence_started.connect(_on_story_sequence_started)
 	story_scene_instance.sequence_finished.connect(_on_story_sequence_finished)
@@ -217,7 +217,7 @@ func get_battle_background_path() -> String:
 
 func scenario():
 	# Play the demo and jump straight into the first card battle
-	var demo_sequence := story_script.get_sequence("demo")
+	var demo_sequence = story_script.get_sequence("demo")
 	if demo_sequence:
 		await story_scene_instance.play_sequence(demo_sequence, {"id": "demo"})
 

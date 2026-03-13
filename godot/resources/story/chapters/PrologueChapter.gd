@@ -1,20 +1,17 @@
-extends StoryChapterBase
+extends RefCounted
 class_name PrologueChapter
 
-const StoryCharacterHandle := preload("res://resources/story/dsl/StoryCharacterHandle.gd")
-
 func get_sequence_builders() -> Array:
-	return [sequence_builder("prologue", "_build_prologue")]
+	return [{"id": "prologue", "builder": "_build_prologue"}]
 
 func _build_prologue(b):
-	# b は StoryDsl.build() から渡されるビルダープロキシで、背景・台詞などを登録するための DSL エントリポイント。
-	var hero: StoryCharacterHandle = b.character("main")
-	var heroine: StoryCharacterHandle = b.character("heroine")
-	var receptionist: StoryCharacterHandle = b.character("receptionist")
-	var passerby_male: StoryCharacterHandle = b.character("passerby_male")
-	var passerby_female: StoryCharacterHandle = b.character("passerby_female")
-	var guard: StoryCharacterHandle = b.character("guard")
-	var matilda: StoryCharacterHandle = b.character("matilda")
+	var hero = b.character("main")
+	var heroine = b.character("heroine")
+	var receptionist = b.character("receptionist")
+	var passerby_male = b.character("passerby_male")
+	var passerby_female = b.character("passerby_female")
+	var guard = b.character("guard")
+	var matilda = b.character("matilda")
 
 	b.set_protagonist("main")
 	# 内部バンドの色を設定（プリセット: StoryDsl.gd の _band_colors を参照）

@@ -1,20 +1,18 @@
-extends StoryChapterBase
+extends RefCounted
 class_name Stage1Chapter
-
-const StoryCharacterHandle := preload("res://resources/story/dsl/StoryCharacterHandle.gd")
 
 func get_sequence_builders() -> Array:
 	return [
-		sequence_builder("stage1_intro", "_build_intro"),
-		sequence_builder("stage1_win", "_build_win"),
-		sequence_builder("battle_draw", "_build_battle_draw"),
-		sequence_builder("battle_win", "_build_battle_win"),
-		sequence_builder("battle_lose", "_build_battle_lose"),
+		{"id": "stage1_intro", "builder": "_build_intro"},
+		{"id": "stage1_win", "builder": "_build_win"},
+		{"id": "battle_draw", "builder": "_build_battle_draw"},
+		{"id": "battle_win", "builder": "_build_battle_win"},
+		{"id": "battle_lose", "builder": "_build_battle_lose"},
 	]
 
 func _build_intro(b):
-	var hero: StoryCharacterHandle = b.character("main")
-	var matilda: StoryCharacterHandle = b.character("matilda")
+	var hero = b.character("main")
+	var matilda = b.character("matilda")
 
 	b.background("res://assets/backgrounds/bg06_prison_arena.png", 0.5)
 	hero.appear({"side": "left"})
@@ -30,8 +28,8 @@ func _build_intro(b):
 	matilda.say("じゃあ、初戦だ。異世界野球拳、始め！")
 
 func _build_win(b):
-	var hero: StoryCharacterHandle = b.character("main")
-	var matilda: StoryCharacterHandle = b.character("matilda")
+	var hero = b.character("main")
+	var matilda = b.character("matilda")
 
 	b.background("res://assets/backgrounds/bg06_prison_arena.png", 0.5)
 	hero.appear({"side": "left"})
@@ -46,8 +44,8 @@ func _build_win(b):
 	hero.say("了解。異世界野球拳ロード、始まったばかりだ。", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
 
 func _build_battle_draw(b):
-	var hero: StoryCharacterHandle = b.character("main")
-	var matilda: StoryCharacterHandle = b.character("matilda")
+	var hero = b.character("main")
+	var matilda = b.character("matilda")
 
 	hero.appear({"side": "left"})
 	matilda.appear({"side": "right"})
@@ -55,8 +53,8 @@ func _build_battle_draw(b):
 	hero.say("そう簡単には譲らないさ。", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
 
 func _build_battle_win(b):
-	var hero: StoryCharacterHandle = b.character("main")
-	var matilda: StoryCharacterHandle = b.character("matilda")
+	var hero = b.character("main")
+	var matilda = b.character("matilda")
 
 	hero.appear({"side": "left"})
 	matilda.appear({"side": "right"})
@@ -64,8 +62,8 @@ func _build_battle_win(b):
 	hero.say("この調子で畳みかける。", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
 
 func _build_battle_lose(b):
-	var hero: StoryCharacterHandle = b.character("main")
-	var matilda: StoryCharacterHandle = b.character("matilda")
+	var hero = b.character("main")
+	var matilda = b.character("matilda")
 
 	hero.appear({"side": "left"})
 	matilda.appear({"side": "right"})

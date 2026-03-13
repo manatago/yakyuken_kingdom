@@ -2,8 +2,7 @@ extends TestSuite
 class_name StoryScriptTests
 
 const StoryScriptResource := preload("res://resources/story/DefaultStory.gd")
-const StoryBackgroundCommand := preload("res://resources/story/commands/StoryBackgroundCommand.gd")
-const StoryLineCommand := preload("res://resources/story/commands/StoryLineCommand.gd")
+const Cmd := preload("res://resources/story/StoryCommands.gd")
 
 func get_name() -> String:
 	return "StoryScript"
@@ -37,8 +36,8 @@ func get_tests() -> Array:
 	]
 
 func _characters_are_registered() -> bool:
-	var story_script: StoryScript = StoryScriptResource.new()
-	var characters: Dictionary = story_script.get_cast().all_characters()
+	var story_script: DefaultStory = StoryScriptResource.new()
+	var characters: Dictionary = story_script.get_cast()
 	if not expect_false(characters.is_empty(), "Character library should not be empty"):
 		return false
 	for char_id in characters.keys():
@@ -48,43 +47,45 @@ func _characters_are_registered() -> bool:
 	return true
 
 func _sequence_returns_dialogue_sequence() -> bool:
-	var story_script: StoryScript = StoryScriptResource.new()
+	var story_script: DefaultStory = StoryScriptResource.new()
 	var sequence = story_script.get_sequence("battle_draw")
-	return expect_true(sequence is StorySequence, "get_sequence should return a StorySequence")
+	return expect_true(sequence is Cmd.Sequence, "get_sequence should return a Cmd.Sequence")
 
 func _prologue_has_entries() -> bool:
-	var story_script: StoryScript = StoryScriptResource.new()
+	var story_script: DefaultStory = StoryScriptResource.new()
 	var sequence = story_script.get_sequence("prologue")
-	if not expect_true(sequence is StorySequence, "Prologue should return StorySequence"):
+	if not expect_true(sequence is Cmd.Sequence, "Prologue should return Cmd.Sequence"):
 		return false
 	return expect_true(sequence.entries.size() > 0, "Prologue sequence must contain entries")
 
 func _prologue_has_main_lines() -> bool:
-	var story_script: StoryScript = StoryScriptResource.new()
+	var story_script: DefaultStory = StoryScriptResource.new()
 	var sequence = story_script.get_sequence("prologue")
-	if not expect_true(sequence is StorySequence, "Prologue should return StorySequence"):
+	if not expect_true(sequence is Cmd.Sequence, "Prologue should return Cmd.Sequence"):
 		return false
 	for entry in sequence.entries:
-		if entry is StoryLineCommand and entry.speaker_id == "main":
+		if entry is Cmd.Line and entry.speaker_id == "main":
 			return true
-	return fail("Prologue should contain at least one line for main")
+		if entry is Cmd.Band and entry.speaker_id == "main":
+			return true
+	return fail("Prologue should contain at least one line or band for main")
 
 func _prologue_has_background_switches() -> bool:
-	var story_script: StoryScript = StoryScriptResource.new()
+	var story_script: DefaultStory = StoryScriptResource.new()
 	var sequence = story_script.get_sequence("prologue")
-	if not expect_true(sequence is StorySequence, "Prologue should return StorySequence"):
+	if not expect_true(sequence is Cmd.Sequence, "Prologue should return Cmd.Sequence"):
 		return false
 	for entry in sequence.entries:
-		if entry is StoryBackgroundCommand:
+		if entry is Cmd.Background:
 			return true
 	return fail("Prologue should include at least one background entry")
 
 func _stage_intro_has_matilda_lines() -> bool:
-	var story_script: StoryScript = StoryScriptResource.new()
+	var story_script: DefaultStory = StoryScriptResource.new()
 	var sequence = story_script.get_sequence("stage1_intro")
-	if not expect_true(sequence is StorySequence, "Stage intro should return StorySequence"):
+	if not expect_true(sequence is Cmd.Sequence, "Stage intro should return Cmd.Sequence"):
 		return false
 	for entry in sequence.entries:
-		if entry is StoryLineCommand and entry.speaker_id == "matilda":
+		if entry is Cmd.Line and entry.speaker_id == "matilda":
 			return true
 	return fail("Stage1 intro should contain lines for matilda")

@@ -3,9 +3,7 @@ class_name StorySceneTests
 
 const StoryScenePacked := preload("res://StoryScene.tscn")
 const StoryScriptResource := preload("res://resources/story/DefaultStory.gd")
-const StoryHideCharacterCommand := preload("res://resources/story/commands/StoryHideCharacterCommand.gd")
-const StoryLineCommand := preload("res://resources/story/commands/StoryLineCommand.gd")
-const StoryBandCommand := preload("res://resources/story/commands/StoryBandCommand.gd")
+const Cmd := preload("res://resources/story/StoryCommands.gd")
 
 var _story_scene = null
 var _story_script = null
@@ -14,14 +12,10 @@ func get_name() -> String:
 	return "StoryScene"
 
 func get_tests() -> Array:
-	# Note: Some tests requiring tween/animation signals are excluded in headless mode
-	# as they hang waiting for signals that require SceneTree processing.
 	return [
 		{"name": "show_dialogue_updates_bubbles", "callable": Callable(self, "_show_dialogue_updates_bubbles")},
 		{"name": "show_character_applies_texture", "callable": Callable(self, "_show_character_applies_texture")},
 		{"name": "hide_character_entry_hides_side", "callable": Callable(self, "_hide_character_entry_hides_side")},
-		# {"name": "hide_character_entry_waits_for_exit", "callable": Callable(self, "_hide_character_entry_waits_for_exit")},  # Requires tween processing
-		# {"name": "play_sequence_shows_characters", "callable": Callable(self, "_play_sequence_shows_characters")},  # Requires scene processing
 		{"name": "band_dialogue_shows_band_panel", "callable": Callable(self, "_band_dialogue_shows_band_panel")}
 	]
 
@@ -47,7 +41,7 @@ func _show_dialogue_updates_bubbles() -> bool:
 	)
 
 func _show_character_applies_texture() -> bool:
-	var char_data = _story_script.get_cast().get_character("main")
+	var char_data = _story_script.get_cast().get("main")
 	_story_scene._show_character(char_data, "Default", "left")
 	return (
 		expect_true(_story_scene.left_char.visible, "Left character should be visible")
@@ -55,43 +49,17 @@ func _show_character_applies_texture() -> bool:
 	)
 
 func _hide_character_entry_hides_side() -> bool:
-	var char_data = _story_script.get_cast().get_character("matilda")
+	var char_data = _story_script.get_cast().get("matilda")
 	_story_scene._show_character(char_data, "Default", "right")
-	var entry := StoryHideCharacterCommand.new()
+	var entry := Cmd.HideCharacter.new()
 	entry.character_id = "matilda"
 	_story_scene.hide_character_entry(entry)
 	return expect_false(_story_scene.right_char.visible, "Right character should be hidden after leave entry")
 
-func _hide_character_entry_waits_for_exit() -> bool:
-	var char_data = _story_script.get_cast().get_character("matilda")
-	_story_scene._show_character(char_data, "Default", "right")
-	var entry := StoryHideCharacterCommand.new()
-	entry.character_id = "matilda"
-	entry.exit_effect = "fade"
-	entry.exit_duration = 0.05
-	entry.wait_for_exit = true
-	var result_signal = _story_scene.hide_character_entry(entry)
-	if not expect_true(result_signal is Signal, "Wait-for-exit should return a signal"):
-		return false
-	await result_signal
-	return expect_false(_story_scene.right_char.visible, "Character should be hidden after waiting")
-
-func _play_sequence_shows_characters() -> bool:
-	_story_scene.set_cast(_story_script.get_cast())
-	var sequence = _story_script.get_sequence("prologue")
-	if not expect_true(sequence is StorySequence, "Prologue should return StorySequence"):
-		return false
-	for entry in sequence.entries:
-		if entry is StoryLineCommand:
-			entry.wait_for_input = false
-			entry.duration = 0.0
-	await _story_scene.play_sequence(sequence)
-	return expect_true(_story_scene.left_char.visible, "Story should display the left character")
-
 func _band_dialogue_shows_band_panel() -> bool:
-	var band_command := StoryBandCommand.new()
+	var band_command := Cmd.Band.new()
 	band_command.visible = true
-	band_command.speaker_id = "main"
+	band_command.speaker_id = "narrator"
 	band_command.text = "バンド表示テスト"
 	_story_scene.apply_band_command(band_command)
 	var band = _story_scene.get_node("DialogueBand")
