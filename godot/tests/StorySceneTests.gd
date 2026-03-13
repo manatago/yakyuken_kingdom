@@ -13,7 +13,6 @@ func get_name() -> String:
 
 func get_tests() -> Array:
 	return [
-		{"name": "show_dialogue_updates_bubbles", "callable": Callable(self, "_show_dialogue_updates_bubbles")},
 		{"name": "show_character_applies_texture", "callable": Callable(self, "_show_character_applies_texture")},
 		{"name": "hide_character_entry_hides_side", "callable": Callable(self, "_hide_character_entry_hides_side")},
 		{"name": "band_dialogue_shows_band_panel", "callable": Callable(self, "_band_dialogue_shows_band_panel")}
@@ -28,17 +27,6 @@ func before_each() -> void:
 func after_each() -> void:
 	_story_scene = null
 	_story_script = null
-
-func _show_dialogue_updates_bubbles() -> bool:
-	var offset := Vector2(12, -6)
-	_story_scene.show_dialogue("left", "テストメッセージ", offset)
-	var left_bubble = _story_scene.left_bubble
-	return (
-		expect_true(left_bubble.visible, "Left bubble should be visible")
-		and expect_false(_story_scene.right_bubble.visible, "Right bubble should be hidden")
-		and expect_equals(left_bubble.text, "テストメッセージ", "Bubble text should match")
-		and expect_equals(left_bubble.position, _story_scene.left_bubble_default_pos + offset, "Offset should be applied")
-	)
 
 func _show_character_applies_texture() -> bool:
 	var char_data = _story_script.get_cast().get("main")

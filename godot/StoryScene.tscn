@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" path="res://scripts/StoryScene.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://assets/backgrounds/prologue/bg01_university.png" id="1_bg"]
-[ext_resource type="PackedScene" uid="uid://dd2xgh4sby82w" path="res://SpeechBubble.tscn" id="4_bubble_scene"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_band_bg"]
 bg_color = Color(0.08, 0.08, 0.12, 0.75)
@@ -91,45 +90,16 @@ visible = false
 layout_mode = 0
 expand_mode = 0
 
-[node name="SpeechBubbleLeft" parent="LeftChar" instance=ExtResource("4_bubble_scene")]
-visible = false
-layout_mode = 0
-offset_left = 350.0
-offset_top = 50.0
-offset_right = 350.0
-offset_bottom = 50.0
-text = "こんにちは！"
-
 [node name="CenterChar" type="TextureRect" parent="."]
 visible = false
 layout_mode = 0
 expand_mode = 0
-
-[node name="SpeechBubbleCenter" parent="CenterChar" instance=ExtResource("4_bubble_scene")]
-visible = false
-layout_mode = 0
-offset_left = -50.0
-offset_top = -50.0
-offset_right = -50.0
-offset_bottom = -50.0
-text = "センターです"
 
 [node name="RightChar" type="TextureRect" parent="."]
 visible = false
 layout_mode = 0
 expand_mode = 0
 flip_h = true
-
-[node name="SpeechBubbleRight" parent="RightChar" instance=ExtResource("4_bubble_scene")]
-visible = false
-layout_mode = 0
-offset_left = -250.0
-offset_top = 50.0
-offset_right = -250.0
-offset_bottom = 50.0
-text = "勝負だ！
-絶対に負けないからな！"
-is_left = false
 
 [node name="DialogueBand" type="Panel" parent="."]
 visible = false

@@ -10,12 +10,6 @@ signal advance_requested
 @onready var left_char := $LeftChar
 @onready var center_char := $CenterChar
 @onready var right_char := $RightChar
-@onready var left_bubble := $LeftChar/SpeechBubbleLeft
-@onready var center_bubble := $CenterChar/SpeechBubbleCenter
-@onready var right_bubble := $RightChar/SpeechBubbleRight
-@onready var left_bubble_default_pos: Vector2 = left_bubble.position
-@onready var center_bubble_default_pos: Vector2 = center_bubble.position
-@onready var right_bubble_default_pos: Vector2 = right_bubble.position
 const _CHAR_MARGIN := 100.0
 @onready var dialogue_band := $DialogueBand
 @onready var dialogue_band_speaker := $DialogueBand/VBox/SpeakerLabel
@@ -45,7 +39,6 @@ var _pending_signal_relays: Array = []
 var _portrait_animation_data: Dictionary = {}
 var _portrait_animation_timers: Dictionary = {}
 var _suppress_animation_reset := false
-var _micro_motion_showcase = null
 
 func _ready():
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -55,9 +48,6 @@ func _ready():
 	left_char.visible = false
 	center_char.visible = false
 	right_char.visible = false
-	left_bubble.visible = false
-	center_bubble.visible = false
-	right_bubble.visible = false
 	_menu_bar.get_node("SkipButton").pressed.connect(_on_skip_pressed)
 
 func _unhandled_input(event):
@@ -96,7 +86,6 @@ func play_sequence(sequence: Cmd.Sequence, metadata: Dictionary = {}):
 				_trigger_skip_advance()
 			else:
 				await result
-	_hide_bubbles()
 	_current_sequence_id = ""
 	_current_sequence = null
 	_sequence_playing = false
@@ -105,21 +94,15 @@ func play_sequence(sequence: Cmd.Sequence, metadata: Dictionary = {}):
 # --- Command handlers ---
 
 func play_line(entry: Cmd.Line):
-	var character_id := entry.speaker_id
-	var side := _resolve_character_side(character_id, entry.side_override)
-	var character_data: StoryCharacter = null
-	if not character_id.is_empty():
-		character_data = _cast.get(character_id)
-	if character_data:
-		_show_character(character_data, entry.portrait_id, side)
-	elif side.is_empty():
-		side = "left"
-	show_dialogue(side, entry.text, entry.offset)
-	if entry.wait_for_input:
-		return _prepare_wait_for_advance(entry.min_duration)
-	elif entry.duration > 0.0:
-		return get_tree().create_timer(entry.duration).timeout
-	return null
+	var band_cmd := Cmd.Band.new()
+	band_cmd.visible = true
+	band_cmd.speaker_id = entry.speaker_id
+	band_cmd.text = entry.text
+	band_cmd.portrait_id = entry.portrait_id
+	band_cmd.side_override = entry.side_override
+	band_cmd.wait_for_input = entry.wait_for_input
+	band_cmd.min_duration = entry.min_duration
+	return apply_band_command(band_cmd)
 
 # --- Input handling ---
 
@@ -177,7 +160,6 @@ func _cleanup_for_skip():
 		background_rect.modulate = Color.WHITE
 		background_next_rect.visible = false
 		background_next_rect.modulate = Color(1, 1, 1, 0)
-	_hide_bubbles()
 	_hide_inner_bands()
 	var anim_ids := _portrait_animation_timers.keys().duplicate()
 	for char_id in anim_ids:
@@ -576,31 +558,8 @@ func pause_entry(entry: Cmd.Pause):
 		return null
 	return get_tree().create_timer(entry.duration).timeout
 
-# --- Dialogue ---
-
-func _hide_bubbles():
-	left_bubble.visible = false
-	center_bubble.visible = false
-	right_bubble.visible = false
-
-func show_dialogue(side: String, text: String, offset: Vector2 = Vector2.ZERO):
-	left_bubble.visible = false
-	center_bubble.visible = false
-	right_bubble.visible = false
-	var target := left_bubble
-	var default_pos: Vector2 = left_bubble_default_pos
-	if side == "right":
-		target = right_bubble
-		default_pos = right_bubble_default_pos
-	elif side == "center":
-		target = center_bubble
-		default_pos = center_bubble_default_pos
-	target.text = text
-	target.position = default_pos + offset
-	target.visible = true
-
 func hide_dialogue_command(_entry: Cmd.HideDialogue):
-	_hide_bubbles()
+	_hide_inner_bands()
 
 # --- ShowCharacter command ---
 
