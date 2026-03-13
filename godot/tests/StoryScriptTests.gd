@@ -28,10 +28,6 @@ func get_tests() -> Array:
 		{
 			"name": "prologue_has_background_switches",
 			"callable": Callable(self, "_prologue_has_background_switches")
-		},
-		{
-			"name": "stage_intro_has_matilda_lines",
-			"callable": Callable(self, "_stage_intro_has_matilda_lines")
 		}
 	]
 
@@ -48,7 +44,7 @@ func _characters_are_registered() -> bool:
 
 func _sequence_returns_dialogue_sequence() -> bool:
 	var story_script: DefaultStory = StoryScriptResource.new()
-	var sequence = story_script.get_sequence("battle_draw")
+	var sequence = story_script.get_sequence("prologue")
 	return expect_true(sequence is Cmd.Sequence, "get_sequence should return a Cmd.Sequence")
 
 func _prologue_has_entries() -> bool:
@@ -80,12 +76,4 @@ func _prologue_has_background_switches() -> bool:
 			return true
 	return fail("Prologue should include at least one background entry")
 
-func _stage_intro_has_matilda_lines() -> bool:
-	var story_script: DefaultStory = StoryScriptResource.new()
-	var sequence = story_script.get_sequence("stage1_intro")
-	if not expect_true(sequence is Cmd.Sequence, "Stage intro should return Cmd.Sequence"):
-		return false
-	for entry in sequence.entries:
-		if entry is Cmd.Line and entry.speaker_id == "matilda":
-			return true
-	return fail("Stage1 intro should contain lines for matilda")
+

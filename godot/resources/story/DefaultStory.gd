@@ -4,7 +4,7 @@ class_name DefaultStory
 const StoryDsl := preload("res://resources/story/dsl/StoryDsl.gd")
 const StoryCharacterResource := preload("res://resources/story/StoryCharacter.gd")
 const PrologueChapterScript := preload("res://resources/story/chapters/PrologueChapter.gd")
-const Stage1ChapterScript := preload("res://resources/story/chapters/Stage1Chapter.gd")
+
 
 var _cast: Dictionary = {}  # character_id -> StoryCharacter
 var _sequences: Dictionary = {}  # sequence_id -> Cmd.Sequence
@@ -24,7 +24,6 @@ func _init() -> void:
 func _build_chapters() -> void:
 	var chapters := [
 		PrologueChapterScript.new(),
-		Stage1ChapterScript.new(),
 	]
 	for chapter in chapters:
 		_register_chapter(chapter)
