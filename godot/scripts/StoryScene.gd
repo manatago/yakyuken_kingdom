@@ -511,6 +511,7 @@ func _run_cross_fade(old_snapshot: TextureRect, new_rect: TextureRect, duration:
 		if is_instance_valid(old_snapshot):
 			old_snapshot.queue_free())
 
+
 func _apply_display_offset_y(target_rect: Control, offset_y: float) -> void:
 	if is_zero_approx(offset_y):
 		return
