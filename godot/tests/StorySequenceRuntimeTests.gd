@@ -1,7 +1,7 @@
 extends TestSuite
 class_name StorySequenceRuntimeTests
 
-const Cmd := preload("res://resources/story/StoryCommands.gd")
+const Cmd := preload("res://resources/story/dsl/StoryDsl.gd")
 const MockStoryScene := preload("res://tests/mocks/MockStoryScene.gd")
 
 func get_name() -> String:

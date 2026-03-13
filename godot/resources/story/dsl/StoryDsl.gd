@@ -1,7 +1,119 @@
 extends RefCounted
 class_name StoryDsl
 
-const Cmd = preload("res://resources/story/StoryCommands.gd")
+# --- Command classes (data) ---
+
+class Base extends Resource:
+	func execute(_scene):
+		return null
+
+class Line extends Base:
+	var speaker_id: String = ""
+	var text: String = ""
+	var portrait_id: String = ""
+	var side_override: String = ""
+	var offset: Vector2 = Vector2.ZERO
+	var wait_for_input: bool = true
+	var min_duration: float = 0.0
+	var duration: float = 0.5
+	func execute(scene):
+		return scene.play_line(self)
+
+class Background extends Base:
+	var path: String = ""
+	var fade: float = 0.0
+	func execute(scene):
+		scene.show_background_entry(self)
+
+class Pause extends Base:
+	var duration: float = 0.0
+	func execute(scene):
+		return scene.pause_entry(self)
+
+class ShowCharacter extends Base:
+	var character_id: String = ""
+	var portrait_id: String = ""
+	var side_override: String = ""
+	var position_mode: String = ""
+	var position: Vector2 = Vector2.ZERO
+	var appear_effect: String = ""
+	var appear_from: String = ""
+	var appear_duration: float = 0.0
+	var appear_distance: float = 200.0
+	var portrait_scale: float = 0.0
+	var transition: String = ""
+	var transition_duration: float = 0.3
+	var flip: int = -1
+	func execute(scene):
+		scene.show_character_command(self)
+
+class HideCharacter extends Base:
+	var character_id: String = ""
+	var side_override: String = ""
+	var exit_effect: String = ""
+	var exit_to: String = ""
+	var exit_duration: float = 0.0
+	var exit_distance: float = 200.0
+	var wait_for_exit: bool = false
+	var wait_after: float = 0.0
+	func execute(scene):
+		return scene.hide_character_entry(self)
+
+class Band extends Base:
+	var visible: bool = true
+	var speaker_id: String = ""
+	var text: String = ""
+	var wait_for_input: bool = false
+	var min_duration: float = 0.0
+	var portrait_id: String = ""
+	var side_override: String = ""
+	var clear_text: bool = false
+	func execute(scene):
+		return scene.apply_band_command(self)
+
+class BandColor extends Base:
+	var color: Color = Color(0.50, 0.38, 0.18, 0.85)
+	func execute(scene):
+		scene.set_inner_band_color(color)
+		return null
+
+class HideDialogue extends Base:
+	func execute(scene):
+		return scene.hide_dialogue_command(self)
+
+class AnimatePortrait extends Base:
+	var character_id: String = ""
+	var portrait_ids: Array[String] = []
+	var frame_duration: float = 0.15
+	var loop_count: int = 0
+	func execute(scene):
+		if scene and scene.has_method("start_portrait_animation"):
+			scene.start_portrait_animation(self)
+		return null
+
+class StopPortraitAnimation extends Base:
+	var character_id: String = ""
+	func execute(scene):
+		if scene and scene.has_method("stop_portrait_animation"):
+			scene.stop_portrait_animation(self)
+		return null
+
+class MicroMotion extends Base:
+	var mode: String = ""
+	var params: Dictionary = {}
+	func execute(scene):
+		if scene == null or not scene.has_method("play_micro_motion"):
+			return null
+		return scene.play_micro_motion(self)
+
+class Sequence extends RefCounted:
+	var id: String = ""
+	var entries: Array = []
+	var _skipping := false
+	func skip_to_next_background():
+		_skipping = true
+
+# --- DSL (factory API) ---
 
 var _cast: Dictionary = {}  # character_id -> StoryCharacter
 var _protagonist_id: String = ""
@@ -25,7 +137,7 @@ func character(id: String) -> CharacterHandle:
 	return CharacterHandle.new(self, id)
 
 func line(character_id: String, text: String, extra: Dictionary = {}):
-	var entry := Cmd.Line.new()
+	var entry := Line.new()
 	entry.speaker_id = character_id
 	entry.text = text
 	entry.portrait_id = extra.get("portrait", "")
@@ -40,18 +152,18 @@ func aside(text: String, extra: Dictionary = {}):
 	return line("", text, extra)
 
 func background(path: String, fade := 0.0):
-	var entry := Cmd.Background.new()
+	var entry := Background.new()
 	entry.path = path
 	entry.fade = fade
 	return entry
 
 func pause(duration: float):
-	var entry := Cmd.Pause.new()
+	var entry := Pause.new()
 	entry.duration = duration
 	return entry
 
 func show_character(character_id: String, extra: Dictionary = {}):
-	var entry := Cmd.ShowCharacter.new()
+	var entry := ShowCharacter.new()
 	entry.character_id = character_id
 	entry.portrait_id = extra.get("portrait", "")
 	entry.side_override = extra.get("side", "")
@@ -68,7 +180,7 @@ func show_character(character_id: String, extra: Dictionary = {}):
 	return entry
 
 func hide_character(character_id: String, extra: Dictionary = {}):
-	var entry := Cmd.HideCharacter.new()
+	var entry := HideCharacter.new()
 	entry.character_id = character_id
 	entry.side_override = extra.get("side", "")
 	entry.exit_effect = extra.get("exit_effect", "")
@@ -106,16 +218,16 @@ func band_clear_text():
 	return _band_command(true, "", "", false, 0.0, "", "", true)
 
 func hide_dialogue():
-	return Cmd.HideDialogue.new()
+	return HideDialogue.new()
 
 func micro_motion(mode: String, extra: Dictionary = {}):
-	var entry := Cmd.MicroMotion.new()
+	var entry := MicroMotion.new()
 	entry.mode = mode
 	entry.params = extra.duplicate()
 	return entry
 
 func animate_portrait(character_id: String, portraits: Array, frame_duration: float = 0.15, loop_count: int = 0):
-	var entry := Cmd.AnimatePortrait.new()
+	var entry := AnimatePortrait.new()
 	entry.character_id = character_id
 	var frames: Array[String] = []
 	for item in portraits:
@@ -127,7 +239,7 @@ func animate_portrait(character_id: String, portraits: Array, frame_duration: fl
 	return entry
 
 func stop_portrait_animation(character_id: String):
-	var entry := Cmd.StopPortraitAnimation.new()
+	var entry := StopPortraitAnimation.new()
 	entry.character_id = character_id
 	return entry
 
@@ -135,7 +247,7 @@ func register_band_color(name: String, color: Color) -> void:
 	_band_colors[name] = color
 
 func band_color(color_or_name):
-	var entry := Cmd.BandColor.new()
+	var entry := BandColor.new()
 	if color_or_name is Color:
 		entry.color = color_or_name
 	elif color_or_name is String and _band_colors.has(color_or_name):
@@ -149,12 +261,12 @@ func set_protagonist_id(id: String):
 		return
 	_protagonist_id = id
 
-func build(sequence_id: String, builder_func: Callable) -> Cmd.Sequence:
+func build(sequence_id: String, builder_func: Callable) -> Sequence:
 	var commands: Array = []
 	var proxy := _CommandCollector.new(self, commands)
 	if builder_func.is_valid():
 		builder_func.call(proxy)
-	var seq := Cmd.Sequence.new()
+	var seq := Sequence.new()
 	seq.id = sequence_id
 	seq.entries = commands
 	return seq
@@ -163,7 +275,7 @@ func get_cast() -> Dictionary:
 	return _cast
 
 func _band_command(p_visible: bool, text: String = "", speaker_id: String = "", wait_for_input: bool = false, min_duration: float = 0.0, portrait_id: String = "", side_override: String = "", clear_text: bool = false):
-	var entry := Cmd.Band.new()
+	var entry := Band.new()
 	entry.visible = p_visible
 	entry.text = text
 	entry.speaker_id = speaker_id
@@ -183,7 +295,7 @@ func _resolve_protagonist_id() -> String:
 		return id
 	return ""
 
-# --- CharacterHandle (merged from StoryCharacterHandle.gd) ---
+# --- CharacterHandle ---
 
 class CharacterHandle:
 	var _dsl: StoryDsl
