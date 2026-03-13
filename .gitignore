@@ -27,3 +27,17 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+
+# Godot
+.godot/
+
+# Asset backups
+*.zip
+*_backup.png
+*_backup.tscn
+godot/assets/characters/prologue/BK_tmp/
+godot/assets/characters/prologue/bk/
+godot/assets/characters/prologue/bk01/
+godot/assets/characters/prologue/bk02/
+godot/assets/characters/prologue/char01_naked_full/
+godot/assets/characters/prologue/char01_naked_mosaic/
