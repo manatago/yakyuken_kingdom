@@ -89,7 +89,7 @@ func _build_prologue(b):
 	heroine.set_portrait("res://assets/characters/prologue/char02_pg_002.png", {"scale": 0.5})
 	heroine.band("秘書のバイト先がこっち方面なの。で、サボりでしょ？")
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_004.png", {"scale": 0.5})
-	hero.band("サボりじゃない。戦略的欠席だ。本気出せば主席でもいけるけどな。\n『異世界野球拳をオリンピック競技にする会』でかかりきりやし。")
+	hero.band("サボりじゃない。戦略的欠席だ。\n本気出せば主席でもいけるけどな。\n『異世界野球拳をオリンピック競技にする会』でかかりきりやし。")
 	heroine.set_portrait("res://assets/characters/prologue/char02_pg_003.png", {"scale": 0.5})
 	heroine.band("その「本気出せば」、入学してから何回聞いたと思ってるの。\nもう三年目よ？")
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_005.png", {"scale": 0.5})
@@ -201,13 +201,13 @@ func _build_prologue(b):
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_014.png", {"scale": 0.5})
 	hero.band("あ、どうも。えっと、具体的に何をすれば……")
 	receptionist.set_portrait("res://assets/characters/prologue/char03_pg_003.png", {"scale": 0.5, "flip": 0})
-	receptionist.band(" 簡単よ。制御室に入って、合図があったらボタンを押すだけ。それ以外は絶対に触らないでね。")
+	receptionist.band("簡単よ。制御室に入って、合図があったらボタンを押すだけ。それ以外は絶対に触らないでね。")
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_015.png", {"scale": 0.5})
 	hero.band("ボタン一個で単位もらえるとか、最高のバイトじゃないすか。")
 	receptionist.set_portrait("res://assets/characters/prologue/char03_pg_004.png", {"scale": 0.5, "flip": 0})
 	receptionist.band("ふふ、みんなそう言うわ。でもね、ここの装置、ちょっと気まぐれなの。何かあったらすぐ赤いボタンを押して。非常停止だから。")
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_016.png", {"scale": 0.5})
-	hero.band("（心の声）フラグ立ってる感がすごいんだが。")
+	hero.band("（フラグ立ってる感がすごいんだが。）")
 
 	receptionist.leave({
 		"exit_effect": "fade_slide",
@@ -491,11 +491,12 @@ func _build_prologue(b):
 	matilda.set_portrait("res://assets/characters/prologue/char07_pg_007.png", {"scale": 0.65, "position": [-120, 10], "flip": 0})
 	matilda.band("……しょうがないね。特例だ。")
 	b.narrator_band("マチルダは懐から小さな注射器のようなものを取り出した。")
-	matilda.band("  旧式の汎用チップだけど、ないよりマシさ。うなじを出しな。ちょっとチクっとするよ。")
+	matilda.band("旧式の汎用チップだけど、ないよりマシさ。うなじを出しな。ちょっとチクっとするよ。")
 
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_041.png", {"scale": 0.7, "flip": 1})
 	hero.band("えっ、ちょ、いきなり注射!? 説明――いっっっ!!")
 
+	b.background("res://assets/backgrounds/prologue/bg05_prison_cell.png", 0.5)
 	b.narrator_band("マチルダに無理やり注射をされて、サトシのうなじに激痛が走った...")
 
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_042.png", {"scale": 0.5, "flip": 1})
@@ -508,10 +509,8 @@ func _build_prologue(b):
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_037.png", {"scale": 0.5, "flip": 1})
 	hero.band("(なっ、なんだよ、自分だって女のくせに。うっ、睨まれている。\nテッ、テッ、テーブル...オープン)")
 
-	b.narrator_band("サトシが心のなかで「テーブルオープン」と言った瞬間、視界が一変した")
-
 	# b.background("res://assets/backgrounds/prologue/bg05_prison_cell.png", 0.5)
-	b.background("res://assets/backgrounds/prologue/bg05_prison_cell.png", 0.5)
+
 
 	# matilda.say("おいそこの新入り。ここは牢獄前闘技場だ。勝率を見せな。")
 	# hero.say("（すらっとした女看守。肩章からして階級も高い。いきなりラスボスの風格じゃないか。）", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
@@ -570,4 +569,19 @@ func _build_prologue(b):
 	# matilda.say("じゃあ牢前の闘技スペースへ。白いリングが描かれた場所で、服を賭けて踊りな。")
 	# hero.say("異世界野球拳、開幕だ。", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
 
+	b.narrator_band("サトシが心のなかで「テーブルオープン」と言った瞬間、視界が一変した")
+
+
+	# matilda.set_portrait("res://assets/characters/prologue/char07_pg_001.png", {"scale": 0.45, "position": [0, 10]})
+	# matilda.band("さ、ここが闘技スペースだ。白いリングの中に立ちな。")
+
+	# b.narrator_band("マチルダがリングの向こう側に立った。目の前にカードが3枚、浮かび上がる。")
+
+	# matilda.band("ルールは簡単。じゃんけんカードを選んで、先に2勝した方が勝ち。負けたら……まあ、覚悟しな。")
+
+	# hero.set_portrait("res://assets/characters/prologue/char01_pg_037.png", {"scale": 0.5, "flip": 1})
+	# hero.band("（グー、チョキ、パー……異世界でもじゃんけんなのか。よし、やってやる！）")
+
 	b.hide_band()
+
+	b.battle("res://battle/chapters/PrologueBattleChapter.gd")

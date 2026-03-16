@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://b8j4k5l6m7n8o"]
+[gd_scene load_steps=2 format=3 uid="uid://b8j4k5l6m7n8o"]
 
 [ext_resource type="Script" uid="uid://fafw3nkogiya" path="res://game/Main.gd" id="1_main"]
-[ext_resource type="Texture2D" uid="uid://bjvvcux1g32qn" path="res://assets/backgrounds/prologue/bg06_prison_arena.png" id="2_bg"]
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -20,6 +19,5 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-texture = ExtResource("2_bg")
 expand_mode = 1
 stretch_mode = 5

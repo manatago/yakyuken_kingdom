@@ -1,7 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://storyscene001"]
+[gd_scene load_steps=9 format=3 uid="uid://storyscene001"]
 
 [ext_resource type="Script" path="res://game/StoryScene.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://assets/backgrounds/prologue/bg01_university.png" id="1_bg"]
+[ext_resource type="Texture2D" path="res://assets/ui/speech_bubble_2_small.png" id="3_bubble_tex"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_band_bg"]
 bg_color = Color(0.08, 0.08, 0.12, 0.75)
@@ -10,27 +11,6 @@ content_margin_top = 16.0
 content_margin_right = 40.0
 content_margin_bottom = 16.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_inner_left"]
-bg_color = Color(0.50, 0.38, 0.18, 0.85)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_left = 8
-corner_radius_bottom_right = 8
-content_margin_left = 20.0
-content_margin_top = 12.0
-content_margin_right = 20.0
-content_margin_bottom = 12.0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_inner_right"]
-bg_color = Color(0.50, 0.38, 0.18, 0.85)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_left = 8
-corner_radius_bottom_right = 8
-content_margin_left = 20.0
-content_margin_top = 12.0
-content_margin_right = 20.0
-content_margin_bottom = 12.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_menu_btn_normal"]
 bg_color = Color(0.15, 0.15, 0.2, 0.6)
@@ -169,7 +149,7 @@ theme_override_colors/font_color = Color(0.75, 0.8, 0.9, 1.0)
 text = ""
 horizontal_alignment = 0
 
-[node name="InnerLeft" type="PanelContainer" parent="DialogueBand"]
+[node name="InnerLeft" type="Control" parent="DialogueBand"]
 visible = false
 layout_mode = 1
 anchor_left = 0.0
@@ -180,18 +160,36 @@ offset_left = 16.0
 offset_top = 42.0
 offset_right = -8.0
 offset_bottom = -52.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_inner_left")
+
+[node name="BubbleBG" type="NinePatchRect" parent="DialogueBand/InnerLeft"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_bubble_tex")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
 
 [node name="BodyLabel" type="Label" parent="DialogueBand/InnerLeft"]
-layout_mode = 2
-size_flags_vertical = 0
+layout_mode = 1
+anchor_left = 0.04
+anchor_top = 0.1
+anchor_right = 0.96
+anchor_bottom = 0.92
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_font_sizes/font_size = 32
 text = ""
 autowrap_mode = 3
 horizontal_alignment = 0
 vertical_alignment = 0
 
-[node name="InnerRight" type="PanelContainer" parent="DialogueBand"]
+[node name="InnerRight" type="Control" parent="DialogueBand"]
 visible = false
 layout_mode = 1
 anchor_left = 0.52
@@ -202,11 +200,29 @@ offset_left = 8.0
 offset_top = 42.0
 offset_right = -16.0
 offset_bottom = -52.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_inner_right")
+
+[node name="BubbleBG" type="NinePatchRect" parent="DialogueBand/InnerRight"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_bubble_tex")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
 
 [node name="BodyLabel" type="Label" parent="DialogueBand/InnerRight"]
-layout_mode = 2
-size_flags_vertical = 0
+layout_mode = 1
+anchor_left = 0.04
+anchor_top = 0.1
+anchor_right = 0.96
+anchor_bottom = 0.92
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_font_sizes/font_size = 32
 text = ""
 autowrap_mode = 3

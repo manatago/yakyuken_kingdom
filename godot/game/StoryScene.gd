@@ -6,6 +6,8 @@ const Cmd = preload("res://story/StoryCommands.gd")
 signal sequence_started(sequence_id)
 signal sequence_finished(sequence_id)
 signal advance_requested
+signal battle_requested(command)
+signal battle_completed(result)
 
 @onready var left_char := $LeftChar
 @onready var center_char := $CenterChar
@@ -23,7 +25,6 @@ const _CHAR_MARGIN := 100.0
 @onready var _menu_bar := $DialogueBand/MenuBar
 @onready var background_rect := $Background
 @onready var background_next_rect := $BackgroundNext
-
 var _cast: Dictionary = {}  # character_id -> StoryCharacter
 var _texture_cache: Dictionary = {}
 var _sequence_playing := false
@@ -103,6 +104,15 @@ func play_line(entry: Cmd.Line):
 	band_cmd.wait_for_input = entry.wait_for_input
 	band_cmd.min_duration = entry.min_duration
 	return apply_band_command(band_cmd)
+
+# --- Battle ---
+
+func request_battle(cmd: Cmd.Battle):
+	battle_requested.emit(cmd)
+	return battle_completed
+
+func complete_battle(result: String):
+	battle_completed.emit(result)
 
 # --- Input handling ---
 
@@ -672,12 +682,7 @@ func _apply_character_entry_effect(target_rect: TextureRect, entry: Cmd.ShowChar
 # --- Band ---
 
 func set_inner_band_color(color: Color) -> void:
-	var style_left: StyleBoxFlat = dialogue_band_left.get_theme_stylebox("panel").duplicate()
-	style_left.bg_color = color
-	dialogue_band_left.add_theme_stylebox_override("panel", style_left)
-	var style_right: StyleBoxFlat = dialogue_band_right.get_theme_stylebox("panel").duplicate()
-	style_right.bg_color = color
-	dialogue_band_right.add_theme_stylebox_override("panel", style_right)
+	# Bubble image keeps original colors (no tinting)
 	var hover_color := Color(color.r + 0.12, color.g + 0.12, color.b + 0.12, color.a)
 	for btn in _menu_bar.get_children():
 		if btn is Button:
@@ -728,6 +733,8 @@ func apply_band_command(entry: Cmd.Band):
 			band_speaker = dialogue_band_right_speaker
 			band_body = dialogue_band_right_body
 			dialogue_band_left_speaker.visible = false
+		# Dark text for bubble background
+		band_body.add_theme_color_override("font_color", Color(0.15, 0.12, 0.18))
 	else:
 		_hide_inner_bands()
 		_set_narrator_vbox_visible(true)

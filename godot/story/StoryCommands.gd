@@ -98,6 +98,13 @@ class StopPortraitAnimation extends Base:
 			scene.stop_portrait_animation(self)
 		return null
 
+class Battle extends Base:
+	var chapter_path: String = ""
+	var chapter: BattleChapterBase = null
+	var result: String = ""  # "win" / "lose" / "draw"
+	func execute(scene):
+		return scene.request_battle(self)
+
 class MicroMotion extends Base:
 	var mode: String = ""
 	var params: Dictionary = {}
@@ -246,6 +253,14 @@ func stop_portrait_animation(character_id: String):
 	entry.character_id = character_id
 	return entry
 
+func battle(chapter_path: String):
+	var entry := Battle.new()
+	entry.chapter_path = chapter_path
+	var script = load(chapter_path)
+	if script:
+		entry.chapter = script.new()
+	return entry
+
 func register_band_color(name: String, color: Color) -> void:
 	_band_colors[name] = color
 
@@ -350,6 +365,8 @@ class CharacterHandle:
 		var opts := {"portrait": portrait_id}
 		if extra.has("scale") and extra["scale"] > 0.0:
 			opts["portrait_scale"] = extra["scale"]
+		if extra.has("side"):
+			opts["side"] = extra["side"]
 		var position = extra.get("position", null)
 		if position != null:
 			if position is Array and position.size() >= 2:
@@ -459,6 +476,9 @@ class _CommandCollector:
 
 	func stop_portrait_animation(character_id: String):
 		_add_command(_dsl.stop_portrait_animation(character_id))
+
+	func battle(chapter_path: String):
+		_add_command(_dsl.battle(chapter_path))
 
 	func micro_motion(mode: String, extra: Dictionary = {}):
 		_add_command(_dsl.micro_motion(mode, extra))
