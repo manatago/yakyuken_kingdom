@@ -1,8 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://bib73jlmxrlbn"]
+[gd_scene load_steps=12 format=3 uid="uid://bib73jlmxrlbn"]
 
 [ext_resource type="Script" uid="uid://p7d30c21kyqi" path="res://game/BattleScene.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://c6sbubble01" path="res://ui/SpeechBubble.tscn" id="2_bubble"]
 [ext_resource type="Texture2D" path="res://assets/ui/speech_bubble_2_small.png" id="3_bubble_tex"]
+[ext_resource type="Texture2D" path="res://assets/ui/item_box_1_small.png" id="4_item_box_tex"]
+[ext_resource type="Texture2D" path="res://assets/ui/card_box_2_small.png" id="5_card_box_tex"]
+[ext_resource type="Texture2D" path="res://assets/ui/game_message_3.png" id="6_msg_tex"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card_bar"]
 bg_color = Color(0.06, 0.05, 0.1, 0.75)
@@ -12,26 +15,68 @@ content_margin_right = 12.0
 content_margin_bottom = 6.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_confirm_btn"]
-bg_color = Color(0.8, 0.15, 0.15, 0.9)
+bg_color = Color(0.45, 0.35, 0.2, 0.9)
 corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
-content_margin_left = 16.0
-content_margin_top = 8.0
-content_margin_right = 16.0
-content_margin_bottom = 8.0
+content_margin_left = 12.0
+content_margin_top = 4.0
+content_margin_right = 12.0
+content_margin_bottom = 4.0
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.65, 0.55, 0.3, 0.8)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_confirm_btn_hover"]
-bg_color = Color(0.9, 0.2, 0.2, 1.0)
+bg_color = Color(0.55, 0.45, 0.25, 1.0)
 corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
-content_margin_left = 16.0
-content_margin_top = 8.0
-content_margin_right = 16.0
-content_margin_bottom = 8.0
+content_margin_left = 12.0
+content_margin_top = 4.0
+content_margin_right = 12.0
+content_margin_bottom = 4.0
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.75, 0.65, 0.35, 0.9)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_auto_btn"]
+bg_color = Color(0.35, 0.3, 0.2, 0.9)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+content_margin_left = 12.0
+content_margin_top = 4.0
+content_margin_right = 12.0
+content_margin_bottom = 4.0
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.55, 0.45, 0.3, 0.8)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_auto_btn_hover"]
+bg_color = Color(0.45, 0.4, 0.25, 1.0)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+content_margin_left = 12.0
+content_margin_top = 4.0
+content_margin_right = 12.0
+content_margin_bottom = 4.0
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.65, 0.55, 0.3, 0.9)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hp_bg"]
 bg_color = Color(0.1, 0.08, 0.15, 0.7)
@@ -68,44 +113,48 @@ mouse_filter = 2
 
 [node name="OpponentHPPanel" type="PanelContainer" parent="."]
 layout_mode = 1
-anchor_left = 0.35
+anchor_left = 0.38
 anchor_top = 0.0
-anchor_right = 0.65
-offset_top = 10.0
-offset_bottom = 48.0
+anchor_right = 0.62
+offset_top = 8.0
+offset_bottom = 56.0
 grow_horizontal = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_hp_bg")
 
-[node name="HBox" type="HBoxContainer" parent="OpponentHPPanel"]
+[node name="VBox" type="VBoxContainer" parent="OpponentHPPanel"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 4
 
-[node name="OpponentHPLabel" type="Label" parent="OpponentHPPanel/HBox"]
+[node name="OpponentHPLabel" type="Label" parent="OpponentHPPanel/VBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 22
 text = "HP: 3/3"
-vertical_alignment = 1
+horizontal_alignment = 1
 
-[node name="OpponentHPBar" type="ProgressBar" parent="OpponentHPPanel/HBox"]
+[node name="OpponentHPBarFrame" type="PanelContainer" parent="OpponentHPPanel/VBox"]
 layout_mode = 2
-size_flags_horizontal = 3
-custom_minimum_size = Vector2(18, 18)
+
+[node name="OpponentHPBar" type="ProgressBar" parent="OpponentHPPanel/VBox/OpponentHPBarFrame"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 12)
 max_value = 3.0
 value = 3.0
 show_percentage = false
 
 ; ============================================================
-; Item panel — left side
+; Item panel — left side (always visible)
 ; ============================================================
 
 [node name="ItemPanel" type="Control" parent="."]
 layout_mode = 1
 anchor_left = 0.0
-anchor_top = 0.08
-anchor_right = 0.18
-anchor_bottom = 0.65
+anchor_top = 0.3
+anchor_right = 0.16
+anchor_bottom = 0.78
 offset_left = 8.0
+offset_top = 50.0
 offset_right = -4.0
+offset_bottom = 50.0
 
 [node name="ItemBG" type="NinePatchRect" parent="ItemPanel"]
 layout_mode = 1
@@ -115,28 +164,58 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-texture = ExtResource("3_bubble_tex")
-patch_margin_left = 8
-patch_margin_top = 8
-patch_margin_right = 8
-patch_margin_bottom = 8
+texture = ExtResource("4_item_box_tex")
+patch_margin_left = 20
+patch_margin_top = 52
+patch_margin_right = 20
+patch_margin_bottom = 20
 
 [node name="ItemSlots" type="VBoxContainer" parent="ItemPanel"]
 layout_mode = 1
-anchor_left = 0.06
-anchor_top = 0.04
-anchor_right = 0.94
-anchor_bottom = 0.96
+anchor_left = 0.08
+anchor_top = 0.2
+anchor_right = 0.92
+anchor_bottom = 0.95
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 4
 
-[node name="ItemTitle" type="Label" parent="ItemPanel/ItemSlots"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 14
-theme_override_colors/font_color = Color(0.5, 0.4, 0.25, 0.9)
-text = "Item"
-horizontal_alignment = 0
+; ============================================================
+; Hand cards panel — center (only during deck building)
+; ============================================================
+
+[node name="HandPanel" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchor_left = 0.78
+anchor_top = 0.05
+anchor_right = 0.98
+anchor_bottom = 0.7
+offset_top = 4.0
+
+[node name="HandBG" type="NinePatchRect" parent="HandPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("5_card_box_tex")
+patch_margin_left = 20
+patch_margin_top = 52
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="HandSlots" type="VBoxContainer" parent="HandPanel"]
+layout_mode = 1
+anchor_left = 0.1
+anchor_top = 0.18
+anchor_right = 0.9
+anchor_bottom = 0.96
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 18
 
 ; ============================================================
 ; Speech bubble — right side of character
@@ -159,12 +238,12 @@ grow_vertical = 2
 [node name="ActionPrompt" type="Control" parent="."]
 visible = false
 layout_mode = 1
-anchor_left = 0.3
-anchor_top = 0.55
-anchor_right = 0.7
-anchor_bottom = 0.72
+anchor_left = 0.2
+anchor_top = 0.7
+anchor_right = 0.8
+anchor_bottom = 0.84
 
-[node name="PromptBG" type="NinePatchRect" parent="ActionPrompt"]
+[node name="PromptBG" type="TextureRect" parent="ActionPrompt"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -172,31 +251,41 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-texture = ExtResource("3_bubble_tex")
-patch_margin_left = 8
-patch_margin_top = 8
-patch_margin_right = 8
-patch_margin_bottom = 8
+texture = ExtResource("6_msg_tex")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="VBox" type="VBoxContainer" parent="ActionPrompt"]
 layout_mode = 1
-anchor_left = 0.05
-anchor_top = 0.08
-anchor_right = 0.95
-anchor_bottom = 0.92
+anchor_left = 0.1
+anchor_top = 0.1
+anchor_right = 0.9
+anchor_bottom = 0.9
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 6
+theme_override_constants/separation = 4
 alignment = 1
 
 [node name="CardLabel" type="Label" parent="ActionPrompt/VBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 26
 text = "手札からカードを選べ"
 horizontal_alignment = 1
-vertical_alignment = 1
 
-[node name="ConfirmButton" type="Button" parent="ActionPrompt/VBox"]
+[node name="ButtonRow" type="HBoxContainer" parent="ActionPrompt/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="AutoButton" type="Button" parent="ActionPrompt/VBox/ButtonRow"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_auto_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_auto_btn_hover")
+text = "自動"
+
+[node name="ConfirmButton" type="Button" parent="ActionPrompt/VBox/ButtonRow"]
 visible = false
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
@@ -213,7 +302,7 @@ layout_mode = 1
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -64.0
+offset_top = -150.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_card_bar")
@@ -229,29 +318,31 @@ alignment = 1
 
 [node name="PlayerHPPanel" type="PanelContainer" parent="."]
 layout_mode = 1
-anchor_left = 0.7
+anchor_left = 0.72
 anchor_top = 1.0
 anchor_right = 0.95
 anchor_bottom = 1.0
-offset_top = -100.0
-offset_bottom = -68.0
+offset_top = -104.0
+offset_bottom = -60.0
 grow_horizontal = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_hp_bg")
 
-[node name="HBox" type="HBoxContainer" parent="PlayerHPPanel"]
+[node name="VBox" type="VBoxContainer" parent="PlayerHPPanel"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 4
 
-[node name="PlayerHPLabel" type="Label" parent="PlayerHPPanel/HBox"]
+[node name="PlayerHPLabel" type="Label" parent="PlayerHPPanel/VBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 22
 text = "HP: 3/3"
-vertical_alignment = 1
+horizontal_alignment = 1
 
-[node name="PlayerHPBar" type="ProgressBar" parent="PlayerHPPanel/HBox"]
+[node name="PlayerHPBarFrame" type="PanelContainer" parent="PlayerHPPanel/VBox"]
 layout_mode = 2
-size_flags_horizontal = 3
-custom_minimum_size = Vector2(18, 18)
+
+[node name="PlayerHPBar" type="ProgressBar" parent="PlayerHPPanel/VBox/PlayerHPBarFrame"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 12)
 max_value = 3.0
 value = 3.0
 show_percentage = false
@@ -293,15 +384,15 @@ mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="ResultLabel" type="Label" parent="JankenOverlay"]
+[node name="ResultImage" type="TextureRect" parent="JankenOverlay"]
 visible = false
 layout_mode = 1
-anchor_left = 0.1
-anchor_top = 0.3
-anchor_right = 0.9
-anchor_bottom = 0.7
+anchor_left = 0.2
+anchor_top = 0.25
+anchor_right = 0.8
+anchor_bottom = 0.65
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 96
-horizontal_alignment = 1
-vertical_alignment = 1
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5

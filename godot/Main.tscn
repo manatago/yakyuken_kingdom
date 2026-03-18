@@ -1,6 +1,39 @@
-[gd_scene load_steps=2 format=3 uid="uid://b8j4k5l6m7n8o"]
+[gd_scene load_steps=5 format=3 uid="uid://b8j4k5l6m7n8o"]
 
 [ext_resource type="Script" uid="uid://fafw3nkogiya" path="res://game/Main.gd" id="1_main"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_menu_btn"]
+bg_color = Color(0.35, 0.25, 0.15, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 40.0
+content_margin_top = 12.0
+content_margin_right = 40.0
+content_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_menu_btn_hover"]
+bg_color = Color(0.45, 0.35, 0.2, 1.0)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 40.0
+content_margin_top = 12.0
+content_margin_right = 40.0
+content_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_menu_btn_pressed"]
+bg_color = Color(0.5, 0.4, 0.25, 1.0)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 40.0
+content_margin_top = 12.0
+content_margin_right = 40.0
+content_margin_bottom = 12.0
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -21,3 +54,36 @@ grow_vertical = 2
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
+
+[node name="TitleMenu" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchor_left = 0.3
+anchor_top = 0.35
+anchor_right = 0.7
+anchor_bottom = 0.7
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Title" type="Label" parent="TitleMenu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "じゃんけんキングダム"
+horizontal_alignment = 1
+
+[node name="NewGameButton" type="Button" parent="TitleMenu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxFlat_menu_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_menu_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_menu_btn_pressed")
+text = "新しく始める"
+
+[node name="ContinueButton" type="Button" parent="TitleMenu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxFlat_menu_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_menu_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_menu_btn_pressed")
+text = "中断から始める"

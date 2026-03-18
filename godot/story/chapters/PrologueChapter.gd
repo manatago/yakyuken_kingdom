@@ -2,7 +2,9 @@ extends RefCounted
 class_name PrologueChapter
 
 func get_sequence_builders() -> Array:
-	return [{"id": "prologue", "builder": "_build_prologue"}]
+	return [
+		{"id": "prologue", "builder": "_build_prologue"},
+	]
 
 func _build_prologue(b):
 	var hero = b.character("main")
@@ -233,7 +235,7 @@ func _build_prologue(b):
 	# hero.set_portrait("default_white_coat")
 	hero.band("数式中毒の俺からしたら、計測ログの生データに触れるだけでご褒美だ。")
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_018.png", {"scale": 0.5})
-	hero.band("これで単位を確保して、堂々と署名活動に専念――っと")
+	hero.band("これで単位を確保して、堂々と署名活動に専念――っと。")
 	b.clear_band_text() # バンドテキストをクリア
 
 
@@ -380,7 +382,7 @@ func _build_prologue(b):
 
 
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_030.png", {"scale": 0.6, "flip": 1})
-	hero.band("スプリングエイトで実験してたら、急に周りが真っ白になって。。。")
+	hero.band("スプリングエイトで実験してたら、急に周りが真っ白になって...")
 	guard.set_portrait("res://assets/characters/prologue/char04_pg_002.png", {"scale": 0.5, "flip": 1})
 	guard.band("何言ってやがる。変態なうえに、気がくるっているのか？")
 
@@ -428,7 +430,7 @@ func _build_prologue(b):
 	})
 
 	hero.band("いてててて。あれっ、ここはどこだっけ。確か昨日はバイト先で光の渦に飲み込まれて、気が付いたら裸だったんだ。")
-	hero.band("あの番兵、えらい怒っていたよな。すごい剣幕だった。しかし、人を変態呼ばわりしやがって。俺は被害者だっちゅーの")
+	hero.band("あの番兵、えらい怒っていたよな。すごい剣幕だった。しかし、人を変態呼ばわりしやがって。俺は被害者だっちゅーの。")
 	hero.band("しかし、ここはどこだ？日本語が通じるから日本？でも街の風景は異世界転生のまんまじゃね？")
 
 	matilda.appear({
@@ -445,13 +447,13 @@ func _build_prologue(b):
 	matilda.band("起きたか、変態。")
 
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_035.png", {"scale": 0.7})
-	hero.band("俺は変態じゃな。。。おっ、きれいなねーさんだな。おっぱいもでかい。。。")
+	hero.band("俺は変態じゃな... おっ、きれいなねーさんだな。おっぱいもでかい。")
 	matilda.set_portrait("res://assets/characters/prologue/char07_pg_002.png", {"scale": 0.65, "position": [-100, 10], "flip": 0})
 	matilda.band("おいおい、いやらしい目で見やがって。ほんとに変態ってやつは、どうしようもないな。")
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_036.png", {"scale": 0.49})
 	hero.band("ぐぬぬ。。。")
 
-	b.narrator_band("変態の濡れ衣を着せられて悔しい思いをしたサトシだったけど、なんといっても牢屋に入れられている身。おとなしくするしかない")
+	b.narrator_band("変態の濡れ衣を着せられて悔しい思いをしたサトシだったけど、なんといっても牢屋に入れられている身。おとなしくするしかない。")
 
 	matilda.set_portrait("res://assets/characters/prologue/char07_pg_001.png", {"scale": 0.45, "position": [0, 10]})
 	matilda.band("さて、変態の身元調査といこうか。\n変態、お前の名前は？ どこから来た。")
@@ -504,84 +506,49 @@ func _build_prologue(b):
 
 	matilda.set_portrait("res://assets/characters/prologue/char07_pg_001.png", {"scale": 0.45, "position": [0, 10]})
 
-	matilda.band("だらしないな、女みたいにビービー泣いてないで、心の中で、テーブルオープンって行ってみろ")
+	matilda.band("だらしないな、女みたいにビービー泣いてないで、心の中で、テーブルオープンって行ってみろ。")
 
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_037.png", {"scale": 0.5, "flip": 1})
 	hero.band("(なっ、なんだよ、自分だって女のくせに。うっ、睨まれている。\nテッ、テッ、テーブル...オープン)")
 
-	# b.background("res://assets/backgrounds/prologue/bg05_prison_cell.png", 0.5)
-
-
-	# matilda.say("おいそこの新入り。ここは牢獄前闘技場だ。勝率を見せな。")
-	# hero.say("（すらっとした女看守。肩章からして階級も高い。いきなりラスボスの風格じゃないか。）", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
-	# matilda.say("名前は？　出身ギルドは？")
-	# hero.say("ギルド……？　いや、俺は――", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
-
-	# matilda.say("まあいい。ここに現れたってことは、皇女様に挑む資格を求めてるんだろ。だったら証拠を見せな。")
-	# hero.say("皇女？　いや、俺は単位が欲しいだけで――")
-	# matilda.say("異世界に飛ばされた学生さん、って顔してるな。だがここでは勝率が身分証だ。野球拳で四連勝すれば、ギルド通りに出る権利をやる。")
-	# hero.say("野球拳!?　異世界でも健在なのかよ！　俺に任せな。", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
-
-	# matilda.say("任せる？　ふふ、大口叩くね。私はマチルダ、牢番の門番。勝率を操作する術も訓練されてる。")
-	# hero.say("勝率の操作……それ、まさに俺が大学で研究してたやつだ。", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
-	# hero.say("（HUDに『数値化』のアイコン。どうやらスキルスロットに予備動作が入っている。今すぐ覚醒しそうだ。）", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
-	# matilda.say("どうした、固まって。初めての異世界は眺めるだけで精一杯か？")
-	# hero.say("いや……俺、まさかの異世界野球拳の主人公……！")
-
-	# matilda.say("落ち着け。深呼吸だ。ここでは冷静さも勝率に影響する。")
-	# hero.say("（呼吸を整えると、HUDから数式が浮かび上がった。『確率計算』スキルが解禁されたみたいだ。）", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
-	# hero.say("これで勝率の最適化ができる。まずはお姉さんを倒して、ギルド通りへ行く。", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
-	# matilda.say("お姉さん？　ふふ、面白い。いいだろう、数値の勇者さん。", {"portrait": "res://assets/characters/char04-1_prison_guard.png"})
-	# matilda.say("ただし一度勝ったくらいで調子に乗ると、すぐ丸裸だ。ここの観衆は勝率の上下に飢えてるからね。")
-	# hero.say("そっちの勝率も味わってもらうさ。", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
-
-	# b.background("res://assets/backgrounds/prologue/bg05_prison_cell.png", 0.5)
-	# matilda.say("控室へ連れていこう。そこでスキルチュートリアルをやる。")
-	# hero.say("スキルチュートリアル……俺のMMO脳がうずく。", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
-	# matilda.say("はい、これが『確率計算』の第1段階。手札の勝率をざっくり表示する。使えば期待値がわかるよ。")
-	# hero.say("スキル、いきなり渡してくれるの？")
-	# matilda.say("私は門番で先生役。ここで変に詰まられたら仕事が増えるだろ？")
-	# hero.say("親切なんだか効率厨なんだか。ともあれサンキュー。", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
-
-	# matilda.say("さっそく勝率を見てみな。恐怖で手が震えてたらゼロに近づくし、落ち着けば盛り返す。自分の入力で上下してんのがわかるだろ。")
-	# hero.say("ほんとだ、心拍数も連動してる。これが異世界か……。", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
-	# matilda.say("ここからは地道な練習。カードを1枚ずつめくって、勝率の上がり下がりを身体に覚えさせな。")
-	# b.show_band()
-	# b.narrator_band("こうして主人公は勝率チュートリアルで汗を流し、本命の異世界野球拳ロードへと踏み出す。")
-	# hero.say("なるほど。HUDがレベルアップの階段みたいにつながってる。", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
-	# matilda.say("1段登るごとに『計算バフ』が解禁される。勝率予測→確率計算→真の確率計算→完全予測って感じ。")
-	# hero.say("完全予測って、いわゆる『このカードを出せば勝つ』ってやつだな。そこまで行けば異世界野球拳の覇王も夢じゃない。", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
-
-	# matilda.say("覇王？　はは、威勢がいい。そこまで行けりゃ皇女様にも会えるだろうね。")
-	# hero.say("皇女に勝って、異世界の国王になって、異世界スポーツ庁を作って、野球拳を国技にする。", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
-	# matilda.say("夢はでかい方がいい。けどまずはこの牢番を納得させな。")
-	# hero.say("望むところだ。")
-	# matilda.say("というわけで実戦チュートリアルだ。闘技スペースに戻ろう。")
-	# hero.say("うお、HUDがポップアップしてる！　次は『確率計算』、そのあと『真の確率計算』、最終的にはオートで最適手を出せる――みたいな階段ってわけだな。", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
-	# matilda.say("そこまで行けりゃ、ギルドの四天王にも挑戦できる。シスター、格闘家、宮廷魔術師、騎士団長……そいつらを野球拳で倒した者だけが皇女様への謁見を許される。")
-	# hero.say("皇女まで倒して、国王になればこの世界の設計者に会えるかも。よし、目標設定は完了だ。", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
-
-	# matilda.say("ただし牢番の私を突破できなきゃ話にならない。勝けばギルド通りへ出る許可を出してやる。負ければ、しばらく私のおもちゃ。どうする？")
-	# hero.say("（ムチムチなお姉さんに弄ばれるのも嫌いじゃないが……ここで勝って第一歩を刻む。）", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
-	# matilda.say("あんたが最初のボスってわけか。望むところだ。数値化スキルで勝率を叩き出してやる。")
-	# matilda.say("いい覚悟。でも油断するな。私は正規の門番、カード運用にも自信がある。")
-	# hero.say("こっちもCPU戦はSwitchで散々こなしたんでね。実戦で腕試しといこう。", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
-	# matilda.say("じゃあ牢前の闘技スペースへ。白いリングが描かれた場所で、服を賭けて踊りな。")
-	# hero.say("異世界野球拳、開幕だ。", {"portrait": "res://assets/characters/ch01-200_isekai_anxious.png"})
-
-	b.narrator_band("サトシが心のなかで「テーブルオープン」と言った瞬間、視界が一変した")
-
-
-	# matilda.set_portrait("res://assets/characters/prologue/char07_pg_001.png", {"scale": 0.45, "position": [0, 10]})
-	# matilda.band("さ、ここが闘技スペースだ。白いリングの中に立ちな。")
-
-	# b.narrator_band("マチルダがリングの向こう側に立った。目の前にカードが3枚、浮かび上がる。")
-
-	# matilda.band("ルールは簡単。じゃんけんカードを選んで、先に2勝した方が勝ち。負けたら……まあ、覚悟しな。")
-
-	# hero.set_portrait("res://assets/characters/prologue/char01_pg_037.png", {"scale": 0.5, "flip": 1})
-	# hero.band("（グー、チョキ、パー……異世界でもじゃんけんなのか。よし、やってやる！）")
-
+	b.narrator_band("サトシが心のなかで「テーブルオープン」と言った瞬間、視界が一変した。")
 	b.hide_band()
 
+	b.label("tutorial_start")
+	b.tutorial("res://battle/chapters/PrologueBattleChapter.gd")
+
+	matilda.set_portrait("res://assets/characters/prologue/char07_pg_001.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
+	matilda.band("「じゃんけん」に負けると、服を脱がなきゃならない。1回負けるたびに服を1枚脱ぐ。全て脱がされたら、相手のいうことを聞かなきゃなんない。")
+	matilda.band("「じゃんけん」勝負をするときは服は3枚と決まっている。これは王国ルールだ。ただ、市民にはあんまり根付いてなくてな、街中では 1回勝負が好まれている。")
+
+	hero.set_portrait("res://assets/characters/prologue/char01_pg_037.png", {"scale": 0.5, "side": "left", "flip": 1})
+	hero.band("そっそれって、野球拳じゃ...")
+
+	matilda.band("ヤキュウケン？ 聞いたことないね。\nこの国ではすべての争いごとを「じゃんけん」で決める。それが法律だ。")
+
+	hero.band("じゃんけんで!? 裁判も、商取引もですか？")
+
+	matilda.band("領土争いから税率の決定、犯罪者の刑期まで、全部「じゃんけん」だ。")
+
+	hero.band("（カードを使ったじゃんけんか...）それって、確率と読みあいのゲーム....ですか？")
+
+	matilda.band("そういうこと。強い奴が出世し、弱い奴は這いつくばる。\n実力主義のわかりやすい世界だろ？")
+
+	hero.band("（確率と読み合い……それ、まさに俺が大学で研究してた分野じゃないか。）")
+	hero.band("（混合戦略のナッシュ均衡、ベイズ推定による相手の手の予測……。\nここでは俺の数学が、そのまま「戦闘力」になるってことか？））")
+	matilda.band("おい、なに黙り込んでるんだ。怖気づいたか？")
+
+	hero.band("……いえ、ちょっとワクワクしてき……ました。")
+
+	matilda.band("は？ 牢屋の中でワクワクとか、やっぱり変態じゃないか。")
+	hero.band("(くっそぉ、変態、変態言いやがって、、、\nまてよ、ゲームに勝てば牢屋から出られる？！。)")
+	hero.band("しょっ、勝負しませんか？")
+
+	matilda.band("おっ、小心者の変態にもそんな度胸があったんだな。いいぜ、受けてやるよ。")
+	matilda.band("お前が勝ったら、晴れて無罪放免だ。負けたら牢屋からは出られねぇ。覚悟しておけよ。")
+	matilda.band("まあ、今日始めたひよっこに全力で勝負したらマチルダさんの名が廃るからな、同じカードで勝負してやるよ。")
+
+
+
 	b.battle("res://battle/chapters/PrologueBattleChapter.gd")
+

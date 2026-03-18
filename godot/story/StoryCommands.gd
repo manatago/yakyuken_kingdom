@@ -68,6 +68,7 @@ class Band extends Base:
 	var portrait_id: String = ""
 	var side_override: String = ""
 	var clear_text: bool = false
+	var append: bool = false
 	func execute(scene):
 		return scene.apply_band_command(self)
 
@@ -101,6 +102,7 @@ class StopPortraitAnimation extends Base:
 class Battle extends Base:
 	var chapter_path: String = ""
 	var chapter: BattleChapterBase = null
+	var is_tutorial: bool = false
 	var result: String = ""  # "win" / "lose" / "draw"
 	func execute(scene):
 		return scene.request_battle(self)
@@ -112,6 +114,11 @@ class MicroMotion extends Base:
 		if scene == null or not scene.has_method("play_micro_motion"):
 			return null
 		return scene.play_micro_motion(self)
+
+class SeqLabel extends Base:
+	var label_name: String = ""
+	func execute(_scene):
+		return null
 
 class Sequence extends RefCounted:
 	var id: String = ""
@@ -209,7 +216,9 @@ func band(text: String, extra: Dictionary = {}):
 		extra.get("wait_for_input", false),
 		extra.get("min_duration", 0.0),
 		extra.get("portrait", ""),
-		extra.get("side", "")
+		extra.get("side", ""),
+		false,
+		extra.get("append", false)
 	)
 
 func band_show():
@@ -261,6 +270,20 @@ func battle(chapter_path: String):
 		entry.chapter = script.new()
 	return entry
 
+func tutorial(chapter_path: String):
+	var entry := Battle.new()
+	entry.chapter_path = chapter_path
+	entry.is_tutorial = true
+	var script = load(chapter_path)
+	if script:
+		entry.chapter = script.new()
+	return entry
+
+func label(name: String):
+	var entry := SeqLabel.new()
+	entry.label_name = name
+	return entry
+
 func register_band_color(name: String, color: Color) -> void:
 	_band_colors[name] = color
 
@@ -292,7 +315,7 @@ func build(sequence_id: String, builder_func: Callable) -> Sequence:
 func get_cast() -> Dictionary:
 	return _cast
 
-func _band_command(p_visible: bool, text: String = "", speaker_id: String = "", wait_for_input: bool = false, min_duration: float = 0.0, portrait_id: String = "", side_override: String = "", clear_text: bool = false):
+func _band_command(p_visible: bool, text: String = "", speaker_id: String = "", wait_for_input: bool = false, min_duration: float = 0.0, portrait_id: String = "", side_override: String = "", clear_text: bool = false, p_append: bool = false):
 	var entry := Band.new()
 	entry.visible = p_visible
 	entry.text = text
@@ -302,6 +325,7 @@ func _band_command(p_visible: bool, text: String = "", speaker_id: String = "", 
 	entry.portrait_id = portrait_id
 	entry.side_override = side_override
 	entry.clear_text = clear_text
+	entry.append = p_append
 	return entry
 
 func _resolve_protagonist_id() -> String:
@@ -479,6 +503,12 @@ class _CommandCollector:
 
 	func battle(chapter_path: String):
 		_add_command(_dsl.battle(chapter_path))
+
+	func tutorial(chapter_path: String):
+		_add_command(_dsl.tutorial(chapter_path))
+
+	func label(name: String):
+		_add_command(_dsl.label(name))
 
 	func micro_motion(mode: String, extra: Dictionary = {}):
 		_add_command(_dsl.micro_motion(mode, extra))

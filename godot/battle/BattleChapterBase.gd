@@ -19,11 +19,8 @@ func get_card_paths() -> Dictionary:
 func get_card_back() -> String:
 	return "res://assets/battle/cards/card_back.png"
 
-func get_ai_type() -> String:
-	return "random"
-
-func get_ai_params() -> Dictionary:
-	return {}
+func get_battle_background() -> String:
+	return ""
 
 func get_opponent_outfit_count() -> int:
 	return 3

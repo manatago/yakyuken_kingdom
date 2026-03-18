@@ -51,13 +51,22 @@ func _ready():
 	right_char.visible = false
 	_menu_bar.get_node("SkipButton").pressed.connect(_on_skip_pressed)
 
-func _unhandled_input(event):
+func _input(event):
 	if not _waiting_for_input:
+		return
+	# Reject key echo (holding Enter would skip multiple lines)
+	if event is InputEventKey and event.echo:
 		return
 	if event.is_action_pressed("ui_accept"):
 		_trigger_advance()
+		get_viewport().set_input_as_handled()
 	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		# Don't consume if clicking on a button
+		var hovered = get_viewport().gui_get_hovered_control()
+		if hovered is BaseButton:
+			return
 		_trigger_advance()
+		get_viewport().set_input_as_handled()
 
 func set_cast(cast: Dictionary) -> void:
 	_cast = cast if cast else {}
@@ -75,9 +84,27 @@ func play_sequence(sequence: Cmd.Sequence, metadata: Dictionary = {}):
 	var resolved_id: String = metadata.get("id", sequence.id)
 	_current_sequence_id = resolved_id
 	sequence_started.emit(resolved_id)
+	# Skip to label if specified
+	var skip_to: String = metadata.get("skip_to", "")
+	var skipping_to_label := not skip_to.is_empty()
+
+	# State to restore when resuming from label
+	var last_bg_entry = null
+
 	# Play all commands in the sequence
 	for entry in sequence.entries:
 		if entry == null:
+			continue
+		# Skip until we find the target label, but track state
+		if skipping_to_label:
+			if entry is Cmd.Background:
+				last_bg_entry = entry
+			if entry is Cmd.SeqLabel and entry.label_name == skip_to:
+				skipping_to_label = false
+				# Restore last background
+				if last_bg_entry:
+					last_bg_entry.fade = 0.0
+					last_bg_entry.execute(self)
 			continue
 		if sequence._skipping and entry is Cmd.Background:
 			sequence._skipping = false

@@ -48,19 +48,24 @@ const GRADE_COLORS := {
 @onready var card_selection := $CardBar/CardSelection
 @onready var action_prompt := $ActionPrompt
 @onready var card_label := $ActionPrompt/VBox/CardLabel
-@onready var confirm_button := $ActionPrompt/VBox/ConfirmButton
-@onready var player_hp_bar := $PlayerHPPanel/HBox/PlayerHPBar
-@onready var player_hp_label := $PlayerHPPanel/HBox/PlayerHPLabel
-@onready var opponent_hp_bar := $OpponentHPPanel/HBox/OpponentHPBar
-@onready var opponent_hp_label := $OpponentHPPanel/HBox/OpponentHPLabel
+@onready var auto_button := $ActionPrompt/VBox/ButtonRow/AutoButton
+@onready var confirm_button := $ActionPrompt/VBox/ButtonRow/ConfirmButton
+@onready var player_hp_bar := $PlayerHPPanel/VBox/PlayerHPBarFrame/PlayerHPBar
+@onready var player_hp_bar_frame := $PlayerHPPanel/VBox/PlayerHPBarFrame
+@onready var player_hp_label := $PlayerHPPanel/VBox/PlayerHPLabel
+@onready var opponent_hp_bar := $OpponentHPPanel/VBox/OpponentHPBarFrame/OpponentHPBar
+@onready var opponent_hp_bar_frame := $OpponentHPPanel/VBox/OpponentHPBarFrame
+@onready var opponent_hp_label := $OpponentHPPanel/VBox/OpponentHPLabel
 @onready var item_slots := $ItemPanel/ItemSlots
 @onready var item_panel := $ItemPanel
+@onready var hand_panel := $HandPanel
+@onready var hand_slots := $HandPanel/HandSlots
 @onready var speech_bubble := $SpeechBubble
 @onready var bubble_label := $SpeechBubble/BubbleLabel
 @onready var janken_overlay := $JankenOverlay
 @onready var overlay_player_card := $JankenOverlay/PlayerCard
 @onready var overlay_opponent_card := $JankenOverlay/OpponentCard
-@onready var overlay_result_label := $JankenOverlay/ResultLabel
+@onready var overlay_result_image := $JankenOverlay/ResultImage
 
 # --- State ---
 var _chapter: BattleChapterBase = null
@@ -108,7 +113,9 @@ var player_deck_count: int:
 
 func _ready():
 	confirm_button.pressed.connect(_on_confirm_pressed)
+	auto_button.pressed.connect(_on_auto_pressed)
 	confirm_button.visible = false
+	auto_button.visible = false
 	action_prompt.visible = false
 	janken_overlay.visible = false
 	speech_bubble.visible = false
@@ -119,8 +126,11 @@ func setup(cast: Dictionary, bg_texture: Texture2D = null, inventory: Array = []
 	_initial_bg_texture = bg_texture
 	_player_inventory = inventory.duplicate(true)
 
-func start_battle(chapter: BattleChapterBase):
+var _is_tutorial := false
+
+func start_battle(chapter: BattleChapterBase, is_tutorial := false):
 	_chapter = chapter
+	_is_tutorial = is_tutorial
 	add_child(_chapter)
 	_card_paths = chapter.get_card_paths()
 	_card_back_tex = load(chapter.get_card_back())
@@ -164,14 +174,17 @@ func start_battle(chapter: BattleChapterBase):
 		_chapter.call("setup_scene", self)
 		await _flush_pending()
 
-	# Deck building phase
-	await _deck_building_phase()
-
-	# Build deck card buttons
-	_build_deck_buttons()
-	_update_score()
-
-	_run_battle()
+	if _is_tutorial:
+		# Tutorial mode: show hand panel, let tutorial function control the flow
+		hand_panel.visible = true
+		_refresh_inventory_display()
+		_run_battle()
+	else:
+		# Normal mode: deck building then battle
+		await _deck_building_phase()
+		_build_deck_buttons()
+		_update_score()
+		_run_battle()
 
 # ============================================================
 # Deck Building Phase
@@ -182,7 +195,8 @@ func _deck_building_phase():
 	_deck_ready = false
 	_player_deck.clear()
 
-	# Show inventory in item slots
+	# Show hand cards panel for deck building
+	hand_panel.visible = true
 	_refresh_inventory_display()
 
 	# Show instruction
@@ -190,21 +204,24 @@ func _deck_building_phase():
 	card_label.text = "デッキに9枚セットしてください"
 	confirm_button.text = "準備完了"
 	confirm_button.visible = false
+	auto_button.visible = true
 
 	# Wait for player to fill deck
 	while not _deck_ready:
 		await get_tree().process_frame
 
 	confirm_button.visible = false
+	auto_button.visible = false
 	action_prompt.visible = false
 	confirm_button.text = "勝負！"
 	_deck_building = false
 
-	# Clear inventory display for battle
-	_clear_item_display()
+	# Hide hand panel after deck building
+	hand_panel.visible = false
+	_clear_hand_display()
 
 func _refresh_inventory_display():
-	_clear_item_display()
+	_clear_hand_display()
 
 	# Group inventory by hand+grade, count available (not in deck)
 	var counts: Dictionary = {}
@@ -220,7 +237,7 @@ func _refresh_inventory_display():
 		if counts.has(key):
 			counts[key].in_deck += 1
 
-	# Create buttons for each card type
+	# Create buttons for each card type in hand panel
 	var keys = counts.keys()
 	keys.sort()
 	for key in keys:
@@ -229,13 +246,12 @@ func _refresh_inventory_display():
 		var hand_enum: Hand = HAND_FROM_KEY.get(info.hand, Hand.ROCK)
 		var grade: int = info.grade
 
-		var slot := VBoxContainer.new()
-		slot.name = "ItemSlot_" + key
-		slot.add_theme_constant_override("separation", 2)
-		slot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		var slot := HBoxContainer.new()
+		slot.name = "HandSlot_" + key
+		slot.add_theme_constant_override("separation", 6)
 
 		var btn := TextureButton.new()
-		btn.custom_minimum_size = Vector2(55, 78)
+		btn.custom_minimum_size = Vector2(42, 60)
 		btn.ignore_texture_size = true
 		btn.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		btn.texture_normal = _card_textures.get(hand_enum)
@@ -248,15 +264,17 @@ func _refresh_inventory_display():
 
 		var label := Label.new()
 		var grade_short: String = GRADE_NAMES.get(grade, "?")
-		label.text = "%s %s x%d" % [HAND_NAMES[hand_enum], grade_short, available]
+		label.text = "%s%s x%d" % [HAND_NAMES[hand_enum], grade_short, available]
 		var ls := LabelSettings.new()
-		ls.font_size = 10
-		ls.font_color = GRADE_COLORS.get(grade, Color.WHITE)
+		ls.font_size = 22
+		ls.font_color = Color(0.95, 0.9, 0.8)
+		ls.outline_color = Color(0.1, 0.08, 0.05, 0.8)
+		ls.outline_size = 3
 		label.label_settings = ls
-		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		slot.add_child(label)
 
-		item_slots.add_child(slot)
+		hand_slots.add_child(slot)
 
 func _on_inventory_card_pressed(hand: Hand, grade: int):
 	if not _deck_building:
@@ -318,6 +336,10 @@ func _on_deck_preview_pressed(index: int):
 
 func _clear_item_display():
 	for child in item_slots.get_children():
+		child.queue_free()
+
+func _clear_hand_display():
+	for child in hand_slots.get_children():
 		child.queue_free()
 
 # ============================================================
@@ -390,7 +412,7 @@ func _add_command(command):
 		return
 	# Intercept band commands → convert to battle speech bubble
 	if command is Cmd.Band and not command.text.is_empty():
-		_pending_commands.append({"_battle_bubble": true, "text": command.text})
+		_pending_commands.append({"_battle_bubble": true, "text": command.text, "append": command.append})
 		return
 	_pending_commands.append(command)
 
@@ -406,25 +428,22 @@ func select_hand() -> Dictionary:
 	action_prompt.visible = true
 	card_label.text = "カードを選択してください"
 	confirm_button.visible = false
-	# Show remaining inventory during selection
-	_show_battle_item_display()
 	while not _hand_confirmed:
 		await get_tree().process_frame
 	_set_cards_enabled(false)
 	confirm_button.visible = false
 	action_prompt.visible = false
 	_consume_selected_card()
-	_clear_item_display()
 	_update_score()
 	return {"hand": _selected_hand, "grade": _selected_grade, "item": null}
 
 # --- Janken overlay ---
 
-func janken(selection: Dictionary) -> String:
+func janken(selection: Dictionary, ai_opts: Dictionary = {}) -> String:
 	await _flush_pending()
 	var player_hand: Hand = selection.get("hand", Hand.ROCK)
 	var player_grade: int = selection.get("grade", Grade.NORMAL)
-	var opp_pick := _pick_opponent_card()
+	var opp_pick := _pick_opponent_card(player_hand, ai_opts)
 	var opponent_hand: Hand = opp_pick.hand
 	var opponent_grade: int = opp_pick.grade
 	var result := _judge_with_grade(player_hand, player_grade, opponent_hand, opponent_grade)
@@ -451,6 +470,14 @@ func janken(selection: Dictionary) -> String:
 # ============================================================
 
 func _run_battle():
+	# Tutorial mode: single function, no outfit loop
+	if _is_tutorial and _chapter.has_method("tutorial"):
+		await _chapter.call("tutorial", self)
+		await _flush_pending()
+		_cleanup()
+		battle_finished.emit("win")
+		return
+
 	while _opponent_outfit > 0 and _player_outfit > 0:
 		# Check if player deck is empty
 		if _count_remaining_deck() <= 0:
@@ -508,7 +535,7 @@ func get_battle_rewards() -> Dictionary:
 
 func _play_janken_overlay(player_hand: Hand, opponent_hand: Hand, result: String):
 	janken_overlay.visible = true
-	overlay_result_label.visible = false
+	overlay_result_image.visible = false
 
 	var vp_size := get_viewport_rect().size
 	var card_w := 200.0
@@ -548,20 +575,7 @@ func _play_janken_overlay(player_hand: Hand, opponent_hand: Hand, result: String
 
 	await get_tree().create_timer(0.5).timeout
 
-	# 3. Opponent card flips
-	var opp_tex_path: String = _card_paths.get(HAND_KEYS[opponent_hand], "")
-	var flip_opp_hide := create_tween()
-	flip_opp_hide.tween_property(overlay_opponent_card, "scale:x", 0.0, 0.3)
-	await flip_opp_hide.finished
-	if not opp_tex_path.is_empty():
-		overlay_opponent_card.texture = load(opp_tex_path)
-	var flip_opp_show := create_tween()
-	flip_opp_show.tween_property(overlay_opponent_card, "scale:x", 1.0, 0.3)
-	await flip_opp_show.finished
-
-	await get_tree().create_timer(0.4).timeout
-
-	# 4. Player card flips
+	# 3. Player card flips first
 	var plr_tex_path: String = _card_paths.get(HAND_KEYS[player_hand], "")
 	var flip_plr_hide := create_tween()
 	flip_plr_hide.tween_property(overlay_player_card, "scale:x", 0.0, 0.3)
@@ -571,6 +585,19 @@ func _play_janken_overlay(player_hand: Hand, opponent_hand: Hand, result: String
 	var flip_plr_show := create_tween()
 	flip_plr_show.tween_property(overlay_player_card, "scale:x", 1.0, 0.3)
 	await flip_plr_show.finished
+
+	await get_tree().create_timer(0.4).timeout
+
+	# 4. Opponent card flips last
+	var opp_tex_path: String = _card_paths.get(HAND_KEYS[opponent_hand], "")
+	var flip_opp_hide := create_tween()
+	flip_opp_hide.tween_property(overlay_opponent_card, "scale:x", 0.0, 0.3)
+	await flip_opp_hide.finished
+	if not opp_tex_path.is_empty():
+		overlay_opponent_card.texture = load(opp_tex_path)
+	var flip_opp_show := create_tween()
+	flip_opp_show.tween_property(overlay_opponent_card, "scale:x", 1.0, 0.3)
+	await flip_opp_show.finished
 
 	# Show result
 	_show_overlay_result(result)
@@ -584,25 +611,16 @@ func _play_janken_overlay(player_hand: Hand, opponent_hand: Hand, result: String
 	janken_overlay.modulate = Color.WHITE
 
 func _show_overlay_result(outcome: String):
-	match outcome:
-		"win":
-			overlay_result_label.text = "WIN!"
-			overlay_result_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2))
-		"lose":
-			overlay_result_label.text = "LOSE..."
-			overlay_result_label.add_theme_color_override("font_color", Color(0.4, 0.4, 0.8))
-		"draw":
-			overlay_result_label.text = "DRAW"
-			overlay_result_label.add_theme_color_override("font_color", Color.WHITE)
-	overlay_result_label.pivot_offset = overlay_result_label.size / 2.0
-	overlay_result_label.scale = Vector2(0.3, 0.3)
-	overlay_result_label.modulate = Color(1, 1, 1, 0)
-	overlay_result_label.visible = true
+	overlay_result_image.texture = _result_textures.get(outcome)
+	overlay_result_image.pivot_offset = overlay_result_image.size / 2.0
+	overlay_result_image.scale = Vector2(0.3, 0.3)
+	overlay_result_image.modulate = Color(1, 1, 1, 0)
+	overlay_result_image.visible = true
 	var pop := create_tween()
 	pop.set_parallel(true)
-	pop.tween_property(overlay_result_label, "scale", Vector2.ONE, 0.4) \
+	pop.tween_property(overlay_result_image, "scale", Vector2.ONE, 0.4) \
 		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	pop.tween_property(overlay_result_label, "modulate:a", 1.0, 0.3)
+	pop.tween_property(overlay_result_image, "modulate:a", 1.0, 0.3)
 	await pop.finished
 
 # --- Card button handlers ---
@@ -626,6 +644,39 @@ func _on_confirm_pressed():
 			_deck_ready = true
 	elif _hand_selected:
 		_hand_confirmed = true
+
+func _on_auto_pressed():
+	if not _deck_building:
+		return
+	# Clear current deck
+	_player_deck.clear()
+	# Build deck: distribute cards evenly across types, prefer higher grades
+	var available: Array = _player_inventory.duplicate(true)
+	# Sort by grade descending so higher grades are picked first
+	available.sort_custom(func(a, b): return int(a.grade) > int(b.grade))
+	# Round-robin across hand types for balance
+	var by_type: Dictionary = {"rock": [], "scissors": [], "paper": []}
+	for card in available:
+		by_type[card.hand].append(card)
+	var added := 0
+	var round_idx := 0
+	while added < 9:
+		var picked_any := false
+		for hand_key in ["rock", "scissors", "paper"]:
+			if added >= 9:
+				break
+			if round_idx < by_type[hand_key].size():
+				var card = by_type[hand_key][round_idx]
+				_player_deck.append({"hand": HAND_FROM_KEY[card.hand], "grade": int(card.grade)})
+				added += 1
+				picked_any = true
+		round_idx += 1
+		if not picked_any:
+			break
+	_refresh_inventory_display()
+	_refresh_deck_preview()
+	if _player_deck.size() >= 9:
+		confirm_button.visible = true
 
 func _deselect_all_cards():
 	for entry in _deck_buttons:
@@ -674,7 +725,7 @@ func _flush_pending():
 	var cmds := _pending_commands.duplicate()
 	_pending_commands.clear()
 
-	# Split into story commands and bubble commands, process in order
+	# Split into story commands, bubble commands, and highlight commands
 	var story_batch: Array = []
 	for cmd in cmds:
 		if cmd is Dictionary and cmd.has("_battle_bubble"):
@@ -684,8 +735,17 @@ func _flush_pending():
 				seq.entries = story_batch.duplicate()
 				story_batch.clear()
 				await _story_scene.play_sequence(seq)
-			# Show bubble and wait for input
-			await _show_bubble(cmd.text)
+			var is_append: bool = cmd.get("append", false)
+			# Close previous bubble if starting a new one (not append)
+			if not is_append and speech_bubble.visible:
+				await _hide_bubble()
+			await _show_bubble(cmd.text, is_append)
+		elif cmd is Dictionary and cmd.has("_highlight"):
+			_highlight_target(cmd.target, cmd.get("options", {}))
+		elif cmd is Dictionary and cmd.has("_unhighlight"):
+			_unhighlight()
+		elif cmd is Dictionary and cmd.has("_bubble_side"):
+			_apply_bubble_side(cmd.side)
 		else:
 			story_batch.append(cmd)
 
@@ -695,22 +755,82 @@ func _flush_pending():
 		seq.entries = story_batch
 		await _story_scene.play_sequence(seq)
 
+	# Close bubble after all commands
+	if speech_bubble.visible:
+		await _hide_bubble()
+
 # --- AI / Opponent card pick ---
 
-func _pick_opponent_card() -> Dictionary:
-	# Collect available cards
+func _pick_opponent_card(player_hand: Hand, ai_opts: Dictionary = {}) -> Dictionary:
+	var target_hand: Hand
+
+	if ai_opts.has("fixed"):
+		# 固定の手を出す: bt.janken(selection, {"fixed": "rock"})
+		target_hand = HAND_FROM_KEY.get(ai_opts["fixed"], Hand.ROCK)
+	elif ai_opts.has("win_rate"):
+		# 勝率指定: bt.janken(selection, {"win_rate": 0.6})
+		# lose_rate は "lose_rate" で指定、なければ残り
+		var win_r: float = ai_opts.get("win_rate", 0.5)
+		var lose_r: float = ai_opts.get("lose_rate", 1.0 - win_r)
+		target_hand = _pick_by_win_rate(player_hand, {"win": win_r, "lose": lose_r})
+	else:
+		# デフォルト: ランダム
+		target_hand = _pick_random_available_hand()
+
+	return _consume_opponent_card(target_hand)
+
+func _pick_by_win_rate(player_hand: Hand, params: Dictionary) -> Hand:
+	var win_rate: float = params.get("win", 0.4)
+	var lose_rate: float = params.get("lose", 0.4)
+	# draw_rate = 1.0 - win_rate - lose_rate (implicit)
+	var roll: float = randf()
+	if roll < win_rate:
+		# Player wins → opponent plays the hand that loses to player
+		return _hand_that_loses_to(player_hand)
+	elif roll < win_rate + lose_rate:
+		# Player loses → opponent plays the hand that beats player
+		return _hand_that_beats(player_hand)
+	else:
+		# Draw → opponent plays same hand
+		return player_hand
+
+func _hand_that_loses_to(hand: Hand) -> Hand:
+	# Returns the hand that loses to the given hand
+	match hand:
+		Hand.ROCK: return Hand.SCISSORS
+		Hand.SCISSORS: return Hand.PAPER
+		Hand.PAPER: return Hand.ROCK
+	return Hand.ROCK
+
+func _hand_that_beats(hand: Hand) -> Hand:
+	# Returns the hand that beats the given hand
+	match hand:
+		Hand.ROCK: return Hand.PAPER
+		Hand.SCISSORS: return Hand.ROCK
+		Hand.PAPER: return Hand.SCISSORS
+	return Hand.ROCK
+
+func _pick_random_available_hand() -> Hand:
 	var available: Array = []
+	for entry in _opponent_deck:
+		if not entry.used:
+			available.append(entry.hand)
+	if available.is_empty():
+		return Hand.ROCK
+	return available[randi() % available.size()]
+
+func _consume_opponent_card(target_hand: Hand) -> Dictionary:
+	# Try to find a matching card in opponent deck
+	for i in range(_opponent_deck.size()):
+		if not _opponent_deck[i].used and _opponent_deck[i].hand == target_hand:
+			_opponent_deck[i].used = true
+			return {"hand": _opponent_deck[i].hand, "grade": _opponent_deck[i].grade}
+	# Fallback: pick any available card
 	for i in range(_opponent_deck.size()):
 		if not _opponent_deck[i].used:
-			available.append(i)
-
-	if available.is_empty():
-		return {"hand": Hand.ROCK, "grade": Grade.NORMAL}
-
-	# Random pick from available
-	var pick_idx: int = available[randi() % available.size()]
-	_opponent_deck[pick_idx].used = true
-	return {"hand": _opponent_deck[pick_idx].hand, "grade": _opponent_deck[pick_idx].grade}
+			_opponent_deck[i].used = true
+			return {"hand": _opponent_deck[i].hand, "grade": _opponent_deck[i].grade}
+	return {"hand": Hand.ROCK, "grade": Grade.NORMAL}
 
 func _count_remaining_deck() -> int:
 	var count := 0
@@ -776,12 +896,23 @@ func _update_score():
 
 	var bg_style := StyleBoxFlat.new()
 	bg_style.bg_color = Color(0.15, 0.12, 0.2, 0.8)
-	bg_style.corner_radius_top_left = 3
-	bg_style.corner_radius_top_right = 3
-	bg_style.corner_radius_bottom_right = 3
-	bg_style.corner_radius_bottom_left = 3
 	player_hp_bar.add_theme_stylebox_override("background", bg_style)
 	opponent_hp_bar.add_theme_stylebox_override("background", bg_style.duplicate())
+
+	# Border on the bar frame
+	var frame_style := StyleBoxFlat.new()
+	frame_style.bg_color = Color(0.0, 0.0, 0.0, 0.0)
+	frame_style.border_width_left = 2
+	frame_style.border_width_top = 2
+	frame_style.border_width_right = 2
+	frame_style.border_width_bottom = 2
+	frame_style.border_color = Color(0.6, 0.5, 0.3, 0.9)
+	frame_style.corner_radius_top_left = 3
+	frame_style.corner_radius_top_right = 3
+	frame_style.corner_radius_bottom_right = 3
+	frame_style.corner_radius_bottom_left = 3
+	player_hp_bar_frame.add_theme_stylebox_override("panel", frame_style)
+	opponent_hp_bar_frame.add_theme_stylebox_override("panel", frame_style.duplicate())
 
 	player_hp_label.text = "HP: %d/%d" % [_player_outfit, plr_max]
 	opponent_hp_label.text = "HP: %d/%d" % [_opponent_outfit, opp_max]
@@ -879,34 +1010,215 @@ func _show_battle_item_display():
 		label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		item_slots.add_child(label)
 
+# --- Tutorial ---
+
+var _highlight_tween: Tween = null
+var _highlight_cursor: TextureRect = null
+var _arrow_tex: Texture2D = preload("res://assets/ui/arrow2.png")
+var _result_textures: Dictionary = {
+	"win": preload("res://assets/ui/result_win.png"),
+	"lose": preload("res://assets/ui/result_lose.png"),
+	"draw": preload("res://assets/ui/result_draw.png"),
+}
+
+func build_deck():
+	await _flush_pending()
+	await _deck_building_phase()
+	_build_deck_buttons()
+	_update_score()
+
+func highlight(target: String, options: Dictionary = {}):
+	_pending_commands.append({"_highlight": true, "target": target, "options": options})
+
+func unhighlight():
+	_pending_commands.append({"_unhighlight": true})
+
+func _highlight_target(target_name: String, options: Dictionary = {}):
+	_unhighlight()
+	var node: Control = _resolve_target(target_name)
+	if node == null:
+		return
+	# Create finger cursor
+	_highlight_cursor = TextureRect.new()
+	_highlight_cursor.texture = _arrow_tex
+	_highlight_cursor.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_highlight_cursor.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_highlight_cursor.custom_minimum_size = Vector2(192, 108)
+	_highlight_cursor.size = Vector2(192, 108)
+	_highlight_cursor.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_highlight_cursor)
+	var target_rect: Rect2 = node.get_global_rect()
+
+	# Direction: "left", "right", "top", "bottom" or auto-detect
+	var direction: String = options.get("direction", "auto")
+	# Offset adjustment
+	var offset_x: float = options.get("offset_x", 0.0)
+	var offset_y: float = options.get("offset_y", 0.0)
+
+	if direction == "auto":
+		# card_bar is full-width at bottom → default to top (pointing down)
+		if target_name == "card_bar":
+			direction = "top"
+		else:
+			var vp_center_x: float = get_viewport_rect().size.x / 2.0
+			if target_rect.position.x + target_rect.size.x / 2.0 > vp_center_x:
+				direction = "left"
+			else:
+				direction = "right"
+
+	match direction:
+		"right":
+			# Arrow to the right of target, pointing left
+			_highlight_cursor.position = Vector2(
+				target_rect.position.x + target_rect.size.x - 44,
+				target_rect.position.y + target_rect.size.y / 2.0 - 54
+			)
+			_highlight_cursor.flip_h = true
+			_highlight_cursor.rotation = 0
+		"left":
+			# Arrow to the left of target, pointing right
+			_highlight_cursor.position = Vector2(
+				target_rect.position.x - 198,
+				target_rect.position.y + target_rect.size.y / 2.0 - 54
+			)
+			_highlight_cursor.flip_h = false
+			_highlight_cursor.rotation = 0
+		"top":
+			# Arrow above target, pointing down
+			_highlight_cursor.position = Vector2(
+				target_rect.position.x + target_rect.size.x / 2.0 - 96,
+				target_rect.position.y - 114
+			)
+			_highlight_cursor.flip_h = false
+			_highlight_cursor.rotation = deg_to_rad(90)
+		"bottom":
+			# Arrow below target, pointing up
+			_highlight_cursor.position = Vector2(
+				target_rect.position.x + target_rect.size.x / 2.0 - 96,
+				target_rect.position.y + target_rect.size.y + 6
+			)
+			_highlight_cursor.flip_h = false
+			_highlight_cursor.rotation = deg_to_rad(-90)
+
+	_highlight_cursor.position += Vector2(offset_x, offset_y)
+	_highlight_cursor.pivot_offset = Vector2(96, 54)
+	# Pulse animation
+	_highlight_tween = create_tween()
+	_highlight_tween.set_loops()
+	_highlight_tween.tween_property(_highlight_cursor, "scale", Vector2(1.3, 1.3), 0.4) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_highlight_tween.tween_property(_highlight_cursor, "scale", Vector2.ONE, 0.4) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+func _unhighlight():
+	if _highlight_tween and _highlight_tween.is_valid():
+		_highlight_tween.kill()
+		_highlight_tween = null
+	if _highlight_cursor and is_instance_valid(_highlight_cursor):
+		_highlight_cursor.queue_free()
+		_highlight_cursor = null
+
+func _resolve_target(target_name: String) -> Control:
+	match target_name:
+		"item_panel": return item_panel
+		"hand_panel": return hand_panel
+		"card_bar": return card_bar
+		"action_prompt": return action_prompt
+		"speech_bubble": return speech_bubble
+		"opponent_hp": return $OpponentHPPanel
+		"player_hp": return $PlayerHPPanel
+	return null
+
+func set_bubble_side(side: String):
+	_pending_commands.append({"_bubble_side": true, "side": side})
+
+func _apply_bubble_side(side: String):
+	match side:
+		"left":
+			speech_bubble.anchor_left = 0.04
+			speech_bubble.anchor_right = 0.32
+		"right":
+			speech_bubble.anchor_left = 0.68
+			speech_bubble.anchor_right = 0.96
+		"center":
+			speech_bubble.anchor_left = 0.25
+			speech_bubble.anchor_right = 0.75
+
 func _setup_bubble_style():
 	bubble_label.add_theme_color_override("font_color", Color(0.2, 0.15, 0.1))
 
-func _show_bubble(text: String):
-	bubble_label.text = text
-	speech_bubble.visible = true
-	speech_bubble.modulate = Color(1, 1, 1, 0)
-	var fade_in := create_tween()
-	fade_in.tween_property(speech_bubble, "modulate:a", 1.0, 0.2)
-	await fade_in.finished
+var _bubble_indicator: Label = null
+var _indicator_tween: Tween = null
 
-	# Wait for click/input to dismiss
+func _show_bubble(text: String, append: bool = false):
+	if append and speech_bubble.visible:
+		# Append to existing text
+		bubble_label.text += "\n" + text
+	else:
+		# New bubble
+		bubble_label.text = text
+		speech_bubble.visible = true
+		speech_bubble.modulate = Color(1, 1, 1, 0)
+		var fade_in := create_tween()
+		fade_in.tween_property(speech_bubble, "modulate:a", 1.0, 0.2)
+		await fade_in.finished
+
+	# Show ▼ indicator
+	_show_indicator()
+
+	# Wait for click/input
 	await _wait_for_input()
 
+	# Hide indicator
+	_hide_indicator()
+
+func _hide_bubble():
 	var fade_out := create_tween()
 	fade_out.tween_property(speech_bubble, "modulate:a", 0.0, 0.15)
 	await fade_out.finished
 	speech_bubble.visible = false
 
+func _show_indicator():
+	if _bubble_indicator and is_instance_valid(_bubble_indicator):
+		return
+	_bubble_indicator = Label.new()
+	_bubble_indicator.text = "▼"
+	var ls := LabelSettings.new()
+	ls.font_size = 16
+	ls.font_color = Color(0.4, 0.35, 0.25, 0.8)
+	_bubble_indicator.label_settings = ls
+	_bubble_indicator.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_bubble_indicator.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	_bubble_indicator.offset_left = -30
+	_bubble_indicator.offset_top = -24
+	_bubble_indicator.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	speech_bubble.add_child(_bubble_indicator)
+	# Pulse
+	_indicator_tween = create_tween()
+	_indicator_tween.set_loops()
+	_indicator_tween.tween_property(_bubble_indicator, "modulate:a", 0.3, 0.5)
+	_indicator_tween.tween_property(_bubble_indicator, "modulate:a", 1.0, 0.5)
+
+func _hide_indicator():
+	if _indicator_tween and _indicator_tween.is_valid():
+		_indicator_tween.kill()
+		_indicator_tween = null
+	if _bubble_indicator and is_instance_valid(_bubble_indicator):
+		_bubble_indicator.queue_free()
+		_bubble_indicator = null
+
 func _wait_for_input():
-	var input_received := false
-	while not input_received:
+	# Wait for any current press to be released first
+	while Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) or Input.is_action_pressed("ui_accept"):
+		await get_tree().process_frame
+	# Wait one extra frame to prevent double-trigger
+	await get_tree().process_frame
+	# Then wait for a new press
+	while true:
 		if Input.is_action_just_pressed("ui_accept") or Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
-			input_received = true
-			# Wait one frame to prevent double-trigger
 			await get_tree().process_frame
-		else:
-			await get_tree().process_frame
+			return
+		await get_tree().process_frame
 
 func _create_grade_glow_material(grade: int) -> ShaderMaterial:
 	var glow_color: Color = GRADE_COLORS.get(grade, Color.WHITE)

@@ -7,6 +7,9 @@ signal result_updated(text)
 @export var enable_story_playback := true
 
 @onready var background_rect = $Background
+@onready var title_menu = $TitleMenu
+@onready var new_game_button = $TitleMenu/NewGameButton
+@onready var continue_button = $TitleMenu/ContinueButton
 
 var story_scene_scene = preload("res://StoryScene.tscn")
 var battle_scene_scene = preload("res://BattleScene.tscn")
@@ -24,9 +27,9 @@ var player_inventory: Array = []
 
 func _ready():
 	_init_player_inventory()
-	if enable_story_playback:
-		_create_story_scene()
-		await scenario()
+	new_game_button.pressed.connect(_on_new_game)
+	continue_button.pressed.connect(_on_continue)
+	title_menu.visible = true
 
 func _init_player_inventory():
 	if player_inventory.is_empty():
@@ -34,6 +37,26 @@ func _init_player_inventory():
 		for hand_key in ["rock", "scissors", "paper"]:
 			for i in range(3):
 				player_inventory.append({"hand": hand_key, "grade": 1})
+
+func _on_new_game():
+	title_menu.visible = false
+	_create_story_scene()
+	await scenario()
+
+func _on_continue():
+	title_menu.visible = false
+	await _start_battle_directly()
+
+func _start_battle_directly():
+	# TODO: 将来的に自動保存機能で中断箇所から再開する
+	# 現在はストーリーの"tutorial_start"ラベルから再生
+	player_inventory.clear()
+	_init_player_inventory()
+	_create_story_scene()
+	await _play_scene_from("prologue", "tutorial_start")
+	story_scene_instance.queue_free()
+	story_scene_instance = null
+	title_menu.visible = true
 
 func _create_story_scene():
 	story_scene_instance = story_scene_scene.instantiate()
@@ -62,6 +85,12 @@ func _play_scene(sequence_key):
 	if seq:
 		await story_scene_instance.play_sequence(seq, {"id": sequence_key})
 
+# Play a scene from a specific label
+func _play_scene_from(sequence_key: String, label_name: String):
+	var seq = story_script.get_sequence(sequence_key)
+	if seq:
+		await story_scene_instance.play_sequence(seq, {"id": sequence_key, "skip_to": label_name})
+
 func _on_story_sequence_started(_sequence_id):
 	is_dialogue_active = true
 
@@ -79,20 +108,17 @@ func _on_battle_requested(cmd):
 	add_child(battle_instance)
 	battle_instance.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	battle_instance.setup(story_script.get_cast(), story_scene_instance.background_rect.texture, player_inventory)
-	battle_instance.start_battle(cmd.chapter)
+	battle_instance.start_battle(cmd.chapter, cmd.is_tutorial)
 	var result: String = await battle_instance.battle_finished
 
 	# Process card exchange
 	var rewards = battle_instance.get_battle_rewards()
 	if result == "win":
-		# Player wins: gain opponent's lost cards, keep own cards
 		for card in rewards.captured_by_player:
 			player_inventory.append(card.duplicate())
 	elif result == "lose":
-		# Player loses: lose own lost cards
 		for card in rewards.captured_by_opponent:
 			_remove_card_from_inventory(card)
-	# draw: no card exchange
 
 	cmd.result = result
 	battle_instance.queue_free()
