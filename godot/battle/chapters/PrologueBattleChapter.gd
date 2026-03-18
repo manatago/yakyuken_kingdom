@@ -20,19 +20,20 @@ func get_player_outfit_count() -> int:
 func setup_scene(bt):
 	bt.deck("res://assets/battle/decks/deck-002.png", {"scale": 0.75, "position": [0, 230]})
 	var matilda = bt.character("matilda")
-	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.95, "side": "center", "position": [0, -197]})
+	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 
 # --- チュートリアル ---
 
 func tutorial(bt):
 	var matilda = bt.character("matilda")
-	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.95, "side": "center", "position": [0, -197]})
+	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 
 	bt.set_bubble_side("left")
 
 	matilda.band("周りの風景が変わっただろう。これがこの世界のバトルシステム「じゃんけん」だ。")
 	# アイテムボックスの説明
 	bt.highlight("item_panel")
+	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_002.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 	matilda.band("左にあるのがアイテムボックスだ。")
 	matilda.band("バトル中に使えるアイテムがここに表示される。", {"append": true})
 	matilda.band("今は何もないけど、運が良ければ勝率をあげるアイテムなんかを手に入れることができる", {"append": true})
@@ -42,6 +43,7 @@ func tutorial(bt):
 
 	# カードの説明
 	bt.highlight("hand_panel", {"offset_x": 50})
+	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_003.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 	matilda.band("右にあるのが手持ちカードだ。")
 	matilda.band("グー、チョキ、パーの3種類がある。", {"append": true})
 	matilda.band("カード自体にはグレードがある。", {"append": true})
@@ -50,26 +52,31 @@ func tutorial(bt):
 
 	# デッキ構築の説明
 	bt.highlight("card_bar")
+	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_004.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 	matilda.band("下のデッキに9枚セットしな。手持ちからカードを選んでデッキに入れるんだ。")
 	matilda.band("カードボックスのカードをクリックするとデッキに登録される。", {"append": true})
 	matilda.band("デッキのカードをクリックするとアイテムボックスに戻るんだ。", {"append": true})
 	matilda.band("面倒なら「自動」ボタンで一発だ。")
 	matilda.band("「準備完了」をクリックすると、デッキが完成する。", {"append": true})
 	bt.unhighlight()
+	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_000.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 
 	# デッキ構築を実行させる
 	await bt.build_deck()
 
 	# カード選択の説明
 	bt.highlight("card_bar")
+	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_004.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 	matilda.band("よし、デッキができたな。次はカードの選択だ。")
 	matilda.band("「カードを選択してください」って表示されたら、", {"append": true})
 	matilda.band("出したいカードをクリックするとカードが選択される。", {"append": true})
 	matilda.band("「勝負！」を押すと、じゃんけんが始まる。", {"append": true})
+	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_006.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 	matilda.band("最初は特別にグーを出してやるから、お前はパーを出しな。", {"append": true})
 	bt.unhighlight()
-
+	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_000.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 	var selection = await bt.select_hand()
+
 
 	# 勝負の説明
 	bt.highlight("action_prompt")
@@ -79,19 +86,24 @@ func tutorial(bt):
 	var result = await bt.janken(selection, {"fixed": "rock"})
 
 	if result == "win":
+		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 		matilda.band("ほら、勝っただろ？")
 		bt.highlight("item_panel")
 		# matilda.band("勝つと相手のカードをもらえるんだ。")
 		# matilda.band("負けたら逆に取られるから気をつけな。")
 		bt.unhighlight()
 	elif result == "lose":
+		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_007.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 		matilda.band("……あんた、パーを出せって言っただろ。")
 		matilda.band("まぁいい、次で取り返しな。", {"append": true})
 	else:
+		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 		matilda.band("あいこか。同じグレードだと引き分けになる。")
 
 	# HPの説明
 	bt.highlight("opponent_hp", {"offset_y": 20})
+	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_005.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+
 	matilda.band("カードで勝負がつくと、どちらかのHPが減る。")
 	matilda.band("上が相手のHPだ。", {"append": true})
 	matilda.band("勝負に勝つと相手のHPが減る", {"append": true})
@@ -104,6 +116,7 @@ func tutorial(bt):
 	bt.unhighlight()
 
 	# もう一回練習
+	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 	matilda.band("もう一回やってみな。\n今度は好きなカードを選びな。")
 	selection = await bt.select_hand()
 	result = await bt.janken(selection, {"win_rate": 0.8})
@@ -131,9 +144,9 @@ func outfit_3(bt):
 	if result == "win":
 		matilda.band("へえ……やるじゃないか。")
 	elif result == "lose":
-		matilda.band("甘いね。")
+		matilda.band("ふんっ、甘いね。")
 	else:
-		matilda.band("あいこか。次で決めな。")
+		matilda.band("あいこか。次は勝つ！")
 
 # --- Outfit 2: 1枚脱いだ状態 ---
 
