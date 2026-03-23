@@ -8,6 +8,7 @@ signal sequence_finished(sequence_id)
 signal advance_requested
 signal battle_requested(command)
 signal battle_completed(result)
+signal terminal_effect_finished
 
 @onready var left_char := $LeftChar
 @onready var center_char := $CenterChar
@@ -36,6 +37,10 @@ var _character_position_cache: Dictionary = {}
 var _character_portrait_cache: Dictionary = {}
 var _character_portrait_scale_cache: Dictionary = {}
 var _active_character_tweens: Dictionary = {}
+var _typing_in_progress := false
+var _typing_label: Label = null
+var _typing_tween: Tween = null
+var _char_speed: float = 0.03  # seconds per character
 var _pending_signal_relays: Array = []
 var _portrait_animation_data: Dictionary = {}
 var _portrait_animation_timers: Dictionary = {}
@@ -52,19 +57,26 @@ func _ready():
 	_menu_bar.get_node("SkipButton").pressed.connect(_on_skip_pressed)
 
 func _input(event):
-	if not _waiting_for_input:
-		return
-	# Reject key echo (holding Enter would skip multiple lines)
+	# Reject key echo
 	if event is InputEventKey and event.echo:
 		return
+	var is_advance := false
 	if event.is_action_pressed("ui_accept"):
-		_trigger_advance()
-		get_viewport().set_input_as_handled()
+		is_advance = true
 	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		# Don't consume if clicking on a button
 		var hovered = get_viewport().gui_get_hovered_control()
 		if hovered is BaseButton:
 			return
+		is_advance = true
+	if not is_advance:
+		return
+	# If typing in progress, skip to full text
+	if _typing_in_progress:
+		_skip_typing()
+		get_viewport().set_input_as_handled()
+		return
+	# Otherwise, advance dialogue
+	if _waiting_for_input:
 		_trigger_advance()
 		get_viewport().set_input_as_handled()
 
@@ -90,6 +102,7 @@ func play_sequence(sequence: Cmd.Sequence, metadata: Dictionary = {}):
 
 	# State to restore when resuming from label
 	var last_bg_entry = null
+	var last_battle: Cmd.Battle = null
 
 	# Play all commands in the sequence
 	for entry in sequence.entries:
@@ -106,6 +119,8 @@ func play_sequence(sequence: Cmd.Sequence, metadata: Dictionary = {}):
 					last_bg_entry.fade = 0.0
 					last_bg_entry.execute(self)
 			continue
+		if entry is Cmd.Battle:
+			last_battle = entry
 		if sequence._skipping and entry is Cmd.Background:
 			sequence._skipping = false
 		var result = entry.execute(self)
@@ -140,6 +155,33 @@ func request_battle(cmd: Cmd.Battle):
 
 func complete_battle(result: String):
 	battle_completed.emit(result)
+
+# --- Typewriter effect ---
+
+func _start_typewriter(label: Label):
+	_typing_label = label
+	var total_chars: int = label.text.length()
+	if total_chars <= 0:
+		return
+	label.visible_characters = 0
+	_typing_in_progress = true
+	_typing_tween = create_tween()
+	_typing_tween.tween_property(label, "visible_characters", total_chars, total_chars * _char_speed)
+	_typing_tween.finished.connect(_on_typing_finished, CONNECT_ONE_SHOT)
+
+func _skip_typing():
+	if _typing_tween and _typing_tween.is_valid():
+		_typing_tween.kill()
+		_typing_tween = null
+	if _typing_label and is_instance_valid(_typing_label):
+		_typing_label.visible_characters = -1
+	_typing_in_progress = false
+
+func _on_typing_finished():
+	if _typing_label and is_instance_valid(_typing_label):
+		_typing_label.visible_characters = -1
+	_typing_in_progress = false
+	_typing_tween = null
 
 # --- Input handling ---
 
@@ -590,6 +632,100 @@ func show_background_entry(entry: Cmd.Background):
 	tween.tween_property(background_next_rect, "modulate:a", 1.0, fade_time)
 	tween.tween_property(background_rect, "modulate:a", 0.0, fade_time)
 
+func apply_bg_filter(entry: Cmd.BgFilter):
+	if not entry.enabled:
+		background_rect.material = null
+		return
+	var shader := Shader.new()
+	shader.code = """shader_type canvas_item;
+uniform float darken : hint_range(0.0, 1.0) = 0.3;
+uniform float desaturate : hint_range(0.0, 1.0) = 0.3;
+void fragment() {
+	vec4 tex = texture(TEXTURE, UV);
+	// Desaturate
+	float gray = dot(tex.rgb, vec3(0.299, 0.587, 0.114));
+	vec3 desat = mix(tex.rgb, vec3(gray), desaturate);
+	// Darken
+	vec3 darkened = desat * (1.0 - darken);
+	COLOR = vec4(darkened, tex.a);
+}"""
+	var mat := ShaderMaterial.new()
+	mat.shader = shader
+	mat.set_shader_parameter("darken", entry.darken)
+	mat.set_shader_parameter("desaturate", entry.desaturate)
+	background_rect.material = mat
+
+func play_terminal_effect(entry: Cmd.TerminalEffect):
+	# Create overlay
+	var overlay := ColorRect.new()
+	overlay.color = Color(0, 0, 0, 0)
+	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(overlay)
+
+	# Fade in black overlay
+	var fade_in := create_tween()
+	fade_in.tween_property(overlay, "color:a", 0.6, 0.3)
+	await fade_in.finished
+
+	# Create terminal text label
+	var terminal := RichTextLabel.new()
+	terminal.bbcode_enabled = true
+	terminal.scroll_active = false
+	terminal.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	terminal.add_theme_font_size_override("normal_font_size", 18)
+	terminal.add_theme_color_override("default_color", Color(0.2, 1.0, 0.3))
+	terminal.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Add padding
+	terminal.offset_left = 60
+	terminal.offset_top = 40
+	terminal.offset_right = -60
+	terminal.offset_bottom = -40
+	add_child(terminal)
+
+	# Glitch flash at start
+	overlay.color = Color(0.1, 0.3, 0.1, 0.7)
+	await get_tree().create_timer(0.05).timeout
+	overlay.color = Color(0, 0, 0, 0.6)
+	await get_tree().create_timer(0.1).timeout
+
+	# Type out each line
+	var full_text := ""
+	for i in range(entry.lines.size()):
+		var line: String = entry.lines[i]
+		for ch_idx in range(line.length()):
+			full_text += line[ch_idx]
+			terminal.text = full_text + "█"
+			await get_tree().create_timer(entry.char_delay).timeout
+		full_text += "\n"
+		terminal.text = full_text
+		if i < entry.lines.size() - 1:
+			await get_tree().create_timer(entry.line_delay).timeout
+
+	# Blink cursor a few times
+	for blink in range(3):
+		terminal.text = full_text + "█"
+		await get_tree().create_timer(0.3).timeout
+		terminal.text = full_text
+		await get_tree().create_timer(0.3).timeout
+
+	# Hold
+	await get_tree().create_timer(entry.hold_time).timeout
+
+	# Flash and fade out
+	overlay.color = Color(0.2, 1.0, 0.3, 0.4)
+	await get_tree().create_timer(0.08).timeout
+
+	var fade_out := create_tween()
+	fade_out.set_parallel(true)
+	fade_out.tween_property(overlay, "color:a", 0.0, 0.4)
+	fade_out.tween_property(terminal, "modulate:a", 0.0, 0.3)
+	await fade_out.finished
+
+	terminal.queue_free()
+	overlay.queue_free()
+	terminal_effect_finished.emit()
+
 func pause_entry(entry: Cmd.Pause):
 	if entry.duration <= 0.0:
 		return null
@@ -769,6 +905,9 @@ func apply_band_command(entry: Cmd.Band):
 		band_body = dialogue_band_body
 	if entry.clear_text or not entry.text.is_empty():
 		band_body.text = entry.text
+		# Start typewriter effect
+		if not entry.text.is_empty() and entry.wait_for_input:
+			_start_typewriter(band_body)
 	if char_data:
 		_show_character(char_data, entry.portrait_id, side)
 		if not char_data.display_name.is_empty():

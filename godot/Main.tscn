@@ -87,3 +87,69 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_menu_btn")
 theme_override_styles/hover = SubResource("StyleBoxFlat_menu_btn_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_menu_btn_pressed")
 text = "中断から始める"
+
+[node name="JumpMenu" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 1
+anchor_left = 0.25
+anchor_top = 0.15
+anchor_right = 0.75
+anchor_bottom = 0.85
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="JumpTitle" type="Label" parent="JumpMenu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "ジャンプ先を選択"
+horizontal_alignment = 1
+
+[node name="JumpList" type="VBoxContainer" parent="JumpMenu"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="BackButton" type="Button" parent="JumpMenu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_menu_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_menu_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_menu_btn_pressed")
+text = "戻る"
+
+[node name="BattleResultScreen" type="ColorRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.7)
+
+[node name="ResultMenu" type="VBoxContainer" parent="BattleResultScreen"]
+layout_mode = 1
+anchor_left = 0.3
+anchor_top = 0.3
+anchor_right = 0.7
+anchor_bottom = 0.7
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="ResultTitle" type="Label" parent="BattleResultScreen/ResultMenu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 1
+
+[node name="ResultMessage" type="Label" parent="BattleResultScreen/ResultMenu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="ResultButtons" type="VBoxContainer" parent="BattleResultScreen/ResultMenu"]
+layout_mode = 2
+theme_override_constants/separation = 12

@@ -509,18 +509,6 @@ func _run_battle():
 	else:
 		final_result = "draw"
 
-	var end_func: String
-	if final_result == "win":
-		end_func = "victory"
-	elif final_result == "lose":
-		end_func = "defeat"
-	else:
-		end_func = ""
-
-	if not end_func.is_empty() and _chapter.has_method(end_func):
-		await _chapter.call(end_func, self)
-		await _flush_pending()
-
 	_cleanup()
 	battle_finished.emit(final_result)
 

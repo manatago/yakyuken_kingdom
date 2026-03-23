@@ -4,6 +4,7 @@ class_name DefaultStory
 const StoryDsl := preload("res://story/StoryCommands.gd")
 const StoryCharacterResource := preload("res://story/StoryCharacter.gd")
 const PrologueChapterScript := preload("res://story/chapters/PrologueChapter.gd")
+const Stage1ChapterScript := preload("res://story/chapters/Stage1Chapter.gd")
 
 
 var _cast: Dictionary = {}  # character_id -> StoryCharacter
@@ -18,12 +19,15 @@ func _init() -> void:
 		"receptionist": _character("receptionist", "受付嬢", ""),
 		"passerby_male": _character("passerby_male", "通行人の男性", ""),
 		"passerby_female": _character("passerby_female", "通行人の女性", ""),
+		"pisuke": _character("pisuke", "ピー助", ""),
+		"adventurer_a": _character("adventurer_a", "冒険者A", ""),
 	}
 	_build_chapters()
 
 func _build_chapters() -> void:
 	var chapters := [
 		PrologueChapterScript.new(),
+		Stage1ChapterScript.new(),
 	]
 	for chapter in chapters:
 		_register_chapter(chapter)

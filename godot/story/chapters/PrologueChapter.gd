@@ -4,6 +4,8 @@ class_name PrologueChapter
 func get_sequence_builders() -> Array:
 	return [
 		{"id": "prologue", "builder": "_build_prologue"},
+		{"id": "prologue_battle_win", "builder": "_build_battle_win"},
+		{"id": "prologue_battle_lose", "builder": "_build_battle_lose"},
 	]
 
 func _build_prologue(b):
@@ -20,6 +22,7 @@ func _build_prologue(b):
 	b.band_color("royal_blue")
 
 	b.background("res://assets/backgrounds/prologue/bg01_university.png", 0.5)
+	#b.bg_filter(0.25, 0.3)
 	b.show_band()
 	hero.appear({
 		"side": "left",
@@ -122,6 +125,7 @@ func _build_prologue(b):
 	})
 
 	b.background("res://assets/backgrounds/prologue/bg02_room.png", 0.5)
+	#b.bg_filter(0.25, 0.3)
 	hero.appear({
 		"side": "left",
 		"appear_effect": "fade_slide",
@@ -172,6 +176,7 @@ func _build_prologue(b):
 	})
 
 	b.background("res://assets/backgrounds/prologue/bg03-1_lab.png", 0.5)
+	#b.bg_filter(0.25, 0.3)
 
 	hero.appear({
 		"side": "left",
@@ -241,6 +246,7 @@ func _build_prologue(b):
 
 
 	b.background("res://assets/backgrounds/prologue/bg03-2_lab.png", 0.4)
+	#b.bg_filter(0.25, 0.3)
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_019.png", {"scale": 0.5})
 	hero.band("うわっ！")
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_020.png", {"scale": 0.5})
@@ -283,6 +289,7 @@ func _build_prologue(b):
 	})
 
 	b.background("res://assets/backgrounds/prologue/bg04-1_teleport_square.png", 0.5)
+	#b.bg_filter(0.25, 0.3)
 	hero.appear({
 		"side": "center",
 		"appear_effect": "fade_grow",
@@ -305,6 +312,7 @@ func _build_prologue(b):
 
 
 	b.background("res://assets/backgrounds/prologue/bg04-2_teleport_square2.png", 0.5)
+	#b.bg_filter(0.25, 0.3)
 	hero.appear({
 		"side": "left",
 		"appear_effect": "fade_slide",
@@ -415,6 +423,7 @@ func _build_prologue(b):
 	})
 
 	b.background("res://assets/backgrounds/prologue/bg05_prison_cell.png", 0.5)
+	#b.bg_filter(0.25, 0.3)
 	b.narrator_band("サトシが気が付くと、そこは牢の中だった。服が着せられていた。")
 
 	hero.appear({
@@ -499,6 +508,7 @@ func _build_prologue(b):
 	hero.band("えっ、ちょ、いきなり注射!? 説明――いっっっ!!")
 
 	b.background("res://assets/backgrounds/prologue/bg05_prison_cell.png", 0.5)
+	#b.bg_filter(0.25, 0.3)
 	b.narrator_band("マチルダに無理やり注射をされて、サトシのうなじに激痛が走った...")
 
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_042.png", {"scale": 0.5, "flip": 1})
@@ -517,43 +527,81 @@ func _build_prologue(b):
 	b.label("tutorial_start")
 	b.tutorial("res://battle/chapters/PrologueBattleChapter.gd")
 
+	b.label("after_tutorial")
 	matilda.set_portrait("res://assets/characters/prologue/char07_pg_001.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
-	matilda.band("「じゃんけん」に負けると、服を脱がなきゃならない。1回負けるたびに服を1枚脱ぐ。全て脱がされたら、相手のいうことを聞かなきゃなんない。")
-	matilda.band("「じゃんけん」勝負をするときは服は3枚と決まっている。これは王国ルールだ。ただ、市民にはあんまり根付いてなくてな、街中では 1回勝負が好まれている。")
+	matilda.band("さっきは言ってなかったけど、HPは服装の枚数だ。")
+	matilda.band("つまり「じゃんけん」に負けると、服を脱がなきゃならない。1回負けるたびに服を1枚脱ぐ。全て脱がされたら、相手のいうことを聞かなきゃなんない。")
+	matilda.band("「じゃんけん」勝負をするときは服は3枚で、相手が全裸になるまでつづける。これは王国ルールだ。ただ、市民にはあんまり根付いてなくてな、街中では 1回勝負が好まれている。")
 
-	hero.set_portrait("res://assets/characters/prologue/char01_pg_037.png", {"scale": 0.5, "side": "left", "flip": 1})
+	hero.set_portrait("res://assets/characters/prologue/char01_pg_043.png", {"scale": 0.5, "side": "left", "flip": 1})
 	hero.band("そっそれって、野球拳じゃ...")
 
+	matilda.set_portrait("res://assets/characters/prologue/char07_pg_008.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
 	matilda.band("ヤキュウケン？ 聞いたことないね。\nこの国ではすべての争いごとを「じゃんけん」で決める。それが法律だ。")
 
 	hero.band("じゃんけんで!? 裁判も、商取引もですか？")
 
 	matilda.band("領土争いから税率の決定、犯罪者の刑期まで、全部「じゃんけん」だ。")
 
+	hero.set_portrait("res://assets/characters/prologue/char01_pg_044.png", {"scale": 0.5, "side": "left", "flip": 1})
 	hero.band("（カードを使ったじゃんけんか...）それって、確率と読みあいのゲーム....ですか？")
 
+	matilda.set_portrait("res://assets/characters/prologue/char07_pg_009.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
 	matilda.band("そういうこと。強い奴が出世し、弱い奴は這いつくばる。\n実力主義のわかりやすい世界だろ？")
 
+	hero.set_portrait("res://assets/characters/prologue/char01_pg_045.png", {"scale": 0.5, "side": "left", "flip": 1})
 	hero.band("（確率と読み合い……それ、まさに俺が大学で研究してた分野じゃないか。）")
 	hero.band("（混合戦略のナッシュ均衡、ベイズ推定による相手の手の予測……。\nここでは俺の数学が、そのまま「戦闘力」になるってことか？））")
+	matilda.set_portrait("res://assets/characters/prologue/char07_pg_010.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
 	matilda.band("おい、なに黙り込んでるんだ。怖気づいたか？")
 
+	hero.set_portrait("res://assets/characters/prologue/char01_pg_046.png", {"scale": 0.5, "side": "left", "flip": 1})
 	hero.band("……いえ、ちょっとワクワクしてき……ました。")
 
+	matilda.set_portrait("res://assets/characters/prologue/char07_pg_011.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
 	matilda.band("は？ 牢屋の中でワクワクとか、やっぱり変態じゃないか。")
+
+	hero.set_portrait("res://assets/characters/prologue/char01_pg_047.png", {"scale": 0.5, "side": "left", "flip": 1})
 	hero.band("(くっそぉ、変態、変態言いやがって、、、\nまてよ、ゲームに勝てば牢屋から出られる？！。)")
+	hero.set_portrait("res://assets/characters/prologue/char01_pg_048.png", {"scale": 0.5, "side": "left", "flip": 1})
 	hero.band("しょっ、勝負しませんか？")
 
+	matilda.set_portrait("res://assets/characters/prologue/char07_pg_012.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
 	matilda.band("おっ、小心者の変態にもそんな度胸があったんだな。いいぜ、受けてやるよ。")
 	matilda.band("お前が勝ったら、晴れて無罪放免だ。負けたら牢屋からは出られねぇ。覚悟しておけよ。")
 	matilda.band("まあ、今日始めたひよっこに全力で勝負したらマチルダさんの名が廃るからな、同じカードで勝負してやるよ。")
 
-	hero.band("（この人なんか、最初にグーを出すのが癖じゃないかと思うんだよね。勝負師の感？）")
+	hero.set_portrait("res://assets/characters/prologue/char01_pg_045.png", {"scale": 0.5, "side": "left", "flip": 1})
+	hero.band("（この人なんか、さっき最初はグーを出したな。\n俺の事馬鹿にしているから、また最初にグーを出すんじゃないのか...）")
 
+	b.label("battle_start")
 	b.battle("res://battle/chapters/PrologueBattleChapter.gd")
 
-	matilda.band("負けた...素人に。この屈辱は必ず晴らす。\n私はここにいるから必ず再戦しにこい。待っている。")
+# --- バトル後（勝利） ---
+
+func _build_battle_win(b):
+	var hero = b.character("main")
+	var matilda = b.character("matilda")
+
+	b.background("res://assets/backgrounds/prologue/bg05_prison_cell.png", 0)
+	#b.bg_filter(0.25, 0.3)
+	matilda.set_portrait("res://assets/characters/prologue/char07_pg_013.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
+	matilda.band("負けた...素人に。この屈辱は必ず晴らす。\n私はここにいるから必ず再戦しにこい。待っているぞ。")
+	hero.set_portrait("res://assets/characters/prologue/char01_pg_049.png", {"scale": 0.5, "side": "left", "flip": 1})
 	hero.band("うへへっ、おいしい思いもしたし。これでやっと牢から出られるぞ。")
+
+# --- バトル後（敗北） ---
+
+func _build_battle_lose(b):
+	var hero = b.character("main")
+	var matilda = b.character("matilda")
+
+	b.background("res://assets/backgrounds/prologue/bg05_prison_cell.png", 0)
+	#b.bg_filter(0.25, 0.3)
+	matilda.set_portrait("res://assets/characters/prologue/char07_pg_001.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
+	matilda.band("残念だったね。")
+	hero.set_portrait("res://assets/characters/prologue/char01_pg_037.png", {"scale": 0.5, "side": "left", "flip": 1})
+	hero.band("くそっ...負けた...")
 
 
 

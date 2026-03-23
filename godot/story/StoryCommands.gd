@@ -25,6 +25,23 @@ class Background extends Base:
 	func execute(scene):
 		scene.show_background_entry(self)
 
+class BgFilter extends Base:
+	var darken: float = 0.0    # 0.0 = no darken, 1.0 = full black
+	var desaturate: float = 0.0 # 0.0 = full color, 1.0 = grayscale
+	var enabled: bool = true
+	func execute(scene):
+		scene.apply_bg_filter(self)
+		return null
+
+class TerminalEffect extends Base:
+	var lines: Array = []  # Array of strings to display
+	var char_delay: float = 0.02  # seconds per character
+	var line_delay: float = 0.3   # pause between lines
+	var hold_time: float = 1.0    # hold after all lines
+	func execute(scene):
+		scene.play_terminal_effect(self)
+		return scene.terminal_effect_finished
+
 class Pause extends Base:
 	var duration: float = 0.0
 	func execute(scene):
@@ -171,9 +188,29 @@ func background(path: String, fade := 0.0):
 	entry.fade = fade
 	return entry
 
+func bg_filter(darken: float = 0.3, desaturate: float = 0.3):
+	var entry := BgFilter.new()
+	entry.darken = darken
+	entry.desaturate = desaturate
+	entry.enabled = true
+	return entry
+
+func bg_filter_off():
+	var entry := BgFilter.new()
+	entry.enabled = false
+	return entry
+
 func pause(duration: float):
 	var entry := Pause.new()
 	entry.duration = duration
+	return entry
+
+func terminal_effect(lines: Array, char_delay: float = 0.02, line_delay: float = 0.3, hold_time: float = 1.0):
+	var entry := TerminalEffect.new()
+	entry.lines = lines
+	entry.char_delay = char_delay
+	entry.line_delay = line_delay
+	entry.hold_time = hold_time
 	return entry
 
 func show_character(character_id: String, extra: Dictionary = {}):
@@ -453,8 +490,17 @@ class _CommandCollector:
 	func background(path: String, fade := 0.0):
 		_add_command(_dsl.background(path, fade))
 
+	func bg_filter(darken: float = 0.3, desaturate: float = 0.3):
+		_add_command(_dsl.bg_filter(darken, desaturate))
+
+	func bg_filter_off():
+		_add_command(_dsl.bg_filter_off())
+
 	func pause(duration: float):
 		_add_command(_dsl.pause(duration))
+
+	func terminal_effect(lines: Array, char_delay: float = 0.02, line_delay: float = 0.3, hold_time: float = 1.0):
+		_add_command(_dsl.terminal_effect(lines, char_delay, line_delay, hold_time))
 
 	func line(character_id: String, text: String, extra: Dictionary = {}):
 		_add_command(_dsl.line(character_id, text, extra))
@@ -509,6 +555,7 @@ class _CommandCollector:
 
 	func label(name: String):
 		_add_command(_dsl.label(name))
+
 
 	func micro_motion(mode: String, extra: Dictionary = {}):
 		_add_command(_dsl.micro_motion(mode, extra))

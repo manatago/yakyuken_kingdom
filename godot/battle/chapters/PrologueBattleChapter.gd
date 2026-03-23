@@ -1,5 +1,7 @@
 extends BattleChapterBase
 
+var _first_call := {"outfit_3": true, "outfit_2": true, "outfit_1": true}
+
 func get_opponent_id() -> String:
 	return "matilda"
 
@@ -14,13 +16,6 @@ func get_opponent_outfit_count() -> int:
 
 func get_player_outfit_count() -> int:
 	return 3
-
-# --- 初期表示 ---
-
-func setup_scene(bt):
-	bt.deck("res://assets/battle/decks/deck-002.png", {"scale": 0.75, "position": [0, 230]})
-	var matilda = bt.character("matilda")
-	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 
 # --- チュートリアル ---
 
@@ -86,7 +81,7 @@ func tutorial(bt):
 	var result = await bt.janken(selection, {"fixed": "rock"})
 
 	if result == "win":
-		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_008.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 		matilda.band("ほら、勝っただろ？")
 		bt.highlight("item_panel")
 		# matilda.band("勝つと相手のカードをもらえるんだ。")
@@ -122,30 +117,51 @@ func tutorial(bt):
 	result = await bt.janken(selection, {"win_rate": 0.8})
 
 	if result == "win":
+		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_008.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 		matilda.band("思ったよりやるな。")
 	else:
+		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_007.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 		matilda.band("見た目通り弱いな。")
 
 	# 締め
+	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_005.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 	matilda.band("これがじゃんけんバトルの基本だ。", {"append": true})
 	matilda.band("カードの使い方、グレードの活かし方……", {"append": true})
 	matilda.band("勝つための戦略を考えるのが醍醐味さ。", {"append": true})
 	matilda.band("ルールは理解したか？本番はもっと厳しいからな。", {"append": true})
 
+# --- 初期表示（デッキ構築時） ---
+
+func setup_scene(bt):
+	bt.deck("res://assets/battle/decks/deck-002.png", {"scale": 0.75, "position": [0, 230]})
+	var matilda = bt.character("matilda")
+	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_000.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+
 # --- Outfit 3: フル装備 ---
 
 func outfit_3(bt):
 	var matilda = bt.character("matilda")
-	matilda.band("さあ、始めようか。手加減はしないよ。最初はグー！")
+	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+	matilda.band("さあ、始めようか。手加減はしないよ。")
 
 	var selection = await bt.select_hand()
-	var result = await bt.janken(selection, {"fixed": "rock"})
+	var ai_opts := {"fixed": "rock"} if _first_call["outfit_3"] else {}
+	_first_call["outfit_3"] = false
+	var result = await bt.janken(selection, ai_opts)
 
 	if result == "win":
-		matilda.band("へえ……やるじゃないか。")
+		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_009.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+		matilda.band("くっ、変態の癖に。")
+		# イベント発生
+		matilda.band("イベント発生！")
+
+
 	elif result == "lose":
-		matilda.band("ふんっ、甘いね。")
+		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_010.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+		matilda.band("やっぱり、真剣勝負も弱いわね。ふっ。")
+
 	else:
+		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_007.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 		matilda.band("あいこか。次は勝つ！")
 
 # --- Outfit 2: 1枚脱いだ状態 ---
@@ -153,17 +169,20 @@ func outfit_3(bt):
 func outfit_2(bt):
 	var matilda = bt.character("matilda")
 
-	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.95, "side": "center"})
+	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 	matilda.band("ちっ……まだまだ終わらないよ。")
 
 	var selection = await bt.select_hand()
 	var result = await bt.janken(selection, {"win_rate": 0.6})
 
 	if result == "win":
+		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 		matilda.band("……っ、調子に乗るんじゃないよ。")
 	elif result == "lose":
+		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 		matilda.band("ふふ、まだ甘いね。")
 	else:
+		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 		matilda.band("あいこか。集中しな。")
 
 # --- Outfit 1: あと1枚 ---
@@ -171,31 +190,18 @@ func outfit_2(bt):
 func outfit_1(bt):
 	var matilda = bt.character("matilda")
 
-	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.95, "side": "center"})
+	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 	matilda.band("……ここからが本気だよ。")
 
 	var selection = await bt.select_hand()
 	var result = await bt.janken(selection, {"win_rate": 0.6})
 
 	if result == "win":
+		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 		matilda.band("…………。")
 	elif result == "lose":
+		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 		matilda.band("ふふ。")
 	else:
+		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 		matilda.band("まだ続くよ。")
-
-# --- 決着 ---
-
-func victory(bt):
-	var matilda = bt.character("matilda")
-
-	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.95, "side": "center"})
-	matilda.band("……認めてやるよ。あんた、筋がいい。")
-	bt.narrator_band("マチルダは悔しそうに、しかしどこか嬉しそうな表情を浮かべた。")
-
-func defeat(bt):
-	var matilda = bt.character("matilda")
-
-	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.95, "side": "center"})
-	matilda.band("残念だったね。もう少し修行してきな。")
-	bt.narrator_band("マチルダは勝ち誇った表情を浮かべた。")
