@@ -107,7 +107,7 @@ func _build_stage1(b):
 	pisuke.band("ゲコッ！？ お前、神が作ったシステムに「パッチ」を当てようってのか？面白そうじゃねえか！ やれ、サトシ！ 俺がポートをこじ開けてやる！")
 
 	hero.set_portrait("res://assets/characters/stage1/char01_st1_005.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
-	hero.band("（……よし、数学科の意地を見せてやる。変数固定、ポインタを強制書き換え……\n……エンター！）")
+	hero.band("（……よし、数学科の意地を見せてやる。変数固定、ポインタを強制書き換え…………エンター！）")
 
 	b.terminal_effect([
 		"> scanning chip_layer3.lib ...",
@@ -124,7 +124,43 @@ func _build_stage1(b):
 
 	hero.set_portrait("res://assets/characters/stage1/char01_st1_009.png", {"scale": 0.75, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("できた……。新スキル「確率の観測者（ベイズ・アイ）」！\nこれで、相手の手札の統計から、次に出す手の「確率」が可視化されるはずだ。")
-	hero.band("よっしゃ。これなら勝てる。")
+
+	# ピー助の透明化
+	pisuke.band("おい、サトシ。ギルドに入る前に一つ言っておく。\n俺様の姿は、人前じゃ見せない方がいい。")
+
+	hero.set_portrait("res://assets/characters/stage1/char01_st1_011.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.band("え？ なんで？")
+
+	pisuke.band("この世界で精霊を連れてる人間ってのは、\n「契約者」か「呪われた者」のどっちかだ。\nどちらにしても厄介事に巻き込まれる。")
+
+	hero.set_portrait("res://assets/characters/stage1/char01_st1_012.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.band("呪われた者って……。俺、どっちなの？")
+
+	pisuke.band("さあな。それはおいおい分かる。\n……というわけで、透明化するぞ。ただし声は消せねえ。\n俺様の声は周りにも聞こえる。だから余計なことは喋るなよ。")
+
+	# ピー助退場（その場で徐々に透明化）
+	pisuke.leave({
+		"exit_effect": "fade",
+		"exit_duration": 1.5,
+		"wait_for_exit": true,
+	})
+
+	hero.set_portrait("res://assets/characters/stage1/char01_st1_013.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.band("えっ、消えた！？ ……って、声は聞こえるのに姿が見えないのか。\n光学迷彩みたいだな。")
+
+	b.narrator_band("サトシの右肩に、何かがストンと降り立つ感触があった。\n見えないが、小さな爪が服に食い込んでいる。")
+
+	pisuke.band("ここが俺様の定位置だ。がたがた言ってないで、冒険者ギルドに行くぞ。", {"side": "left"})
+
+	hero.set_portrait("res://assets/characters/stage1/char01_st1_014.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.band("へいへい。（爪が痛いんだが...）")
+	hero.leave({
+		"side": "left",
+		"exit_effect": "fade_slide",
+		"exit_to": "right",
+		"exit_duration": 1.2,
+		"wait_for_exit": true
+	})
 
 	# ============================================================
 	# 場面12：冒険者ギルド・入り口
@@ -139,11 +175,12 @@ func _build_stage1(b):
 		"appear_from": "left",
 		"appear_duration": 0.8,
 		"appear_distance": 200,
-		"portrait": "res://assets/characters/stage1/char01_st1_002.png",
+		"portrait": "res://assets/characters/stage1/char01_st1_015.png",
 		"portrait_scale": 0.5,
+		"flip": 1,
 	})
 
-	hero.band("よっしゃ。これなら勝てる。")
+	hero.band("よっしゃ。ベイズ・アイもあるし、これなら勝てる。")
 
 	# 冒険者A登場
 	adventurer_a.appear({
@@ -156,15 +193,21 @@ func _build_stage1(b):
 		"portrait_scale": 0.5,
 	})
 
-	adventurer_a.band("おい、新顔。その肩に乗せてる妙な鳥、高く売れそうじゃねえか。\nここじゃ強い奴がルールだ。俺様と「じゃんけん」して、負けたらその鳥を置いていきな！")
+	adventurer_a.band("おい、新顔。麻の服なんか着やがって、田舎もんか？\nここじゃ強い奴がルールだ。俺様と「じゃんけん」して、負けたらその服を置いていきな！")
+	adventurer_a.band("……ってもう裸みたいなもんだがな。ガハハ！")
 
-	pisuke.band("言ったな、三下！ サトシ、こいつのカードを全部剥ぎ取って、\n広場で「俺は確率の奴隷です」って叫ばせてやれ！")
+	# ピー助（透明・サトシの肩から）
+	pisuke.band("……サトシ、こいつのカード構成、スキャンしたぞ。\nノーマルカードばかりだ。お前なら楽勝だ、やっちまえ。", {"side": "left"})
 
-	hero.band("（……やれやれ。でも、テストにはちょうどいい。）\nいいですよ。その勝負、受けます。")
+	hero.band("（ピー助……見えないのに頼もしいな。）")
+
+	hero.band("いいですよ。その勝負、受けます。")
 
 	b.hide_band()
 
-	# チュートリアル（ベイズ・アイ）があれば入れる
+	b.label("stage1_tutorial_start")
+	b.tutorial("res://battle/chapters/Stage1BattleChapter.gd")
+
 	b.label("stage1_battle_start")
 	b.battle("res://battle/chapters/Stage1BattleChapter.gd")
 
@@ -198,9 +241,15 @@ func _build_stage1(b):
 
 	receptionist.band("えっ？ エ……？")
 
-	pisuke.band("「エリート・ゲーマー」って意味だよ！ ほら、さっさと登録しろ！")
+	# ピー助（透明・サトシの肩から）
+	pisuke.band("おい、何言ってんだ！ ……まったく、コミュ障かよ。", {"side": "left"})
 
-	receptionist.band("あ、はい！ ではこちらの魔力水晶に……。\n……判定完了です。サトシ様、ランクF。\nですが、特殊スキル……「ベイズ・アイ」？\n聞いたことがないスキルですが……。")
+	hero.band("（うるさいな……。）\nあっ……「エリート・ゲーム理論家」の略です。はい。")
+
+	receptionist.band("な、なるほど……？ ではこちらの魔力水晶に触れてください。\n……判定完了です。サトシ様、ランクF。\nですが、特殊スキル……「ベイズ・アイ」？\n聞いたことがないスキルですが……。")
+
+	# ピー助（透明・サトシの肩から）
+	pisuke.band("ランクFか。まあ、最初はそんなもんだ。\nだがそのスキル、育て方次第で化けるぞ。", {"side": "left"})
 
 	hero.band("（……フフ。この世界、俺にとっては「チート可能なクソゲー」にすぎないのかもな。）")
 
@@ -215,6 +264,8 @@ func _build_battle_win(b):
 	b.background("res://assets/backgrounds/stage1/bg07_guild_hall.png", 0)
 	adventurer_a.set_portrait("res://assets/characters/stage1/adventurer_a_002.png", {"scale": 0.5, "side": "right"})
 	adventurer_a.band("バカな……！ 俺の手が読まれてるだと！？")
+	var pisuke = b.character("pisuke")
+	pisuke.band("ゲコッ！ 完勝だな。お前、なかなかセンスあるじゃねえか。", {"side": "left"})
 	hero.set_portrait("res://assets/characters/stage1/char01_st1_002.png", {"scale": 0.5, "side": "left"})
 	hero.band("（ベイズ・アイ……使えるな。）")
 
@@ -227,5 +278,7 @@ func _build_battle_lose(b):
 	b.background("res://assets/backgrounds/stage1/bg07_guild_hall.png", 0)
 	adventurer_a.set_portrait("res://assets/characters/stage1/adventurer_a_001.png", {"scale": 0.5, "side": "right"})
 	adventurer_a.band("ハッ！ 口だけの小僧だったな！")
+	var pisuke = b.character("pisuke")
+	pisuke.band("おいおい……。もっと確率を信じろ。データは嘘つかねえんだからよ。", {"side": "left"})
 	hero.set_portrait("res://assets/characters/stage1/char01_st1_001.png", {"scale": 0.5, "side": "left"})
 	hero.band("くっ……まだスキルの使い方が甘いか……。")

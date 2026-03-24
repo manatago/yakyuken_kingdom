@@ -36,6 +36,7 @@ var _jump_points: Array = [
 	{"label": "scene_guild_street", "name": "ギルド通り", "sequence": "stage1"},
 	{"label": "scene_analysis", "name": "道中・解析", "sequence": "stage1"},
 	{"label": "scene_guild_hall", "name": "冒険者ギルド", "sequence": "stage1"},
+	{"label": "stage1_tutorial_start", "name": "ベイズ・アイ チュートリアル", "sequence": "stage1"},
 	{"label": "stage1_battle_start", "name": "冒険者Aバトル", "sequence": "stage1"},
 	{"label": "scene_guild_reception", "name": "ギルド受付", "sequence": "stage1"},
 ]
