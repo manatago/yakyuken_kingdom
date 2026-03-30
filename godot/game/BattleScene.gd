@@ -60,6 +60,13 @@ const GRADE_COLORS := {
 @onready var item_panel := $ItemPanel
 @onready var hand_panel := $HandPanel
 @onready var hand_slots := $HandPanel/HandSlots
+@onready var bayes_eye_panel := $BayesEyePanel
+@onready var bayes_rock_bar := $BayesEyePanel/Rows/RockRow/Bar
+@onready var bayes_rock_pct := $BayesEyePanel/Rows/RockRow/Pct
+@onready var bayes_scissors_bar := $BayesEyePanel/Rows/ScissorsRow/Bar
+@onready var bayes_scissors_pct := $BayesEyePanel/Rows/ScissorsRow/Pct
+@onready var bayes_paper_bar := $BayesEyePanel/Rows/PaperRow/Bar
+@onready var bayes_paper_pct := $BayesEyePanel/Rows/PaperRow/Pct
 @onready var speech_bubble := $SpeechBubble
 @onready var bubble_label := $SpeechBubble/BubbleLabel
 @onready var janken_overlay := $JankenOverlay
@@ -74,6 +81,7 @@ var _card_back_tex: Texture2D = null
 var _card_textures: Dictionary = {}
 var _opponent_outfit: int = 0
 var _player_outfit: int = 0
+var _player_deck_size: int = 9
 
 # Card selection state
 var _selected_hand: Hand = Hand.ROCK
@@ -89,6 +97,9 @@ var _opponent_deck: Array = []      # [{hand: Hand, grade: int}, ...]
 var _deck_buttons: Array = []       # [{hand, grade, button, container, used}, ...]
 var _captured_by_player: Array = [] # opponent's lost cards
 var _captured_by_opponent: Array = [] # player's lost cards
+
+# アイテム使用状態（ラウンドごとにリセット）
+var _round_item_effect: String = ""  # "protect_card", "protect_hp", "intimidate", ""
 
 # Deck building state
 var _deck_building := false
@@ -147,7 +158,7 @@ func start_battle(chapter: BattleChapterBase, is_tutorial := false):
 		Hand.PAPER: load(_card_paths.get("paper", "res://assets/battle/cards/paper.png")),
 	}
 
-	# Parse opponent deck
+	# Parse opponent deck (built from hand randomly)
 	_opponent_deck.clear()
 	for card in chapter.get_opponent_deck():
 		_opponent_deck.append({
@@ -155,6 +166,9 @@ func start_battle(chapter: BattleChapterBase, is_tutorial := false):
 			"grade": int(card.grade),
 			"used": false,
 		})
+	# Load opponent tendency
+	_opponent_tendency = chapter.get_opponent_tendency()
+	_player_deck_size = chapter.get_player_deck_size()
 
 	# Embedded story scene
 	_story_scene = _story_scene_tscn.instantiate()
@@ -178,6 +192,7 @@ func start_battle(chapter: BattleChapterBase, is_tutorial := false):
 		# Tutorial mode: show hand panel, let tutorial function control the flow
 		hand_panel.visible = true
 		_refresh_inventory_display()
+		_update_score()
 		_run_battle()
 	else:
 		# Normal mode: deck building then battle
@@ -201,7 +216,7 @@ func _deck_building_phase():
 
 	# Show instruction
 	action_prompt.visible = true
-	card_label.text = "デッキに9枚セットしてください"
+	card_label.text = "デッキに%d枚セットしてください" % _player_deck_size
 	confirm_button.text = "準備完了"
 	confirm_button.visible = false
 	auto_button.visible = true
@@ -279,10 +294,11 @@ func _refresh_inventory_display():
 func _on_inventory_card_pressed(hand: Hand, grade: int):
 	if not _deck_building:
 		return
-	if _player_deck.size() >= 9:
+	if _player_deck.size() >= _player_deck_size:
 		return
 
 	# Check availability
+	@warning_ignore("unused_variable")
 	var key_str := "%s_%d" % [HAND_KEYS[hand], grade]
 	var total := 0
 	for card in _player_inventory:
@@ -299,7 +315,7 @@ func _on_inventory_card_pressed(hand: Hand, grade: int):
 	_refresh_inventory_display()
 	_refresh_deck_preview()
 
-	if _player_deck.size() >= 9:
+	if _player_deck.size() >= _player_deck_size:
 		confirm_button.visible = true
 
 func _refresh_deck_preview():
@@ -418,8 +434,50 @@ func _add_command(command):
 
 # --- Card & Item selection ---
 
+func force_select_hand(hand: Hand) -> Dictionary:
+	# ピー助がカードを強制選択する演出
+	await _flush_pending()
+	_set_cards_enabled(false)
+	action_prompt.visible = true
+	card_label.text = "カードを選択してください"
+	var _has_bayes: bool = _chapter and _chapter.has_method("has_bayes_eye") and _chapter.has_bayes_eye()
+	if _has_bayes:
+		_show_bayes_eye_immediate()
+
+	await get_tree().create_timer(0.5).timeout
+
+	# 指定されたカードを自動選択
+	for entry in _deck_buttons:
+		if entry.hand == hand and not entry.used:
+			_selected_hand = hand
+			_selected_grade = entry.grade
+			_selected_button = entry.button
+			_hand_selected = true
+			var check: Label = entry.container.get_node_or_null("CheckMark")
+			if check:
+				check.visible = true
+			_update_bayes_display()
+			break
+
+	await get_tree().create_timer(0.8).timeout
+
+	# 勝負ボタンを自動クリック
+	confirm_button.visible = true
+	await get_tree().create_timer(0.5).timeout
+
+	# 確定処理
+	_set_cards_enabled(false)
+	confirm_button.visible = false
+	action_prompt.visible = false
+	if _has_bayes:
+		_hide_bayes_eye_immediate()
+	_consume_selected_card()
+	_update_score()
+	return {"hand": _selected_hand, "grade": _selected_grade, "item": null}
+
 func select_hand() -> Dictionary:
 	await _flush_pending()
+	_round_item_effect = ""
 	_set_cards_enabled(true)
 	_hand_selected = false
 	_hand_confirmed = false
@@ -428,14 +486,22 @@ func select_hand() -> Dictionary:
 	action_prompt.visible = true
 	card_label.text = "カードを選択してください"
 	confirm_button.visible = false
+	_show_item_buttons()
+	# Show Bayes Eye during card selection (if chapter supports it)
+	var _has_bayes: bool = _chapter and _chapter.has_method("has_bayes_eye") and _chapter.has_bayes_eye()
+	if _has_bayes:
+		_show_bayes_eye_immediate()
 	while not _hand_confirmed:
 		await get_tree().process_frame
 	_set_cards_enabled(false)
 	confirm_button.visible = false
 	action_prompt.visible = false
+	_clear_item_buttons()
+	if _has_bayes:
+		_hide_bayes_eye_immediate()
 	_consume_selected_card()
 	_update_score()
-	return {"hand": _selected_hand, "grade": _selected_grade, "item": null}
+	return {"hand": _selected_hand, "grade": _selected_grade, "item": _round_item_effect}
 
 # --- Janken overlay ---
 
@@ -452,12 +518,14 @@ func janken(selection: Dictionary, ai_opts: Dictionary = {}) -> String:
 
 	if result == "win":
 		_opponent_outfit -= 1
-		# Capture opponent's card
 		_captured_by_player.append({"hand": HAND_KEYS[opponent_hand], "grade": opponent_grade})
 	elif result == "lose":
-		_player_outfit -= 1
-		# Opponent captures player's card
-		_captured_by_opponent.append({"hand": HAND_KEYS[player_hand], "grade": player_grade})
+		# 鉄の盾: HPが減らない
+		if _round_item_effect != "protect_hp":
+			_player_outfit -= 1
+		# 身代わりカード: カードを取られない
+		if _round_item_effect != "protect_card":
+			_captured_by_opponent.append({"hand": HAND_KEYS[player_hand], "grade": player_grade})
 	elif result == "draw":
 		# True draw (same hand, same grade) — refund both
 		_refund_card(player_hand, player_grade)
@@ -474,6 +542,9 @@ func _run_battle():
 	if _is_tutorial and _chapter.has_method("tutorial"):
 		await _chapter.call("tutorial", self)
 		await _flush_pending()
+		# カード取得メッセージ
+		if _chapter.can_gain_cards() and not _captured_by_player.is_empty():
+			await _show_card_gain_message()
 		_cleanup()
 		battle_finished.emit("win")
 		return
@@ -498,19 +569,91 @@ func _run_battle():
 	elif _player_outfit <= 0:
 		final_result = "lose"
 	elif _count_remaining_deck() <= 0 and _count_remaining_opponent_deck() <= 0:
-		# Both decks empty simultaneously
 		final_result = "draw"
 	elif _count_remaining_deck() <= 0:
-		# Player deck empty first = lose
 		final_result = "lose"
 	elif _count_remaining_opponent_deck() <= 0:
-		# Opponent deck empty first = win
 		final_result = "win"
 	else:
 		final_result = "draw"
 
+	# 去り際メッセージ（RandomBattleChapter のみ）
+	if _chapter.has_method("get_farewell"):
+		var farewell: String = _chapter.get_farewell(final_result)
+		if not farewell.is_empty():
+			# 去り際ポートレートに切り替え
+			if _chapter.has_method("get_farewell_portrait"):
+				var fp: Dictionary = _chapter.get_farewell_portrait()
+				var fp_path: String = fp.get("path", "")
+				if not fp_path.is_empty():
+					var ch = character(_chapter.get_opponent_id())
+					ch.set_portrait(fp_path, {
+						"scale": fp.get("scale", 0.4),
+						"side": fp.get("side", "center"),
+						"position": fp.get("position", [0, -199]),
+					})
+					await _flush_pending()
+			set_bubble_side("center")
+			narrator_band(farewell)
+			await _flush_pending()
+
+	# カード取得メッセージ
+	if _chapter.can_gain_cards() and not _captured_by_player.is_empty() and final_result == "win":
+		await _show_card_gain_message()
+
 	_cleanup()
 	battle_finished.emit(final_result)
+
+# --- アイテム使用UI ---
+
+func _show_item_buttons():
+	_clear_item_buttons()
+	for item in GameState.items:
+		var item_info: Dictionary = ItemDatabase.get_item(item.id)
+		if item_info.is_empty() or item_info.type != ItemDatabase.ItemType.CONSUMABLE:
+			continue
+		var btn := Button.new()
+		btn.text = "%s ×%d" % [item.get("name", item.id), item.get("count", 1)]
+		btn.add_theme_font_size_override("font_size", 14)
+		btn.tooltip_text = item_info.get("description", "")
+		var item_id: String = item.id
+		btn.pressed.connect(_on_item_used.bind(item_id, btn))
+		item_slots.add_child(btn)
+
+func _clear_item_buttons():
+	for child in item_slots.get_children():
+		child.queue_free()
+
+func _on_item_used(item_id: String, btn: Button):
+	if not _round_item_effect.is_empty():
+		return  # 1ラウンド1個まで
+	var item_info: Dictionary = ItemDatabase.get_item(item_id)
+	if item_info.is_empty():
+		return
+	_round_item_effect = item_info.get("effect", "")
+	GameState.remove_item(item_id, 1)
+	btn.disabled = true
+	btn.text = "使用済み"
+	# 威圧の札: ベイズアイを更新
+	if _round_item_effect == "intimidate":
+		_update_bayes_display()
+	# アイテムパネルを更新
+	_show_item_buttons()
+
+const _HAND_DISPLAY := {"rock": "グー", "scissors": "チョキ", "paper": "パー"}
+const _GRADE_DISPLAY := {1: "ノーマル", 2: "ブロンズ", 3: "シルバー", 4: "ゴールド", 5: "プラチナ"}
+
+func _show_card_gain_message():
+	var lines := PackedStringArray()
+	for card in _captured_by_player:
+		var hand_name: String = _HAND_DISPLAY.get(card.hand, card.hand)
+		var grade: int = int(card.grade)
+		var grade_name: String = _GRADE_DISPLAY.get(grade, "G%d" % grade)
+		lines.append("%s（%s）" % [hand_name, grade_name])
+	var msg := "カードを取得しました！\n" + "\n".join(lines)
+	set_bubble_side("center")
+	narrator_band(msg)
+	await _flush_pending()
 
 # Returns battle results for Main.gd to process inventory changes
 func get_battle_rewards() -> Dictionary:
@@ -625,10 +768,13 @@ func _on_card_button_pressed(container: Control, btn: TextureButton, hand: Hand,
 	if check:
 		check.visible = true
 	confirm_button.visible = true
+	# Update Bayes Eye when card is selected
+	if bayes_eye_panel.visible:
+		_update_bayes_display()
 
 func _on_confirm_pressed():
 	if _deck_building:
-		if _player_deck.size() >= 9:
+		if _player_deck.size() >= _player_deck_size:
 			_deck_ready = true
 	elif _hand_selected:
 		_hand_confirmed = true
@@ -648,10 +794,10 @@ func _on_auto_pressed():
 		by_type[card.hand].append(card)
 	var added := 0
 	var round_idx := 0
-	while added < 9:
+	while added < _player_deck_size:
 		var picked_any := false
 		for hand_key in ["rock", "scissors", "paper"]:
-			if added >= 9:
+			if added >= _player_deck_size:
 				break
 			if round_idx < by_type[hand_key].size():
 				var card = by_type[hand_key][round_idx]
@@ -663,7 +809,7 @@ func _on_auto_pressed():
 			break
 	_refresh_inventory_display()
 	_refresh_deck_preview()
-	if _player_deck.size() >= 9:
+	if _player_deck.size() >= _player_deck_size:
 		confirm_button.visible = true
 
 func _deselect_all_cards():
@@ -734,6 +880,10 @@ func _flush_pending():
 			_unhighlight()
 		elif cmd is Dictionary and cmd.has("_bubble_side"):
 			_apply_bubble_side(cmd.side)
+		elif cmd is Dictionary and cmd.has("_show_bayes"):
+			_show_bayes_eye_immediate()
+		elif cmd is Dictionary and cmd.has("_hide_bayes"):
+			_hide_bayes_eye_immediate()
 		else:
 			story_batch.append(cmd)
 
@@ -747,65 +897,235 @@ func _flush_pending():
 	if speech_bubble.visible:
 		await _hide_bubble()
 
+# --- Bayes Eye: probability calculation ---
+
+var _opponent_tendency: Dictionary = {}
+
+func get_bayes_probability(with_grade_effect: bool = false) -> Dictionary:
+	# デッキの残りカードから基本確率を計算
+	var counts := {Hand.ROCK: 0, Hand.SCISSORS: 0, Hand.PAPER: 0}
+	var total := 0
+	for entry in _opponent_deck:
+		if not entry.used:
+			counts[entry.hand] += 1
+			total += 1
+	if total == 0:
+		return {Hand.ROCK: 0.33, Hand.SCISSORS: 0.33, Hand.PAPER: 0.34}
+
+	var prob := {}
+	for hand in counts:
+		prob[hand] = float(counts[hand]) / float(total)
+
+	# 癖補正を適用
+	if not _opponent_tendency.is_empty():
+		for key in _opponent_tendency:
+			var hand_enum: Hand = HAND_FROM_KEY.get(key, -1)
+			if hand_enum >= 0 and prob.has(hand_enum):
+				prob[hand_enum] += _opponent_tendency[key]
+		# 正規化（合計を1.0にする、負の値は0にクランプ）
+		var sum := 0.0
+		for hand in prob:
+			prob[hand] = max(prob[hand], 0.0)
+			sum += prob[hand]
+		if sum > 0:
+			for hand in prob:
+				prob[hand] /= sum
+
+	# 威圧の札: 相手が負ける手+20%（比率維持方式）
+	if with_grade_effect and _round_item_effect == "intimidate" and _hand_selected:
+		var player_hand_key: String = HAND_KEYS.get(_selected_hand, "rock")
+		var lose_hand_key: String = Card.LOSES_TO[player_hand_key]
+		var lose_hand_enum: Hand = HAND_FROM_KEY.get(lose_hand_key, Hand.ROCK)
+		var old_lose: float = prob.get(lose_hand_enum, 0.0)
+		var new_lose: float = old_lose + 0.20
+		prob[lose_hand_enum] = new_lose
+		var remaining_old: float = 0.0
+		for h in prob:
+			if h != lose_hand_enum:
+				remaining_old += prob[h]
+		if remaining_old > 0.0:
+			var remaining_new: float = 1.0 - new_lose
+			var ratio: float = remaining_new / remaining_old
+			for h in prob:
+				if h != lose_hand_enum:
+					prob[h] *= ratio
+
+	# グレード補正（カード選択後のみ）
+	if with_grade_effect and _selected_grade > 1 and _hand_selected:
+		var player_hand_key: String = HAND_KEYS.get(_selected_hand, "rock")
+		var str_probs := {}
+		for hand_enum in prob:
+			str_probs[HAND_KEYS.get(hand_enum, "rock")] = prob[hand_enum]
+		var adjusted := Card.apply_grade_effect(player_hand_key, _selected_grade, str_probs)
+		prob = {}
+		for key in adjusted:
+			prob[HAND_FROM_KEY.get(key, Hand.ROCK)] = adjusted[key]
+
+	return prob
+
+func show_bayes_eye():
+	_pending_commands.append({"_show_bayes": true})
+
+func hide_bayes_eye():
+	_pending_commands.append({"_hide_bayes": true})
+
+func _show_bayes_eye_immediate():
+	_update_bayes_display()
+	bayes_eye_panel.visible = true
+
+func _hide_bayes_eye_immediate():
+	bayes_eye_panel.visible = false
+
+func _update_bayes_display():
+	var with_grade: bool = _hand_selected and _selected_grade > 1
+	var prob := get_bayes_probability(with_grade)
+	var rock_pct: int = int(prob.get(Hand.ROCK, 0.0) * 100)
+	var scissors_pct: int = int(prob.get(Hand.SCISSORS, 0.0) * 100)
+	var paper_pct: int = int(prob.get(Hand.PAPER, 0.0) * 100)
+	# 合計100%に調整
+	var diff: int = 100 - rock_pct - scissors_pct - paper_pct
+	if diff != 0:
+		# 最大のものに差分を加算
+		if rock_pct >= scissors_pct and rock_pct >= paper_pct:
+			rock_pct += diff
+		elif scissors_pct >= paper_pct:
+			scissors_pct += diff
+		else:
+			paper_pct += diff
+
+	bayes_rock_bar.value = rock_pct
+	bayes_rock_pct.text = "%d%%" % rock_pct
+	bayes_scissors_bar.value = scissors_pct
+	bayes_scissors_pct.text = "%d%%" % scissors_pct
+	bayes_paper_bar.value = paper_pct
+	bayes_paper_pct.text = "%d%%" % paper_pct
+
+	# バーの色（確率が高いほど赤く）
+	_style_bayes_bar(bayes_rock_bar, rock_pct)
+	_style_bayes_bar(bayes_scissors_bar, scissors_pct)
+	_style_bayes_bar(bayes_paper_bar, paper_pct)
+
+var _silver_tex: ImageTexture = null
+var _dark_metal_tex: ImageTexture = null
+var _gold_border_tex: ImageTexture = null
+
+func _get_silver_texture() -> ImageTexture:
+	if _silver_tex:
+		return _silver_tex
+	# Generate metallic silver gradient (1px wide, 32px tall)
+	var img := Image.create(1, 32, false, Image.FORMAT_RGBA8)
+	for y in range(32):
+		var t: float = float(y) / 31.0
+		# Metal gradient: dark → bright highlight → medium → dark
+		var v: float
+		if t < 0.15:
+			v = lerp(0.4, 0.6, t / 0.15)
+		elif t < 0.25:
+			v = lerp(0.6, 0.95, (t - 0.15) / 0.1)  # Bright specular
+		elif t < 0.4:
+			v = lerp(0.95, 0.7, (t - 0.25) / 0.15)  # Fade from highlight
+		elif t < 0.7:
+			v = lerp(0.7, 0.6, (t - 0.4) / 0.3)
+		else:
+			v = lerp(0.6, 0.35, (t - 0.7) / 0.3)
+		# Gold metallic tint
+		img.set_pixel(0, y, Color(v, v * 0.8, v * 0.3, 1.0))
+	_silver_tex = ImageTexture.create_from_image(img)
+	return _silver_tex
+
+func _get_dark_metal_texture() -> ImageTexture:
+	if _dark_metal_tex:
+		return _dark_metal_tex
+	# Generate dark metallic gradient (1px wide, 32px tall)
+	var img := Image.create(1, 32, false, Image.FORMAT_RGBA8)
+	for y in range(32):
+		var t: float = float(y) / 31.0
+		var v: float
+		if t < 0.15:
+			v = lerp(0.25, 0.35, t / 0.15)
+		elif t < 0.25:
+			v = lerp(0.35, 0.48, (t - 0.15) / 0.1)
+		elif t < 0.4:
+			v = lerp(0.48, 0.35, (t - 0.25) / 0.15)
+		elif t < 0.7:
+			v = lerp(0.35, 0.3, (t - 0.4) / 0.3)
+		else:
+			v = lerp(0.3, 0.22, (t - 0.7) / 0.3)
+		img.set_pixel(0, y, Color(v * 0.9, v * 0.92, v, 1.0))
+	_dark_metal_tex = ImageTexture.create_from_image(img)
+	return _dark_metal_tex
+
+func _get_gold_border_texture() -> ImageTexture:
+	if _gold_border_tex:
+		return _gold_border_tex
+	# Generate gold metallic gradient (1px wide, 16px tall)
+	var img := Image.create(1, 16, false, Image.FORMAT_RGBA8)
+	for y in range(16):
+		var t: float = float(y) / 15.0
+		var v: float
+		if t < 0.2:
+			v = lerp(0.5, 0.9, t / 0.2)
+		elif t < 0.35:
+			v = lerp(0.9, 1.0, (t - 0.2) / 0.15)
+		elif t < 0.6:
+			v = lerp(1.0, 0.7, (t - 0.35) / 0.25)
+		else:
+			v = lerp(0.7, 0.4, (t - 0.6) / 0.4)
+		img.set_pixel(0, y, Color(v, v * 0.8, v * 0.3, 1.0))
+	_gold_border_tex = ImageTexture.create_from_image(img)
+	return _gold_border_tex
+
+func _style_bayes_bar(bar: ProgressBar, _pct: int):
+	bar.material = null
+	# Silver metallic fill using texture
+	var fill := StyleBoxTexture.new()
+	fill.texture = _get_silver_texture()
+	fill.content_margin_left = 8
+	fill.content_margin_right = 8 if _pct >= 100 else 0
+	bar.add_theme_stylebox_override("fill", fill)
+	# Dark metallic background (same gradient style but darker)
+	var bg := StyleBoxTexture.new()
+	bg.texture = _get_dark_metal_texture()
+	bg.content_margin_left = 2
+	bg.content_margin_top = 2
+	bg.content_margin_right = 2
+	bg.content_margin_bottom = 2
+	bar.add_theme_stylebox_override("background", bg)
+
 # --- AI / Opponent card pick ---
 
 func _pick_opponent_card(player_hand: Hand, ai_opts: Dictionary = {}) -> Dictionary:
 	var target_hand: Hand
 
 	if ai_opts.has("fixed"):
-		# 固定の手を出す: bt.janken(selection, {"fixed": "rock"})
 		target_hand = HAND_FROM_KEY.get(ai_opts["fixed"], Hand.ROCK)
-	elif ai_opts.has("win_rate"):
-		# 勝率指定: bt.janken(selection, {"win_rate": 0.6})
-		# lose_rate は "lose_rate" で指定、なければ残り
-		var win_r: float = ai_opts.get("win_rate", 0.5)
-		var lose_r: float = ai_opts.get("lose_rate", 1.0 - win_r)
-		target_hand = _pick_by_win_rate(player_hand, {"win": win_r, "lose": lose_r})
 	else:
-		# デフォルト: ランダム
-		target_hand = _pick_random_available_hand()
+		# プレイヤーのカードグレードを取得
+		var player_grade: int = _selected_grade if _selected_grade > 0 else 1
+		var player_hand_key: String = HAND_KEYS.get(player_hand, "rock")
+		target_hand = _pick_by_probability(player_hand_key, player_grade)
 
 	return _consume_opponent_card(target_hand)
 
-func _pick_by_win_rate(player_hand: Hand, params: Dictionary) -> Hand:
-	var win_rate: float = params.get("win", 0.4)
-	var lose_rate: float = params.get("lose", 0.4)
-	# draw_rate = 1.0 - win_rate - lose_rate (implicit)
+func _pick_by_probability(player_hand_key: String = "", player_grade: int = 1) -> Hand:
+	var prob := get_bayes_probability(true)
+	# グレード補正を適用
+	if player_grade > 1 and not player_hand_key.is_empty():
+		var str_probs := {}
+		for hand_enum in prob:
+			str_probs[HAND_KEYS.get(hand_enum, "rock")] = prob[hand_enum]
+		var adjusted := Card.apply_grade_effect(player_hand_key, player_grade, str_probs)
+		prob = {}
+		for key in adjusted:
+			prob[HAND_FROM_KEY.get(key, Hand.ROCK)] = adjusted[key]
 	var roll: float = randf()
-	if roll < win_rate:
-		# Player wins → opponent plays the hand that loses to player
-		return _hand_that_loses_to(player_hand)
-	elif roll < win_rate + lose_rate:
-		# Player loses → opponent plays the hand that beats player
-		return _hand_that_beats(player_hand)
-	else:
-		# Draw → opponent plays same hand
-		return player_hand
-
-func _hand_that_loses_to(hand: Hand) -> Hand:
-	# Returns the hand that loses to the given hand
-	match hand:
-		Hand.ROCK: return Hand.SCISSORS
-		Hand.SCISSORS: return Hand.PAPER
-		Hand.PAPER: return Hand.ROCK
+	var cumulative := 0.0
+	for hand in [Hand.ROCK, Hand.SCISSORS, Hand.PAPER]:
+		cumulative += prob.get(hand, 0.0)
+		if roll <= cumulative:
+			return hand
 	return Hand.ROCK
 
-func _hand_that_beats(hand: Hand) -> Hand:
-	# Returns the hand that beats the given hand
-	match hand:
-		Hand.ROCK: return Hand.PAPER
-		Hand.SCISSORS: return Hand.ROCK
-		Hand.PAPER: return Hand.SCISSORS
-	return Hand.ROCK
-
-func _pick_random_available_hand() -> Hand:
-	var available: Array = []
-	for entry in _opponent_deck:
-		if not entry.used:
-			available.append(entry.hand)
-	if available.is_empty():
-		return Hand.ROCK
-	return available[randi() % available.size()]
 
 func _consume_opponent_card(target_hand: Hand) -> Dictionary:
 	# Try to find a matching card in opponent deck
@@ -866,6 +1186,7 @@ func _update_score():
 
 	# Style HP bars
 	var plr_style := StyleBoxFlat.new()
+	@warning_ignore("unused_variable")
 	var plr_ratio: float = float(_player_outfit) / float(plr_max) if plr_max > 0 else 0.0
 	plr_style.bg_color = Color(0.2, 0.7, 0.3, 0.9)
 	plr_style.corner_radius_top_left = 3
@@ -1015,6 +1336,17 @@ func build_deck():
 	_build_deck_buttons()
 	_update_score()
 
+func force_build_deck(cards: Array):
+	# 指定されたカードで強制的にデッキを構築（チュートリアル用）
+	await _flush_pending()
+	_player_deck.clear()
+	for card in cards:
+		var hand_enum: Hand = HAND_FROM_KEY.get(card.get("hand", "rock"), Hand.ROCK)
+		var grade: int = int(card.get("grade", 1))
+		_player_deck.append({"hand": hand_enum, "grade": grade})
+	_build_deck_buttons()
+	_update_score()
+
 func highlight(target: String, options: Dictionary = {}):
 	_pending_commands.append({"_highlight": true, "target": target, "options": options})
 
@@ -1121,16 +1453,36 @@ func set_bubble_side(side: String):
 	_pending_commands.append({"_bubble_side": true, "side": side})
 
 func _apply_bubble_side(side: String):
+	# Hide bubble instantly before repositioning to prevent flash
+	if speech_bubble.visible:
+		speech_bubble.visible = false
+		speech_bubble.modulate = Color.WHITE
 	match side:
 		"left":
 			speech_bubble.anchor_left = 0.04
 			speech_bubble.anchor_right = 0.32
+			speech_bubble.anchor_top = 0.05
+			speech_bubble.anchor_bottom = 0.32
 		"right":
 			speech_bubble.anchor_left = 0.68
 			speech_bubble.anchor_right = 0.96
+			speech_bubble.anchor_top = 0.05
+			speech_bubble.anchor_bottom = 0.32
 		"center":
 			speech_bubble.anchor_left = 0.25
 			speech_bubble.anchor_right = 0.75
+			speech_bubble.anchor_top = 0.05
+			speech_bubble.anchor_bottom = 0.32
+		"bottom-left":
+			speech_bubble.anchor_left = 0.02
+			speech_bubble.anchor_right = 0.35
+			speech_bubble.anchor_top = 0.55
+			speech_bubble.anchor_bottom = 0.82
+		"bottom-right":
+			speech_bubble.anchor_left = 0.65
+			speech_bubble.anchor_right = 0.98
+			speech_bubble.anchor_top = 0.55
+			speech_bubble.anchor_bottom = 0.82
 
 func _setup_bubble_style():
 	bubble_label.add_theme_color_override("font_color", Color(0.2, 0.15, 0.1))

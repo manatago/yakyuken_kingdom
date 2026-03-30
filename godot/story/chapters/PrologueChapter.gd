@@ -21,6 +21,7 @@ func _build_prologue(b):
 	# 内部バンドの色を設定（プリセット: StoryCommands.gd の _band_colors を参照）
 	b.band_color("royal_blue")
 
+	b.label("scene_university")
 	b.background("res://assets/backgrounds/prologue/bg01_university.png", 0.5)
 	#b.bg_filter(0.25, 0.3)
 	b.show_band()
@@ -124,6 +125,7 @@ func _build_prologue(b):
 		"exit_duration": 0.8,
 	})
 
+	b.label("scene_room")
 	b.background("res://assets/backgrounds/prologue/bg02_room.png", 0.5)
 	#b.bg_filter(0.25, 0.3)
 	hero.appear({
@@ -175,6 +177,7 @@ func _build_prologue(b):
 		"exit_duration": 0.8,
 	})
 
+	b.label("scene_lab1")
 	b.background("res://assets/backgrounds/prologue/bg03-1_lab.png", 0.5)
 	#b.bg_filter(0.25, 0.3)
 
@@ -245,6 +248,7 @@ func _build_prologue(b):
 
 
 
+	b.label("scene_lab2")
 	b.background("res://assets/backgrounds/prologue/bg03-2_lab.png", 0.4)
 	#b.bg_filter(0.25, 0.3)
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_019.png", {"scale": 0.5})
@@ -288,6 +292,7 @@ func _build_prologue(b):
 		"wait_for_exit": true
 	})
 
+	b.label("scene_teleport1")
 	b.background("res://assets/backgrounds/prologue/bg04-1_teleport_square.png", 0.5)
 	#b.bg_filter(0.25, 0.3)
 	hero.appear({
@@ -311,6 +316,7 @@ func _build_prologue(b):
 	})
 
 
+	b.label("scene_teleport2")
 	b.background("res://assets/backgrounds/prologue/bg04-2_teleport_square2.png", 0.5)
 	#b.bg_filter(0.25, 0.3)
 	hero.appear({
@@ -422,6 +428,7 @@ func _build_prologue(b):
 		"wait_for_exit": true
 	})
 
+	b.label("scene_prison")
 	b.background("res://assets/backgrounds/prologue/bg05_prison_cell.png", 0.5)
 	#b.bg_filter(0.25, 0.3)
 	b.narrator_band("サトシが気が付くと、そこは牢の中だった。服が着せられていた。")

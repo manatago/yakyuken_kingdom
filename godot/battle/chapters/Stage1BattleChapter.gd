@@ -9,79 +9,113 @@ func get_opponent_name() -> String:
 func get_battle_background() -> String:
 	return "res://assets/backgrounds/stage1/bg07_guild_hall.png"
 
+# ランダムバトル: HP1、デッキ3枚
 func get_opponent_outfit_count() -> int:
-	return 3
+	return 1
 
 func get_player_outfit_count() -> int:
+	return 1
+
+func get_opponent_hand() -> Array:
+	# 冒険者A: グー2枚、パー1枚（脳筋タイプ）
+	return [
+		{"hand": "rock", "grade": 1}, {"hand": "rock", "grade": 1},
+		{"hand": "paper", "grade": 1},
+	]
+
+func get_opponent_deck_size() -> int:
 	return 3
+
+func get_player_deck_size() -> int:
+	return 3
+
+func has_bayes_eye() -> bool:
+	return true
+
+func get_opponent_tendency() -> Dictionary:
+	# 脳筋の癖: グーを出しやすい（基本67% + 補正 → 約90%）
+	return {"rock": 2.33}
 
 # --- チュートリアル（ベイズ・アイ） ---
 
 func tutorial(bt):
 	var adv = bt.character("adventurer_a")
-	adv.set_portrait("res://assets/characters/stage1/adventurer_a_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+	adv.set_portrait("res://assets/characters/stage1_battle/char09_st1_battle_001.png", {"scale": 0.6, "side": "center", "position": [0, -145]})
 
-	bt.set_bubble_side("left")
+	# ピー助: 情報提供（右下）
+	bt.set_bubble_side("bottom-right")
+	bt.narrator_band("ピー助:（サトシの肩から）\nおい、サトシ。落ち着け。\nこいつのデッキはスキャン済みだ。ノーマルカードしかない雑魚だ。")
 
-	# ピー助がベイズ・アイの使い方を教える
-	bt.narrator_band("ピー助:（サトシの肩から）\nおい、サトシ。初めての実戦だ。ベイズ・アイの使い方を教えてやる。")
+	bt.narrator_band("ピー助:\nランダムバトルのルールを教えてやる。\nHPは1だ。1回負けたら終了。\nデッキは3枚。3回引き分けたらドローで終わりだ。")
 
-	bt.narrator_band("ピー助:\nまず、相手のカード構成をスキャンする。\nこいつのデッキはノーマルカードばかりだ。グレード差で負けることはない。")
+	# サトシ（左下）
+	bt.set_bubble_side("bottom-left")
+	bt.narrator_band("サトシ:（心の声）\n1回負けたら終了……。シビアだな。")
 
-	# デッキ構築
-	bt.highlight("hand_panel", {"offset_x": 50})
-	bt.narrator_band("ピー助:\n手持ちのカードを確認しろ。今のお前もノーマルばかりだが、\n数の配分が重要だ。相手の傾向に合わせてデッキを組め。")
-	bt.unhighlight()
+	# ピー助（右下）
+	bt.set_bubble_side("bottom-right")
+	bt.narrator_band("ピー助:\nデッキは俺が組んでやる。グー、チョキ、パー各1枚だ。こいつ相手ならこれで十分だ。")
 
-	bt.highlight("card_bar")
-	bt.narrator_band("ピー助:\nデッキに9枚セットしろ。分からなければ「自動」でいい。")
-	bt.unhighlight()
+	# デッキ強制構築（グー、チョキ、パー各1枚）
+	await bt.force_build_deck([
+		{"hand": "rock", "grade": 1},
+		{"hand": "scissors", "grade": 1},
+		{"hand": "paper", "grade": 1},
+	])
 
-	await bt.build_deck()
+	# サトシ（左下）
+	bt.set_bubble_side("bottom-left")
+	bt.narrator_band("サトシ:（心の声）\nデッキが勝手にセットされた……。まあ、ピー助に任せるか。")
 
-	# カード選択の説明
-	bt.narrator_band("ピー助:\nよし、デッキができた。次はカードを選ぶ番だ。")
+	bt.narrator_band("サトシ:（心の声）\nよし……。ベイズ・アイを起動する……！")
 
-	bt.narrator_band("ピー助:\nベイズ・アイが起動してるから、相手の次の手の確率が見えるはずだ。\n確率が高い手に勝てるカードを出せ。それが「予測勝ち」だ。")
+	# ベイズ・アイ表示
+	bt.show_bayes_eye()
 
-	bt.narrator_band("ピー助:\nまずは1回やってみろ。こいつは単純だから読みやすいはずだ。")
+	bt.narrator_band("サトシ:（心の声）\n……見える。確率が表示されてる。\nグーの確率が圧倒的に高い……。")
 
-	var selection = await bt.select_hand()
-	var result = await bt.janken(selection, {"win_rate": 0.8})
+	# ピー助（右下）
+	bt.set_bubble_side("bottom-right")
+	bt.narrator_band("ピー助:\nこういう脳筋タイプはな、最初は必ずグーを出すんだよ。\n「力こそ正義」って顔に書いてあるだろ。")
 
-	if result == "win":
-		bt.narrator_band("ピー助:\nゲコッ！ いいぞ！ データを信じれば勝てる。それがベイズ・アイだ。")
-	elif result == "lose":
-		bt.narrator_band("ピー助:\nおいおい……。確率はあくまで「傾向」だ。100%じゃない。\nだが何度もやれば、確率通りに収束する。もう一回だ。")
-	else:
-		bt.narrator_band("ピー助:\nあいこか。同じグレードだとこうなる。\nグレードの高いカードを手に入れれば、あいこでも勝てるようになる。")
+	bt.narrator_band("ピー助:\n初めての実戦だ。最初の一手だけは俺が選んでやる。\nお前の手、借りるぞ。")
 
-	# もう一回
-	bt.narrator_band("ピー助:\nもう一回やるぞ。今度は自分で確率を読んで判断しろ。")
-	selection = await bt.select_hand()
-	result = await bt.janken(selection, {"win_rate": 0.7})
+	# ピー助がパーを強制選択（アニメーション付き）
+	var selection = await bt.force_select_hand(BattleScene.Hand.PAPER)
 
-	if result == "win":
-		bt.narrator_band("ピー助:\nよし、感覚を掴んだな。お前、筋がいいぞ。")
-	else:
-		bt.narrator_band("ピー助:\nまあ、実戦は経験がモノを言う。数をこなせ。")
+	# サトシ（左下）
+	bt.set_bubble_side("bottom-left")
+	bt.narrator_band("サトシ:\nうわっ、手が勝手に……！ パー……？")
 
-	# 締め
-	bt.narrator_band("ピー助:\nベイズ・アイの基本は以上だ。\n確率を見て、最適な手を選ぶ。単純だが、奥は深い。")
-	bt.narrator_band("ピー助:\nさあ、本番だ。こいつを叩きのめしてやれ。")
+	# ピー助（右下）
+	bt.set_bubble_side("bottom-right")
+	bt.narrator_band("ピー助:\nグーが90%だ。パーを出しゃ勝てる。\n確率が一番高い手に勝てるカードを出す。これが「予測勝ち」だ。")
+
+	# じゃんけん実行（相手は必ずグー）
+	var result = await bt.janken(selection, {"fixed": "rock"})
+
+	bt.hide_bayes_eye()
+
+	# サトシ（左下）
+	bt.set_bubble_side("bottom-left")
+	bt.narrator_band("サトシ:（心の声）\n勝った……！ 本当にグーを出してきた……！\n確率通りだ……。この感覚、覚えたぞ。")
+
+	# ピー助（右下）
+	bt.set_bubble_side("bottom-right")
+	bt.narrator_band("ピー助:\nよし、感覚は掴んだな。ここからは自分の力でやれ。\nデータを信じろ。")
 
 # --- 初期表示（デッキ構築時） ---
 
 func setup_scene(bt):
-	bt.deck("res://assets/battle/decks/deck-002.png", {"scale": 0.75, "position": [0, 230]})
+	bt.deck("res://assets/battle/decks/deck_002.png", {"scale": 0.75, "position": [0, 230]})
 	var adv = bt.character("adventurer_a")
-	adv.set_portrait("res://assets/characters/stage1/adventurer_a_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+	adv.set_portrait("res://assets/characters/stage1_battle/char09_st1_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 
 # --- Outfit 3: フル装備 ---
 
 func outfit_3(bt):
 	var adv = bt.character("adventurer_a")
-	adv.set_portrait("res://assets/characters/stage1/adventurer_a_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+	adv.set_portrait("res://assets/characters/stage1_battle/char09_st1_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 	adv.band("ヘッ、ビビってんのか？ さっさとカードを出しな！")
 
 	var selection = await bt.select_hand()
@@ -98,7 +132,7 @@ func outfit_3(bt):
 
 func outfit_2(bt):
 	var adv = bt.character("adventurer_a")
-	adv.set_portrait("res://assets/characters/stage1/adventurer_a_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+	adv.set_portrait("res://assets/characters/stage1_battle/char09_st1_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 	adv.band("テメェ……調子に乗りやがって……！")
 
 	var selection = await bt.select_hand()
@@ -115,7 +149,7 @@ func outfit_2(bt):
 
 func outfit_1(bt):
 	var adv = bt.character("adventurer_a")
-	adv.set_portrait("res://assets/characters/stage1/adventurer_a_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+	adv.set_portrait("res://assets/characters/stage1_battle/char09_st1_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 	adv.band("くそっ……こっからが本気だ！")
 
 	var selection = await bt.select_hand()

@@ -16,6 +16,10 @@ config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 run/main_custom_args=""
 
+[autoload]
+
+GameState="*res://game/GameState.gd"
+
 [display]
 
 window/size/viewport_width=1920

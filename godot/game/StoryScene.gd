@@ -55,6 +55,8 @@ func _ready():
 	center_char.visible = false
 	right_char.visible = false
 	_menu_bar.get_node("SkipButton").pressed.connect(_on_skip_pressed)
+	_menu_bar.get_node("ItemButton").pressed.connect(_on_item_pressed)
+	_menu_bar.get_node("EquipButton").pressed.connect(_on_equip_pressed)
 
 func _input(event):
 	# Reject key echo
@@ -69,6 +71,14 @@ func _input(event):
 			return
 		is_advance = true
 	if not is_advance:
+		return
+	# Terminal effect: first click skips to full text, second click closes
+	if _terminal_active:
+		if not _terminal_skip_requested:
+			_terminal_skip_requested = true
+		else:
+			_terminal_click.emit()
+		get_viewport().set_input_as_handled()
 		return
 	# If typing in progress, skip to full text
 	if _typing_in_progress:
@@ -100,24 +110,26 @@ func play_sequence(sequence: Cmd.Sequence, metadata: Dictionary = {}):
 	var skip_to: String = metadata.get("skip_to", "")
 	var skipping_to_label := not skip_to.is_empty()
 
-	# State to restore when resuming from label
-	var last_bg_entry = null
+	@warning_ignore("unused_variable")
 	var last_battle: Cmd.Battle = null
 
 	# Play all commands in the sequence
 	for entry in sequence.entries:
 		if entry == null:
 			continue
-		# Skip until we find the target label, but track state
+		# Skip until we find the target label
+		# GameState はスキップ中もコマンドの execute で更新される（背景、バンド色等）
 		if skipping_to_label:
+			# 状態系コマンドは演出なしで実行（GameState を更新するため）
 			if entry is Cmd.Background:
-				last_bg_entry = entry
-			if entry is Cmd.SeqLabel and entry.label_name == skip_to:
+				var saved_fade: float = entry.fade
+				entry.fade = 0.0
+				entry.execute(self)
+				entry.fade = saved_fade
+			elif entry is Cmd.BandColor:
+				entry.execute(self)
+			elif entry is Cmd.SeqLabel and entry.label_name == skip_to:
 				skipping_to_label = false
-				# Restore last background
-				if last_bg_entry:
-					last_bg_entry.fade = 0.0
-					last_bg_entry.execute(self)
 			continue
 		if entry is Cmd.Battle:
 			last_battle = entry
@@ -282,7 +294,25 @@ func _show_character(character_data: StoryCharacter, portrait_name: String, side
 	if portrait_scale > 0.0:
 		char_scale = portrait_scale
 	elif not character_id.is_empty() and _character_portrait_scale_cache.has(character_id):
-		char_scale = _character_portrait_scale_cache[character_id]
+		# 前回と同じ表示サイズを維持するためにスケールを再計算
+		var prev_scale: float = _character_portrait_scale_cache[character_id]
+		var prev_tex_path: String = ""
+		if _character_portrait_cache.has(character_id):
+			var prev_portrait: String = _character_portrait_cache[character_id]
+			prev_tex_path = character_data.get_portrait_path(prev_portrait) if character_data else ""
+		if not prev_tex_path.is_empty() and prev_tex_path != texture_path:
+			var prev_tex := _get_texture(prev_tex_path)
+			if prev_tex and tex:
+				var prev_h: float = prev_tex.get_size().y
+				var new_h: float = tex.get_size().y
+				if new_h > 0:
+					char_scale = prev_scale * prev_h / new_h
+				else:
+					char_scale = prev_scale
+			else:
+				char_scale = prev_scale
+		else:
+			char_scale = prev_scale
 	else:
 		char_scale = character_data.display_scale if character_data else 1.0
 	_reset_rect_with_scale(target_rect, side, char_scale)
@@ -298,9 +328,16 @@ func _show_character(character_data: StoryCharacter, portrait_name: String, side
 		_character_side_cache[character_data.id] = side
 		_character_position_cache[character_data.id] = target_pos - base_pos
 		_character_portrait_cache[character_data.id] = resolved_portrait
+		GameState.characters_on_screen[character_data.id] = {
+			"side": side,
+			"portrait": resolved_portrait,
+			"scale": char_scale,
+		}
 	return target_rect
 
 func hide_character_entry(entry: Cmd.HideCharacter):
+	if not entry.character_id.is_empty():
+		GameState.characters_on_screen.erase(entry.character_id)
 	var side := _resolve_character_side(entry.character_id, entry.side_override)
 	var target_rect := _get_rect_for_side(side)
 	if not target_rect:
@@ -333,6 +370,7 @@ func _apply_character_exit_effect(target_rect: TextureRect, entry: Cmd.HideChara
 	var duration: float = max(entry.exit_duration, 0.0)
 	if duration <= 0.0:
 		return null
+	@warning_ignore("unused_variable")
 	var default_pos: Vector2 = target_pos
 	_cancel_character_tween(target_rect)
 	var tween := create_tween()
@@ -510,7 +548,7 @@ func _reset_character_transform(target_rect: Control):
 		side = "center"
 	_reset_rect_with_scale(target_rect, side, 1.0)
 
-func _reset_rect_with_scale(target_rect: Control, side: String, scale_factor: float) -> void:
+func _reset_rect_with_scale(target_rect: Control, _side: String, scale_factor: float) -> void:
 	target_rect.pivot_offset = Vector2.ZERO
 	var tex: Texture2D = target_rect.texture if target_rect is TextureRect else null
 	var tex_size := tex.get_size() if tex else target_rect.size
@@ -604,6 +642,7 @@ func _emit_signal_relay(relay: _SignalRelay):
 func show_background_entry(entry: Cmd.Background):
 	if entry.path.is_empty():
 		return
+	GameState.background = entry.path
 	var tex := _get_texture(entry.path)
 	if tex == null:
 		return
@@ -622,13 +661,17 @@ func show_background_entry(entry: Cmd.Background):
 	background_next_rect.texture = tex
 	background_next_rect.modulate = Color(1, 1, 1, 0)
 	background_next_rect.visible = true
+	# Apply auto bg filter to next rect during crossfade to avoid bright flash
+	if _auto_bg_filter_active and background_rect.material:
+		background_next_rect.material = background_rect.material
 	var tween := create_tween()
 	tween.finished.connect(func():
 		background_rect.texture = tex
 		background_rect.visible = true
 		background_rect.modulate = Color.WHITE
 		background_next_rect.visible = false
-		background_next_rect.modulate = Color(1, 1, 1, 0))
+		background_next_rect.modulate = Color(1, 1, 1, 0)
+		background_next_rect.material = null)
 	tween.tween_property(background_next_rect, "modulate:a", 1.0, fade_time)
 	tween.tween_property(background_rect, "modulate:a", 0.0, fade_time)
 
@@ -655,7 +698,42 @@ void fragment() {
 	mat.set_shader_parameter("desaturate", entry.desaturate)
 	background_rect.material = mat
 
+var _auto_bg_filter_shader: Shader = null
+var _auto_bg_filter_active := false
+
+func _auto_bg_filter(enable: bool):
+	if enable == _auto_bg_filter_active:
+		return
+	_auto_bg_filter_active = enable
+	if not enable:
+		background_rect.material = null
+		return
+	if not _auto_bg_filter_shader:
+		_auto_bg_filter_shader = Shader.new()
+		_auto_bg_filter_shader.code = """shader_type canvas_item;
+uniform float darken : hint_range(0.0, 1.0) = 0.25;
+uniform float desaturate : hint_range(0.0, 1.0) = 0.3;
+void fragment() {
+	vec4 tex = texture(TEXTURE, UV);
+	float gray = dot(tex.rgb, vec3(0.299, 0.587, 0.114));
+	vec3 desat = mix(tex.rgb, vec3(gray), desaturate);
+	vec3 darkened = desat * (1.0 - darken);
+	COLOR = vec4(darkened, tex.a);
+}"""
+	var mat := ShaderMaterial.new()
+	mat.shader = _auto_bg_filter_shader
+	background_rect.material = mat
+
+var _terminal_skip_requested := false
+var _terminal_active := false
+
+func _is_terminal_active() -> bool:
+	return _terminal_active
+
 func play_terminal_effect(entry: Cmd.TerminalEffect):
+	_terminal_skip_requested = false
+	_terminal_active = true
+
 	# Create overlay
 	var overlay := ColorRect.new()
 	overlay.color = Color(0, 0, 0, 0)
@@ -689,28 +767,34 @@ func play_terminal_effect(entry: Cmd.TerminalEffect):
 	overlay.color = Color(0, 0, 0, 0.6)
 	await get_tree().create_timer(0.1).timeout
 
-	# Type out each line
+	# Build full text for skip
+	var all_text := "\n".join(entry.lines) + "\n"
+
+	# Type out each line (skippable)
 	var full_text := ""
 	for i in range(entry.lines.size()):
+		if _terminal_skip_requested:
+			break
 		var line: String = entry.lines[i]
 		for ch_idx in range(line.length()):
+			if _terminal_skip_requested:
+				break
 			full_text += line[ch_idx]
 			terminal.text = full_text + "█"
 			await get_tree().create_timer(entry.char_delay).timeout
 		full_text += "\n"
 		terminal.text = full_text
-		if i < entry.lines.size() - 1:
+		if not _terminal_skip_requested and i < entry.lines.size() - 1:
 			await get_tree().create_timer(entry.line_delay).timeout
 
-	# Blink cursor a few times
-	for blink in range(3):
-		terminal.text = full_text + "█"
-		await get_tree().create_timer(0.3).timeout
-		terminal.text = full_text
-		await get_tree().create_timer(0.3).timeout
+	# スキップ時は全文表示
+	if _terminal_skip_requested:
+		terminal.text = all_text
 
-	# Hold
-	await get_tree().create_timer(entry.hold_time).timeout
+	# クリック/エンター待ち（全文表示後）
+	_terminal_skip_requested = false
+	terminal.text = (all_text if _terminal_skip_requested else terminal.text.trim_suffix("█")) + "█"
+	await _wait_terminal_click()
 
 	# Flash and fade out
 	overlay.color = Color(0.2, 1.0, 0.3, 0.4)
@@ -724,7 +808,15 @@ func play_terminal_effect(entry: Cmd.TerminalEffect):
 
 	terminal.queue_free()
 	overlay.queue_free()
+	_terminal_active = false
 	terminal_effect_finished.emit()
+
+signal _terminal_click
+
+func _wait_terminal_click():
+	_terminal_skip_requested = false
+	await _terminal_click
+
 
 func pause_entry(entry: Cmd.Pause):
 	if entry.duration <= 0.0:
@@ -741,7 +833,11 @@ func show_character_command(entry: Cmd.ShowCharacter):
 		return
 	var char_data: StoryCharacter = _cast.get(entry.character_id)
 	if char_data == null:
-		return
+		# キャストに未登録のキャラ（ランダムバトル等）→ ダミー生成
+		char_data = StoryCharacter.new()
+		char_data.id = entry.character_id
+		char_data.display_name = entry.character_id
+		_cast[entry.character_id] = char_data
 	var side := _resolve_character_side(entry.character_id, entry.side_override)
 	var target_rect := _get_rect_for_side(side)
 	var do_cross_fade := entry.transition == "cross_fade" and target_rect != null and target_rect.visible and target_rect.texture != null
@@ -775,6 +871,7 @@ func _apply_character_entry_effect(target_rect: TextureRect, entry: Cmd.ShowChar
 	if duration <= 0.0:
 		return
 	_cancel_character_tween(target_rect)
+	@warning_ignore("unused_variable")
 	var default_pos: Vector2 = target_pos
 	if effect == "fade":
 		var tween := create_tween()
@@ -845,7 +942,7 @@ func _apply_character_entry_effect(target_rect: TextureRect, entry: Cmd.ShowChar
 # --- Band ---
 
 func set_inner_band_color(color: Color) -> void:
-	# Bubble image keeps original colors (no tinting)
+	GameState.band_color = "%s" % color
 	var hover_color := Color(color.r + 0.12, color.g + 0.12, color.b + 0.12, color.a)
 	for btn in _menu_bar.get_children():
 		if btn is Button:
@@ -898,11 +995,15 @@ func apply_band_command(entry: Cmd.Band):
 			dialogue_band_left_speaker.visible = false
 		# Dark text for bubble background
 		band_body.add_theme_color_override("font_color", Color(0.15, 0.12, 0.18))
+		# Auto bg filter: darken when character speaks
+		_auto_bg_filter(true)
 	else:
 		_hide_inner_bands()
 		_set_narrator_vbox_visible(true)
 		band_speaker = dialogue_band_speaker
 		band_body = dialogue_band_body
+		# Auto bg filter: restore when narrator
+		_auto_bg_filter(false)
 	if entry.clear_text or not entry.text.is_empty():
 		band_body.text = entry.text
 		# Start typewriter effect
@@ -993,7 +1094,7 @@ func _resolve_character_side(character_id: String, requested_side: String) -> St
 		return "center"
 	return "left"
 
-func _resolve_character_position(character_id: String, side: String, position_mode: String, position_value: Vector2, base: Vector2 = Vector2.ZERO) -> Vector2:
+func _resolve_character_position(character_id: String, _side: String, position_mode: String, position_value: Vector2, base: Vector2 = Vector2.ZERO) -> Vector2:
 	var mode := position_mode.strip_edges().to_lower()
 	match mode:
 		"absolute":
@@ -1007,6 +1108,133 @@ func _resolve_character_position(character_id: String, side: String, position_mo
 			if not character_id.is_empty() and _character_position_cache.has(character_id):
 				return base + _character_position_cache[character_id]
 			return base
+
+# --- アイテム / 装備モーダル（ストーリー中） ---
+
+const _HAND_NAMES := {"rock": "グー", "scissors": "チョキ", "paper": "パー"}
+const _GRADE_NAMES := {1: "ノーマル", 2: "ブロンズ", 3: "シルバー", 4: "ゴールド", 5: "プラチナ"}
+
+var _story_modal: Control = null
+
+func _close_story_modal():
+	if _story_modal and is_instance_valid(_story_modal):
+		_story_modal.queue_free()
+		_story_modal = null
+
+func _create_story_modal() -> PanelContainer:
+	_close_story_modal()
+	var panel := PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.06, 0.05, 0.1, 0.92)
+	style.corner_radius_top_left = 12
+	style.corner_radius_top_right = 12
+	style.corner_radius_bottom_right = 12
+	style.corner_radius_bottom_left = 12
+	style.content_margin_left = 20
+	style.content_margin_top = 16
+	style.content_margin_right = 20
+	style.content_margin_bottom = 16
+	panel.add_theme_stylebox_override("panel", style)
+	panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	panel.grow_vertical = Control.GROW_DIRECTION_BOTH
+	add_child(panel)
+	_story_modal = panel
+	return panel
+
+func _on_item_pressed():
+	if _story_modal:
+		_close_story_modal()
+		return
+	var panel := _create_story_modal()
+	panel.custom_minimum_size = Vector2(500, 400)
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 8)
+	panel.add_child(vbox)
+
+	var title_label := Label.new()
+	title_label.text = "アイテム"
+	title_label.add_theme_font_size_override("font_size", 28)
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(title_label)
+
+	var gold_label := Label.new()
+	gold_label.text = "  所持金: %d ゴールド" % GameState.money
+	gold_label.add_theme_font_size_override("font_size", 22)
+	gold_label.add_theme_color_override("font_color", Color(0.9, 0.75, 0.3))
+	vbox.add_child(gold_label)
+
+	if GameState.items.is_empty():
+		var empty_label := Label.new()
+		empty_label.text = "アイテムがありません"
+		empty_label.add_theme_font_size_override("font_size", 18)
+		empty_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		vbox.add_child(empty_label)
+	else:
+		var scroll := ScrollContainer.new()
+		scroll.custom_minimum_size = Vector2(0, 250)
+		scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		vbox.add_child(scroll)
+		var list := VBoxContainer.new()
+		list.add_theme_constant_override("separation", 4)
+		scroll.add_child(list)
+		for item in GameState.items:
+			var row := Label.new()
+			var count: int = item.get("count", 1)
+			if count > 1:
+				row.text = "  %s × %d" % [item.get("name", item.id), count]
+			else:
+				row.text = "  %s" % item.get("name", item.id)
+			row.add_theme_font_size_override("font_size", 20)
+			list.add_child(row)
+
+	var close_btn := Button.new()
+	close_btn.text = "閉じる"
+	close_btn.add_theme_font_size_override("font_size", 16)
+	close_btn.pressed.connect(_close_story_modal)
+	vbox.add_child(close_btn)
+
+func _on_equip_pressed():
+	if _story_modal:
+		_close_story_modal()
+		return
+	var panel := _create_story_modal()
+	panel.custom_minimum_size = Vector2(500, 400)
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 8)
+	panel.add_child(vbox)
+
+	var title_label := Label.new()
+	title_label.text = "装備"
+	title_label.add_theme_font_size_override("font_size", 28)
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(title_label)
+
+	if GameState.equipment.is_empty():
+		var empty_label := Label.new()
+		empty_label.text = "装備品がありません"
+		empty_label.add_theme_font_size_override("font_size", 18)
+		empty_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		vbox.add_child(empty_label)
+	else:
+		var scroll := ScrollContainer.new()
+		scroll.custom_minimum_size = Vector2(0, 280)
+		scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		vbox.add_child(scroll)
+		var list := VBoxContainer.new()
+		list.add_theme_constant_override("separation", 4)
+		scroll.add_child(list)
+		for item in GameState.equipment:
+			var row := Label.new()
+			row.text = "  %s" % item.get("name", item.id)
+			row.add_theme_font_size_override("font_size", 20)
+			list.add_child(row)
+
+	var close_btn := Button.new()
+	close_btn.text = "閉じる"
+	close_btn.add_theme_font_size_override("font_size", 16)
+	close_btn.pressed.connect(_close_story_modal)
+	vbox.add_child(close_btn)
 
 class _SignalRelay:
 	extends RefCounted

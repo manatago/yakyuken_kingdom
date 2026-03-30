@@ -235,12 +235,28 @@ anchor_left = 0.5
 anchor_right = 0.5
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = -230.0
+offset_left = -350.0
 offset_top = -40.0
-offset_right = 230.0
+offset_right = 350.0
 offset_bottom = -8.0
 theme_override_constants/separation = 12
 alignment = 1
+
+[node name="ItemButton" type="Button" parent="DialogueBand/MenuBar"]
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_menu_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_menu_btn_hover")
+text = "Item"
+
+[node name="EquipButton" type="Button" parent="DialogueBand/MenuBar"]
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_menu_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_menu_btn_hover")
+text = "Equip"
 
 [node name="SkipButton" type="Button" parent="DialogueBand/MenuBar"]
 layout_mode = 2

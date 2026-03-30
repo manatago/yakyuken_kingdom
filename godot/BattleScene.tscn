@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bib73jlmxrlbn"]
+[gd_scene load_steps=16 format=3 uid="uid://bib73jlmxrlbn"]
 
 [ext_resource type="Script" uid="uid://p7d30c21kyqi" path="res://game/BattleScene.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://c6sbubble01" path="res://ui/SpeechBubble.tscn" id="2_bubble"]
@@ -6,6 +6,10 @@
 [ext_resource type="Texture2D" path="res://assets/ui/item_box_1_small.png" id="4_item_box_tex"]
 [ext_resource type="Texture2D" path="res://assets/ui/card_box_2_small.png" id="5_card_box_tex"]
 [ext_resource type="Texture2D" path="res://assets/ui/game_message_3.png" id="6_msg_tex"]
+[ext_resource type="Texture2D" path="res://assets/ui/bayes-eye_small.png" id="7_bayes_bg"]
+[ext_resource type="Texture2D" path="res://assets/ui/janken_rock_small.png" id="8_icon_rock"]
+[ext_resource type="Texture2D" path="res://assets/ui/janken_scissors_small.png" id="9_icon_scissors"]
+[ext_resource type="Texture2D" path="res://assets/ui/janken_paper_small.png" id="10_icon_paper"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card_bar"]
 bg_color = Color(0.06, 0.05, 0.1, 0.75)
@@ -346,6 +350,147 @@ custom_minimum_size = Vector2(0, 12)
 max_value = 3.0
 value = 3.0
 show_percentage = false
+
+; ============================================================
+; Bayes Eye panel — left upper
+; ============================================================
+
+[node name="BayesEyePanel" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchor_left = 0.01
+anchor_top = 0.05
+anchor_right = 0.32
+anchor_bottom = 0.35
+
+[node name="BayesBG" type="NinePatchRect" parent="BayesEyePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("7_bayes_bg")
+patch_margin_left = 20
+patch_margin_top = 50
+patch_margin_right = 20
+patch_margin_bottom = 20
+
+[node name="Rows" type="VBoxContainer" parent="BayesEyePanel"]
+layout_mode = 1
+anchor_left = 0.03
+anchor_top = 0.15
+anchor_right = 0.87
+anchor_bottom = 0.98
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="RockRow" type="HBoxContainer" parent="BayesEyePanel/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="Icon" type="TextureRect" parent="BayesEyePanel/Rows/RockRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(86, 86)
+texture = ExtResource("8_icon_rock")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="BayesEyePanel/Rows/RockRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(90, 0)
+theme_override_font_sizes/font_size = 20
+text = "Rock"
+vertical_alignment = 1
+
+[node name="Bar" type="ProgressBar" parent="BayesEyePanel/Rows/RockRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(30, 54)
+size_flags_vertical = 4
+max_value = 100.0
+value = 33.0
+show_percentage = false
+
+[node name="Pct" type="Label" parent="BayesEyePanel/Rows/RockRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(60, 0)
+theme_override_font_sizes/font_size = 20
+text = "33%"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="ScissorsRow" type="HBoxContainer" parent="BayesEyePanel/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="Icon" type="TextureRect" parent="BayesEyePanel/Rows/ScissorsRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(86, 86)
+texture = ExtResource("9_icon_scissors")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="BayesEyePanel/Rows/ScissorsRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(90, 0)
+theme_override_font_sizes/font_size = 20
+text = "Scissors"
+vertical_alignment = 1
+
+[node name="Bar" type="ProgressBar" parent="BayesEyePanel/Rows/ScissorsRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(30, 54)
+size_flags_vertical = 4
+max_value = 100.0
+value = 33.0
+show_percentage = false
+
+[node name="Pct" type="Label" parent="BayesEyePanel/Rows/ScissorsRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(60, 0)
+theme_override_font_sizes/font_size = 20
+text = "33%"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="PaperRow" type="HBoxContainer" parent="BayesEyePanel/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="Icon" type="TextureRect" parent="BayesEyePanel/Rows/PaperRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(86, 86)
+texture = ExtResource("10_icon_paper")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="BayesEyePanel/Rows/PaperRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(90, 0)
+theme_override_font_sizes/font_size = 20
+text = "Paper"
+vertical_alignment = 1
+
+[node name="Bar" type="ProgressBar" parent="BayesEyePanel/Rows/PaperRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(30, 54)
+size_flags_vertical = 4
+max_value = 100.0
+value = 33.0
+show_percentage = false
+
+[node name="Pct" type="Label" parent="BayesEyePanel/Rows/PaperRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(60, 0)
+theme_override_font_sizes/font_size = 20
+text = "33%"
+horizontal_alignment = 2
+vertical_alignment = 1
 
 ; ============================================================
 ; Janken overlay

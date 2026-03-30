@@ -1,12 +1,40 @@
 extends Node
 class_name BattleChapterBase
 
-# --- Basic info (override in subclasses) ---
+# --- 必須オーバーライド（派生クラスで定義すること） ---
+# デフォルト値を持たない。設定漏れ時は push_error で警告。
 
 func get_opponent_id() -> String:
+	push_error("BattleChapterBase.get_opponent_id() must be overridden")
 	return ""
 
 func get_opponent_name() -> String:
+	push_error("BattleChapterBase.get_opponent_name() must be overridden")
+	return ""
+
+func get_opponent_outfit_count() -> int:
+	push_error("BattleChapterBase.get_opponent_outfit_count() must be overridden")
+	return 1
+
+func get_player_outfit_count() -> int:
+	push_error("BattleChapterBase.get_player_outfit_count() must be overridden")
+	return 1
+
+func get_opponent_hand() -> Array:
+	push_error("BattleChapterBase.get_opponent_hand() must be overridden")
+	return []
+
+func get_opponent_deck_size() -> int:
+	push_error("BattleChapterBase.get_opponent_deck_size() must be overridden")
+	return 3
+
+func get_player_deck_size() -> int:
+	push_error("BattleChapterBase.get_player_deck_size() must be overridden")
+	return 3
+
+# --- 任意オーバーライド（合理的なデフォルトあり） ---
+
+func get_battle_background() -> String:
 	return ""
 
 func get_card_paths() -> Dictionary:
@@ -19,45 +47,36 @@ func get_card_paths() -> Dictionary:
 func get_card_back() -> String:
 	return "res://assets/battle/cards/card_back.png"
 
-func get_battle_background() -> String:
-	return ""
+func has_bayes_eye() -> bool:
+	return false
 
-func get_opponent_outfit_count() -> int:
-	return 3
+func get_opponent_tendency() -> Dictionary:
+	return {}
 
-func get_player_outfit_count() -> int:
-	return 3
+func can_lose_cards() -> bool:
+	return true
+
+func can_gain_cards() -> bool:
+	return true
+
+# --- 共通ロジック ---
 
 func get_opponent_deck() -> Array:
-	# Default: 9 normal cards (3 of each)
-	# Card format: {"hand": "rock"/"scissors"/"paper", "grade": 1-5}
-	# Grade: 1=ノーマル, 2=ブロンズ, 3=シルバー, 4=ゴールド, 5=プラチナ
-	return [
-		{"hand": "rock", "grade": 1}, {"hand": "rock", "grade": 1}, {"hand": "rock", "grade": 1},
-		{"hand": "scissors", "grade": 1}, {"hand": "scissors", "grade": 1}, {"hand": "scissors", "grade": 1},
-		{"hand": "paper", "grade": 1}, {"hand": "paper", "grade": 1}, {"hand": "paper", "grade": 1},
-	]
+	var hand := get_opponent_hand()
+	var deck_size := get_opponent_deck_size()
+	if hand.size() <= deck_size:
+		return hand.duplicate(true)
+	var shuffled := hand.duplicate(true)
+	shuffled.shuffle()
+	return shuffled.slice(0, deck_size)
 
-# --- Scene setup (override to show opponent before deck building) ---
-# Called before deck building phase. Use to display opponent character, deck, etc.
-# func setup_scene(bt): ...
-
-# --- Outfit stage functions (override in subclasses) ---
-# Called when opponent has N pieces of clothing remaining.
+# --- Scene setup / Outfit functions (override in subclasses) ---
 # bt (BattleScene) provides:
-#   bt.character(id)       → CharacterHandle (same as story DSL)
+#   bt.character(id)       → CharacterHandle
 #   bt.narrator_band(text)
-#   bt.background(path, fade)
-#   bt.pause(duration)
-#   bt.select_hand()       → waits for player card selection, returns Dictionary
-#   bt.janken(selection)   → plays overlay animation, returns "win"/"lose"/"draw"
-#   bt.opponent_outfit     → current opponent outfit count
-#   bt.player_outfit       → current player outfit count
-#   bt.player_deck_count   → remaining cards in player deck
+#   bt.select_hand()       → waits for player card selection
+#   bt.janken(selection)   → plays animation, returns "win"/"lose"/"draw"
 #
-# Note: Player character is NOT shown in battle. Only opponent + narrator.
-
-# func outfit_3(bt): ...
-# func outfit_2(bt): ...
-# func outfit_1(bt): ...
-# Note: victory/defeat is handled by the story scene, not the battle chapter.
+# func setup_scene(bt): ...
+# func tutorial(bt): ...
+# func outfit_N(bt): ...

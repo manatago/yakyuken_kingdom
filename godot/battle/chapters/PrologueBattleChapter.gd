@@ -17,6 +17,25 @@ func get_opponent_outfit_count() -> int:
 func get_player_outfit_count() -> int:
 	return 3
 
+func get_opponent_hand() -> Array:
+	return [
+		{"hand": "rock", "grade": 1}, {"hand": "rock", "grade": 1}, {"hand": "rock", "grade": 1},
+		{"hand": "scissors", "grade": 1}, {"hand": "scissors", "grade": 1}, {"hand": "scissors", "grade": 1},
+		{"hand": "paper", "grade": 1}, {"hand": "paper", "grade": 1}, {"hand": "paper", "grade": 1},
+	]
+
+func get_opponent_deck_size() -> int:
+	return 9
+
+func get_player_deck_size() -> int:
+	return 9
+
+func can_lose_cards() -> bool:
+	return false
+
+func can_gain_cards() -> bool:
+	return false
+
 # --- チュートリアル ---
 
 func tutorial(bt):
@@ -133,7 +152,7 @@ func tutorial(bt):
 # --- 初期表示（デッキ構築時） ---
 
 func setup_scene(bt):
-	bt.deck("res://assets/battle/decks/deck-002.png", {"scale": 0.75, "position": [0, 230]})
+	bt.deck("res://assets/battle/decks/deck_002.png", {"scale": 0.75, "position": [0, 230]})
 	var matilda = bt.character("matilda")
 	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_000.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 
