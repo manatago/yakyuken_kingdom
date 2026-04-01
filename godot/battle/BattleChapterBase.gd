@@ -59,6 +59,21 @@ func can_lose_cards() -> bool:
 func can_gain_cards() -> bool:
 	return true
 
+func get_gold_reward() -> Dictionary:
+	# {"min": 最小値, "max": 最大値} — 勝利時にランダムでゴールド取得
+	# 空Dictionaryなら報酬なし
+	return {}
+
+func roll_gold() -> int:
+	var reward := get_gold_reward()
+	if reward.is_empty():
+		return 0
+	var min_gold: int = reward.get("min", 0)
+	var max_gold: int = reward.get("max", 0)
+	if max_gold <= min_gold:
+		return min_gold
+	return randi_range(min_gold, max_gold)
+
 # --- 共通ロジック ---
 
 func get_opponent_deck() -> Array:

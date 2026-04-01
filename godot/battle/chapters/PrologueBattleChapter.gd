@@ -36,6 +36,9 @@ func can_lose_cards() -> bool:
 func can_gain_cards() -> bool:
 	return false
 
+func get_gold_reward() -> Dictionary:
+	return {"min": 10, "max": 30}
+
 # --- チュートリアル ---
 
 func tutorial(bt):
@@ -171,9 +174,7 @@ func outfit_3(bt):
 	if result == "win":
 		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_009.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 		matilda.band("くっ、変態の癖に。")
-		# イベント発生
-		matilda.band("イベント発生！")
-
+		await bt.play_video("res://assets/videos/prologue_win_1.ogv")
 
 	elif result == "lose":
 		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_010.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
@@ -181,46 +182,48 @@ func outfit_3(bt):
 
 	else:
 		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_007.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
-		matilda.band("あいこか。次は勝つ！")
+		matilda.band("あいこか。首がつながったな。")
 
 # --- Outfit 2: 1枚脱いだ状態 ---
 
 func outfit_2(bt):
 	var matilda = bt.character("matilda")
 
-	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
-	matilda.band("ちっ……まだまだ終わらないよ。")
+	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_011.png", {"scale": 0.8, "side": "center", "position": [0, -203]})
+	matilda.band("あんまり、じろじろ見るんじゃないぞ")
 
 	var selection = await bt.select_hand()
 	var result = await bt.janken(selection, {"win_rate": 0.6})
 
 	if result == "win":
-		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
-		matilda.band("……っ、調子に乗るんじゃないよ。")
+		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_012.png", {"scale": 0.80, "side": "center", "position": [0, -215]})
+		matilda.band("……っ、負けた...")
+		await bt.play_video("res://assets/videos/prologue_win_2.ogv")
 	elif result == "lose":
-		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
-		matilda.band("ふふ、まだ甘いね。")
+		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_013.png", {"scale": 0.8, "side": "center", "position": [0, -199]})
+		matilda.band("よし、勝ったぞ")
 	else:
-		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
-		matilda.band("あいこか。集中しな。")
+		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_014.png", {"scale": 0.8, "side": "center", "position": [0, -210]})
+		matilda.band("あいこか。命拾いしたな。")
 
 # --- Outfit 1: あと1枚 ---
 
 func outfit_1(bt):
 	var matilda = bt.character("matilda")
 
-	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
-	matilda.band("……ここからが本気だよ。")
+	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_015.png", {"scale": 0.80, "side": "center", "position": [0, -204],})
+	matilda.band("……変態、こっちをみるな")
 
 	var selection = await bt.select_hand()
 	var result = await bt.janken(selection, {"win_rate": 0.6})
 
 	if result == "win":
-		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
-		matilda.band("…………。")
+		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_016.png", {"scale": 0.80, "side": "center", "position": [0, -204]})
+		matilda.band("……変態に見られる...。")
+		await bt.play_video("res://assets/videos/prologue_win_3.ogv")
 	elif result == "lose":
-		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
-		matilda.band("ふふ。")
+		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_017.png", {"scale": 0.80, "side": "center", "position": [0, -204]})
+		matilda.band("ふう、勝ったぞ。")
 	else:
-		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
-		matilda.band("まだ続くよ。")
+		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_018.png", {"scale": 0.80, "side": "center", "position": [0, -204]})
+		matilda.band("さっさと、次やるよ。")

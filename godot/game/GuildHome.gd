@@ -118,9 +118,6 @@ func _show_simple_modal(title: String, body: String):
 
 # --- カード一覧モーダル ---
 
-const HAND_NAMES := {"rock": "グー", "scissors": "チョキ", "paper": "パー"}
-const GRADE_NAMES := {1: "ノーマル", 2: "ブロンズ", 3: "シルバー", 4: "ゴールド", 5: "プラチナ"}
-
 func _show_card_modal():
 	var panel := _create_modal_base()
 	panel.custom_minimum_size = Vector2(500, 400)
@@ -141,7 +138,6 @@ func _show_card_modal():
 		empty_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		vbox.add_child(empty_label)
 	else:
-		# カードを種類×グレードでまとめる
 		var card_counts := {}
 		for card: Card in GameState.inventory:
 			var key := "%s_%d" % [card.hand, card.grade]
@@ -160,14 +156,10 @@ func _show_card_modal():
 		sorted_keys.sort()
 		for key in sorted_keys:
 			var parts: PackedStringArray = key.split("_")
-			var hand_name: String = HAND_NAMES.get(parts[0], parts[0])
+			var hand: String = parts[0]
 			var grade: int = int(parts[1])
-			var grade_name: String = GRADE_NAMES.get(grade, "G%d" % grade)
 			var count: int = card_counts[key]
-			var row := Label.new()
-			row.text = "  %s（%s）× %d" % [hand_name, grade_name, count]
-			row.add_theme_font_size_override("font_size", 20)
-			list.add_child(row)
+			list.add_child(GameState.create_card_label(hand, grade, count, 20, 28))
 
 	var close_btn := Button.new()
 	close_btn.text = "閉じる"
@@ -191,11 +183,7 @@ func _show_item_modal():
 	vbox.add_child(title_label)
 
 	# ゴールド表示
-	var gold_label := Label.new()
-	gold_label.text = "  所持金: %d ゴールド" % GameState.money
-	gold_label.add_theme_font_size_override("font_size", 22)
-	gold_label.add_theme_color_override("font_color", Color(0.9, 0.75, 0.3))
-	vbox.add_child(gold_label)
+	vbox.add_child(GameState.create_gold_label(GameState.money, 22, 28, "所持金: "))
 
 	if GameState.items.is_empty():
 		var empty_label := Label.new()
@@ -214,14 +202,7 @@ func _show_item_modal():
 		scroll.add_child(list)
 
 		for item in GameState.items:
-			var row := Label.new()
-			var count: int = item.get("count", 1)
-			if count > 1:
-				row.text = "  %s × %d" % [item.get("name", item.id), count]
-			else:
-				row.text = "  %s" % item.get("name", item.id)
-			row.add_theme_font_size_override("font_size", 20)
-			list.add_child(row)
+			list.add_child(GameState.create_item_label(item.get("name", item.id), item.get("count", 1), 20, 28))
 
 	var close_btn := Button.new()
 	close_btn.text = "閉じる"
@@ -259,10 +240,7 @@ func _show_equip_modal():
 		list.add_theme_constant_override("separation", 4)
 		scroll.add_child(list)
 		for item in GameState.equipment:
-			var row := Label.new()
-			row.text = "  %s" % item.get("name", item.id)
-			row.add_theme_font_size_override("font_size", 20)
-			list.add_child(row)
+			list.add_child(GameState.create_item_label(item.get("name", item.id), 1, 20, 28))
 
 	var close_btn := Button.new()
 	close_btn.text = "閉じる"
@@ -389,10 +367,25 @@ func _input(event: InputEvent):
 	if not _waiting_for_click:
 		return
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		# スライダーやボタン上のクリックは無視
+		var hovered = get_viewport().gui_get_hovered_control()
+		if hovered is BaseButton or hovered is Slider or hovered is SpinBox or hovered is LineEdit:
+			return
+		# 編集パネル内のクリックも無視
+		if hovered and _is_in_edit_panel(hovered):
+			return
 		_click_received.emit()
 	elif event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode == KEY_ENTER or event.keycode == KEY_SPACE:
 			_click_received.emit()
+
+func _is_in_edit_panel(control: Control) -> bool:
+	var node = control
+	while node:
+		if node is PanelContainer:
+			return true
+		node = node.get_parent()
+	return false
 
 func _show_nav_buttons(area_id: String):
 	_clear_nav_row()
@@ -533,8 +526,6 @@ func _apply_encounter_portrait(tex: Texture2D, portrait_data: Dictionary):
 	var vp_size: Vector2 = get_viewport_rect().size
 	var visual_w: float = tex.get_size().x * s
 	var visual_h: float = tex.get_size().y * s
-	# バンドの上端（NarrationBand の top）
-	var band_top: float = vp_size.y + narration_band.offset_top
 
 	match side:
 		"left":
@@ -543,7 +534,7 @@ func _apply_encounter_portrait(tex: Texture2D, portrait_data: Dictionary):
 			encounter_portrait.position.x = vp_size.x - visual_w - 40.0 + offset_x
 		_:  # center
 			encounter_portrait.position.x = (vp_size.x - visual_w) / 2.0 + offset_x
-	encounter_portrait.position.y = band_top - visual_h + offset_y
+	encounter_portrait.position.y = vp_size.y - visual_h + offset_y
 
 func _hide_encounter():
 	encounter_portrait.visible = false

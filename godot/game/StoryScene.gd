@@ -1158,11 +1158,7 @@ func _on_item_pressed():
 	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(title_label)
 
-	var gold_label := Label.new()
-	gold_label.text = "  所持金: %d ゴールド" % GameState.money
-	gold_label.add_theme_font_size_override("font_size", 22)
-	gold_label.add_theme_color_override("font_color", Color(0.9, 0.75, 0.3))
-	vbox.add_child(gold_label)
+	vbox.add_child(GameState.create_gold_label(GameState.money, 22, 28, "所持金: "))
 
 	if GameState.items.is_empty():
 		var empty_label := Label.new()
@@ -1179,14 +1175,7 @@ func _on_item_pressed():
 		list.add_theme_constant_override("separation", 4)
 		scroll.add_child(list)
 		for item in GameState.items:
-			var row := Label.new()
-			var count: int = item.get("count", 1)
-			if count > 1:
-				row.text = "  %s × %d" % [item.get("name", item.id), count]
-			else:
-				row.text = "  %s" % item.get("name", item.id)
-			row.add_theme_font_size_override("font_size", 20)
-			list.add_child(row)
+			list.add_child(GameState.create_item_label(item.get("name", item.id), item.get("count", 1), 20, 28))
 
 	var close_btn := Button.new()
 	close_btn.text = "閉じる"
@@ -1225,10 +1214,7 @@ func _on_equip_pressed():
 		list.add_theme_constant_override("separation", 4)
 		scroll.add_child(list)
 		for item in GameState.equipment:
-			var row := Label.new()
-			row.text = "  %s" % item.get("name", item.id)
-			row.add_theme_font_size_override("font_size", 20)
-			list.add_child(row)
+			list.add_child(GameState.create_item_label(item.get("name", item.id), 1, 20, 28))
 
 	var close_btn := Button.new()
 	close_btn.text = "閉じる"

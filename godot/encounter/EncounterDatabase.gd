@@ -23,7 +23,11 @@ func _init():
 					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
 					"side": "center", "scale": 0.4, "position": [0, -199],
 				},
-				"farewell": {
+				"farewell_win": {
+					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
+					"side": "center", "scale": 0.4, "position": [0, -199],
+				},
+				"farewell_lose": {
 					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
 					"side": "center", "scale": 0.4, "position": [0, -199],
 				},
@@ -39,16 +43,6 @@ func _init():
 					"ビビってんのか？ 早くしろよ！",
 					"グズグズすんな！",
 				],
-				"battle_win": [
-					"な……！？ まぐれだ、まぐれ！",
-					"嘘だろ……こんなガキに……！",
-					"テメェ……覚えてろよ……！",
-				],
-				"battle_lose": [
-					"ガハハ！ 弱ぇ弱ぇ！",
-					"カードもらいだ！ ざまぁ！",
-					"新入りの分際で歯向かうからだ！",
-				],
 				"farewells_win": [
 					"くっ……覚えてろよ！",
 					"チクショウ……次は負けねぇ！",
@@ -62,6 +56,7 @@ func _init():
 			},
 			"hand": [{"hand": "rock", "grade": 1}, {"hand": "rock", "grade": 1}, {"hand": "paper", "grade": 1}],
 			"tendency": {"rock": 2.33},
+			"gold_reward": {"min": 5, "max": 15},
 		},
 		"thug_b": {
 			"id": "thug_b",
@@ -75,7 +70,11 @@ func _init():
 					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
 					"side": "center", "scale": 0.4, "position": [0, -199],
 				},
-				"farewell": {
+				"farewell_win": {
+					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
+					"side": "center", "scale": 0.4, "position": [0, -199],
+				},
+				"farewell_lose": {
 					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
 					"side": "center", "scale": 0.4, "position": [0, -199],
 				},
@@ -91,16 +90,6 @@ func _init():
 					"もたもたすんなよ！",
 					"ほら、早くしろ！",
 				],
-				"battle_win": [
-					"嘘だろ……こんなガキに……",
-					"テメェ、覚えとけよ……！",
-					"くそっ……運が悪かった！",
-				],
-				"battle_lose": [
-					"ケッ、こんなもんか。",
-					"弱いくせにウロウロすんな！",
-					"ハッ、楽勝だったぜ！",
-				],
 				"farewells_win": [
 					"嘘だろ……こんなガキに……",
 					"テメェ、覚えとけよ……！",
@@ -114,6 +103,7 @@ func _init():
 			},
 			"hand": [{"hand": "rock", "grade": 1}, {"hand": "scissors", "grade": 1}, {"hand": "paper", "grade": 1}],
 			"tendency": {},
+			"gold_reward": {"min": 5, "max": 15},
 		},
 		"drunk": {
 			"id": "drunk",
@@ -127,7 +117,11 @@ func _init():
 					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
 					"side": "center", "scale": 0.4, "position": [0, -199],
 				},
-				"farewell": {
+				"farewell_win": {
+					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
+					"side": "center", "scale": 0.4, "position": [0, -199],
+				},
+				"farewell_lose": {
 					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
 					"side": "center", "scale": 0.4, "position": [0, -199],
 				},
@@ -143,16 +137,6 @@ func _init():
 					"ひっく……まだ酔ってねぇからな……",
 					"よっしゃ……勝負だぁ……",
 				],
-				"battle_win": [
-					"うぇ……酔いが覚めちまった……",
-					"ひっく……ま、まぐれだからな……",
-					"う～ん……強いやつもいるもんだ……",
-				],
-				"battle_lose": [
-					"ひっひっひ……やっぱ酔拳は最強だな……",
-					"酒代ゲットぉ～！",
-					"ひっく……もう一杯飲めるぜぇ……",
-				],
 				"farewells_win": [
 					"うぇ……酔いが覚めちまった……",
 					"ひっく……ま、まぐれだからな……",
@@ -166,74 +150,121 @@ func _init():
 			},
 			"hand": [{"hand": "rock", "grade": 1}, {"hand": "scissors", "grade": 1}, {"hand": "scissors", "grade": 1}],
 			"tendency": {"scissors": 1.5},
+			"gold_reward": {"min": 3, "max": 10},
 		},
 		"merchant": {
 			"id": "merchant",
-			"name": "怪しい商人",
+			"name": "恰幅のいい商人",
 			"portraits": {
 				"encounter": {
 					"path": "res://assets/characters/random_battle/char001_random_01.png",
-					"scale": 0.70, "side": "center", "position": [0, 200],
+					"scale": 0.73, "side": "center", "position": [0, -50],
 				},
 				"battle": {
 					"path": "res://assets/characters/random_battle/char001_random_02.png",
-					"scale": 0.35, "side": "center", "position": [0, -181],
+					"scale": 0.35, "side": "center", "position": [0, -182],
 				},
-				"farewell": {
-					"path": "res://assets/characters/random_battle/char001_random_01.png",
-					"scale": 0.70, "side": "center", "position": [0, 200],
+				"farewell_win": {
+					"path": "res://assets/characters/random_battle/char001_random_03.png",
+					"scale": 0.8, "side": "center", "position": [0, -30],
+				},
+				"farewell_lose": {
+					"path": "res://assets/characters/random_battle/char001_random_04.png",
+					"scale": 0.53, "side": "center", "position": [0, 200],
 				},
 			},
 			"lines": {
 				"greetings": [
-					"いいカード持ってるねぇ……ちょっと勝負しない？",
-					"ふふふ、お兄さん、掘り出し物に興味ない？ まずは腕試し。",
-					"ここだけの話、勝ったらレアカード教えてあげるよ？",
+					"いらっしゃいませ。カードで勝負しましょう？",
+					"ふふふ、お兄さん、お店寄っていくかい？ まずは腕試し。",
+					"ここいらの決まりは、カードで勝つことさ",
 				],
 				"battle_start": [
 					"さぁ、商売開始だよ。",
 					"ふふふ、いい取引にしようじゃないか。",
 					"お手柔らかにね。",
 				],
-				"battle_win": [
-					"やるねぇ……商売の才能あるんじゃない？",
-					"ふぅ、参った。今度はもっといい品持ってくるよ。",
-					"お見事。またのご来店を。",
-				],
-				"battle_lose": [
-					"商売は勝ってこそ、だよ。ふふふ。",
-					"いい取引だったねぇ。またよろしく。",
-					"ふふ、これも商売の一環さ。",
-				],
 				"farewells_win": [
-					"やるねぇ……商売の才能あるんじゃない？",
-					"ふぅ、参った。今度はもっといい品持ってくるよ。",
-					"お見事。またのご来店を。",
+					"ふっ、服は返してください...",
+					"ひぃ、おゆるしを...",
+					"どっ、どうか服だけは返してください...",
 				],
 				"farewells_lose": [
-					"商売は勝ってこそ、だよ。ふふふ。",
-					"いい取引だったねぇ。またよろしく。",
-					"ふふ、これも商売の一環さ。",
+					"商売は勝ってこそ、だよ。ふふふ。お金とカードはもらっていくよ",
+					"いい取引だったねぇ。またよろしく。お金とカードはもらっていくよ",
+					"ふふ、これも商売の一環さ。お金とカードはもらっていくよ",
 				],
 			},
 			"hand": [{"hand": "paper", "grade": 1}, {"hand": "paper", "grade": 1}, {"hand": "scissors", "grade": 1}],
 			"tendency": {"paper": 1.5},
+			"gold_reward": {"min": 10, "max": 25},
+		},
+		"merchant2": {
+			"id": "merchant2",
+			"name": "怪しい商人",
+			"portraits": {
+				"encounter": {
+					"path": "res://assets/characters/random_battle/char002_random_01.png",
+					"scale": 0.5, "side": "center", "position": [0, -50],
+				},
+				"battle": {
+					"path": "res://assets/characters/random_battle/char002_random_02.png",
+					"scale": 0.42, "side": "center", "position": [0, -248],
+				},
+				"farewell_win": {
+					"path": "res://assets/characters/random_battle/char002_random_03.png",
+					"scale": 0.45, "side": "center", "position": [0, 160],
+				},
+				"farewell_lose": {
+					"path": "res://assets/characters/random_battle/char002_random_04.png",
+					"scale": 0.53, "side": "center", "position": [0, 50],
+				},
+			},
+			"lines": {
+				"greetings": [
+					"いらっしゃいませ。カードで勝負しましょう？",
+					"これはこれは、いらっしゃませ？ まずは腕試しから。",
+					"ここの所倍の決まりは、カードで勝つことですよ",
+				],
+				"battle_start": [
+					"さぁ、商売開始だよ。",
+					"ふふふ、いい取引にしようじゃないか。",
+					"お手柔らかにね。",
+				],
+				"farewells_win": [
+					"ふっ、服は返してください...",
+					"ひぃ、おゆるしを...",
+					"どっ、どうか服だけは返してください...",
+				],
+				"farewells_lose": [
+					"商売は勝ってこそ、だよ。ふふふ。お金とカードはもらっていくよ",
+					"いい取引だったねぇ。またよろしく。お金とカードはもらっていくよ",
+					"ふふ、これも商売の一環さ。お金とカードはもらっていくよ",
+				],
+			},
+			"hand": [{"hand": "paper", "grade": 1}, {"hand": "paper", "grade": 1}, {"hand": "scissors", "grade": 1}],
+			"tendency": {"paper": 1.5},
+			"gold_reward": {"min": 10, "max": 25},
 		},
 		"sailor": {
 			"id": "sailor",
 			"name": "荒くれ船乗り",
 			"portraits": {
 				"encounter": {
-					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
+					"path": "res://assets/characters/random_battle/char003_random_01.png",
 					"side": "center", "scale": 0.5, "position": [0, 0],
 				},
 				"battle": {
-					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
-					"side": "center", "scale": 0.4, "position": [0, -199],
+					"path": "res://assets/characters/random_battle/char003_random_02.png",
+					"scale": 0.50, "side": "center", "position": [0, -225],
 				},
-				"farewell": {
-					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
-					"side": "center", "scale": 0.4, "position": [0, -199],
+				"farewell_win": {
+					"path": "res://assets/characters/random_battle/char003_random_03.png",
+					"scale": 0.60, "side": "center", "position": [0, 100],
+				},
+				"farewell_lose": {
+					"path": "res://assets/characters/random_battle/char003_random_04.png",
+					"scale": 0.50, "side": "center", "position": [0, 0],
 				},
 			},
 			"lines": {
@@ -247,20 +278,10 @@ func _init():
 					"波に揉まれた俺の拳を見せてやる！",
 					"さぁ、錨を上げろ！",
 				],
-				"battle_win": [
-					"ぐぬぬ……陸でも強ぇやつはいるんだな！",
-					"くそっ、波に呑まれた気分だ……",
-					"マジかよ……陸の人間にやられるとは……",
-				],
-				"battle_lose": [
-					"ガハハ！ 海の男にゃ敵わねぇだろ！",
-					"陸の人間はこんなもんか！",
-					"大海原を渡ってきた俺に勝てるわけねぇ！",
-				],
 				"farewells_win": [
-					"ぐぬぬ……陸でも強ぇやつはいるんだな！",
-					"くそっ、波に呑まれた気分だ……",
-					"マジかよ……陸の人間にやられるとは……",
+					"ぐぬぬ……次は負けねぇ",
+					"くそっ、覚えていろよ",
+					"マジかよ……くそが！",
 				],
 				"farewells_lose": [
 					"ガハハ！ 海の男にゃ敵わねぇだろ！",
@@ -270,6 +291,7 @@ func _init():
 			},
 			"hand": [{"hand": "rock", "grade": 1}, {"hand": "rock", "grade": 1}, {"hand": "scissors", "grade": 1}],
 			"tendency": {"rock": 1.5},
+			"gold_reward": {"min": 8, "max": 20},
 		},
 		"bandit": {
 			"id": "bandit",
@@ -283,7 +305,11 @@ func _init():
 					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
 					"side": "center", "scale": 0.4, "position": [0, -199],
 				},
-				"farewell": {
+				"farewell_win": {
+					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
+					"side": "center", "scale": 0.4, "position": [0, -199],
+				},
+				"farewell_lose": {
 					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
 					"side": "center", "scale": 0.4, "position": [0, -199],
 				},
@@ -299,16 +325,6 @@ func _init():
 					"カードを全部いただくぜ！",
 					"ケケケ、楽しませてもらうぜ！",
 				],
-				"battle_win": [
-					"ちっ……仲間呼ぶぞ！ 覚えてろ！",
-					"くそ……今日は運が悪かった……",
-					"テメェ……次はねぇぞ！",
-				],
-				"battle_lose": [
-					"ケケケ、カードは没収だ！",
-					"二度とここに来るんじゃねぇぞ！",
-					"ヒャッハー！ いただきだ！",
-				],
 				"farewells_win": [
 					"ちっ……仲間呼ぶぞ！ 覚えてろ！",
 					"くそ……今日は運が悪かった……",
@@ -322,6 +338,7 @@ func _init():
 			},
 			"hand": [{"hand": "rock", "grade": 1}, {"hand": "scissors", "grade": 1}, {"hand": "paper", "grade": 1}],
 			"tendency": {},
+			"gold_reward": {"min": 10, "max": 30},
 		},
 	}
 
@@ -342,10 +359,14 @@ static func pick_line(char_data: Dictionary, line_key: String) -> String:
 	return lines[randi() % lines.size()]
 
 # ポートレート取得（フォールバック付き）
+# scene: "encounter", "battle", "farewell_win", "farewell_lose"
 static func get_portrait(char_data: Dictionary, scene: String) -> Dictionary:
 	var portraits: Dictionary = char_data.get("portraits", {})
 	if portraits.has(scene):
 		return portraits[scene]
+	# farewell_win / farewell_lose → battle → encounter の順でフォールバック
+	if scene.begins_with("farewell") and portraits.has("battle"):
+		return portraits["battle"]
 	if portraits.has("battle"):
 		return portraits["battle"]
 	if portraits.has("encounter"):

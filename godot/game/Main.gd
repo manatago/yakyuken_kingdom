@@ -107,6 +107,13 @@ func _show_jump_menu():
 	edit_btn.add_theme_color_override("font_color", Color(0.3, 1.0, 0.5))
 	edit_btn.pressed.connect(_on_char_edit_mode)
 	jump_list.add_child(edit_btn)
+	# イベントバトル編集ボタン
+	var event_edit_btn := Button.new()
+	event_edit_btn.text = "▶ イベントバトル編集"
+	event_edit_btn.add_theme_font_size_override("font_size", 20)
+	event_edit_btn.add_theme_color_override("font_color", Color(1.0, 0.8, 0.3))
+	event_edit_btn.pressed.connect(_on_event_battle_edit_mode)
+	jump_list.add_child(event_edit_btn)
 	# セパレータ
 	var sep := HSeparator.new()
 	jump_list.add_child(sep)
@@ -236,24 +243,18 @@ signal _edit_setup_done
 func _run_char_edit_test(encounter_data: Dictionary):
 	GameState.reset()
 	GameState.init_default_inventory()
-	# 編集モード: 全アイテム・装備品を付与
+	# 編集モード: 全アイテム・装備品・ゴールドを付与
+	GameState.money = 1000
 	for item_data in ItemDatabase.get_all_consumables():
 		GameState.add_item({"id": item_data.id, "name": item_data.name, "count": 3})
 	for equip_data in ItemDatabase.get_all_equipment():
 		GameState.equipment.append({"id": equip_data.id, "name": equip_data.name})
 
+	# エリア選択画面
+	var bg_path: String = await _show_edit_area_select(encounter_data)
+
 	# 装備選択画面
 	await _show_edit_equip_screen()
-
-	# エリア背景を探す（このキャラが出現する最初のエリア）
-	var areas: Dictionary = _current_town_map.get_areas()
-	var bg_path: String = _current_town_map.get_home_background()
-	for area_id in areas:
-		var encounters: Array = _current_town_map.get_encounters(area_id)
-		for enc in encounters:
-			if enc.id == encounter_data.id:
-				bg_path = areas[area_id].get("bg", bg_path)
-				break
 
 	# GuildHome を表示してエンカウントを強制発生
 	var home: GuildHome = guild_home_scene.instantiate()
@@ -301,9 +302,21 @@ func _run_char_edit_test(encounter_data: Dictionary):
 
 	var edit_result: String = await edit_battle.battle_finished
 	var edit_rewards = edit_battle.get_battle_rewards()
-	if edit_result == "win" and chapter.can_gain_cards():
-		for card in edit_rewards.captured_by_player:
-			GameState.add_card(card)
+	if edit_result == "win":
+		if chapter.can_gain_cards():
+			for card in edit_rewards.captured_by_player:
+				GameState.add_card(card)
+		var gold: int = edit_battle.get_rolled_gold()
+		if gold > 0:
+			GameState.money += gold
+	elif edit_result == "lose":
+		if chapter.can_lose_cards():
+			for card in edit_rewards.captured_by_opponent:
+				GameState.remove_card(card)
+		var lost_gold: int = edit_battle.get_lost_gold()
+		if lost_gold > 0:
+			GameState.money = max(GameState.money - lost_gold, 0)
+	_battle_edit_active = false
 	edit_battle.queue_free()
 	battle_edit_panel.queue_free()
 
@@ -317,7 +330,8 @@ func _run_char_edit_test(encounter_data: Dictionary):
 		move_child(farewell_edit_panel, get_child_count() - 1)
 
 		# 去り際ポートレートを表示
-		var farewell_portrait: Dictionary = EncounterDatabase.get_portrait(encounter_data, "farewell")
+		var fw_scene_key: String = "farewell_win" if edit_result == "win" else "farewell_lose"
+		var farewell_portrait: Dictionary = EncounterDatabase.get_portrait(encounter_data, fw_scene_key)
 		var fw_path: String = farewell_portrait.get("path", "")
 		if not fw_path.is_empty():
 			var fw_tex = load(fw_path)
@@ -333,16 +347,10 @@ func _run_char_edit_test(encounter_data: Dictionary):
 		home.encounter_right.visible = true
 		home.narration_band.visible = true
 
-		_connect_edit_to_portrait(farewell_edit_panel, home.encounter_portrait, encounter_data)
-		# スライダーの初期値をfarewell設定に変更
-		var fw_sl := _get_edit_sliders(farewell_edit_panel)
-		var fw_init_scale: float = farewell_portrait.get("scale", 0.5)
-		var fw_init_pos = farewell_portrait.get("position", [0, 0])
-		var fw_init_x: float = fw_init_pos[0] if fw_init_pos is Array and fw_init_pos.size() >= 2 else 0.0
-		var fw_init_y: float = fw_init_pos[1] if fw_init_pos is Array and fw_init_pos.size() >= 2 else 0.0
-		_set_slider_range(fw_sl.scale, fw_sl.scale_spin, 0.1, 1.5, 0.01, fw_init_scale)
-		_set_slider_range(fw_sl.x, fw_sl.x_spin, -500, 500, 1, fw_init_x)
-		_set_slider_range(fw_sl.y, fw_sl.y_spin, -600, 300, 1, fw_init_y)
+		# farewell ポートレートデータを直接渡して初期値をセット
+		var fw_data_for_edit := encounter_data.duplicate()
+		fw_data_for_edit["portraits"] = {"encounter": farewell_portrait}
+		_connect_edit_to_portrait(farewell_edit_panel, home.encounter_portrait, fw_data_for_edit)
 
 		# クリック待ち
 		home._waiting_for_click = true
@@ -355,6 +363,71 @@ func _run_char_edit_test(encounter_data: Dictionary):
 	# アイテム・装備品確認画面
 	await _show_edit_result_screen(home)
 	home.queue_free()
+
+signal _area_selected(bg_path: String)
+
+func _show_edit_area_select(encounter_data: Dictionary) -> String:
+	# このキャラが出現するエリアを収集
+	var areas: Dictionary = _current_town_map.get_areas()
+	var char_areas: Array = []
+	for area_id in areas:
+		var encounters: Array = _current_town_map.get_encounters(area_id)
+		for enc in encounters:
+			if enc.id == encounter_data.id:
+				char_areas.append({"id": area_id, "name": areas[area_id].name, "bg": areas[area_id].bg})
+				break
+
+	# 1つしかなければ選択不要
+	if char_areas.size() <= 1:
+		if char_areas.size() == 1:
+			return char_areas[0].bg
+		return _current_town_map.get_home_background()
+
+	# エリア選択UI
+	var panel := PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.06, 0.05, 0.1, 0.92)
+	style.corner_radius_top_left = 12
+	style.corner_radius_top_right = 12
+	style.corner_radius_bottom_right = 12
+	style.corner_radius_bottom_left = 12
+	style.content_margin_left = 20
+	style.content_margin_top = 16
+	style.content_margin_right = 20
+	style.content_margin_bottom = 16
+	panel.add_theme_stylebox_override("panel", style)
+	panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	panel.grow_vertical = Control.GROW_DIRECTION_BOTH
+	panel.custom_minimum_size = Vector2(400, 300)
+	add_child(panel)
+
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 8)
+	panel.add_child(vbox)
+
+	var title := Label.new()
+	title.text = "エリア選択"
+	title.add_theme_font_size_override("font_size", 28)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(title)
+
+	var desc := Label.new()
+	desc.text = "%s が出現するエリア:" % encounter_data.get("name", "")
+	desc.add_theme_font_size_override("font_size", 16)
+	vbox.add_child(desc)
+
+	for area in char_areas:
+		var btn := Button.new()
+		btn.text = area.name
+		btn.add_theme_font_size_override("font_size", 20)
+		var area_bg: String = area.bg
+		btn.pressed.connect(func(): _area_selected.emit(area_bg))
+		vbox.add_child(btn)
+
+	var selected_bg: String = await _area_selected
+	panel.queue_free()
+	return selected_bg
 
 func _show_edit_equip_screen():
 	var panel := PanelContainer.new()
@@ -505,26 +578,14 @@ func _show_edit_result_screen(home: GuildHome):
 	for card: Card in GameState.inventory:
 		var key := "%s_%d" % [card.hand, card.grade]
 		card_counts[key] = card_counts.get(key, 0) + 1
-	var hand_names := {"rock": "グー", "scissors": "チョキ", "paper": "パー"}
-	var grade_names := {1: "ノーマル", 2: "ブロンズ", 3: "シルバー", 4: "ゴールド", 5: "プラチナ"}
 	var sorted_keys := card_counts.keys()
 	sorted_keys.sort()
 	for key in sorted_keys:
 		var parts: PackedStringArray = key.split("_")
-		var h_name: String = hand_names.get(parts[0], parts[0])
-		var g: int = int(parts[1])
-		var g_name: String = grade_names.get(g, "G%d" % g)
-		var row := Label.new()
-		row.text = "  %s（%s）× %d" % [h_name, g_name, card_counts[key]]
-		row.add_theme_font_size_override("font_size", 16)
-		vbox.add_child(row)
+		vbox.add_child(GameState.create_card_label(parts[0], int(parts[1]), card_counts[key], 16, 22))
 
 	# ゴールド
-	var gold_label := Label.new()
-	gold_label.text = "所持金: %d ゴールド" % GameState.money
-	gold_label.add_theme_font_size_override("font_size", 20)
-	gold_label.add_theme_color_override("font_color", Color(0.9, 0.75, 0.3))
-	vbox.add_child(gold_label)
+	vbox.add_child(GameState.create_gold_label(GameState.money, 20, 26, "所持金: "))
 
 	# 装備品
 	var equip_label := Label.new()
@@ -533,10 +594,7 @@ func _show_edit_result_screen(home: GuildHome):
 	equip_label.add_theme_color_override("font_color", Color(0.3, 0.8, 1.0))
 	vbox.add_child(equip_label)
 	for eq in GameState.equipment:
-		var row := Label.new()
-		row.text = "  %s" % eq.get("name", eq.id)
-		row.add_theme_font_size_override("font_size", 16)
-		vbox.add_child(row)
+		vbox.add_child(GameState.create_item_label(eq.get("name", eq.id), 1, 16, 22))
 	if GameState.equipment.is_empty():
 		var empty := Label.new()
 		empty.text = "  なし"
@@ -550,10 +608,7 @@ func _show_edit_result_screen(home: GuildHome):
 	item_label.add_theme_color_override("font_color", Color(0.3, 1.0, 0.5))
 	vbox.add_child(item_label)
 	for item in GameState.items:
-		var row := Label.new()
-		row.text = "  %s ×%d" % [item.get("name", item.id), item.get("count", 1)]
-		row.add_theme_font_size_override("font_size", 16)
-		vbox.add_child(row)
+		vbox.add_child(GameState.create_item_label(item.get("name", item.id), item.get("count", 1), 16, 22))
 	if GameState.items.is_empty():
 		var empty := Label.new()
 		empty.text = "  なし"
@@ -727,6 +782,7 @@ func _connect_edit_to_portrait(edit_panel: PanelContainer, portrait: TextureRect
 	sl.y.value_changed.connect(_on_portrait_slider.bind(sl, portrait))
 
 func _on_portrait_slider(_value: float, sl: Dictionary, portrait: TextureRect):
+	print("[EDIT-PORTRAIT] slider changed. portrait valid=%s has_tex=%s" % [str(is_instance_valid(portrait)), str(portrait.texture != null) if is_instance_valid(portrait) else "N/A"])
 	if not is_instance_valid(portrait) or not portrait.texture:
 		return
 	var s: float = sl.scale.value
@@ -738,19 +794,21 @@ func _on_portrait_slider(_value: float, sl: Dictionary, portrait: TextureRect):
 	var vp_size: Vector2 = get_viewport_rect().size
 	var visual_w: float = tex_size.x * s
 	var visual_h: float = tex_size.y * s
-	# バンド上端に合わせて配置
-	var band_top: float = vp_size.y - 264.0
 	portrait.position.x = (vp_size.x - visual_w) / 2.0 + offset_x
-	portrait.position.y = band_top - visual_h + offset_y
+	portrait.position.y = vp_size.y - visual_h + offset_y
 	# ラベル更新
 	var row_parent = sl.scale.get_parent().get_parent()
 	var info: Label = row_parent.find_child("InfoLabel", true, false)
 	if info:
 		info.text = '"scale": %.2f, "position": [%d, %d]' % [s, int(offset_x), int(offset_y)]
 
+var _battle_edit_sl: Dictionary = {}
+var _battle_edit_ref = null
+var _battle_edit_last_tex: Texture2D = null
+var _battle_edit_active := false
+
 func _connect_edit_to_battle(edit_panel: PanelContainer, battle_ref, encounter_data: Dictionary = {}):
 	var sl := _get_edit_sliders(edit_panel)
-	# バトル用ポートレート設定から初期値を取得
 	var portrait_data: Dictionary = EncounterDatabase.get_portrait(encounter_data, "battle")
 	var init_scale: float = portrait_data.get("scale", 0.4)
 	var init_pos = portrait_data.get("position", [0, -199])
@@ -762,6 +820,45 @@ func _connect_edit_to_battle(edit_panel: PanelContainer, battle_ref, encounter_d
 	sl.scale.value_changed.connect(_on_battle_slider.bind(sl, battle_ref))
 	sl.x.value_changed.connect(_on_battle_slider.bind(sl, battle_ref))
 	sl.y.value_changed.connect(_on_battle_slider.bind(sl, battle_ref))
+	# 画像変更検知用
+	_battle_edit_sl = sl
+	_battle_edit_ref = battle_ref
+	_battle_edit_last_tex = null
+	_battle_edit_active = true
+
+func _process(_delta: float):
+	if not _battle_edit_active:
+		return
+	if not is_instance_valid(_battle_edit_ref):
+		_battle_edit_active = false
+		return
+	var story_sc = _battle_edit_ref._story_scene
+	if not story_sc:
+		return
+	var char_rect: TextureRect = _find_visible_char_rect(story_sc)
+	if not char_rect:
+		return
+	# 画像が変わったらスライダーを実際の値に更新
+	if char_rect.texture != _battle_edit_last_tex:
+		_battle_edit_last_tex = char_rect.texture
+		_set_slider_range(_battle_edit_sl.scale, _battle_edit_sl.scale_spin, 0.1, 1.5, 0.01, char_rect.scale.x)
+		var vp_size: Vector2 = get_viewport_rect().size
+		var tex_size: Vector2 = char_rect.texture.get_size()
+		var s: float = char_rect.scale.x
+		var visual_w: float = tex_size.x * s
+		var visual_h: float = tex_size.y * s
+		var base_x: float = (vp_size.x - visual_w) / 2.0
+		var base_y: float = vp_size.y - visual_h
+		var offset_x: float = char_rect.position.x - base_x
+		var offset_y: float = char_rect.position.y - base_y
+		_set_slider_range(_battle_edit_sl.x, _battle_edit_sl.x_spin, -500, 500, 1, offset_x)
+		_set_slider_range(_battle_edit_sl.y, _battle_edit_sl.y_spin, -600, 300, 1, offset_y)
+
+func _find_visible_char_rect(story_sc) -> TextureRect:
+	for rect in [story_sc.center_char, story_sc.left_char, story_sc.right_char]:
+		if rect and rect.visible and rect.texture:
+			return rect
+	return null
 
 func _on_battle_slider(_value: float, sl: Dictionary, battle_ref):
 	if not is_instance_valid(battle_ref):
@@ -769,11 +866,7 @@ func _on_battle_slider(_value: float, sl: Dictionary, battle_ref):
 	var story_sc = battle_ref._story_scene
 	if not story_sc:
 		return
-	var char_rect: TextureRect = null
-	for rect in [story_sc.center_char, story_sc.left_char, story_sc.right_char]:
-		if rect and rect.visible and rect.texture:
-			char_rect = rect
-			break
+	var char_rect: TextureRect = _find_visible_char_rect(story_sc)
 	if not char_rect:
 		return
 	var s: float = sl.scale.value
@@ -788,7 +881,7 @@ func _on_battle_slider(_value: float, sl: Dictionary, battle_ref):
 	var row_parent2 = sl.scale.get_parent().get_parent()
 	var info: Label = row_parent2.find_child("InfoLabel", true, false)
 	if info:
-		info.text = '{"scale": %.2f, "position": [%d, %d]}' % [s, int(sl.x.value), int(sl.y.value)]
+		info.text = '"scale": %.2f, "position": [%d, %d]' % [s, int(sl.x.value), int(sl.y.value)]
 
 func _create_story_scene():
 	story_scene_instance = story_scene_scene.instantiate()
@@ -888,12 +981,20 @@ func _on_battle_requested(cmd):
 		tut_battle.start_battle(cmd.chapter, true)
 		var tut_result: String = await tut_battle.battle_finished
 		var tut_rewards = tut_battle.get_battle_rewards()
-		if tut_result == "win" and cmd.chapter.can_gain_cards():
-			for card in tut_rewards.captured_by_player:
-				GameState.add_card(card)
-		elif tut_result == "lose" and cmd.chapter.can_lose_cards():
-			for card in tut_rewards.captured_by_opponent:
-				GameState.remove_card(card)
+		if tut_result == "win":
+			if cmd.chapter.can_gain_cards():
+				for card in tut_rewards.captured_by_player:
+					GameState.add_card(card)
+			var gold: int = tut_battle.get_rolled_gold()
+			if gold > 0:
+				GameState.money += gold
+		elif tut_result == "lose":
+			if cmd.chapter.can_lose_cards():
+				for card in tut_rewards.captured_by_opponent:
+					GameState.remove_card(card)
+			var lost_gold: int = tut_battle.get_lost_gold()
+			if lost_gold > 0:
+				GameState.money = max(GameState.money - lost_gold, 0)
 		tut_battle.queue_free()
 		story_scene_instance.visible = true
 		story_scene_instance.complete_battle("win")
@@ -908,12 +1009,20 @@ func _on_battle_requested(cmd):
 	var result: String = await battle_instance.battle_finished
 
 	var rewards = battle_instance.get_battle_rewards()
-	if result == "win" and cmd.chapter.can_gain_cards():
-		for card in rewards.captured_by_player:
-			GameState.add_card(card)
-	elif result == "lose" and cmd.chapter.can_lose_cards():
-		for card in rewards.captured_by_opponent:
-			GameState.remove_card(card)
+	if result == "win":
+		if cmd.chapter.can_gain_cards():
+			for card in rewards.captured_by_player:
+				GameState.add_card(card)
+		var gold: int = battle_instance.get_rolled_gold()
+		if gold > 0:
+			GameState.money += gold
+	elif result == "lose":
+		if cmd.chapter.can_lose_cards():
+			for card in rewards.captured_by_opponent:
+				GameState.remove_card(card)
+		var lost_gold: int = battle_instance.get_lost_gold()
+		if lost_gold > 0:
+			GameState.money = max(GameState.money - lost_gold, 0)
 
 	battle_instance.queue_free()
 	cmd.result = result
@@ -1003,9 +1112,137 @@ func _on_town_battle(area_id: String, chapter: BattleChapterBase, home: GuildHom
 	if result == "win":
 		for card in rewards.captured_by_player:
 			GameState.add_card(card)
-	elif result == "lose" and chapter.can_lose_cards():
-		for card in rewards.captured_by_opponent:
-			GameState.remove_card(card)
+		var gold: int = battle_instance.get_rolled_gold()
+		if gold > 0:
+			GameState.money += gold
+	elif result == "lose":
+		if chapter.can_lose_cards():
+			for card in rewards.captured_by_opponent:
+				GameState.remove_card(card)
+		var lost_gold: int = battle_instance.get_lost_gold()
+		if lost_gold > 0:
+			GameState.money = max(GameState.money - lost_gold, 0)
 	battle_instance.queue_free()
 	home.visible = true
+
+	# 去り際シーン（ストーリーモード）
+	if chapter.has_method("get_farewell"):
+		var farewell_line: String = chapter.get_farewell(result)
+		if not farewell_line.is_empty():
+			var fw_key: String = "farewell_win" if result == "win" else "farewell_lose"
+			var fw_portrait: Dictionary = EncounterDatabase.get_portrait(chapter._data, fw_key) if chapter.has_method("get_farewell_portrait") else {}
+			var fw_path: String = fw_portrait.get("path", "")
+			if not fw_path.is_empty():
+				var fw_tex = load(fw_path)
+				if fw_tex:
+					home.encounter_portrait.texture = fw_tex
+					home._apply_encounter_portrait(fw_tex, fw_portrait)
+			home.encounter_portrait.visible = true
+			home.narration_label.visible = false
+			home.nav_row.visible = false
+			home.encounter_speaker.text = chapter.get_opponent_name()
+			home.encounter_speaker.visible = true
+			home.encounter_body.text = farewell_line
+			home.encounter_right.visible = true
+			home.narration_band.visible = true
+			home._waiting_for_click = true
+			await home._click_received
+			home._waiting_for_click = false
+			home._hide_encounter()
+
 	home.arrive_at(area_id)
+
+# --- イベントバトル編集モード ---
+
+const EVENT_BATTLE_CHAPTERS := [
+	{"id": "prologue", "name": "プロローグ（マチルダ戦）", "path": "res://battle/chapters/PrologueBattleChapter.gd", "bg": "res://assets/backgrounds/prologue/bg05_prison_cell.png"},
+	{"id": "stage1", "name": "ステージ1（冒険者A戦）", "path": "res://battle/chapters/Stage1BattleChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_guild_hall.png"},
+	{"id": "stage2", "name": "ステージ2（受付嬢戦）", "path": "res://battle/chapters/Stage2BattleChapter.gd", "bg": "res://assets/backgrounds/prologue/bg06_prison_arena.png"},
+]
+
+signal _event_chapter_selected(index: int)
+
+func _on_event_battle_edit_mode():
+	jump_menu.visible = false
+	await _show_event_chapter_select()
+
+func _show_event_chapter_select():
+	for child in jump_list.get_children():
+		child.queue_free()
+	var back_btn := Button.new()
+	back_btn.text = "← 戻る"
+	back_btn.add_theme_font_size_override("font_size", 20)
+	back_btn.pressed.connect(func():
+		jump_menu.visible = false
+		title_menu.visible = true)
+	jump_list.add_child(back_btn)
+	var sep := HSeparator.new()
+	jump_list.add_child(sep)
+
+	for i in range(EVENT_BATTLE_CHAPTERS.size()):
+		var ch_info: Dictionary = EVENT_BATTLE_CHAPTERS[i]
+		var btn := Button.new()
+		btn.text = ch_info.name
+		btn.add_theme_font_size_override("font_size", 20)
+		var idx: int = i
+		btn.pressed.connect(func(): _event_chapter_selected.emit(idx))
+		jump_list.add_child(btn)
+	jump_menu.visible = true
+
+	while true:
+		var selected_idx: int = await _event_chapter_selected
+		jump_menu.visible = false
+		await _run_event_battle_edit(EVENT_BATTLE_CHAPTERS[selected_idx])
+		# チャプター選択に戻る
+		for child2 in jump_list.get_children():
+			child2.queue_free()
+		var back_btn2 := Button.new()
+		back_btn2.text = "← 戻る"
+		back_btn2.add_theme_font_size_override("font_size", 20)
+		back_btn2.pressed.connect(func():
+			jump_menu.visible = false
+			title_menu.visible = true)
+		jump_list.add_child(back_btn2)
+		var sep2 := HSeparator.new()
+		jump_list.add_child(sep2)
+		for i2 in range(EVENT_BATTLE_CHAPTERS.size()):
+			var ch_info2: Dictionary = EVENT_BATTLE_CHAPTERS[i2]
+			var btn2 := Button.new()
+			btn2.text = ch_info2.name
+			btn2.add_theme_font_size_override("font_size", 20)
+			var idx2: int = i2
+			btn2.pressed.connect(func(): _event_chapter_selected.emit(idx2))
+			jump_list.add_child(btn2)
+		jump_menu.visible = true
+
+func _run_event_battle_edit(ch_info: Dictionary):
+	GameState.reset()
+	GameState.init_default_inventory()
+	GameState.money = 1000
+
+	var script_res = load(ch_info.path)
+	if not script_res:
+		return
+	var chapter = script_res.new()
+	var bg_tex = load(ch_info.bg) if not ch_info.bg.is_empty() else null
+
+	# スライダーパネル作成
+	var edit_panel := _create_edit_overlay({"name": ch_info.name})
+	add_child(edit_panel)
+
+	# バトル開始
+	var event_battle = battle_scene_scene.instantiate()
+	add_child(event_battle)
+	event_battle.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	if not story_script:
+		story_script = DefaultStoryScript.new()
+	event_battle.setup(story_script.get_cast(), bg_tex, GameState.inventory)
+	event_battle.force_result_mode = true
+	event_battle.start_battle(chapter)
+	move_child(edit_panel, get_child_count() - 1)
+	_connect_edit_to_battle(edit_panel, event_battle, {})
+
+	var result: String = await event_battle.battle_finished
+	_battle_edit_active = false
+	event_battle.queue_free()
+	edit_panel.queue_free()

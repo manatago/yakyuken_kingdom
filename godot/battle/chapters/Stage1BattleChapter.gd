@@ -36,6 +36,9 @@ func get_opponent_tendency() -> Dictionary:
 	# 脳筋の癖: グーを出しやすい（基本67% + 補正 → 約90%）
 	return {"rock": 2.33}
 
+func get_gold_reward() -> Dictionary:
+	return {"min": 5, "max": 15}
+
 # --- チュートリアル（ベイズ・アイ） ---
 
 func tutorial(bt):

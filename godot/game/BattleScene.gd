@@ -101,6 +101,10 @@ var _captured_by_opponent: Array = [] # player's lost cards
 # アイテム使用状態（ラウンドごとにリセット）
 var _round_item_effect: String = ""  # "protect_card", "protect_hp", "intimidate", ""
 
+# 結果強制モード（イベントバトル編集用）
+var force_result_mode := false
+var _forced_result: String = ""  # "win", "lose", "draw"
+
 # Deck building state
 var _deck_building := false
 var _deck_ready := false
@@ -487,6 +491,8 @@ func select_hand() -> Dictionary:
 	card_label.text = "カードを選択してください"
 	confirm_button.visible = false
 	_show_item_buttons()
+	if force_result_mode:
+		_show_force_result_buttons()
 	# Show Bayes Eye during card selection (if chapter supports it)
 	var _has_bayes: bool = _chapter and _chapter.has_method("has_bayes_eye") and _chapter.has_bayes_eye()
 	if _has_bayes:
@@ -497,6 +503,7 @@ func select_hand() -> Dictionary:
 	confirm_button.visible = false
 	action_prompt.visible = false
 	_clear_item_buttons()
+	_clear_force_result_buttons()
 	if _has_bayes:
 		_hide_bayes_eye_immediate()
 	_consume_selected_card()
@@ -513,6 +520,26 @@ func janken(selection: Dictionary, ai_opts: Dictionary = {}) -> String:
 	var opponent_hand: Hand = opp_pick.hand
 	var opponent_grade: int = opp_pick.grade
 	var result := _judge_with_grade(player_hand, player_grade, opponent_hand, opponent_grade)
+	# 結果強制モード: 結果に合わせて相手の手も変更
+	if force_result_mode and not _forced_result.is_empty():
+		print("[FORCE] original=%s forced=%s" % [result, _forced_result])
+		result = _forced_result
+		_forced_result = ""
+		match result:
+			"win":
+				# プレイヤーが勝つ手を相手に出させる
+				match player_hand:
+					Hand.ROCK: opponent_hand = Hand.SCISSORS
+					Hand.SCISSORS: opponent_hand = Hand.PAPER
+					Hand.PAPER: opponent_hand = Hand.ROCK
+			"lose":
+				# プレイヤーが負ける手を相手に出させる
+				match player_hand:
+					Hand.ROCK: opponent_hand = Hand.PAPER
+					Hand.SCISSORS: opponent_hand = Hand.ROCK
+					Hand.PAPER: opponent_hand = Hand.SCISSORS
+			"draw":
+				opponent_hand = player_hand
 
 	await _play_janken_overlay(player_hand, opponent_hand, result)
 
@@ -542,9 +569,8 @@ func _run_battle():
 	if _is_tutorial and _chapter.has_method("tutorial"):
 		await _chapter.call("tutorial", self)
 		await _flush_pending()
-		# カード取得メッセージ
-		if _chapter.can_gain_cards() and not _captured_by_player.is_empty():
-			await _show_card_gain_message()
+		# 報酬メッセージ
+		await _show_reward_message()
 		_cleanup()
 		battle_finished.emit("win")
 		return
@@ -577,29 +603,11 @@ func _run_battle():
 	else:
 		final_result = "draw"
 
-	# 去り際メッセージ（RandomBattleChapter のみ）
-	if _chapter.has_method("get_farewell"):
-		var farewell: String = _chapter.get_farewell(final_result)
-		if not farewell.is_empty():
-			# 去り際ポートレートに切り替え
-			if _chapter.has_method("get_farewell_portrait"):
-				var fp: Dictionary = _chapter.get_farewell_portrait()
-				var fp_path: String = fp.get("path", "")
-				if not fp_path.is_empty():
-					var ch = character(_chapter.get_opponent_id())
-					ch.set_portrait(fp_path, {
-						"scale": fp.get("scale", 0.4),
-						"side": fp.get("side", "center"),
-						"position": fp.get("position", [0, -199]),
-					})
-					await _flush_pending()
-			set_bubble_side("center")
-			narrator_band(farewell)
-			await _flush_pending()
-
-	# カード取得メッセージ
-	if _chapter.can_gain_cards() and not _captured_by_player.is_empty() and final_result == "win":
-		await _show_card_gain_message()
+	# 報酬/損失メッセージ
+	if final_result == "win":
+		await _show_reward_message()
+	elif final_result == "lose":
+		await _show_loss_message()
 
 	_cleanup()
 	battle_finished.emit(final_result)
@@ -616,6 +624,10 @@ func _show_item_buttons():
 		btn.text = "%s ×%d" % [item.get("name", item.id), item.get("count", 1)]
 		btn.add_theme_font_size_override("font_size", 14)
 		btn.tooltip_text = item_info.get("description", "")
+		var icon_tex = load(GameState.DEFAULT_ITEM_ICON_PATH)
+		if icon_tex:
+			btn.icon = icon_tex
+			btn.expand_icon = true
 		var item_id: String = item.id
 		btn.pressed.connect(_on_item_used.bind(item_id, btn))
 		item_slots.add_child(btn)
@@ -640,22 +652,215 @@ func _on_item_used(item_id: String, btn: Button):
 	# アイテムパネルを更新
 	_show_item_buttons()
 
-const _HAND_DISPLAY := {"rock": "グー", "scissors": "チョキ", "paper": "パー"}
-const _GRADE_DISPLAY := {1: "ノーマル", 2: "ブロンズ", 3: "シルバー", 4: "ゴールド", 5: "プラチナ"}
+# --- 結果強制ボタン（イベントバトル編集用） ---
 
-func _show_card_gain_message():
-	var lines := PackedStringArray()
-	for card in _captured_by_player:
-		var hand_name: String = _HAND_DISPLAY.get(card.hand, card.hand)
-		var grade: int = int(card.grade)
-		var grade_name: String = _GRADE_DISPLAY.get(grade, "G%d" % grade)
-		lines.append("%s（%s）" % [hand_name, grade_name])
-	var msg := "カードを取得しました！\n" + "\n".join(lines)
-	set_bubble_side("center")
-	narrator_band(msg)
-	await _flush_pending()
+var _force_result_container: PanelContainer = null
+
+func _show_force_result_buttons():
+	_clear_force_result_buttons()
+	# アイテムパネルの右側に配置
+	_force_result_container = PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.0, 0.0, 0.0, 0.7)
+	style.corner_radius_top_left = 8
+	style.corner_radius_top_right = 8
+	style.corner_radius_bottom_right = 8
+	style.corner_radius_bottom_left = 8
+	style.content_margin_left = 8
+	style.content_margin_top = 6
+	style.content_margin_right = 8
+	style.content_margin_bottom = 6
+	_force_result_container.add_theme_stylebox_override("panel", style)
+	_force_result_container.layout_mode = 1
+	_force_result_container.anchor_left = 0.17
+	_force_result_container.anchor_top = 0.35
+	_force_result_container.anchor_right = 0.30
+	_force_result_container.anchor_bottom = 0.70
+	_force_result_container.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(_force_result_container)
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 4)
+	_force_result_container.add_child(vbox)
+
+	var title := Label.new()
+	title.text = "── 結果強制 ──"
+	title.add_theme_font_size_override("font_size", 12)
+	title.add_theme_color_override("font_color", Color(1.0, 0.8, 0.3))
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(title)
+
+	for entry in [["勝ち", "win", Color(0.3, 0.8, 0.3)], ["負け", "lose", Color(0.8, 0.3, 0.3)], ["引き分け", "draw", Color(0.6, 0.6, 0.6)]]:
+		var btn := Button.new()
+		btn.text = entry[0]
+		btn.add_theme_font_size_override("font_size", 14)
+		btn.add_theme_color_override("font_color", entry[2])
+		var res: String = entry[1]
+		var container_ref := vbox
+		btn.pressed.connect(func():
+			_forced_result = res
+			for child in container_ref.get_children():
+				if child is Button:
+					child.add_theme_color_override("font_color", Color(0.4, 0.4, 0.4))
+			btn.add_theme_color_override("font_color", Color(1.0, 1.0, 0.0)))
+		vbox.add_child(btn)
+
+func _clear_force_result_buttons():
+	if _force_result_container and is_instance_valid(_force_result_container):
+		_force_result_container.queue_free()
+		_force_result_container = null
+	# _forced_result はリセットしない（janken で使用される）
+
+var _rolled_gold: int = 0
+var _lost_gold: int = 0
+
+signal _result_panel_closed
+
+func _show_reward_message():
+	_rolled_gold = _chapter.roll_gold() if _chapter else 0
+	var has_cards: bool = _chapter.can_gain_cards() and not _captured_by_player.is_empty()
+	if not has_cards and _rolled_gold <= 0:
+		return
+	var panel := _create_result_panel("報酬を獲得しました！", Color(0.2, 0.8, 0.3))
+	var vbox: VBoxContainer = panel.get_child(0)
+	if has_cards:
+		for card in _captured_by_player:
+			vbox.add_child(GameState.create_card_label(card.hand, int(card.grade), 1, 20, 28))
+	if _rolled_gold > 0:
+		vbox.add_child(GameState.create_gold_label(_rolled_gold, 20, 28))
+	_add_result_close_button(vbox)
+	await _result_panel_closed
+	panel.queue_free()
+
+func _show_loss_message():
+	var has_cards: bool = _chapter.can_lose_cards() and not _captured_by_opponent.is_empty()
+	var reward := _chapter.get_gold_reward()
+	if not reward.is_empty():
+		var max_gold: int = reward.get("max", 0)
+		var min_gold: int = reward.get("min", 0)
+		_lost_gold = (min_gold + max_gold) / 2 / 2
+	else:
+		_lost_gold = 0
+	if not has_cards and _lost_gold <= 0:
+		return
+	var panel := _create_result_panel("奪われました……", Color(0.9, 0.3, 0.3))
+	var vbox: VBoxContainer = panel.get_child(0)
+	if has_cards:
+		for card in _captured_by_opponent:
+			vbox.add_child(GameState.create_card_label(card.hand, int(card.grade), 1, 20, 28))
+	if _lost_gold > 0:
+		vbox.add_child(GameState.create_gold_label(_lost_gold, 20, 28, "-"))
+	_add_result_close_button(vbox)
+	await _result_panel_closed
+	panel.queue_free()
+
+func _create_result_panel(title_text: String, title_color: Color) -> PanelContainer:
+	var panel := PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.06, 0.05, 0.1, 0.92)
+	style.corner_radius_top_left = 12
+	style.corner_radius_top_right = 12
+	style.corner_radius_bottom_right = 12
+	style.corner_radius_bottom_left = 12
+	style.content_margin_left = 24
+	style.content_margin_top = 16
+	style.content_margin_right = 24
+	style.content_margin_bottom = 16
+	panel.add_theme_stylebox_override("panel", style)
+	panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	panel.grow_vertical = Control.GROW_DIRECTION_BOTH
+	panel.custom_minimum_size = Vector2(400, 200)
+	add_child(panel)
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 8)
+	panel.add_child(vbox)
+	var title := Label.new()
+	title.text = title_text
+	title.add_theme_font_size_override("font_size", 26)
+	title.add_theme_color_override("font_color", title_color)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(title)
+	return panel
+
+func _add_result_close_button(vbox: VBoxContainer):
+	var btn := Button.new()
+	btn.text = "OK"
+	btn.add_theme_font_size_override("font_size", 18)
+	btn.pressed.connect(func(): _result_panel_closed.emit())
+	vbox.add_child(btn)
+
+func get_rolled_gold() -> int:
+	return _rolled_gold
+
+func get_lost_gold() -> int:
+	return _lost_gold
 
 # Returns battle results for Main.gd to process inventory changes
+# --- 動画再生 ---
+
+signal _video_finished
+
+func play_video(path: String):
+	var stream = load(path)
+	if not stream:
+		push_warning("Video not found: %s" % path)
+		return
+
+	# セリフ表示を完了させてから動画再生
+	await _flush_pending()
+
+	# 全UIを隠す
+	var hidden_nodes: Array = []
+	for child in get_children():
+		if child is CanvasItem and child.visible:
+			child.visible = false
+			hidden_nodes.append(child)
+
+	# 黒背景
+	var bg := ColorRect.new()
+	bg.color = Color.BLACK
+	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(bg)
+
+	# 動画プレイヤー（縦横比維持、中央配置）
+	var player := VideoStreamPlayer.new()
+	player.stream = stream
+	player.expand = true
+	player.bus = &"Master"
+	add_child(player)
+
+	# 動画開始して、サイズ取得後にリサイズ
+	player.play()
+	await get_tree().process_frame
+	var video_size := player.get_video_texture().get_size() if player.get_video_texture() else Vector2(832, 1104)
+	var vp_size := get_viewport_rect().size
+	var scale_ratio: float = minf(vp_size.x / video_size.x, vp_size.y / video_size.y)
+	var display_w: float = video_size.x * scale_ratio
+	var display_h: float = video_size.y * scale_ratio
+	player.position = Vector2((vp_size.x - display_w) / 2.0, (vp_size.y - display_h) / 2.0)
+	player.size = Vector2(display_w, display_h)
+
+	# 動画終了またはクリック/エンターで停止
+	var finished := false
+	player.finished.connect(func(): finished = true)
+	while not finished:
+		if Input.is_action_just_pressed("ui_accept"):
+			break
+		if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+			var hovered = get_viewport().gui_get_hovered_control()
+			if not (hovered is Slider or hovered is SpinBox or _is_in_panel(hovered)):
+				break
+		await get_tree().process_frame
+
+	player.stop()
+	player.queue_free()
+	bg.queue_free()
+
+	# UIを元に戻す
+	for node in hidden_nodes:
+		if is_instance_valid(node):
+			node.visible = true
+
 func get_battle_rewards() -> Dictionary:
 	return {
 		"captured_by_player": _captured_by_player.duplicate(true),
@@ -1555,10 +1760,26 @@ func _wait_for_input():
 	await get_tree().process_frame
 	# Then wait for a new press
 	while true:
-		if Input.is_action_just_pressed("ui_accept") or Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		if Input.is_action_just_pressed("ui_accept"):
 			await get_tree().process_frame
 			return
+		if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+			# スライダーやボタン上のクリックは無視
+			var hovered = get_viewport().gui_get_hovered_control()
+			if not (hovered is Slider or hovered is SpinBox or hovered is LineEdit or _is_in_panel(hovered)):
+				await get_tree().process_frame
+				return
 		await get_tree().process_frame
+
+func _is_in_panel(control) -> bool:
+	if control == null:
+		return false
+	var node = control
+	while node:
+		if node is PanelContainer:
+			return true
+		node = node.get_parent()
+	return false
 
 func _create_grade_glow_material(grade: int) -> ShaderMaterial:
 	var glow_color: Color = GRADE_COLORS.get(grade, Color.WHITE)

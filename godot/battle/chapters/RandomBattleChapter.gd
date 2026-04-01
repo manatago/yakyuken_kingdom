@@ -57,6 +57,9 @@ func has_bayes_eye() -> bool:
 func get_opponent_tendency() -> Dictionary:
 	return _tendency
 
+func get_gold_reward() -> Dictionary:
+	return _data.get("gold_reward", {"min": 5, "max": 20})
+
 func get_farewell(result: String) -> String:
 	var key: String
 	match result:
@@ -65,8 +68,9 @@ func get_farewell(result: String) -> String:
 		_:      return ""
 	return EncounterDatabase.pick_line(_data, key)
 
-func get_farewell_portrait() -> Dictionary:
-	return EncounterDatabase.get_portrait(_data, "farewell")
+func get_farewell_portrait(result: String) -> Dictionary:
+	var scene_key: String = "farewell_win" if result == "win" else "farewell_lose"
+	return EncounterDatabase.get_portrait(_data, scene_key)
 
 # --- 簡易演出 ---
 
@@ -102,10 +106,4 @@ func outfit_1(bt):
 		char_handle.band(start_line)
 
 	var selection = await bt.select_hand()
-	var result = await bt.janken(selection)
-
-	# 勝敗セリフ
-	var result_key: String = "battle_win" if result == "win" else "battle_lose"
-	var result_line: String = EncounterDatabase.pick_line(_data, result_key)
-	if not result_line.is_empty():
-		char_handle.band(result_line)
+	await bt.janken(selection)

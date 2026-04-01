@@ -4,6 +4,65 @@ extends Node
 # GameState — ゲーム全体の状態を一元管理するシングルトン (autoload)
 # =============================================================
 
+const GOLD_ICON_PATH := "res://assets/ui/icons/gold.png"
+const DEFAULT_ITEM_ICON_PATH := "res://assets/ui/icons/gold.png"  # アイテムアイコン仮
+const CARD_ICON_PATHS := {
+	"rock": "res://assets/battle/cards/rock.png",
+	"scissors": "res://assets/battle/cards/scissors.png",
+	"paper": "res://assets/battle/cards/paper.png",
+}
+const HAND_NAMES := {"rock": "グー", "scissors": "チョキ", "paper": "パー"}
+const GRADE_NAMES := {1: "ノーマル", 2: "ブロンズ", 3: "シルバー", 4: "ゴールド", 5: "プラチナ"}
+const GRADE_COLORS := {
+	1: Color(1.0, 1.0, 1.0),
+	2: Color(0.8, 0.5, 0.2),
+	3: Color(0.75, 0.75, 0.8),
+	4: Color(1.0, 0.84, 0.0),
+	5: Color(0.6, 0.9, 1.0),
+}
+
+# アイコン + テキストの行を生成する汎用ヘルパー
+static func _create_icon_row(icon_path: String, text: String, font_size: int = 18, icon_size: int = 24, font_color: Color = Color.WHITE, modulate_color: Color = Color.WHITE) -> HBoxContainer:
+	var hbox := HBoxContainer.new()
+	hbox.add_theme_constant_override("separation", 6)
+	var icon := TextureRect.new()
+	var tex = load(icon_path)
+	if tex:
+		icon.texture = tex
+		icon.expand_mode = 1
+		icon.stretch_mode = 5
+		icon.custom_minimum_size = Vector2(icon_size, icon_size)
+		icon.modulate = modulate_color
+	hbox.add_child(icon)
+	var lbl := Label.new()
+	lbl.text = text
+	lbl.add_theme_font_size_override("font_size", font_size)
+	lbl.add_theme_color_override("font_color", font_color)
+	hbox.add_child(lbl)
+	return hbox
+
+# ゴールド表示
+static func create_gold_label(amount: int, font_size: int = 20, icon_size: int = 28, prefix: String = "") -> HBoxContainer:
+	return _create_icon_row(GOLD_ICON_PATH, "%s%d" % [prefix, amount], font_size, icon_size, Color(0.9, 0.75, 0.3))
+
+# カード表示
+static func create_card_label(hand: String, grade: int, count: int = 1, font_size: int = 18, icon_size: int = 24) -> HBoxContainer:
+	var icon_path: String = CARD_ICON_PATHS.get(hand, CARD_ICON_PATHS["rock"])
+	var hand_name: String = HAND_NAMES.get(hand, hand)
+	var grade_name: String = GRADE_NAMES.get(grade, "G%d" % grade)
+	var grade_color: Color = GRADE_COLORS.get(grade, Color.WHITE)
+	var text: String = "%s（%s）" % [hand_name, grade_name]
+	if count > 1:
+		text += " × %d" % count
+	return _create_icon_row(icon_path, text, font_size, icon_size, Color.WHITE, grade_color)
+
+# アイテム表示（仮アイコン）
+static func create_item_label(item_name: String, count: int = 1, font_size: int = 18, icon_size: int = 24) -> HBoxContainer:
+	var text: String = item_name
+	if count > 1:
+		text += " × %d" % count
+	return _create_icon_row(DEFAULT_ITEM_ICON_PATH, text, font_size, icon_size)
+
 # --- プレイヤーデータ ---
 var inventory: Array[Card] = []  # 手持ちカード
 var items: Array = []            # [{"id": "potion", "name": "勝率の薬", "count": 1}, ...]

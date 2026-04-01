@@ -12,5 +12,10 @@
 *.svg
 *.import
 
+# Video assets (managed outside Git)
+*.ogv
+*.mp4
+*.webm
+
 # Local OneDrive dump accidentally inside the project tree
 OneDrive - shinya/
