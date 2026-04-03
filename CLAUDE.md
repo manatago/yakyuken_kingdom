@@ -85,6 +85,50 @@ Custom GDScript test harness in `godot/tests/`:
 - `TestRunner.gd` - Discovers and runs all suites
 - Tests return `true`/`false` for pass/fail
 
+## アセット管理
+
+画像・動画はgit管理外。プロジェクトルートのZIPファイルで管理。
+
+**最新アセット**: `assets_c8effaa_20260403.zip`（265ファイル、442MB）
+
+### 別PCでのセットアップ
+```bash
+# 1. Pull
+git pull origin main
+
+# 2. ZIPファイルをプロジェクトルートにコピー（手動）
+
+# 3. 展開
+# Mac/Linux:
+./scripts/restore-assets.sh
+
+# Windows PowerShell:
+.\scripts\restore-assets.ps1
+```
+
+### アセットのアーカイブ（画像追加・変更後）
+```bash
+# godot/ 内で実行
+cd godot
+python3 -c "
+import zipfile, os, subprocess
+rev = subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).decode().strip()
+from datetime import datetime
+date = datetime.now().strftime('%Y%m%d')
+zip_name = f'assets_{rev}_{date}.zip'
+zip_path = os.path.join('..', zip_name)
+count = 0
+with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
+    for root, dirs, files in os.walk('assets'):
+        for f in sorted(files):
+            if f.endswith(('.png', '.jpg', '.jpeg', '.webp', '.ogv')):
+                filepath = os.path.join(root, f)
+                zf.write(filepath, filepath)
+                count += 1
+print(f'{count} files -> {zip_name}')
+"
+```
+
 ## Key Directories
 
 - `docker/` - Docker環境（Godot 4.4.1 ヘッドレス）
