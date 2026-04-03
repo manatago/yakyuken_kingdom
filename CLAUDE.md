@@ -89,7 +89,7 @@ Custom GDScript test harness in `godot/tests/`:
 
 画像・動画はgit管理外。プロジェクトルートのZIPファイルで管理。
 
-**最新アセット**: `assets_c8effaa_20260403.zip`（265ファイル、442MB）
+**最新アセット**: プロジェクトルートの `assets_*.zip`（最新のものを使用）
 
 ### 別PCでのセットアップ
 ```bash
