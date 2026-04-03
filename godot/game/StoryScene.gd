@@ -318,6 +318,7 @@ func _show_character(character_data: StoryCharacter, portrait_name: String, side
 	_reset_rect_with_scale(target_rect, side, char_scale)
 	var base_pos := target_rect.position
 	var target_pos := _resolve_character_position(character_id, side, position_mode, position_value, base_pos)
+	print("[CHAR] id=%s scale=%.2f base_pos=%s target_pos=%s offset=%s tex_size=%s rect_scale=%s" % [character_id, char_scale, str(base_pos), str(target_pos), str(position_value), str(tex.get_size()), str(target_rect.scale)])
 	if not target_pos.is_equal_approx(base_pos):
 		target_rect.position = target_pos
 	var char_offset_y: float = character_data.display_offset_y if character_data else 0.0
@@ -840,7 +841,12 @@ func show_character_command(entry: Cmd.ShowCharacter):
 		_cast[entry.character_id] = char_data
 	var side := _resolve_character_side(entry.character_id, entry.side_override)
 	var target_rect := _get_rect_for_side(side)
-	var do_cross_fade := entry.transition == "cross_fade" and target_rect != null and target_rect.visible and target_rect.texture != null
+	# クロスフェード: 表示中かつ別の画像に切り替わる場合のみ
+	var new_tex_path: String = char_data.get_portrait_path(entry.portrait_id) if not entry.portrait_id.is_empty() else ""
+	var old_tex: Texture2D = target_rect.texture if target_rect else null
+	var new_tex: Texture2D = load(new_tex_path) if not new_tex_path.is_empty() else null
+	var same_texture: bool = old_tex != null and new_tex != null and old_tex == new_tex
+	var do_cross_fade := entry.transition == "cross_fade" and target_rect != null and target_rect.visible and target_rect.texture != null and not same_texture
 	var old_snapshot: TextureRect = null
 	if do_cross_fade:
 		old_snapshot = _create_cross_fade_snapshot(target_rect)

@@ -191,6 +191,11 @@ func start_battle(chapter: BattleChapterBase, is_tutorial := false):
 	if _chapter.has_method("setup_scene"):
 		_chapter.call("setup_scene", self)
 		await _flush_pending()
+		# デバッグ: setup_scene 後のキャラ位置
+		if _story_scene:
+			for rect in [_story_scene.center_char, _story_scene.left_char, _story_scene.right_char]:
+				if rect and rect.visible:
+					print("[SETUP_AFTER] pos=%s scale=%s size=%s" % [str(rect.position), str(rect.scale), str(rect.size)])
 
 	if _is_tutorial:
 		# Tutorial mode: show hand panel, let tutorial function control the flow
@@ -203,6 +208,10 @@ func start_battle(chapter: BattleChapterBase, is_tutorial := false):
 		await _deck_building_phase()
 		_build_deck_buttons()
 		_update_score()
+		# デッキ構築後にキャラ画像の位置を再配置（デッキ構築中のずれを修正）
+		if _story_scene and _chapter.has_method("setup_scene"):
+			_chapter.call("setup_scene", self)
+			await _flush_pending()
 		_run_battle()
 
 # ============================================================
