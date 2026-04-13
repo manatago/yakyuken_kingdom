@@ -1,14 +1,8 @@
 # 未完了タスク・既知の問題
 
-## 1. バトル中の画像位置ずれ（88px問題）
+## ~~1. バトル中の画像位置ずれ（88px問題）~~ — 解決済み
 
-**現象**: `setup_scene` でキャラ画像を配置した後、デッキ構築フェーズ中にY座標が88pxずれる。
-
-**暫定対策**: デッキ構築完了後に `setup_scene` を再実行してキャラ位置をリセット（BattleScene.gd）。
-
-**根本原因**: 未特定。デッキ構築中のUI要素（hand_panel, action_prompt等）の表示/非表示がGodotのレイアウトエンジンに影響している可能性。
-
-**対象ファイル**: `godot/game/BattleScene.gd`
+Godotレイアウトエンジンがキャラクター `TextureRect` の位置を意図せず変更していた。`StoryScene.gd` に位置ロック機構（`_char_locked_positions`）を追加して解決。BattleScene.gd の暫定対策（2回目 `setup_scene`）も削除済み。
 
 ---
 

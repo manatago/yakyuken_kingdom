@@ -227,3 +227,23 @@ func outfit_1(bt):
 	else:
 		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_018.png", {"scale": 0.80, "side": "center", "position": [0, -204]})
 		matilda.band("さっさと、次やるよ。")
+
+func get_lose_behavior() -> String:
+	return "redirect"
+
+func get_lose_redirect() -> Dictionary:
+	return {
+		"type": "retry_scene",
+		"background": "res://assets/backgrounds/prologue/bg05_prison_cell.png",
+		"narration": "サトシは力及ばず、マチルダに敗北した。\nしかし、このまま牢屋に閉じ込められるわけにはいかない。",
+		"choices": ["再挑戦する", "ホームに戻る"],
+	}
+
+func get_farewell(result: String) -> Dictionary:
+	if result == "lose":
+		return {
+			"portrait": "res://assets/characters/prologue_battle/char04_pg_battle_017.png",
+			"portrait_scale": 0.80,
+			"text": "残念だったね。また挑戦しな。",
+		}
+	return {}

@@ -43,7 +43,7 @@ func get_gold_reward() -> Dictionary:
 
 func tutorial(bt):
 	var adv = bt.character("adventurer_a")
-	adv.set_portrait("res://assets/characters/stage1_battle/char09_st1_battle_001.png", {"scale": 0.6, "side": "center", "position": [0, -145]})
+	adv.set_portrait("res://assets/characters/stage1_battle/char09_st1_battle_001.png", {"scale": 0.74, "side": "center", "position": [0, -199]})
 
 	# ピー助: 情報提供（右下）
 	bt.set_bubble_side("bottom-right")
@@ -112,13 +112,13 @@ func tutorial(bt):
 func setup_scene(bt):
 	bt.deck("res://assets/battle/decks/deck_002.png", {"scale": 0.75, "position": [0, 230]})
 	var adv = bt.character("adventurer_a")
-	adv.set_portrait("res://assets/characters/stage1_battle/char09_st1_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+	adv.set_portrait("res://assets/characters/stage1_battle/char09_st1_battle_001.png", {"scale": 0.74, "side": "center", "position": [0, -199]})
 
 # --- Outfit 3: フル装備 ---
 
 func outfit_3(bt):
 	var adv = bt.character("adventurer_a")
-	adv.set_portrait("res://assets/characters/stage1_battle/char09_st1_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+	adv.set_portrait("res://assets/characters/stage1_battle/char09_st1_battle_001.png", {"scale": 0.74, "side": "center", "position": [0, -199]})
 	adv.band("ヘッ、ビビってんのか？ さっさとカードを出しな！")
 
 	var selection = await bt.select_hand()
@@ -135,7 +135,7 @@ func outfit_3(bt):
 
 func outfit_2(bt):
 	var adv = bt.character("adventurer_a")
-	adv.set_portrait("res://assets/characters/stage1_battle/char09_st1_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+	adv.set_portrait("res://assets/characters/stage1_battle/char09_st1_battle_001.png", {"scale": 0.74, "side": "center", "position": [0, -199]})
 	adv.band("テメェ……調子に乗りやがって……！")
 
 	var selection = await bt.select_hand()
@@ -152,7 +152,7 @@ func outfit_2(bt):
 
 func outfit_1(bt):
 	var adv = bt.character("adventurer_a")
-	adv.set_portrait("res://assets/characters/stage1_battle/char09_st1_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+	adv.set_portrait("res://assets/characters/stage1_battle/char09_st1_battle_001.png", {"scale": 0.74, "side": "center", "position": [0, -199]})
 	adv.band("くそっ……こっからが本気だ！")
 
 	var selection = await bt.select_hand()

@@ -41,7 +41,7 @@ func setup(bg_texture: Texture2D = null, town_map: TownMapBase = null):
 func _on_menu_pressed(action: String):
 	match action:
 		"QuestButton":
-			_show_simple_modal("クエストボード", "依頼を選択してバトルに挑もう。\n（準備中）")
+			_show_quest_board()
 		"CardButton":
 			_show_card_modal()
 		"ItemButton":
@@ -564,3 +564,150 @@ func _style_encounter_button(btn: Button, bg_color: Color, border_color: Color):
 	var hover := style.duplicate()
 	hover.bg_color = bg_color.lightened(0.2)
 	btn.add_theme_stylebox_override("hover", hover)
+
+# --- クエストボード ---
+
+const QUEST_BOARD := [
+	{
+		"id": "subevent1",
+		"title": "盗賊団を解体せよ！",
+		"client": "ギルド掲示板（緊急依頼）",
+		"reward": "金貨50枚",
+		"description": "パンツ専門盗賊団「シルキーファング」の討伐。\n首領は元A級冒険者。受注者ゼロが3か月続く難関依頼。",
+		"rank": "A",
+	},
+	{
+		"id": "subevent2",
+		"title": "教会の不正を暴け！",
+		"client": "受付嬢（非公式依頼）",
+		"reward": "受付嬢より支給",
+		"description": "聖アレクシア教会の献金額が異常に増加。\nシスター長の不正の証拠を掴め。",
+		"rank": "B",
+	},
+	{
+		"id": "subevent3",
+		"title": "呪われた鎧を脱がせ！",
+		"client": "貴族院議員エドモンド卿",
+		"reward": "金貨100枚",
+		"description": "呪いの鎧に囚われた令嬢フィオナを救出。\n魔術師20人が失敗した難題。",
+		"rank": "S",
+	},
+	{
+		"id": "subevent4",
+		"title": "???",
+		"client": "???",
+		"reward": "???",
+		"description": "条件を満たすと解放されます。",
+		"rank": "?",
+		"locked": true,
+	},
+]
+
+func _show_quest_board():
+	var panel := _create_modal_base()
+	panel.custom_minimum_size = Vector2(620, 480)
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 8)
+	panel.add_child(vbox)
+
+	var title_label := Label.new()
+	title_label.text = "クエストボード"
+	title_label.add_theme_font_size_override("font_size", 28)
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	vbox.add_child(title_label)
+
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(580, 340)
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vbox.add_child(scroll)
+
+	var quest_list := VBoxContainer.new()
+	quest_list.add_theme_constant_override("separation", 6)
+	quest_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(quest_list)
+
+	for quest in QUEST_BOARD:
+		var is_locked: bool = quest.get("locked", false)
+		var quest_btn := _create_quest_entry(quest, is_locked)
+		quest_list.add_child(quest_btn)
+
+	var close_btn := Button.new()
+	close_btn.text = "閉じる"
+	close_btn.add_theme_font_size_override("font_size", 16)
+	close_btn.pressed.connect(_close_modal)
+	vbox.add_child(close_btn)
+
+func _create_quest_entry(quest: Dictionary, is_locked: bool) -> PanelContainer:
+	var entry := PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	if is_locked:
+		style.bg_color = Color(0.15, 0.15, 0.18, 0.7)
+	else:
+		style.bg_color = Color(0.12, 0.10, 0.20, 0.8)
+	style.corner_radius_top_left = 6
+	style.corner_radius_top_right = 6
+	style.corner_radius_bottom_left = 6
+	style.corner_radius_bottom_right = 6
+	style.content_margin_left = 12
+	style.content_margin_top = 8
+	style.content_margin_right = 12
+	style.content_margin_bottom = 8
+	entry.add_theme_stylebox_override("panel", style)
+
+	var hbox := HBoxContainer.new()
+	hbox.add_theme_constant_override("separation", 12)
+	entry.add_child(hbox)
+
+	# ランク表示
+	var rank_label := Label.new()
+	rank_label.text = quest.get("rank", "?")
+	rank_label.add_theme_font_size_override("font_size", 24)
+	rank_label.custom_minimum_size = Vector2(36, 0)
+	rank_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	rank_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	if quest.get("rank", "") == "S":
+		rank_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2))
+	elif quest.get("rank", "") == "A":
+		rank_label.add_theme_color_override("font_color", Color(1.0, 0.4, 0.3))
+	elif quest.get("rank", "") == "B":
+		rank_label.add_theme_color_override("font_color", Color(0.4, 0.7, 1.0))
+	else:
+		rank_label.add_theme_color_override("font_color", Color(0.5, 0.5, 0.5))
+	hbox.add_child(rank_label)
+
+	# クエスト情報
+	var info_vbox := VBoxContainer.new()
+	info_vbox.add_theme_constant_override("separation", 2)
+	info_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hbox.add_child(info_vbox)
+
+	var title_row := Label.new()
+	title_row.text = quest.get("title", "")
+	title_row.add_theme_font_size_override("font_size", 20)
+	if is_locked:
+		title_row.add_theme_color_override("font_color", Color(0.5, 0.5, 0.5))
+	info_vbox.add_child(title_row)
+
+	var detail_label := Label.new()
+	if is_locked:
+		detail_label.text = quest.get("description", "")
+	else:
+		detail_label.text = "依頼主: %s　｜　報酬: %s" % [quest.get("client", ""), quest.get("reward", "")]
+	detail_label.add_theme_font_size_override("font_size", 14)
+	detail_label.add_theme_color_override("font_color", Color(0.7, 0.7, 0.75))
+	info_vbox.add_child(detail_label)
+
+	# 受注ボタン
+	if not is_locked:
+		var accept_btn := Button.new()
+		accept_btn.text = "受注"
+		accept_btn.add_theme_font_size_override("font_size", 16)
+		accept_btn.custom_minimum_size = Vector2(70, 36)
+		accept_btn.pressed.connect(_on_quest_accepted.bind(quest.get("id", "")))
+		hbox.add_child(accept_btn)
+
+	return entry
+
+func _on_quest_accepted(quest_id: String):
+	_close_modal()
+	home_action.emit("quest:" + quest_id)

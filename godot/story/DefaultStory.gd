@@ -21,6 +21,10 @@ func _init() -> void:
 		"passerby_female": _character("passerby_female", "通行人の女性", ""),
 		"pisuke": _character("pisuke", "ピー助", ""),
 		"adventurer_a": _character("adventurer_a", "冒険者A", ""),
+		"jin": _character("jin", "盗賊ジン", ""),
+		"marco": _character("marco", "盗賊マルコ", ""),
+		"gald": _character("gald", "ガルド", ""),
+		"belka": _character("belka", "ベルカ", ""),
 	}
 	_build_chapters()
 

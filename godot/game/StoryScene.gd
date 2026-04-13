@@ -30,6 +30,7 @@ var _cast: Dictionary = {}  # character_id -> StoryCharacter
 var _texture_cache: Dictionary = {}
 var _sequence_playing := false
 var _waiting_for_input := false
+var _abort_sequence := false
 var _current_sequence_id := ""
 var _current_sequence: Cmd.Sequence = null
 var _character_side_cache: Dictionary = {}
@@ -45,6 +46,16 @@ var _pending_signal_relays: Array = []
 var _portrait_animation_data: Dictionary = {}
 var _portrait_animation_timers: Dictionary = {}
 var _suppress_animation_reset := false
+
+# キャラクター位置の保護: Godotレイアウトエンジンによる意図しない位置変更を防止
+var _char_locked_positions: Dictionary = {}  # {TextureRect: Vector2}
+
+func _process(_delta):
+	for rect in _char_locked_positions:
+		if is_instance_valid(rect) and rect.visible:
+			var locked_pos: Vector2 = _char_locked_positions[rect]
+			if not rect.position.is_equal_approx(locked_pos):
+				rect.position = locked_pos
 
 func _ready():
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -131,6 +142,8 @@ func play_sequence(sequence: Cmd.Sequence, metadata: Dictionary = {}):
 			elif entry is Cmd.SeqLabel and entry.label_name == skip_to:
 				skipping_to_label = false
 			continue
+		if _abort_sequence:
+			break
 		if entry is Cmd.Battle:
 			last_battle = entry
 		if sequence._skipping and entry is Cmd.Background:
@@ -141,6 +154,9 @@ func play_sequence(sequence: Cmd.Sequence, metadata: Dictionary = {}):
 				_trigger_skip_advance()
 			else:
 				await result
+		if _abort_sequence:
+			break
+	_abort_sequence = false
 	_current_sequence_id = ""
 	_current_sequence = null
 	_sequence_playing = false
@@ -259,6 +275,7 @@ func _cleanup_for_skip():
 	_character_position_cache.clear()
 	_character_portrait_cache.clear()
 	_character_portrait_scale_cache.clear()
+	_char_locked_positions.clear()
 
 # --- Character display ---
 
@@ -318,7 +335,6 @@ func _show_character(character_data: StoryCharacter, portrait_name: String, side
 	_reset_rect_with_scale(target_rect, side, char_scale)
 	var base_pos := target_rect.position
 	var target_pos := _resolve_character_position(character_id, side, position_mode, position_value, base_pos)
-	print("[CHAR] id=%s scale=%.2f base_pos=%s target_pos=%s offset=%s tex_size=%s rect_scale=%s" % [character_id, char_scale, str(base_pos), str(target_pos), str(position_value), str(tex.get_size()), str(target_rect.scale)])
 	if not target_pos.is_equal_approx(base_pos):
 		target_rect.position = target_pos
 	var char_offset_y: float = character_data.display_offset_y if character_data else 0.0
@@ -334,6 +350,7 @@ func _show_character(character_data: StoryCharacter, portrait_name: String, side
 			"portrait": resolved_portrait,
 			"scale": char_scale,
 		}
+	_char_locked_positions[target_rect] = target_rect.position
 	return target_rect
 
 func hide_character_entry(entry: Cmd.HideCharacter):
@@ -440,6 +457,7 @@ func _apply_character_exit_effect(target_rect: TextureRect, entry: Cmd.HideChara
 func _hide_character_control(target_rect: TextureRect, side: String, character_id: String):
 	if target_rect == null:
 		return
+	_char_locked_positions.erase(target_rect)
 	_cancel_character_tween(target_rect)
 	target_rect.visible = false
 	target_rect.modulate = Color.WHITE

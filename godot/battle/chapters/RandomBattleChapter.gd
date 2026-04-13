@@ -60,7 +60,7 @@ func get_opponent_tendency() -> Dictionary:
 func get_gold_reward() -> Dictionary:
 	return _data.get("gold_reward", {"min": 5, "max": 20})
 
-func get_farewell(result: String) -> String:
+func get_encounter_farewell(result: String) -> String:
 	var key: String
 	match result:
 		"win":  key = "farewells_win"
@@ -68,7 +68,7 @@ func get_farewell(result: String) -> String:
 		_:      return ""
 	return EncounterDatabase.pick_line(_data, key)
 
-func get_farewell_portrait(result: String) -> Dictionary:
+func get_encounter_farewell_portrait(result: String) -> Dictionary:
 	var scene_key: String = "farewell_win" if result == "win" else "farewell_lose"
 	return EncounterDatabase.get_portrait(_data, scene_key)
 

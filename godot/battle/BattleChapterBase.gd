@@ -59,6 +59,24 @@ func can_lose_cards() -> bool:
 func can_gain_cards() -> bool:
 	return true
 
+# 負けた時の挙動:
+#   "redirect" → get_lose_redirect() に従ってリダイレクト
+#   "abort"    → 負けたら中断・ギルドホームへ（一発勝負の簡易版）
+#   "continue" → 勝敗問わずストーリー続行（デフォルト）
+func get_lose_behavior() -> String:
+	return "continue"
+
+# 負けた時のリダイレクト先（get_lose_behavior が "redirect" or "abort" の場合）
+#   {"type": "guild_home"} → ギルドホームへ
+#   {"type": "retry_scene", "background": ..., "narration": ..., "choices": [...]} → リトライ選択シーン
+func get_lose_redirect() -> Dictionary:
+	return {}
+
+# 負けた時の去り際シーン（farewell）
+#   {"portrait": path, "portrait_scale": float, "text": String}
+func get_farewell(result: String) -> Dictionary:
+	return {}
+
 func get_gold_reward() -> Dictionary:
 	# {"min": 最小値, "max": 最大値} — 勝利時にランダムでゴールド取得
 	# 空Dictionaryなら報酬なし
