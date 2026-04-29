@@ -99,24 +99,27 @@ func _test_stage2_miss_choice_labels_fit() -> bool:
 # --- Stage3 テスト ---
 
 func _test_stage3_scenes_fit() -> bool:
-	# プール式：HIT_POOL / MISS_POOL の各エントリ + PISUKE_LINES の各エントリの
-	# サトシ朗読／マグダレナ反応／ピー助セリフがバブル幅・行数に収まるか検証
+	# 組み合わせ式：CHAPTERS / EVIDENCES のサトシ朗読 + VALID_COMBOS の
+	# マグダレナ反応・ピー助畳みかけ・ピーリーがバブル幅・行数に収まるか検証
 	var chapter = preload("res://battle/chapters/Stage3MinigameChapter.gd").new()
 	var failures: Array = []
-	for i in range(chapter.HIT_POOL.size()):
-		var c: Dictionary = chapter.HIT_POOL[i]
-		_check_text("st3.hit[%d].satoshi" % i, "サトシ:\n%s" % c.get("satoshi", ""), failures)
-		_check_text("st3.hit[%d].mag" % i, "マグダレナ:\n%s" % c.get("mag", ""), failures)
-	for i in range(chapter.MISS_POOL.size()):
-		var c: Dictionary = chapter.MISS_POOL[i]
-		_check_text("st3.miss[%d].satoshi" % i, "サトシ:\n%s" % c.get("satoshi", ""), failures)
-		_check_text("st3.miss[%d].mag" % i, "マグダレナ:\n%s" % c.get("mag", ""), failures)
-	for i in range(chapter.PISUKE_LINES.size()):
-		var line: Dictionary = chapter.PISUKE_LINES[i]
-		_check_text("st3.pisuke[%d].opening" % i, "サトシ（ピー助の声色）:\n%s" % line.get("opening", ""), failures)
-		_check_text("st3.pisuke[%d].followup" % i, "サトシ（ピー助の声色）:\n%s" % line.get("followup", ""), failures)
-		_check_text("st3.pisuke[%d].finish" % i, "サトシ（ピー助の声色）:\n%s" % line.get("finish", ""), failures)
-		_check_text("st3.pisuke[%d].mag" % i, "マグダレナ:\n%s" % line.get("mag", ""), failures)
+	for key in chapter.CHAPTERS.keys():
+		var info: Dictionary = chapter.CHAPTERS[key]
+		var line: String = "サトシ:\n聖女マグダレナ様。\n%s より。" % info.get("satoshi_line", "")
+		_check_text("st3.chapter[%s]" % key, line, failures)
+	for key in chapter.EVIDENCES.keys():
+		var info: Dictionary = chapter.EVIDENCES[key]
+		var line: String = "サトシ:\n%s、ございます。" % info.get("satoshi_line", "")
+		_check_text("st3.evidence[%s]" % key, line, failures)
+	for i in range(chapter.VALID_COMBOS.size()):
+		var combo: Dictionary = chapter.VALID_COMBOS[i]
+		var ck: String = "%s|%s" % [combo.get("chapter", ""), combo.get("evidence", "")]
+		_check_text("st3.combo[%s].mag_react" % ck, "マグダレナ:\n%s" % combo.get("mag_react", ""), failures)
+		_check_text("st3.combo[%s].mag_pile" % ck, "マグダレナ:\n%s" % combo.get("mag_pile", ""), failures)
+		var chase: Array = combo.get("pisuke_chase", [])
+		for j in range(chase.size()):
+			var prefix: String = "ピー助(畳みかけて):" if j == 0 else "ピー助:"
+			_check_text("st3.combo[%s].chase[%d]" % [ck, j], "%s\n%s" % [prefix, chase[j]], failures)
 	return _report(failures)
 
 func _test_stage5_pisuke_finishes_fit() -> bool:
@@ -142,17 +145,23 @@ func _test_stage5_pisuke_finishes_fit() -> bool:
 	return _report(failures)
 
 func _test_stage3_miss_lines_fit() -> bool:
-	# 共通ルール（_common_rules.md）準拠を確認：
-	#  - HIT_POOL の全エントリが delta=-40
-	#  - MISS_POOL の全エントリが delta=+5
+	# 組み合わせ式の整合性を確認：
+	#  - VALID_COMBOS のすべての chapter / evidence が CHAPTERS / EVIDENCES に存在
+	#  - VALID_COMBOS が共通ルール（_common_rules.md）の要求 (3 HIT で勝利) を満たす数だけある
+	#  - MISS / ALREADY_USED の汎用反応文がバブルに収まる
 	var chapter = preload("res://battle/chapters/Stage3MinigameChapter.gd").new()
 	var failures: Array = []
-	for i in range(chapter.HIT_POOL.size()):
-		var d: int = int(chapter.HIT_POOL[i].get("delta", 0))
-		if d != -40:
-			failures.append("HIT_POOL[%d] の delta が -40 ではない: %d" % [i, d])
-	for i in range(chapter.MISS_POOL.size()):
-		var d: int = int(chapter.MISS_POOL[i].get("delta", 0))
-		if d != 5:
-			failures.append("MISS_POOL[%d] の delta が +5 ではない: %d" % [i, d])
+	for combo in chapter.VALID_COMBOS:
+		var ch: String = combo.get("chapter", "")
+		var ev: String = combo.get("evidence", "")
+		if not chapter.CHAPTERS.has(ch):
+			failures.append("VALID_COMBOS の chapter '%s' が CHAPTERS にない" % ch)
+		if not chapter.EVIDENCES.has(ev):
+			failures.append("VALID_COMBOS の evidence '%s' が EVIDENCES にない" % ev)
+	if chapter.VALID_COMBOS.size() < 3:
+		failures.append("VALID_COMBOS が 3 件未満（3 HIT 勝利を満たせない）: %d 件" % chapter.VALID_COMBOS.size())
+	_check_text("st3.miss_mag", "マグダレナ:\n%s" % chapter.MISS_MAG, failures)
+	_check_text("st3.miss_scold", "ピー助(小声で叱責):\n%s" % chapter.MISS_SCOLD, failures)
+	_check_text("st3.already_used_mag", "マグダレナ:\n%s" % chapter.ALREADY_USED_MAG, failures)
+	_check_text("st3.already_used_scold", "ピー助(小声で叱責):\n%s" % chapter.ALREADY_USED_SCOLD, failures)
 	return _report(failures)

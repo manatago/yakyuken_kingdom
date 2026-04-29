@@ -1,191 +1,165 @@
 extends BattleChapterBase
 
-# ST3「シスター・マグダレナ」ミニゲーム
+# ST3「聖女マグダレナ」ミニゲーム（2 軸組み合わせ式）
 #
-# 設計：docs/minigame_designs/_common_rules.md 準拠（HIT 1 + MISS 3 構造）
-# - 信仰の威厳ゲージを 0 にすれば成功、130 で失敗
-# - 毎ターン HIT_POOL から 1 件 + MISS_POOL から 3 件 = 4 択 ＋ ピー助任せ = 5 ボタン
-# - HIT（正解）: delta=-40、BL 示唆描写でマグダレナの抑圧された妄想を刺激
-# - MISS（ハズレ）: delta=+5、ありきたりの宗教文・聖典・道徳論で刺さらない
-# - ピー助任せ: 直球 BL 妄想、減衰あり (-40 → -20 → -10)
-# - サトシは章タイトルだけ見て選ぶ → ありきたりの題目に流されがち
-# - プレイヤーは引用文を読んで「湯気」「汗」「二人きり」「傷」キーワードを拾う
+# 設計：
+# - 本のジャンル列（5 択）× 物証列（5 択）＝ 25 通りの組み合わせ
+# - そのうち **7 通りが正解**（テーマ重複を排除した構成）
+# - 毎ターン プレイヤーが本＋物証を 1 つずつ選び、決定で攻撃
+# - HIT (-40)：未使用の正解組み合わせを引いた場合 → 妄想直撃 ＋ ピー助の畳みかけ追撃
+# - MISS (+5)：不正解の組み合わせ ＋ 既使用の正解（どちらも生半可な反応）
+# - 3 HIT で勝利（信仰の威厳 100 → 0）／130 到達で敗北
+# - ピー助任せ：未使用の正解組み合わせから 1 つランダム選出（HIT 確定）
+# - 共通ルール (`docs/minigame_designs/_common_rules.md`) に準拠
+# - 設計書 `docs/minigame_designs/st3_magdalena.md` の Decision Log を参照
+#   （2026-04-29: ST2 から組み合わせ機構を移動）
 
 const MAGDALENA_PORTRAIT := "res://assets/characters/stage3/magdalena_001.png"
+const MAGDALENA_ICON := "res://assets/ui/speakers/magdalena_default.png"
 const MAGDALENA_ID := "magdalena"
 
-const GAUGE_MAX := 130     # 共通リミット（_common_rules.md 参照）
+const GAUGE_MAX := 130     # 共通リミット（_common_rules.md）
 const GAUGE_START := 100   # 共通基本 start（バックファイアなし）
 
-# --- アイコン ---
-const ICO_SATOSHI_NORMAL     := "res://assets/ui/speakers/satoshi_normal.png"
-const ICO_SATOSHI_NERVOUS    := "res://assets/ui/speakers/satoshi_nervous.png"
-const ICO_SATOSHI_GENTLE     := "res://assets/ui/speakers/satoshi_gentle.png"
-const ICO_SATOSHI_APOLOGETIC := "res://assets/ui/speakers/satoshi_apologetic.png"
-const ICO_MAGDALENA_DEFAULT  := "res://assets/ui/speakers/magdalena_default.png"
+const HIT_DELTA := -40
+const MISS_DELTA := 5
 
-# --- HIT_POOL（正解、delta=-40）— BL 示唆描写でマグダレナの抑圧妄想を刺激 ---
-const HIT_POOL := [
+# --- 章列（5 択） ---
+# サトシが懺悔室に持ち込む 1 冊（マグダレナの自選集）の章を選ぶ。
+const CHAPTERS := {
+	"bath":     {"label": "「湯浴み」章",         "satoshi_line": "「湯浴み」章"},
+	"guardian": {"label": "「相互加護」章",       "satoshi_line": "「相互加護」章"},
+	"oath":     {"label": "「朝露の誓い」章",     "satoshi_line": "「朝露の誓い」章"},
+	"chest":    {"label": "「胸筋と誓約」章",     "satoshi_line": "「胸筋と誓約」章"},
+	"draft":    {"label": "「書きかけ草稿」章",   "satoshi_line": "「書きかけ草稿」章"},
+}
+const CHAPTER_KEYS := ["bath", "guardian", "oath", "chest", "draft"]
+
+# --- 物証列（5 択） ---
+const EVIDENCES := {
+	"page_stain":    {"label": "ページ三十七行目の白い滲み", "satoshi_line": "ページ三十七行目に、白い滲みが"},
+	"finger_trace":  {"label": "ページ裏の指で撫でた跡",     "satoshi_line": "ページの裏側に、指の跡が"},
+	"pillow_stain":  {"label": "枕カバーの白濁した飛沫",     "satoshi_line": "枕カバーに、白濁した飛沫が、点々と"},
+	"cover_finger":  {"label": "表紙の指の形の白い染み",     "satoshi_line": "表紙に、指の形の白い染みが"},
+	"margin_stain":  {"label": "余白の白濁した染み",         "satoshi_line": "余白に、白濁した染みが、点々と"},
+}
+const EVIDENCE_KEYS := ["page_stain", "finger_trace", "pillow_stain", "cover_finger", "margin_stain"]
+
+# --- 正解組み合わせ 7 件 ---
+# 章×物証で 5×5 = 25 セル中、7 セルが正解。テーマ重複を排除した構成。
+#   bath     : page_stain  + finger_trace
+#   guardian : finger_trace + pillow_stain
+#   oath     : page_stain
+#   chest    : cover_finger
+#   draft    : margin_stain
+const VALID_COMBOS := [
+	# 1. bath × page_stain（湯浴み章のページ三十七行目の白濁滲み）
 	{
-		"label": "『朝日に汗する若き騎士』第3章 湯浴み",
-		"excerpt": "湯気立ち昇る浴場で、鍛えられた背筋が──",
-		"delta": -40,
-		"satoshi": "聖女マグダレナ様。\n「湯気立ち昇る浴場で、鍛えられた背筋が──」",
-		"mag": "……っ、そ、その章は……\n（頬が真っ赤に染まる）",
-		"explain": "湯気と汗の描写、彼女の妄想を直撃した。",
+		"chapter": "bath",
+		"evidence": "page_stain",
+		"mag_react": "……っ！ そ、その章は、どこで……どこで手に！",
+		"mag_thought": "床板の下、なぜ、なぜそこに……！",
+		"pisuke_chase": [
+			"──ページ三十七行目、白濁した滲み。",
+			"──騎士二人、湯気の中で、硬いアレを擦り合う、淫靡な描写。",
+			"──読みながら片手でご自身を慰め、ページに白いのを散らしています。",
+			"──毎晩、湯浴みの章で自分を慰めて、愛液を撒き散らしてしまったんですよね？",
+		],
+		"mag_pile": "……っ！ ……や、やめて、もう、許して……！",
 	},
+	# 2. bath × finger_trace（湯浴み章のページ裏の指跡）
 	{
-		"label": "『聖なる鍛錬 第二部』第7章 相互加護",
-		"excerpt": "傷を労る手つきの優しさ──",
-		"delta": -40,
-		"satoshi": "聖女マグダレナ様。\n「傷を労る手つきの優しさ──」",
-		"mag": "……っ、そ、その描写……\n（指先が震えて聖典を取り落としかける）",
-		"explain": "戦友の傷手当描写、指先が震えた。",
+		"chapter": "bath",
+		"evidence": "finger_trace",
+		"mag_react": "……っ！ そ、その章のページ裏まで、なぜ──！",
+		"mag_thought": "湯浴み章、何度も読み返したから、指の跡が、ページ裏にまで……！",
+		"pisuke_chase": [
+			"──湯浴み章の裏側、指の腹で何度も撫でた跡。",
+			"──騎士二人が湯気で抱き合う場面、何十回読み返したのか。",
+			"──興奮で湿った指の脂、紙の繊維に染み込んでます。",
+			"──ページを撫でながら、もう片手で自分の敏感なところを触って慰めていたんですよね？",
+		],
+		"mag_pile": "……っ！ ……あの章は、わたくしの、聖域なのに……！",
 	},
+	# 3. guardian × finger_trace（相互加護章のページ裏指跡）
 	{
-		"label": "『双子剣士の朝露』最終章 二人の誓い",
-		"excerpt": "二人きりの夜明けに、指を重ねて──",
-		"delta": -40,
-		"satoshi": "聖女マグダレナ様。\n「二人きりの夜明けに、指を重ねて──」",
-		"mag": "……っ、夜明けの……二人きりの……\n（声が上ずり、息が乱れる）",
-		"explain": "二人きりの誓いの描写、息が乱れた。",
+		"chapter": "guardian",
+		"evidence": "finger_trace",
+		"mag_react": "……っ！ ぃ、いえ、それは、戦友愛の、神聖な描写で──！",
+		"mag_thought": "肩を抱く、絡む指先、わたくしの……一番の章……！",
+		"pisuke_chase": [
+			"──相互加護のページ裏、汗で湿った指の跡。",
+			"──戦友二人が汗だくで、互いの肌を抱き合う、その瞬間。",
+			"──指の腹で、何度も、何度も、撫でた跡ですよね？",
+			"──戦友の絡みを読みながら、自分のアソコを掻き回してたんですよね？",
+		],
+		"mag_pile": "……っ！ ……お願い、もう、見ないで……！",
 	},
+	# 4. guardian × pillow_stain（相互加護章を読みながら枕に飛んだ白濁）
 	{
-		"label": "『武者修行日記』",
-		"excerpt": "汗だくで鍛錬し、もつれ合う二人の体──",
-		"delta": -40,
-		"satoshi": "聖女マグダレナ様。\n「汗だくで鍛錬し、もつれ合う二人の体──」",
-		"mag": "……っ、も、もつれ合う、二人の体……\n（息を呑み、太腿を擦り合わせる）",
-		"explain": "もつれ合う描写、彼女が太腿を擦り合わせた。",
+		"chapter": "guardian",
+		"evidence": "pillow_stain",
+		"mag_react": "……っ！ そ、それは、寝具の、汚れで──！",
+		"mag_thought": "相互加護の章を読みながら、わたくし、枕に……！",
+		"pisuke_chase": [
+			"──枕カバーに、白濁した飛沫が、点々と。",
+			"──相互加護を読み終えた瞬間、ご自身が果てた跡。",
+			"──戦友二人が抱き合う場面、ベッドの上で読みながら。",
+			"──毎晩、相互加護の章で果てて、枕を愛液で濡らしてしまったんですよね？",
+		],
+		"mag_pile": "……っ！ ……枕の、染みまで……！",
 	},
+	# 5. oath × page_stain（朝露の誓い章のページ滲み）
 	{
-		"label": "『剣友録』第12章",
-		"excerpt": "同胞の傷を、素手で押さえた──",
-		"delta": -40,
-		"satoshi": "聖女マグダレナ様。\n「同胞の傷を、素手で押さえた──」",
-		"mag": "……っ、素手で、肌に直接……\n（瞳が潤み、唇が震える）",
-		"explain": "素手で肌に触れる描写、瞳が潤んだ。",
+		"chapter": "oath",
+		"evidence": "page_stain",
+		"mag_react": "……っ！ そ、その章のページにまで、滲みなど──！",
+		"mag_thought": "双子の絡み、夜明けの場面、わたくし、読みながら……！",
+		"pisuke_chase": [
+			"──双子剣士の絡みの場面、ページに、白濁の滲み。",
+			"──夜明けに兄弟が指を絡める描写、夢中になられて。",
+			"──ページを濡らしたのは、朝露ではない、ですよね？",
+			"──双子が絡む場面で、自分のアソコに指を入れて、果ててたんですよね？",
+		],
+		"mag_pile": "……っ！ ……双子の絡みまで、見られて……！",
+	},
+	# 6. chest × cover_finger（胸筋と誓約章を含む本の表紙の指染み）
+	{
+		"chapter": "chest",
+		"evidence": "cover_finger",
+		"mag_react": "……っ！ あ、汗、です、汗の染み、長年の使用で──！",
+		"mag_thought": "あの本、誰にも触らせていないのに、なぜ……！",
+		"pisuke_chase": [
+			"──鑑定魔法によると、これ、汗ではございません。",
+			"──白濁した体液、人差し指と中指の、二本の形で。",
+			"──片手で本を持ちながら、もう一方の手で何を？",
+			"──毎晩、この本を腿の間に挟んで、擦りつけて果ててたんですよね？",
+		],
+		"mag_pile": "……っ！ ……あの本だけは、あの本だけは……！",
+	},
+	# 7. draft × margin_stain（書きかけ草稿章の余白に白濁染み）
+	{
+		"chapter": "draft",
+		"evidence": "margin_stain",
+		"mag_react": "……っ！ そ、それは、墨の、撥ねた跡で──！",
+		"mag_thought": "書きながら、つい、片手で……まさか、それまで……！",
+		"pisuke_chase": [
+			"──余白の点々染み、墨ではございません。",
+			"──検出されたのは、ご本人の、白濁した体液でして。",
+			"──執筆に夢中になりながら、もう一方の手で何を？",
+			"──書きながら、片手は筆、もう片手で自分のアソコをいじっていたんですよね？",
+		],
+		"mag_pile": "……っ！ ……書斎を、見られた、書斎を……！",
 	},
 ]
 
-# --- MISS_POOL（ハズレ、delta=+5）— ありきたりの宗教文／道徳論／戦記、刺さらない ---
-const MISS_POOL := [
-	{
-		"label": "『聖戦の譜』第1章",
-		"excerpt": "勇敢な騎士は盾を構えた──",
-		"delta": 5,
-		"satoshi": "聖女マグダレナ様。\n「勇敢な騎士は盾を構えた──」",
-		"mag": "……勇ましきお話ですわ。",
-		"explain": "戦闘描写は彼女の心に届かない。",
-	},
-	{
-		"label": "『懺悔の書』序章",
-		"excerpt": "罪深き者よ、膝をつきなさい──",
-		"delta": 5,
-		"satoshi": "聖女マグダレナ様。\n「罪深き者よ、膝をつきなさい──」",
-		"mag": "……ええ、ご立派な心がけでございます。",
-		"explain": "形式的な訓話、サトシ自身がうろたえる。",
-	},
-	{
-		"label": "『建国記』第5章",
-		"excerpt": "王は国を統べると誓った──",
-		"delta": 5,
-		"satoshi": "聖女マグダレナ様。\n「王は国を統べると誓った──」",
-		"mag": "……歴史のお話ですか。",
-		"explain": "政治史で彼女の心は動かない。",
-	},
-	{
-		"label": "『神の慈愛』序章",
-		"excerpt": "神は万物を愛で包みたまう──",
-		"delta": 5,
-		"satoshi": "聖女マグダレナ様。\n「神は万物を愛で包みたまう──」",
-		"mag": "……心地よきお言葉ですわ。",
-		"explain": "ありきたりの慈愛訓話、彼女には日常。",
-	},
-	{
-		"label": "『道徳論』第2章",
-		"excerpt": "節制こそ徳の礎──",
-		"delta": 5,
-		"satoshi": "聖女マグダレナ様。\n「節制こそ徳の礎──」",
-		"mag": "……至極ごもっとも。",
-		"explain": "道徳論で彼女は微動だにしない。",
-	},
-	{
-		"label": "『聖典』創世篇",
-		"excerpt": "光あれ──神は仰せられた──",
-		"delta": 5,
-		"satoshi": "聖女マグダレナ様。\n「光あれ──神は仰せられた──」",
-		"mag": "……素晴らしき朗読ですわ。",
-		"explain": "聖典そのまま読み、敬虔さが揺らがない。",
-	},
-	{
-		"label": "『殉教者録』最終章",
-		"excerpt": "主のために血を流し、天国へ昇った──",
-		"delta": 5,
-		"satoshi": "聖女マグダレナ様。\n「主のために血を流し、天国へ昇った──」",
-		"mag": "……美しきお話でございますわ。",
-		"explain": "殉教譚で使命感に火がついた。",
-	},
-	{
-		"label": "『祈祷集』朝の祈り",
-		"excerpt": "主よ、わが魂を御許に──",
-		"delta": 5,
-		"satoshi": "聖女マグダレナ様。\n「主よ、わが魂を御許に──」",
-		"mag": "……ありがたきお祈り。\n心が澄み渡りますわ。",
-		"explain": "祈祷で彼女の信仰が深まった。",
-	},
-	{
-		"label": "『聖母マリア讃歌』",
-		"excerpt": "汚れなきマリアよ、我らを──",
-		"delta": 5,
-		"satoshi": "聖女マグダレナ様。\n「汚れなきマリアよ、我らを──」",
-		"mag": "……汚れなき御方への讃歌、\n心の支えでございます。",
-		"explain": "聖母讃歌で敬虔さが固まった。",
-	},
-]
+# --- MISS 時の汎用反応 ---
+const MISS_MAG := "……？ その物証、わたくしには、心当たりが……。"
+const MISS_SCOLD := "ゲコッ、組み合わせが違う！\n本と物証、別の対応を試せ！"
 
-# --- ピー助任せ（直球 BL 妄想、減衰あり）---
-# 1 回目 -40、2 回目 -20、3 回目以降 -10（_common_rules.md 参照）
-const PISUKE_DELTAS := [-40, -20, -10]
-
-const PISUKE_LINES := [
-	{
-		"opening": "──続きのページに、落書きがございました。",
-		"followup": "──筋骨隆々の騎士が、修道士の法衣をめくり、\n──汗だくで腰を擦り合わせている、ご自筆の絵が。",
-		"finish": "──毎晩、書斎で、こういう絵を描きながら、\n──ご自身を慰めてらっしゃる、ですよね？",
-		"mag": "……っ！ ……み、見ないで、見ないでぇ……！",
-	},
-	{
-		"opening": "──巻末付録、『傷手当の実技』第3節。",
-		"followup": "──「胸筋に塗る軟膏の扱い方」と題して、\n──男の胸を素手で撫で回す指の動きが、図解で。",
-		"finish": "──毎晩、この図を眺めながら、\n──ご自身の指を、男の胸の代わりに動かしてらっしゃる、ですよね？",
-		"mag": "……っ！ ……あ、あの図解は、医学的な、ただの──！",
-	},
-	{
-		"opening": "──著者注記を見ると、興味深い記述が。",
-		"followup": "──「最も熱量を込めた章は、夜更けの汗だくの場面」と。\n──書きながら、何度も読み返されたそうで。",
-		"finish": "──書き直すたびに、ご自身を慰めてらっしゃる、\n──そういう熱量、ですよね？",
-		"mag": "……っ！ ……熱量、それは、創作の、ただの──！",
-	},
-]
-
-# --- 内部状態 ---
-var _gauge: int = GAUGE_START
-var _pisuke_used_count: int = 0
-var _pisuke_used_lines: Array = []
-var _current_choices: Array = []
-var _last_hit_idx: int = -1
-var _last_miss_indices: Array = []
-var _turns_done: int = 0
-
-# --- UI 参照 ---
-var _ui_root: Control = null
-var _gauge_bar: ColorRect = null
-var _gauge_label: Label = null
-var _gauge_stack: Control = null
-var _choice_buttons: Array[Button] = []
-
-signal _choice_emitted(idx: int)
+# 既使用 HIT に再挑戦したとき
+const ALREADY_USED_MAG := "……そのお話、先ほど伺いました。"
+const ALREADY_USED_SCOLD := "ゲコッ、もう使った組み合わせだ！\n別の本×物証を試せ！"
 
 func get_opponent_id() -> String:
 	return MAGDALENA_ID
@@ -203,32 +177,57 @@ func setup_scene(bt):
 	var mag = bt.character(MAGDALENA_ID)
 	mag.set_portrait(MAGDALENA_PORTRAIT, {"scale": 0.55, "side": "center", "position": [0, -200]})
 
-# === メイン ===
+# --- 状態 ---
+var _gauge: int = GAUGE_START
+var _selected_chapter: String = ""
+var _selected_evidence: String = ""
+var _used_combo_keys: Array = []  # "bath|page_stain" 形式
+var _turns_done: int = 0  # ピー助ロック用（1 ターン自力プレイ後解放）
+
+# --- UI 参照 ---
+var _ui_root: Control = null
+var _gauge_bar: ColorRect = null
+var _gauge_label: Label = null
+var _gauge_stack: Control = null
+var _chapter_buttons: Array[Button] = []
+var _evidence_buttons: Array[Button] = []
+var _decide_button: Button = null
+var _pisuke_button: Button = null
+
+signal _action_triggered(action: String)
 
 func minigame(bt):
 	_gauge = GAUGE_START
-	_pisuke_used_count = 0
-	_pisuke_used_lines.clear()
+	_used_combo_keys.clear()
 	_turns_done = 0
+	_selected_chapter = ""
+	_selected_evidence = ""
 
 	_build_ui(bt)
-	_set_buttons_visible(false)
 	_update_gauge_display()
+	_set_buttons_active(false)
+	_set_buttons_visible(false)
 	await bt.wait(0.3)
 
-	await _play_rules_intro(bt)
-	await _play_scripted_intro(bt)
+	await _play_intro(bt)
+	await _play_scripted_opening(bt)
 
-	_set_buttons_visible(true)
 	while _gauge > 0 and _gauge < GAUGE_MAX:
-		_pick_current_choices()
-		_refresh_choice_buttons()
-		_update_gauge_display()
-		_set_buttons_enabled(true)
-		var idx: int = await _choice_emitted
-		_set_buttons_enabled(false)
-		await _apply_choice(bt, idx)
-		_update_gauge_display()
+		_selected_chapter = ""
+		_selected_evidence = ""
+		_refresh_button_highlights()
+		_set_buttons_visible(true)
+		_set_buttons_active(true)
+
+		var action: String = await _action_triggered
+
+		_set_buttons_active(false)
+		_set_buttons_visible(false)
+
+		if action == "_pisuke":
+			await _apply_pisuke(bt)
+		else:
+			await _apply_choice(bt, _selected_chapter, _selected_evidence)
 		_turns_done += 1
 
 	_teardown_ui()
@@ -246,165 +245,142 @@ func minigame(bt):
 		await bt.wait(0.0)
 		return "lose"
 
-# === 導入 ===
+# --- 導入 ---
 
-func _play_rules_intro(bt):
-	bt.dialogue_band("narrator", "【懺悔室で妄想を誘発せよ】\n持ち込んだ本の章を選んで読み上げ、\nマグダレナの「信仰の威厳」を 0 にせよ。", true)
+func _play_intro(bt):
+	bt.dialogue_band("narrator", "【懺悔室で妄想を誘発せよ】\n本と物証の組み合わせを変えて、\n彼女の妄想スイッチを的確に突け。", true)
 	await bt.wait(0.0)
-	bt.dialogue_band("narrator", "【勝敗】\n0 で勝利。130 到達で焚刑に処される。\n章タイトルだけでなく、引用文をよく読め。", true)
+	bt.dialogue_band("narrator", "【勝敗】\n「信仰の威厳」を 0 で勝利。\n130 到達で焚刑に処される。", true)
 	await bt.wait(0.0)
 	bt.hide_dialogue_band()
 	await bt.wait(0.0)
 
-func _play_scripted_intro(bt):
+func _play_scripted_opening(bt):
 	bt.dialogue_band("narrator", "懺悔室。薄暗い小窓を挟んで、二人きり。\nマグダレナは聖典を手に、悔悛の朗読を待っている。", true)
 	await bt.wait(0.0)
 	bt.hide_dialogue_band()
 	await bt.wait(0.0)
 
 	bt.set_bubble_side("bottom-left")
-	bt.narrator_band("サトシ:\n聖女マグダレナ様。\n朗読を、始めさせていただきます。", "satoshi", ICO_SATOSHI_APOLOGETIC)
+	bt.narrator_band("サトシ:\n聖女マグダレナ様。\n朗読を、始めさせていただきます。", "satoshi", "res://assets/ui/speakers/satoshi_apologetic.png")
 	await bt.wait(0.0)
 
 	bt.set_bubble_side("right")
-	bt.narrator_band("マグダレナ:\n……ええ。罪人の魂、\nわたくしが受け止めましょう。", MAGDALENA_ID, ICO_MAGDALENA_DEFAULT)
+	bt.narrator_band("マグダレナ:\n……ええ。罪人の魂、\nわたくしが受け止めましょう。", MAGDALENA_ID, MAGDALENA_ICON)
 	await bt.wait(0.0)
 
-# === 選択肢ピック ===
+# --- 結果適用 ---
 
-func _pick_current_choices():
-	# HIT_POOL から 1 件、MISS_POOL から 3 件を抽出してシャッフル提示。
-	# 直前ターンと同じインデックスは可能なら避ける。
-	var hit_avail: Array = []
-	for i in range(HIT_POOL.size()):
-		if i != _last_hit_idx:
-			hit_avail.append(i)
-	if hit_avail.is_empty():
-		for i in range(HIT_POOL.size()):
-			hit_avail.append(i)
-	hit_avail.shuffle()
-	var hit_idx: int = hit_avail[0]
-	_last_hit_idx = hit_idx
+func _apply_choice(bt, chapter: String, evidence: String):
+	var c_info: Dictionary = CHAPTERS.get(chapter, {})
+	var e_info: Dictionary = EVIDENCES.get(evidence, {})
 
-	var miss_avail: Array = []
-	for i in range(MISS_POOL.size()):
-		if not _last_miss_indices.has(i):
-			miss_avail.append(i)
-	if miss_avail.size() < 3:
-		miss_avail.clear()
-		for i in range(MISS_POOL.size()):
-			miss_avail.append(i)
-	miss_avail.shuffle()
-	var miss_picks: Array = miss_avail.slice(0, 3)
-	_last_miss_indices = miss_picks.duplicate()
-
-	var entries: Array = []
-	var hit_entry: Dictionary = HIT_POOL[hit_idx].duplicate(true)
-	hit_entry["is_hit"] = true
-	entries.append(hit_entry)
-	for mi in miss_picks:
-		var miss_entry: Dictionary = MISS_POOL[mi].duplicate(true)
-		miss_entry["is_hit"] = false
-		entries.append(miss_entry)
-	entries.shuffle()
-
-	_current_choices = entries
-
-	var pisuke_locked: bool = _turns_done < 1
-	var pisuke_label: String = "[5] ピー助に任せる"
-	if pisuke_locked:
-		pisuke_label += "（残り 1 ターン）"
-	_current_choices.append({
-		"label": pisuke_label,
-		"is_pisuke": true,
-		"locked": pisuke_locked,
-	})
-
-# === 選択肢適用 ===
-
-func _apply_choice(bt, idx: int):
-	var choice: Dictionary = _current_choices[idx]
-	if choice.get("is_pisuke", false):
-		await _apply_pisuke(bt)
-		return
-
-	var delta: int = int(choice.get("delta", 0))
-	var is_hit: bool = bool(choice.get("is_hit", false))
-	var sat_ico: String = ICO_SATOSHI_GENTLE if is_hit else ICO_SATOSHI_APOLOGETIC
-
+	# サトシの朗読＋物証提示（2 バブル）
 	bt.set_bubble_side("bottom-left")
-	bt.narrator_band("サトシ:\n%s" % choice.get("satoshi", ""), "satoshi", sat_ico)
+	bt.narrator_band("サトシ:\n聖女マグダレナ様。\n%s より。" % c_info.get("satoshi_line", ""), "satoshi", "res://assets/ui/speakers/satoshi_gentle.png")
+	await bt.wait(0.0)
+	bt.narrator_band("サトシ:\n%s、ございます。" % e_info.get("satoshi_line", ""), "satoshi", "res://assets/ui/speakers/satoshi_gentle.png")
 	await bt.wait(0.0)
 
+	var combo: Dictionary = _find_valid_combo(chapter, evidence)
+	var combo_key: String = "%s|%s" % [chapter, evidence]
+
+	if not combo.is_empty():
+		if _used_combo_keys.has(combo_key):
+			# 既使用：弱反応
+			await _play_already_used(bt)
+			_gauge = clamp(_gauge + MISS_DELTA, 0, GAUGE_MAX)
+		else:
+			await _play_hit(bt, combo)
+			_used_combo_keys.append(combo_key)
+			_gauge = clamp(_gauge + HIT_DELTA, 0, GAUGE_MAX)
+	else:
+		# 不正解組み合わせ：MISS
+		await _play_miss(bt)
+		_gauge = clamp(_gauge + MISS_DELTA, 0, GAUGE_MAX)
+	_update_gauge_display()
+
+func _find_valid_combo(chapter: String, evidence: String) -> Dictionary:
+	for combo in VALID_COMBOS:
+		if combo.get("chapter", "") == chapter and combo.get("evidence", "") == evidence:
+			return combo
+	return {}
+
+func _play_hit(bt, combo: Dictionary):
 	bt.set_bubble_side("right")
-	bt.narrator_band("マグダレナ:\n%s" % choice.get("mag", ""), MAGDALENA_ID, ICO_MAGDALENA_DEFAULT)
+	bt.narrator_band("マグダレナ:\n%s" % combo.get("mag_react", ""), MAGDALENA_ID, MAGDALENA_ICON)
 	await bt.wait(0.0)
 
-	var explain: String = choice.get("explain", "")
-	var delta_text: String = _format_delta(delta)
-	if not explain.is_empty():
-		bt.dialogue_band("narrator", "%s\n（信仰の威厳 %s）" % [explain, delta_text], true)
-		await bt.wait(0.0)
-		bt.hide_dialogue_band()
+	# ピー助の畳みかけ追撃（1 行 1 バブル）
+	var chase: Array = combo.get("pisuke_chase", [])
+	for i in range(chase.size()):
+		var prefix: String = "ピー助（畳みかけて）:" if i == 0 else "ピー助:"
+		bt.set_bubble_side("bottom-left")
+		bt.narrator_band("%s\n%s" % [prefix, chase[i]], "pisuke")
 		await bt.wait(0.0)
 
-	_gauge = clamp(_gauge + delta, 0, GAUGE_MAX)
+	var pile: String = combo.get("mag_pile", "")
+	if not pile.is_empty():
+		bt.set_bubble_side("right")
+		bt.narrator_band("マグダレナ:\n%s" % pile, MAGDALENA_ID, MAGDALENA_ICON)
+		await bt.wait(0.0)
 
-# === ピー助任せ ===
-
-func _apply_pisuke(bt):
-	var avail: Array = []
-	for i in range(PISUKE_LINES.size()):
-		if not _pisuke_used_lines.has(i):
-			avail.append(i)
-	if avail.is_empty():
-		_pisuke_used_lines.clear()
-		for i in range(PISUKE_LINES.size()):
-			avail.append(i)
-	avail.shuffle()
-	var pick: int = avail[0]
-	_pisuke_used_lines.append(pick)
-
-	var line: Dictionary = PISUKE_LINES[pick]
-	var delta: int = PISUKE_DELTAS[mini(_pisuke_used_count, PISUKE_DELTAS.size() - 1)]
-	_pisuke_used_count += 1
-
-	bt.set_bubble_side("bottom-left")
-	bt.narrator_band("サトシ:\n……えっと、何を読めば──", "satoshi", ICO_SATOSHI_NERVOUS)
-	await bt.wait(0.0)
-	bt.narrator_band("ピー助（小声）:\n……これだ。読み上げろ。", "pisuke")
-	await bt.wait(0.0)
-
-	bt.set_bubble_side("bottom-left")
-	bt.narrator_band("サトシ（ピー助の声色）:\n%s" % line.get("opening", ""), "satoshi", ICO_SATOSHI_GENTLE)
-	await bt.wait(0.0)
-
-	bt.narrator_band("サトシ（ピー助の声色）:\n%s" % line.get("followup", ""), "satoshi", ICO_SATOSHI_GENTLE)
-	await bt.wait(0.0)
-
-	bt.narrator_band("サトシ（ピー助の声色）:\n%s" % line.get("finish", ""), "satoshi", ICO_SATOSHI_GENTLE)
-	await bt.wait(0.0)
-
-	bt.set_bubble_side("right")
-	bt.narrator_band("マグダレナ:\n%s" % line.get("mag", ""), MAGDALENA_ID, ICO_MAGDALENA_DEFAULT)
-	await bt.wait(0.0)
-
-	var delta_text: String = _format_delta(delta)
-	bt.dialogue_band("narrator", "妄想直撃！\n（信仰の威厳 %s）" % delta_text, true)
+	bt.dialogue_band("narrator", "妄想直撃！\n（信仰の威厳 %d）" % HIT_DELTA, true)
 	await bt.wait(0.0)
 	bt.hide_dialogue_band()
 	await bt.wait(0.0)
 
-	_gauge = clamp(_gauge + delta, 0, GAUGE_MAX)
+func _play_miss(bt):
+	bt.set_bubble_side("right")
+	bt.narrator_band("マグダレナ:\n%s" % MISS_MAG, MAGDALENA_ID, MAGDALENA_ICON)
+	await bt.wait(0.0)
 
-# === ヘルパー ===
+	bt.set_bubble_side("bottom-left")
+	bt.narrator_band("ピー助(小声で叱責):\n%s" % MISS_SCOLD, "pisuke")
+	await bt.wait(0.0)
 
-func _format_delta(delta: int) -> String:
-	if delta > 0:
-		return "+%d" % delta
-	return "%d" % delta
+	bt.dialogue_band("narrator", "見当違い、シラけられた。\n(信仰の威厳 +%d)" % MISS_DELTA, true)
+	await bt.wait(0.0)
+	bt.hide_dialogue_band()
+	await bt.wait(0.0)
 
-# === UI 構築 ===
+func _play_already_used(bt):
+	bt.set_bubble_side("right")
+	bt.narrator_band("マグダレナ:\n%s" % ALREADY_USED_MAG, MAGDALENA_ID, MAGDALENA_ICON)
+	await bt.wait(0.0)
+
+	bt.set_bubble_side("bottom-left")
+	bt.narrator_band("ピー助(小声で叱責):\n%s" % ALREADY_USED_SCOLD, "pisuke")
+	await bt.wait(0.0)
+
+	bt.dialogue_band("narrator", "同じネタ、二度目は刺さらない。\n(信仰の威厳 +%d)" % MISS_DELTA, true)
+	await bt.wait(0.0)
+	bt.hide_dialogue_band()
+	await bt.wait(0.0)
+
+func _apply_pisuke(bt):
+	# 未使用の正解組み合わせから 1 つランダム選出
+	var unused: Array = []
+	for combo in VALID_COMBOS:
+		var key: String = "%s|%s" % [combo.get("chapter", ""), combo.get("evidence", "")]
+		if not _used_combo_keys.has(key):
+			unused.append(combo)
+	if unused.is_empty():
+		return  # 全消費（理論上 win 直前で起きない）
+	unused.shuffle()
+	var combo: Dictionary = unused[0]
+	var c_info: Dictionary = CHAPTERS.get(combo.get("chapter", ""), {})
+	var e_info: Dictionary = EVIDENCES.get(combo.get("evidence", ""), {})
+
+	bt.set_bubble_side("bottom-left")
+	bt.narrator_band("サトシ:\n……えっと、どれを選べば──", "satoshi", "res://assets/ui/speakers/satoshi_nervous.png")
+	await bt.wait(0.0)
+	bt.narrator_band("ピー助(小声):\n%s と、%s。\nこれを組み合わせろ。" % [c_info.get("label", ""), e_info.get("label", "")], "pisuke")
+	await bt.wait(0.0)
+
+	await _apply_choice(bt, combo.get("chapter", ""), combo.get("evidence", ""))
+
+# --- UI 構築 ---
 
 func _build_ui(bt: Node):
 	_ui_root = Control.new()
@@ -412,25 +388,79 @@ func _build_ui(bt: Node):
 	_ui_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	bt.add_child(_ui_root)
 
+	# ゲージ（左上）
 	_gauge_stack = Control.new()
 	_gauge_stack.position = Vector2(40, 40)
 	_gauge_stack.size = Vector2(600, 60)
 	_ui_root.add_child(_gauge_stack)
 	_build_gauge()
 
-	var btn_root := VBoxContainer.new()
-	btn_root.position = Vector2(40, 380)
-	btn_root.size = Vector2(800, 320)
-	btn_root.add_theme_constant_override("separation", 8)
-	_ui_root.add_child(btn_root)
+	# 列ヘッダー
+	_make_column_header("本のジャンル", Vector2(40, 120))
+	_make_column_header("物証",         Vector2(490, 120))
 
-	_choice_buttons.clear()
-	for i in range(5):
-		var btn := _make_choice_button("[%d]" % (i + 1))
-		var idx_capture: int = i
-		btn.pressed.connect(func(): _on_choice_pressed(idx_capture))
-		btn_root.add_child(btn)
-		_choice_buttons.append(btn)
+	# 本ボタン（左列・5 個）
+	var book_root := VBoxContainer.new()
+	book_root.position = Vector2(40, 170)
+	book_root.size = Vector2(440, 320)
+	book_root.add_theme_constant_override("separation", 6)
+	_ui_root.add_child(book_root)
+
+	_chapter_buttons.clear()
+	for i in range(CHAPTER_KEYS.size()):
+		var key: String = CHAPTER_KEYS[i]
+		var info: Dictionary = CHAPTERS.get(key, {})
+		var btn := _make_choice_button("[%d] %s" % [i + 1, info.get("label", key)])
+		var key_capture: String = key
+		btn.pressed.connect(func(): _on_chapter_pressed(key_capture))
+		book_root.add_child(btn)
+		_chapter_buttons.append(btn)
+
+	# 物証ボタン（右列・5 個）
+	var evidence_root := VBoxContainer.new()
+	evidence_root.position = Vector2(490, 170)
+	evidence_root.size = Vector2(440, 320)
+	evidence_root.add_theme_constant_override("separation", 6)
+	_ui_root.add_child(evidence_root)
+
+	_evidence_buttons.clear()
+	for i in range(EVIDENCE_KEYS.size()):
+		var key: String = EVIDENCE_KEYS[i]
+		var info: Dictionary = EVIDENCES.get(key, {})
+		var btn := _make_choice_button("[%d] %s" % [i + 6, info.get("label", key)])
+		var key_capture: String = key
+		btn.pressed.connect(func(): _on_evidence_pressed(key_capture))
+		evidence_root.add_child(btn)
+		_evidence_buttons.append(btn)
+
+	# 決定 + ピー助任せ（下、横並び）
+	var bottom_root := HBoxContainer.new()
+	bottom_root.position = Vector2(40, 510)
+	bottom_root.size = Vector2(900, 56)
+	bottom_root.add_theme_constant_override("separation", 16)
+	_ui_root.add_child(bottom_root)
+
+	_decide_button = _make_choice_button("[決定] この組み合わせで攻撃")
+	_decide_button.custom_minimum_size = Vector2(440, 56)
+	_decide_button.pressed.connect(func(): _on_decide_pressed())
+	bottom_root.add_child(_decide_button)
+
+	_pisuke_button = _make_choice_button("[ピー助任せ]")
+	_pisuke_button.custom_minimum_size = Vector2(440, 56)
+	_pisuke_button.pressed.connect(func(): _on_pisuke_pressed())
+	bottom_root.add_child(_pisuke_button)
+
+func _make_column_header(text: String, pos: Vector2):
+	var label := Label.new()
+	label.text = text
+	label.position = pos
+	label.size = Vector2(440, 36)
+	label.add_theme_font_size_override("font_size", 24)
+	label.add_theme_color_override("font_color", Color(0.95, 0.85, 0.55))
+	label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.9))
+	label.add_theme_constant_override("shadow_outline_size", 4)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	_ui_root.add_child(label)
 
 func _build_gauge():
 	var frame := Panel.new()
@@ -447,12 +477,21 @@ func _build_gauge():
 	fs.corner_radius_top_right = 10
 	fs.corner_radius_bottom_left = 10
 	fs.corner_radius_bottom_right = 10
+	fs.shadow_color = Color(0, 0, 0, 0.55)
+	fs.shadow_size = 6
+	fs.shadow_offset = Vector2(0, 3)
 	frame.add_theme_stylebox_override("panel", fs)
 	_gauge_stack.add_child(frame)
 
 	var track := Control.new()
-	track.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	track.offset_left = 5; track.offset_top = 5; track.offset_right = -5; track.offset_bottom = -5
+	track.anchor_left = 0.0
+	track.anchor_top = 0.0
+	track.anchor_right = 1.0
+	track.anchor_bottom = 1.0
+	track.offset_left = 5
+	track.offset_top = 5
+	track.offset_right = -5
+	track.offset_bottom = -5
 	track.clip_contents = true
 	track.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_gauge_stack.add_child(track)
@@ -483,8 +522,8 @@ func _build_gauge():
 func _make_choice_button(text: String) -> Button:
 	var btn := Button.new()
 	btn.text = text
-	btn.add_theme_font_size_override("font_size", 18)
-	btn.custom_minimum_size = Vector2(800, 56)
+	btn.add_theme_font_size_override("font_size", 20)
+	btn.custom_minimum_size = Vector2(440, 48)
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	btn.autowrap_mode = TextServer.AUTOWRAP_WORD
 	for state in ["normal", "hover", "pressed", "disabled", "focus"]:
@@ -496,53 +535,25 @@ func _make_choice_button(text: String) -> Button:
 			border_col = Color(1.0, 0.90, 0.45, 1.0)
 		elif state == "pressed":
 			sb.bg_color = Color(0.50, 0.40, 0.10, 0.95)
+			border_col = Color(0.95, 0.78, 0.30, 1.0)
 		elif state == "disabled":
 			sb.bg_color = Color(0.18, 0.18, 0.22, 0.55)
 			border_col = Color(0.60, 0.50, 0.25, 0.50)
-		sb.border_width_left = 1; sb.border_width_right = 1
-		sb.border_width_top = 1; sb.border_width_bottom = 1
+		sb.border_width_left = 1
+		sb.border_width_right = 1
+		sb.border_width_top = 1
+		sb.border_width_bottom = 1
 		sb.border_color = border_col
-		sb.corner_radius_top_left = 6; sb.corner_radius_top_right = 6
-		sb.corner_radius_bottom_left = 6; sb.corner_radius_bottom_right = 6
-		sb.content_margin_left = 16; sb.content_margin_right = 8
-		sb.content_margin_top = 6; sb.content_margin_bottom = 6
+		sb.corner_radius_top_left = 6
+		sb.corner_radius_top_right = 6
+		sb.corner_radius_bottom_left = 6
+		sb.corner_radius_bottom_right = 6
+		sb.content_margin_left = 16
+		sb.content_margin_right = 8
+		sb.content_margin_top = 6
+		sb.content_margin_bottom = 6
 		btn.add_theme_stylebox_override(state, sb)
 	return btn
-
-func _refresh_choice_buttons():
-	for i in range(_choice_buttons.size()):
-		if i >= _current_choices.size():
-			_choice_buttons[i].visible = false
-			continue
-		_choice_buttons[i].visible = true
-		var c: Dictionary = _current_choices[i]
-		if c.get("is_pisuke", false):
-			_choice_buttons[i].text = c.get("label", "")
-			_choice_buttons[i].disabled = c.get("locked", false)
-		else:
-			var label: String = "[%d] %s" % [i + 1, c.get("label", "")]
-			var excerpt: String = c.get("excerpt", "")
-			if not excerpt.is_empty():
-				label += "\n    「%s」" % excerpt
-			_choice_buttons[i].text = label
-			_choice_buttons[i].disabled = false
-
-func _set_buttons_visible(visible: bool):
-	for btn in _choice_buttons:
-		btn.visible = visible
-
-func _set_buttons_enabled(enabled: bool):
-	for i in range(_choice_buttons.size()):
-		if i >= _current_choices.size():
-			_choice_buttons[i].disabled = true
-			continue
-		var c: Dictionary = _current_choices[i]
-		if not enabled:
-			_choice_buttons[i].disabled = true
-		elif c.get("is_pisuke", false):
-			_choice_buttons[i].disabled = c.get("locked", false)
-		else:
-			_choice_buttons[i].disabled = false
 
 func _teardown_ui():
 	if _ui_root and is_instance_valid(_ui_root):
@@ -551,7 +562,10 @@ func _teardown_ui():
 	_gauge_bar = null
 	_gauge_label = null
 	_gauge_stack = null
-	_choice_buttons.clear()
+	_chapter_buttons.clear()
+	_evidence_buttons.clear()
+	_decide_button = null
+	_pisuke_button = null
 
 func _update_gauge_display():
 	if not _gauge_bar:
@@ -566,25 +580,66 @@ func _update_gauge_display():
 		_gauge_label.text = "信仰の威厳  %d / %d" % [_gauge, GAUGE_MAX]
 
 func _gauge_color(value: int) -> Color:
+	# 共通ルール準拠（max=130）でしきい値を再設定
 	if value >= 100:
 		return Color(0.85, 0.20, 0.20)
-	elif value >= 50:
+	elif value >= 40:
 		return Color(0.90, 0.78, 0.20)
 	else:
 		return Color(0.30, 0.78, 0.30)
 
-func _on_choice_pressed(idx: int):
-	if idx >= _current_choices.size():
-		return
-	var c: Dictionary = _current_choices[idx]
-	if c.get("is_pisuke", false) and c.get("locked", false):
-		return
-	_choice_emitted.emit(idx)
+func _set_buttons_active(active: bool):
+	for btn in _chapter_buttons:
+		btn.disabled = not active
+	for btn in _evidence_buttons:
+		btn.disabled = not active
+	if _decide_button:
+		_decide_button.disabled = not active or _selected_chapter.is_empty() or _selected_evidence.is_empty()
+	if _pisuke_button:
+		# ピー助は 1 ターン自力プレイ後に解放（2 ターン目から使用可）
+		if not active:
+			_pisuke_button.disabled = true
+		else:
+			_pisuke_button.disabled = (_turns_done < 1)
+			if _turns_done >= 1:
+				_pisuke_button.text = "[ピー助任せ]"
+			else:
+				_pisuke_button.text = "[ピー助任せ](残り 1 ターン)"
 
-func _narrate_wait(bt, text: String):
-	if text.is_empty():
+func _set_buttons_visible(visible: bool):
+	for btn in _chapter_buttons:
+		btn.visible = visible
+	for btn in _evidence_buttons:
+		btn.visible = visible
+	if _decide_button:
+		_decide_button.visible = visible
+	if _pisuke_button:
+		_pisuke_button.visible = visible
+
+func _refresh_button_highlights():
+	for i in range(_chapter_buttons.size()):
+		var key: String = CHAPTER_KEYS[i]
+		_chapter_buttons[i].text = "[%d] %s%s" % [i + 1, "▶ " if key == _selected_chapter else "", CHAPTERS.get(key, {}).get("label", key)]
+	for i in range(_evidence_buttons.size()):
+		var key: String = EVIDENCE_KEYS[i]
+		_evidence_buttons[i].text = "[%d] %s%s" % [i + 6, "▶ " if key == _selected_evidence else "", EVIDENCES.get(key, {}).get("label", key)]
+	if _decide_button:
+		_decide_button.disabled = _selected_chapter.is_empty() or _selected_evidence.is_empty()
+
+func _on_chapter_pressed(key: String):
+	_selected_chapter = key
+	_refresh_button_highlights()
+
+func _on_evidence_pressed(key: String):
+	_selected_evidence = key
+	_refresh_button_highlights()
+
+func _on_decide_pressed():
+	if _selected_chapter.is_empty() or _selected_evidence.is_empty():
 		return
-	bt.dialogue_band("narrator", text, true)
-	await bt.wait(0.0)
-	bt.hide_dialogue_band()
-	await bt.wait(0.0)
+	_action_triggered.emit("_combo")
+
+func _on_pisuke_pressed():
+	if _turns_done < 1:
+		return
+	_action_triggered.emit("_pisuke")
