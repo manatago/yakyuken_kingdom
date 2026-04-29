@@ -99,32 +99,20 @@ func _test_stage2_miss_choice_labels_fit() -> bool:
 # --- Stage3 テスト ---
 
 func _test_stage3_scenes_fit() -> bool:
-	# 10 通りの正解組み合わせ（VALID_COMBOS）について：
-	#   - サトシ朗読バブル（本＋物証で 2 バブル）
-	#   - マグダレナ動揺バブル
-	#   - ピー助の畳みかけ追撃（1 行 1 バブル）
-	#   - マグダレナ崩れ反応バブル
-	# が、すべてバブル幅・行数に収まることを検証
+	# プール式：CHOICE_POOL の各エントリ + PISUKE_LINES の各エントリの
+	# サトシ朗読／マグダレナ反応／ピー助セリフがバブル幅・行数に収まるか検証
 	var chapter = preload("res://battle/chapters/Stage3MinigameChapter.gd").new()
 	var failures: Array = []
-	# 本＋物証朗読（毎ターン共通フォーマット）
-	for c_key in chapter.CHAPTER_KEYS:
-		var c_info: Dictionary = chapter.CHAPTERS.get(c_key, {})
-		_check_text("st3.satoshi.chapter[%s]" % c_key, "サトシ:\n聖女マグダレナ様。\n%s より。" % c_info.get("satoshi_line", ""), failures)
-	for e_key in chapter.EVIDENCE_KEYS:
-		var e_info: Dictionary = chapter.EVIDENCES.get(e_key, {})
-		_check_text("st3.satoshi.evidence[%s]" % e_key, "サトシ:\n%s、ございます。" % e_info.get("satoshi_line", ""), failures)
-	# 各正解組み合わせの HIT 反応
-	for i in range(chapter.VALID_COMBOS.size()):
-		var combo: Dictionary = chapter.VALID_COMBOS[i]
-		_check_text("st3.combo[%d].mag_react" % i, "マグダレナ:\n%s" % combo.get("mag_react", ""), failures)
-		var chase: Array = combo.get("pisuke_chase", [])
-		for j in range(chase.size()):
-			var prefix: String = "ピー助（畳みかけて）:" if j == 0 else "ピー助:"
-			_check_text("st3.combo[%d].chase[%d]" % [i, j], "%s\n%s" % [prefix, chase[j]], failures)
-		var pile: String = combo.get("mag_pile", "")
-		if not pile.is_empty():
-			_check_text("st3.combo[%d].mag_pile" % i, "マグダレナ:\n%s" % pile, failures)
+	for i in range(chapter.CHOICE_POOL.size()):
+		var c: Dictionary = chapter.CHOICE_POOL[i]
+		_check_text("st3.pool[%d].satoshi" % i, "サトシ:\n%s" % c.get("satoshi", ""), failures)
+		_check_text("st3.pool[%d].mag" % i, "マグダレナ:\n%s" % c.get("mag", ""), failures)
+	for i in range(chapter.PISUKE_LINES.size()):
+		var line: Dictionary = chapter.PISUKE_LINES[i]
+		_check_text("st3.pisuke[%d].opening" % i, "サトシ（ピー助の声色）:\n%s" % line.get("opening", ""), failures)
+		_check_text("st3.pisuke[%d].followup" % i, "サトシ（ピー助の声色）:\n%s" % line.get("followup", ""), failures)
+		_check_text("st3.pisuke[%d].finish" % i, "サトシ（ピー助の声色）:\n%s" % line.get("finish", ""), failures)
+		_check_text("st3.pisuke[%d].mag" % i, "マグダレナ:\n%s" % line.get("mag", ""), failures)
 	return _report(failures)
 
 func _test_stage5_pisuke_finishes_fit() -> bool:
@@ -150,11 +138,16 @@ func _test_stage5_pisuke_finishes_fit() -> bool:
 	return _report(failures)
 
 func _test_stage3_miss_lines_fit() -> bool:
-	# 不正解組み合わせ／既使用組み合わせの汎用 MISS 反応を検証
+	# プール式に MISS 反応はないので、CHOICE_POOL の delta=0/+10/-5 別カバレッジを確認
 	var chapter = preload("res://battle/chapters/Stage3MinigameChapter.gd").new()
+	var deltas: Array = []
+	for c in chapter.CHOICE_POOL:
+		deltas.append(int(c.get("delta", 0)))
 	var failures: Array = []
-	_check_text("st3.MISS_MAG", "マグダレナ:\n%s" % chapter.MISS_MAG, failures)
-	_check_text("st3.MISS_SCOLD", "ピー助（小声で叱責）:\n%s" % chapter.MISS_SCOLD, failures)
-	_check_text("st3.ALREADY_USED_MAG", "マグダレナ:\n%s" % chapter.ALREADY_USED_MAG, failures)
-	_check_text("st3.ALREADY_USED_SCOLD", "ピー助（小声で叱責）:\n%s" % chapter.ALREADY_USED_SCOLD, failures)
+	if not deltas.has(0):
+		failures.append("CHOICE_POOL に delta=0（的外れ）が無い")
+	if not deltas.has(10):
+		failures.append("CHOICE_POOL に delta=+10（逆効果）が無い")
+	if not deltas.has(-5):
+		failures.append("CHOICE_POOL に delta=-5（軽刺激）が無い")
 	return _report(failures)
