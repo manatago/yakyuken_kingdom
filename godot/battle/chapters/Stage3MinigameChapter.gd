@@ -566,8 +566,10 @@ func _refresh_button_labels():
 		var info: Dictionary = CHAPTERS.get(key, {})
 		var title: String = info.get("label", key)
 		var excerpt: String = info.get("excerpt", "")
-		var marker: String = "▶ " if key == _selected_chapter else ""
-		btn.text = "[%d] %s%s\n   「%s」" % [i + 1, marker, title, excerpt]
+		var selected: bool = (key == _selected_chapter)
+		var prefix: String = "▶ 選択中  " if selected else "[%d] " % (i + 1)
+		btn.text = "%s%s\n   「%s」" % [prefix, title, excerpt]
+		_apply_selected_style(btn, selected)
 	for i in range(_evidence_buttons.size()):
 		var btn: Button = _evidence_buttons[i]
 		if i >= _current_evidence_keys.size():
@@ -578,10 +580,53 @@ func _refresh_button_labels():
 		var info: Dictionary = EVIDENCES.get(key, {})
 		var title: String = info.get("label", key)
 		var desc: String = info.get("description", "")
-		var marker: String = "▶ " if key == _selected_evidence else ""
-		btn.text = "[%d] %s%s\n   %s" % [i + 5, marker, title, desc]
+		var selected: bool = (key == _selected_evidence)
+		var prefix: String = "▶ 選択中  " if selected else "[%d] " % (i + 5)
+		btn.text = "%s%s\n   %s" % [prefix, title, desc]
+		_apply_selected_style(btn, selected)
 	if _decide_button:
 		_decide_button.disabled = _selected_chapter.is_empty() or _selected_evidence.is_empty()
+
+func _apply_selected_style(btn: Button, selected: bool):
+	# 選択中のボタンには明るい黄色の枠＋濃いアンバー背景を適用、
+	# 文字色も白から鮮黄へ切り替えて視認性を強化する。
+	var bg: Color
+	var border: Color
+	var text_col: Color
+	if selected:
+		bg = Color(0.55, 0.40, 0.10, 0.98)
+		border = Color(1.0, 0.95, 0.40, 1.0)
+		text_col = Color(1.0, 0.95, 0.55)
+	else:
+		bg = Color(0.18, 0.18, 0.22, 0.95)
+		border = Color(0.95, 0.78, 0.30, 0.95)
+		text_col = Color.WHITE
+	for state in ["normal", "hover", "pressed", "focus"]:
+		var sb := StyleBoxFlat.new()
+		sb.bg_color = bg
+		if state == "hover" and not selected:
+			sb.bg_color = Color(0.30, 0.26, 0.18, 0.95)
+		elif state == "hover" and selected:
+			sb.bg_color = Color(0.65, 0.50, 0.18, 0.98)
+		elif state == "pressed":
+			sb.bg_color = Color(0.50, 0.40, 0.10, 0.95)
+		sb.border_width_left = 2 if selected else 1
+		sb.border_width_right = 2 if selected else 1
+		sb.border_width_top = 2 if selected else 1
+		sb.border_width_bottom = 2 if selected else 1
+		sb.border_color = border
+		sb.corner_radius_top_left = 6
+		sb.corner_radius_top_right = 6
+		sb.corner_radius_bottom_left = 6
+		sb.corner_radius_bottom_right = 6
+		sb.content_margin_left = 16
+		sb.content_margin_right = 8
+		sb.content_margin_top = 6
+		sb.content_margin_bottom = 6
+		btn.add_theme_stylebox_override(state, sb)
+	btn.add_theme_color_override("font_color", text_col)
+	btn.add_theme_color_override("font_hover_color", text_col)
+	btn.add_theme_color_override("font_pressed_color", text_col)
 
 func _set_buttons_enabled(active: bool):
 	for btn in _chapter_buttons:
