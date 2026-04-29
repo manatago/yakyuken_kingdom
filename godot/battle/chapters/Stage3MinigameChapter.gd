@@ -3,23 +3,27 @@ extends BattleChapterBase
 # ST3「聖女マグダレナ」ミニゲーム（2 軸独立選択の組み合わせ式）
 #
 # 設計：
-# - 本のジャンル（CHAPTERS、5 種）× 物証（EVIDENCES、5 種）＝ 25 セルの組合せ空間
-# - そのうち **7 通りが正解**（VALID_COMBOS、テーマ重複を排除した構成）
-# - 毎ターンの提示（共通ルール `_common_rules.md` 準拠）：
-#     * 章ボタン 4 個 = HIT 章 1 + MISS 章 3
-#     * 物証ボタン 4 個 = HIT 物証 1 + MISS 物証 3
-#     * MISS 候補は **不正解セル (18 通り) から** サンプリング（決して VALID_COMBOS から選ばない）
-#     * 章キー・物証キーが重複しないよう Rejection Sampling
+# - 本の章（CHAPTERS）と物証（EVIDENCES）はそれぞれ HIT 用キーと MISS 用キーに分かれる:
+#     * HIT_CHAPTER_KEYS (5)  : マグダレナの自選集の章。VALID_COMBOS に登場
+#     * MISS_CHAPTER_KEYS (8) : ありきたりな本（聖戦の譜・建国記など）。デコイ
+#     * HIT_EVIDENCE_KEYS (5) : 白濁／指跡など示唆的物証。VALID_COMBOS に登場
+#     * MISS_EVIDENCE_KEYS (8): 栞・埃・折り目など普通の痕跡。デコイ
+# - VALID_COMBOS = 7 通り（HIT 側のキー同士のみで構成、テーマ重複を排除）
+# - 毎ターンの提示:
+#     * 章ボタン 4 個 = HIT 章 1（その回の正解 combo の章）+ MISS 章 3 (MISS_CHAPTER_KEYS から)
+#     * 物証ボタン 4 個 = HIT 物証 1 + MISS 物証 3 (MISS_EVIDENCE_KEYS から)
+#     * MISS は **必ず MISS 専用プールから** 引く。決して HIT 側から引かない
+#       → 4×4 グリッド 16 セル中、正解は HIT 章 × HIT 物証 の 1 セルだけ
 #     * + 決定ボタン + ピー助任せ
-#   → プレイヤーは 1 章 + 1 物証を選んで決定。その (章, 物証) ペアが VALID_COMBOS に
-#     含まれていれば HIT、含まれていなければ MISS
+# - プレイヤーは 1 章 + 1 物証を選んで決定。(章, 物証) ペアが VALID_COMBOS に
+#   含まれていれば HIT、含まれていなければ MISS
 # - HIT (-40)：未使用の正解組み合わせ → 妄想直撃 ＋ ピー助の畳みかけ追撃
 # - MISS (+5)：的外れな組み合わせ → シラけ反応
 # - 既使用正解 (+5)：同じ正解の二度目はネタ尽き反応
 # - 3 HIT で勝利（信仰の威厳 100 → 0）／130 到達で敗北
 # - ピー助任せ：未使用の正解組み合わせから 1 つランダム選出（HIT 確定）
 # - 設計書 `docs/minigame_designs/st3_magdalena.md` の Decision Log を参照
-#   （2026-04-29: ST2 から組み合わせ機構を移動、4×4 独立選択に再設計）
+#   （2026-04-29: ST2 から組み合わせ機構を移動、HIT/MISS プール分離方式に再設計）
 
 const MAGDALENA_PORTRAIT := "res://assets/characters/stage3/magdalena_001.png"
 const MAGDALENA_ICON := "res://assets/ui/speakers/magdalena_default.png"
@@ -31,26 +35,52 @@ const GAUGE_START := 100   # 共通基本 start（バックファイアなし）
 const HIT_DELTA := -40
 const MISS_DELTA := 5
 
-# --- 章列（5 択） ---
-# サトシが懺悔室に持ち込む 1 冊（マグダレナの自選集）の章を選ぶ。
+# --- 章 ---
+# CHAPTERS は HIT 用 (VALID_COMBOS で使用される 5 章) と MISS 用 (デコイ・決して
+# VALID_COMBOS に登場しない 8 章) の合体辞書。サンプリング時は HIT_CHAPTER_KEYS と
+# MISS_CHAPTER_KEYS を使い分け、MISS は決して HIT 側から引かない。
 const CHAPTERS := {
+	# === HIT 側（マグダレナの自選集の章、いずれかが VALID_COMBOS に出る）===
 	"bath":     {"label": "「湯浴み」章",         "satoshi_line": "「湯浴み」章"},
 	"guardian": {"label": "「相互加護」章",       "satoshi_line": "「相互加護」章"},
 	"oath":     {"label": "「朝露の誓い」章",     "satoshi_line": "「朝露の誓い」章"},
 	"chest":    {"label": "「胸筋と誓約」章",     "satoshi_line": "「胸筋と誓約」章"},
 	"draft":    {"label": "「書きかけ草稿」章",   "satoshi_line": "「書きかけ草稿」章"},
+	# === MISS 側（ありきたりの本、デコイ）===
+	"war":      {"label": "『聖戦の譜』第1章",     "satoshi_line": "『聖戦の譜』第1章"},
+	"history":  {"label": "『建国記』第5章",       "satoshi_line": "『建国記』第5章"},
+	"morals":   {"label": "『道徳論』第2章",       "satoshi_line": "『道徳論』第2章"},
+	"mary":     {"label": "『聖母マリア讃歌』",   "satoshi_line": "『聖母マリア讃歌』"},
+	"martyr":   {"label": "『殉教者録』最終章",   "satoshi_line": "『殉教者録』最終章"},
+	"prayer":   {"label": "『祈祷集』朝の祈り",   "satoshi_line": "『祈祷集』朝の祈り"},
+	"mercy":    {"label": "『神の慈愛』序章",     "satoshi_line": "『神の慈愛』序章"},
+	"repent":   {"label": "『懺悔の書』序章",     "satoshi_line": "『懺悔の書』序章"},
 }
-const CHAPTER_KEYS := ["bath", "guardian", "oath", "chest", "draft"]
+const HIT_CHAPTER_KEYS := ["bath", "guardian", "oath", "chest", "draft"]
+const MISS_CHAPTER_KEYS := ["war", "history", "morals", "mary", "martyr", "prayer", "mercy", "repent"]
 
-# --- 物証列（5 択） ---
+# --- 物証 ---
+# 同じ構造。HIT 側は白濁／指跡など示唆的な物証、MISS 側は栞・埃・折り目など
+# ありきたりで決して VALID_COMBOS に登場しないデコイ。
 const EVIDENCES := {
+	# === HIT 側（VALID_COMBOS で使用される示唆的物証）===
 	"page_stain":    {"label": "ページ三十七行目の白い滲み", "satoshi_line": "ページ三十七行目に、白い滲みが"},
 	"finger_trace":  {"label": "ページ裏の指で撫でた跡",     "satoshi_line": "ページの裏側に、指の跡が"},
 	"pillow_stain":  {"label": "枕カバーの白濁した飛沫",     "satoshi_line": "枕カバーに、白濁した飛沫が、点々と"},
 	"cover_finger":  {"label": "表紙の指の形の白い染み",     "satoshi_line": "表紙に、指の形の白い染みが"},
 	"margin_stain":  {"label": "余白の白濁した染み",         "satoshi_line": "余白に、白濁した染みが、点々と"},
+	# === MISS 側（ありきたりの痕跡、デコイ）===
+	"bookmark":      {"label": "折り込まれた栞",             "satoshi_line": "栞が、折り込まれて"},
+	"wear":          {"label": "角の擦り切れ",               "satoshi_line": "角に、擦り切れが"},
+	"dust":          {"label": "表紙の埃",                   "satoshi_line": "表紙に、薄く埃が"},
+	"fold":          {"label": "ページの折り目",             "satoshi_line": "ページに、小さな折り目が"},
+	"flower":        {"label": "ページに挟まった押し花",     "satoshi_line": "ページの間に、押し花が"},
+	"binding":       {"label": "装丁の解れ",                 "satoshi_line": "装丁の縁に、解れが"},
+	"gilt":          {"label": "金箔の剥がれ",               "satoshi_line": "表紙の金箔に、剥がれが"},
+	"cord":          {"label": "栞紐の擦り跡",               "satoshi_line": "栞紐の通り道に、擦り跡が"},
 }
-const EVIDENCE_KEYS := ["page_stain", "finger_trace", "pillow_stain", "cover_finger", "margin_stain"]
+const HIT_EVIDENCE_KEYS := ["page_stain", "finger_trace", "pillow_stain", "cover_finger", "margin_stain"]
+const MISS_EVIDENCE_KEYS := ["bookmark", "wear", "dust", "fold", "flower", "binding", "gilt", "cord"]
 
 # --- 正解組み合わせ 7 件 ---
 # 章×物証で 5×5 = 25 セル中、7 セルが正解。テーマ重複を排除した構成。
@@ -473,7 +503,7 @@ func _make_column_header(text: String, pos: Vector2):
 # === 選択肢ピック（毎ターン HIT 1 + MISS 3、両軸とも 4 択）===
 
 func _pick_current_choices():
-	# 1. HIT: 未使用の VALID_COMBOS から 1 件 → これがそのターンの「正解の組み合わせ」
+	# 1. HIT: 未使用の VALID_COMBOS から 1 件 → そのターンの「正解の組み合わせ」
 	var hit_avail: Array = []
 	for combo in VALID_COMBOS:
 		var key: String = "%s|%s" % [combo.get("chapter", ""), combo.get("evidence", "")]
@@ -487,50 +517,26 @@ func _pick_current_choices():
 	var hit_ch: String = String(hit_combo.get("chapter", ""))
 	var hit_ev: String = String(hit_combo.get("evidence", ""))
 
-	# 2. MISS: 「ハズレの組み合わせ」(VALID_COMBOS にない 18 セル) からサンプリング。
-	#    決して正解のグループ (VALID_COMBOS) からは選ばない。
-	#    HIT の章/物証も MISS 候補から除外（章ボタン同士・物証ボタン同士の重複防止）。
-	var invalid_pairs: Array = []
-	for ch in CHAPTER_KEYS:
-		if ch == hit_ch:
-			continue
-		for ev in EVIDENCE_KEYS:
-			if ev == hit_ev:
-				continue
-			if not _is_valid_combo(ch, ev):
-				invalid_pairs.append({"chapter": ch, "evidence": ev})
+	# 2. MISS の章/物証は **必ず MISS 専用プールから** 引く（HIT 側からは決して引かない）。
+	#    MISS_CHAPTER_KEYS / MISS_EVIDENCE_KEYS のキーは VALID_COMBOS に一切登場しないので、
+	#    4×4 グリッドの中で正解になりうるのは HIT 章 × HIT 物証 の 1 セルだけになる。
+	var miss_chs: Array = MISS_CHAPTER_KEYS.duplicate()
+	miss_chs.shuffle()
+	miss_chs = miss_chs.slice(0, 3)
 
-	# 3. 章キーと物証キーが互いに重複しないよう 3 つの不正解ペアを抽出。
-	#    Rejection sampling（最大 100 試行）。データ量的に必ず成功する。
-	var miss_pairs: Array = []
-	var attempts: int = 0
-	while attempts < 100:
-		attempts += 1
-		invalid_pairs.shuffle()
-		var trial: Array = invalid_pairs.slice(0, 3)
-		if trial.size() < 3:
-			break  # データ不足
-		var chs: Dictionary = {}
-		var evs: Dictionary = {}
-		for p in trial:
-			chs[p.get("chapter", "")] = true
-			evs[p.get("evidence", "")] = true
-		if chs.size() == 3 and evs.size() == 3:
-			miss_pairs = trial
-			break
+	var miss_evs: Array = MISS_EVIDENCE_KEYS.duplicate()
+	miss_evs.shuffle()
+	miss_evs = miss_evs.slice(0, 3)
 
-	# Fallback: 重複を許容してでも 3 ペア揃える
-	if miss_pairs.is_empty() and invalid_pairs.size() >= 3:
-		invalid_pairs.shuffle()
-		miss_pairs = invalid_pairs.slice(0, 3)
-
-	# 4. 章 4 件・物証 4 件を構築してシャッフル
+	# 3. 章 4 件・物証 4 件を構築してシャッフル
 	var chapter_keys: Array = [hit_ch]
-	var evidence_keys: Array = [hit_ev]
-	for p in miss_pairs:
-		chapter_keys.append(String(p.get("chapter", "")))
-		evidence_keys.append(String(p.get("evidence", "")))
+	for k in miss_chs:
+		chapter_keys.append(String(k))
 	chapter_keys.shuffle()
+
+	var evidence_keys: Array = [hit_ev]
+	for k in miss_evs:
+		evidence_keys.append(String(k))
 	evidence_keys.shuffle()
 
 	_current_chapter_keys = chapter_keys
