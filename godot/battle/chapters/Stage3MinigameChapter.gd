@@ -146,8 +146,8 @@ const CHOICE_POOL := [
 ]
 
 # --- ピー助任せ（直球 BL 妄想、減衰あり）---
-# 1 回目 -50、2 回目 -20、3 回目以降 -5
-const PISUKE_DELTAS := [-50, -20, -5]
+# 1 回目 -40、2 回目 -20、3 回目以降 -10（_common_rules.md 参照）
+const PISUKE_DELTAS := [-40, -20, -10]
 
 const PISUKE_LINES := [
 	{
