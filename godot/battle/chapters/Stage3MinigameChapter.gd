@@ -3,14 +3,17 @@ extends BattleChapterBase
 # ST3「聖女マグダレナ」ミニゲーム（2 軸組み合わせ式）
 #
 # 設計：
-# - 本のジャンル列（5 択）× 物証列（5 択）＝ 25 通りの組み合わせ
-# - そのうち **7 通りが正解**（テーマ重複を排除した構成）
-# - 毎ターン プレイヤーが本＋物証を 1 つずつ選び、決定で攻撃
-# - HIT (-40)：未使用の正解組み合わせを引いた場合 → 妄想直撃 ＋ ピー助の畳みかけ追撃
-# - MISS (+5)：不正解の組み合わせ ＋ 既使用の正解（どちらも生半可な反応）
+# - 本のジャンル（5 種）× 物証（5 種）＝ 25 通りの組み合わせ空間
+# - そのうち **7 通りが正解**（VALID_COMBOS、テーマ重複を排除した構成）
+# - 毎ターンの提示（共通ルール `_common_rules.md` 準拠）：
+#     * 未使用の VALID_COMBOS から 1 件 = HIT 候補（毎ターン必ず 1 つ含む）
+#     * 不正解セル 18 通りから 3 件   = MISS 候補（ありきたりの組合せ）
+#     * 4 件をシャッフル + ピー助任せ = 5 ボタン
+#   → プレイヤーは「テーマが噛み合うペア」を 4 つの中から 1 つ選ぶ
+# - HIT (-40)：正解組み合わせを引いた場合 → 妄想直撃 ＋ ピー助の畳みかけ追撃
+# - MISS (+5)：的外れな組み合わせ → シラけ反応
 # - 3 HIT で勝利（信仰の威厳 100 → 0）／130 到達で敗北
 # - ピー助任せ：未使用の正解組み合わせから 1 つランダム選出（HIT 確定）
-# - 共通ルール (`docs/minigame_designs/_common_rules.md`) に準拠
 # - 設計書 `docs/minigame_designs/st3_magdalena.md` の Decision Log を参照
 #   （2026-04-29: ST2 から組み合わせ機構を移動）
 
@@ -179,33 +182,29 @@ func setup_scene(bt):
 
 # --- 状態 ---
 var _gauge: int = GAUGE_START
-var _selected_chapter: String = ""
-var _selected_evidence: String = ""
 var _used_combo_keys: Array = []  # "bath|page_stain" 形式
 var _turns_done: int = 0  # ピー助ロック用（1 ターン自力プレイ後解放）
+var _current_choices: Array = []  # 各要素: {"chapter":..., "evidence":..., "is_hit":bool, "is_pisuke":bool, "label":...}
+var _last_miss_keys: Array = []   # 直前ターンの MISS 重複回避用
 
 # --- UI 参照 ---
 var _ui_root: Control = null
 var _gauge_bar: ColorRect = null
 var _gauge_label: Label = null
 var _gauge_stack: Control = null
-var _chapter_buttons: Array[Button] = []
-var _evidence_buttons: Array[Button] = []
-var _decide_button: Button = null
-var _pisuke_button: Button = null
+var _choice_buttons: Array[Button] = []
 
-signal _action_triggered(action: String)
+signal _choice_emitted(idx: int)
 
 func minigame(bt):
 	_gauge = GAUGE_START
 	_used_combo_keys.clear()
 	_turns_done = 0
-	_selected_chapter = ""
-	_selected_evidence = ""
+	_current_choices.clear()
+	_last_miss_keys.clear()
 
 	_build_ui(bt)
 	_update_gauge_display()
-	_set_buttons_active(false)
 	_set_buttons_visible(false)
 	await bt.wait(0.3)
 
@@ -213,22 +212,22 @@ func minigame(bt):
 	await _play_scripted_opening(bt)
 
 	while _gauge > 0 and _gauge < GAUGE_MAX:
-		_selected_chapter = ""
-		_selected_evidence = ""
-		_refresh_button_highlights()
+		_pick_current_choices()
+		_refresh_choice_buttons()
 		_set_buttons_visible(true)
-		_set_buttons_active(true)
+		_set_buttons_enabled(true)
 
-		var action: String = await _action_triggered
+		var idx: int = await _choice_emitted
 
-		_set_buttons_active(false)
-		_set_buttons_visible(false)
+		_set_buttons_enabled(false)
 
-		if action == "_pisuke":
+		var picked: Dictionary = _current_choices[idx]
+		if picked.get("is_pisuke", false):
 			await _apply_pisuke(bt)
 		else:
-			await _apply_choice(bt, _selected_chapter, _selected_evidence)
+			await _apply_choice(bt, picked.get("chapter", ""), picked.get("evidence", ""))
 		_turns_done += 1
+		_set_buttons_visible(false)
 
 	_teardown_ui()
 
@@ -395,72 +394,137 @@ func _build_ui(bt: Node):
 	_ui_root.add_child(_gauge_stack)
 	_build_gauge()
 
-	# 列ヘッダー
-	_make_column_header("本のジャンル", Vector2(40, 120))
-	_make_column_header("物証",         Vector2(490, 120))
+	# 4 件のペアボタン + ピー助任せ = 5 ボタン（共通ルール準拠）
+	var btn_root := VBoxContainer.new()
+	btn_root.position = Vector2(40, 170)
+	btn_root.size = Vector2(900, 400)
+	btn_root.add_theme_constant_override("separation", 8)
+	_ui_root.add_child(btn_root)
 
-	# 本ボタン（左列・5 個）
-	var book_root := VBoxContainer.new()
-	book_root.position = Vector2(40, 170)
-	book_root.size = Vector2(440, 320)
-	book_root.add_theme_constant_override("separation", 6)
-	_ui_root.add_child(book_root)
+	_choice_buttons.clear()
+	for i in range(5):
+		var btn := _make_choice_button("")
+		btn.custom_minimum_size = Vector2(900, 56)
+		var idx_capture: int = i
+		btn.pressed.connect(func(): _on_choice_pressed(idx_capture))
+		btn_root.add_child(btn)
+		_choice_buttons.append(btn)
 
-	_chapter_buttons.clear()
-	for i in range(CHAPTER_KEYS.size()):
-		var key: String = CHAPTER_KEYS[i]
-		var info: Dictionary = CHAPTERS.get(key, {})
-		var btn := _make_choice_button("[%d] %s" % [i + 1, info.get("label", key)])
-		var key_capture: String = key
-		btn.pressed.connect(func(): _on_chapter_pressed(key_capture))
-		book_root.add_child(btn)
-		_chapter_buttons.append(btn)
+# === 選択肢ピック（毎ターン HIT 1 + MISS 3 + ピー助任せ）===
 
-	# 物証ボタン（右列・5 個）
-	var evidence_root := VBoxContainer.new()
-	evidence_root.position = Vector2(490, 170)
-	evidence_root.size = Vector2(440, 320)
-	evidence_root.add_theme_constant_override("separation", 6)
-	_ui_root.add_child(evidence_root)
+func _pick_current_choices():
+	# 1. HIT: 未使用の VALID_COMBOS から 1 件
+	var hit_avail: Array = []
+	for combo in VALID_COMBOS:
+		var key: String = "%s|%s" % [combo.get("chapter", ""), combo.get("evidence", "")]
+		if not _used_combo_keys.has(key):
+			hit_avail.append(combo)
+	# 既に全使用済みなら fallback で全件から
+	if hit_avail.is_empty():
+		for combo in VALID_COMBOS:
+			hit_avail.append(combo)
+	hit_avail.shuffle()
+	var hit_combo: Dictionary = hit_avail[0]
+	var hit_key: String = "%s|%s" % [hit_combo.get("chapter", ""), hit_combo.get("evidence", "")]
 
-	_evidence_buttons.clear()
-	for i in range(EVIDENCE_KEYS.size()):
-		var key: String = EVIDENCE_KEYS[i]
-		var info: Dictionary = EVIDENCES.get(key, {})
-		var btn := _make_choice_button("[%d] %s" % [i + 6, info.get("label", key)])
-		var key_capture: String = key
-		btn.pressed.connect(func(): _on_evidence_pressed(key_capture))
-		evidence_root.add_child(btn)
-		_evidence_buttons.append(btn)
+	# 2. MISS: 25 セルから VALID と HIT を除いた候補から 3 件
+	var miss_avail: Array = []
+	for ch_key in CHAPTER_KEYS:
+		for ev_key in EVIDENCE_KEYS:
+			var k: String = "%s|%s" % [ch_key, ev_key]
+			if k == hit_key:
+				continue
+			if _is_valid_combo(ch_key, ev_key):
+				continue  # MISS は不正解セルだけ
+			miss_avail.append({"chapter": ch_key, "evidence": ev_key})
+	# 直前ターン MISS と重複回避（候補が足りなければ無視）
+	var miss_avail_filtered: Array = []
+	for m in miss_avail:
+		var mk: String = "%s|%s" % [m.get("chapter"), m.get("evidence")]
+		if not _last_miss_keys.has(mk):
+			miss_avail_filtered.append(m)
+	if miss_avail_filtered.size() >= 3:
+		miss_avail = miss_avail_filtered
+	miss_avail.shuffle()
+	var miss_picks: Array = miss_avail.slice(0, 3)
+	_last_miss_keys.clear()
+	for m in miss_picks:
+		_last_miss_keys.append("%s|%s" % [m.get("chapter"), m.get("evidence")])
 
-	# 決定 + ピー助任せ（下、横並び）
-	var bottom_root := HBoxContainer.new()
-	bottom_root.position = Vector2(40, 510)
-	bottom_root.size = Vector2(900, 56)
-	bottom_root.add_theme_constant_override("separation", 16)
-	_ui_root.add_child(bottom_root)
+	# 3. 4 件をシャッフルして提示順を決定
+	var entries: Array = []
+	entries.append({
+		"chapter": hit_combo.get("chapter", ""),
+		"evidence": hit_combo.get("evidence", ""),
+		"is_hit": true,
+		"is_pisuke": false,
+	})
+	for m in miss_picks:
+		entries.append({
+			"chapter": m.get("chapter", ""),
+			"evidence": m.get("evidence", ""),
+			"is_hit": false,
+			"is_pisuke": false,
+		})
+	entries.shuffle()
 
-	_decide_button = _make_choice_button("[決定] この組み合わせで攻撃")
-	_decide_button.custom_minimum_size = Vector2(440, 56)
-	_decide_button.pressed.connect(func(): _on_decide_pressed())
-	bottom_root.add_child(_decide_button)
+	# 4. ピー助任せを 5 番目に追加
+	var pisuke_locked: bool = _turns_done < 1
+	entries.append({
+		"is_pisuke": true,
+		"locked": pisuke_locked,
+	})
 
-	_pisuke_button = _make_choice_button("[ピー助任せ]")
-	_pisuke_button.custom_minimum_size = Vector2(440, 56)
-	_pisuke_button.pressed.connect(func(): _on_pisuke_pressed())
-	bottom_root.add_child(_pisuke_button)
+	_current_choices = entries
 
-func _make_column_header(text: String, pos: Vector2):
-	var label := Label.new()
-	label.text = text
-	label.position = pos
-	label.size = Vector2(440, 36)
-	label.add_theme_font_size_override("font_size", 24)
-	label.add_theme_color_override("font_color", Color(0.95, 0.85, 0.55))
-	label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.9))
-	label.add_theme_constant_override("shadow_outline_size", 4)
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	_ui_root.add_child(label)
+func _is_valid_combo(chapter: String, evidence: String) -> bool:
+	for combo in VALID_COMBOS:
+		if combo.get("chapter", "") == chapter and combo.get("evidence", "") == evidence:
+			return true
+	return false
+
+func _refresh_choice_buttons():
+	for i in range(_choice_buttons.size()):
+		var btn: Button = _choice_buttons[i]
+		if i >= _current_choices.size():
+			btn.visible = false
+			continue
+		btn.visible = true
+		var c: Dictionary = _current_choices[i]
+		if c.get("is_pisuke", false):
+			var locked: bool = bool(c.get("locked", false))
+			if locked:
+				btn.text = "[%d] ピー助に任せる（残り 1 ターン）" % (i + 1)
+			else:
+				btn.text = "[%d] ピー助に任せる" % (i + 1)
+		else:
+			var ch_label: String = CHAPTERS.get(c.get("chapter", ""), {}).get("label", "")
+			var ev_label: String = EVIDENCES.get(c.get("evidence", ""), {}).get("label", "")
+			btn.text = "[%d] %s × %s" % [i + 1, ch_label, ev_label]
+
+func _set_buttons_enabled(active: bool):
+	for i in range(_choice_buttons.size()):
+		var btn: Button = _choice_buttons[i]
+		if i >= _current_choices.size():
+			btn.disabled = true
+			continue
+		var c: Dictionary = _current_choices[i]
+		if c.get("is_pisuke", false) and bool(c.get("locked", false)):
+			btn.disabled = true
+		else:
+			btn.disabled = not active
+
+func _set_buttons_visible(visible: bool):
+	for btn in _choice_buttons:
+		btn.visible = visible
+
+func _on_choice_pressed(idx: int):
+	if idx < 0 or idx >= _current_choices.size():
+		return
+	var c: Dictionary = _current_choices[idx]
+	if c.get("is_pisuke", false) and bool(c.get("locked", false)):
+		return
+	_choice_emitted.emit(idx)
 
 func _build_gauge():
 	var frame := Panel.new()
@@ -562,10 +626,7 @@ func _teardown_ui():
 	_gauge_bar = null
 	_gauge_label = null
 	_gauge_stack = null
-	_chapter_buttons.clear()
-	_evidence_buttons.clear()
-	_decide_button = null
-	_pisuke_button = null
+	_choice_buttons.clear()
 
 func _update_gauge_display():
 	if not _gauge_bar:
@@ -587,59 +648,3 @@ func _gauge_color(value: int) -> Color:
 		return Color(0.90, 0.78, 0.20)
 	else:
 		return Color(0.30, 0.78, 0.30)
-
-func _set_buttons_active(active: bool):
-	for btn in _chapter_buttons:
-		btn.disabled = not active
-	for btn in _evidence_buttons:
-		btn.disabled = not active
-	if _decide_button:
-		_decide_button.disabled = not active or _selected_chapter.is_empty() or _selected_evidence.is_empty()
-	if _pisuke_button:
-		# ピー助は 1 ターン自力プレイ後に解放（2 ターン目から使用可）
-		if not active:
-			_pisuke_button.disabled = true
-		else:
-			_pisuke_button.disabled = (_turns_done < 1)
-			if _turns_done >= 1:
-				_pisuke_button.text = "[ピー助任せ]"
-			else:
-				_pisuke_button.text = "[ピー助任せ](残り 1 ターン)"
-
-func _set_buttons_visible(visible: bool):
-	for btn in _chapter_buttons:
-		btn.visible = visible
-	for btn in _evidence_buttons:
-		btn.visible = visible
-	if _decide_button:
-		_decide_button.visible = visible
-	if _pisuke_button:
-		_pisuke_button.visible = visible
-
-func _refresh_button_highlights():
-	for i in range(_chapter_buttons.size()):
-		var key: String = CHAPTER_KEYS[i]
-		_chapter_buttons[i].text = "[%d] %s%s" % [i + 1, "▶ " if key == _selected_chapter else "", CHAPTERS.get(key, {}).get("label", key)]
-	for i in range(_evidence_buttons.size()):
-		var key: String = EVIDENCE_KEYS[i]
-		_evidence_buttons[i].text = "[%d] %s%s" % [i + 6, "▶ " if key == _selected_evidence else "", EVIDENCES.get(key, {}).get("label", key)]
-	if _decide_button:
-		_decide_button.disabled = _selected_chapter.is_empty() or _selected_evidence.is_empty()
-
-func _on_chapter_pressed(key: String):
-	_selected_chapter = key
-	_refresh_button_highlights()
-
-func _on_evidence_pressed(key: String):
-	_selected_evidence = key
-	_refresh_button_highlights()
-
-func _on_decide_pressed():
-	if _selected_chapter.is_empty() or _selected_evidence.is_empty():
-		return
-	_action_triggered.emit("_combo")
-
-func _on_pisuke_pressed():
-	if _turns_done < 1:
-		return
-	_action_triggered.emit("_pisuke")
