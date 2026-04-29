@@ -99,17 +99,19 @@ func _test_stage2_miss_choice_labels_fit() -> bool:
 # --- Stage3 テスト ---
 
 func _test_stage3_scenes_fit() -> bool:
-	# 組み合わせ式：CHAPTERS / EVIDENCES のサトシ朗読 + VALID_COMBOS の
-	# マグダレナ反応・ピー助畳みかけ・ピーリーがバブル幅・行数に収まるか検証
+	# 組み合わせ式：CHAPTERS のタイトル朗読 + 引用朗読、EVIDENCES の物証提示、
+	# VALID_COMBOS のマグダレナ反応・ピー助畳みかけ・畳みかけ後反応がバブルに収まるか検証
 	var chapter = preload("res://battle/chapters/Stage3MinigameChapter.gd").new()
 	var failures: Array = []
 	for key in chapter.CHAPTERS.keys():
 		var info: Dictionary = chapter.CHAPTERS[key]
-		var line: String = "サトシ:\n聖女マグダレナ様。\n%s より。" % info.get("satoshi_line", "")
-		_check_text("st3.chapter[%s]" % key, line, failures)
+		var title_line: String = "サトシ:\n聖女マグダレナ様。\n%s より。" % info.get("label", "")
+		_check_text("st3.chapter[%s].title" % key, title_line, failures)
+		var excerpt_line: String = "サトシ:\n「%s」" % info.get("excerpt", "")
+		_check_text("st3.chapter[%s].excerpt" % key, excerpt_line, failures)
 	for key in chapter.EVIDENCES.keys():
 		var info: Dictionary = chapter.EVIDENCES[key]
-		var line: String = "サトシ:\n%s、ございます。" % info.get("satoshi_line", "")
+		var line: String = "サトシ:\n%s、ございます。" % info.get("description", "")
 		_check_text("st3.evidence[%s]" % key, line, failures)
 	for i in range(chapter.VALID_COMBOS.size()):
 		var combo: Dictionary = chapter.VALID_COMBOS[i]

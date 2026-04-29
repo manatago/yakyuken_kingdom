@@ -41,20 +41,20 @@ const MISS_DELTA := 5
 # MISS_CHAPTER_KEYS を使い分け、MISS は決して HIT 側から引かない。
 const CHAPTERS := {
 	# === HIT 側（マグダレナの自選集の章、いずれかが VALID_COMBOS に出る）===
-	"bath":     {"label": "「湯浴み」章",         "satoshi_line": "「湯浴み」章"},
-	"guardian": {"label": "「相互加護」章",       "satoshi_line": "「相互加護」章"},
-	"oath":     {"label": "「朝露の誓い」章",     "satoshi_line": "「朝露の誓い」章"},
-	"chest":    {"label": "「胸筋と誓約」章",     "satoshi_line": "「胸筋と誓約」章"},
-	"draft":    {"label": "「書きかけ草稿」章",   "satoshi_line": "「書きかけ草稿」章"},
+	"bath":     {"label": "「湯浴み」章",         "excerpt": "湯気立ち昇る浴場で、鍛えられた背筋が──"},
+	"guardian": {"label": "「相互加護」章",       "excerpt": "戦友の傷を労る手つきの優しさ──"},
+	"oath":     {"label": "「朝露の誓い」章",     "excerpt": "二人きりの夜明けに、指を重ねて──"},
+	"chest":    {"label": "「胸筋と誓約」章",     "excerpt": "鍛え抜かれた胸を寄せ合い、無言の誓いを──"},
+	"draft":    {"label": "「書きかけ草稿」章",   "excerpt": "汗だくで鍛錬し、もつれ合う二人の体──"},
 	# === MISS 側（ありきたりの本、デコイ）===
-	"war":      {"label": "『聖戦の譜』第1章",     "satoshi_line": "『聖戦の譜』第1章"},
-	"history":  {"label": "『建国記』第5章",       "satoshi_line": "『建国記』第5章"},
-	"morals":   {"label": "『道徳論』第2章",       "satoshi_line": "『道徳論』第2章"},
-	"mary":     {"label": "『聖母マリア讃歌』",   "satoshi_line": "『聖母マリア讃歌』"},
-	"martyr":   {"label": "『殉教者録』最終章",   "satoshi_line": "『殉教者録』最終章"},
-	"prayer":   {"label": "『祈祷集』朝の祈り",   "satoshi_line": "『祈祷集』朝の祈り"},
-	"mercy":    {"label": "『神の慈愛』序章",     "satoshi_line": "『神の慈愛』序章"},
-	"repent":   {"label": "『懺悔の書』序章",     "satoshi_line": "『懺悔の書』序章"},
+	"war":      {"label": "『聖戦の譜』第1章",     "excerpt": "勇敢な騎士は盾を構えた──"},
+	"history":  {"label": "『建国記』第5章",       "excerpt": "王は国を統べると誓った──"},
+	"morals":   {"label": "『道徳論』第2章",       "excerpt": "節制こそ徳の礎──"},
+	"mary":     {"label": "『聖母マリア讃歌』",   "excerpt": "汚れなきマリアよ、我らを──"},
+	"martyr":   {"label": "『殉教者録』最終章",   "excerpt": "主のために血を流し、天国へ昇った──"},
+	"prayer":   {"label": "『祈祷集』朝の祈り",   "excerpt": "主よ、わが魂を御許に──"},
+	"mercy":    {"label": "『神の慈愛』序章",     "excerpt": "神は万物を愛で包みたまう──"},
+	"repent":   {"label": "『懺悔の書』序章",     "excerpt": "罪深き者よ、膝をつきなさい──"},
 }
 const HIT_CHAPTER_KEYS := ["bath", "guardian", "oath", "chest", "draft"]
 const MISS_CHAPTER_KEYS := ["war", "history", "morals", "mary", "martyr", "prayer", "mercy", "repent"]
@@ -64,20 +64,20 @@ const MISS_CHAPTER_KEYS := ["war", "history", "morals", "mary", "martyr", "praye
 # ありきたりで決して VALID_COMBOS に登場しないデコイ。
 const EVIDENCES := {
 	# === HIT 側（VALID_COMBOS で使用される示唆的物証）===
-	"page_stain":    {"label": "ページ三十七行目の白い滲み", "satoshi_line": "ページ三十七行目に、白い滲みが"},
-	"finger_trace":  {"label": "ページ裏の指で撫でた跡",     "satoshi_line": "ページの裏側に、指の跡が"},
-	"pillow_stain":  {"label": "枕カバーの白濁した飛沫",     "satoshi_line": "枕カバーに、白濁した飛沫が、点々と"},
-	"cover_finger":  {"label": "表紙の指の形の白い染み",     "satoshi_line": "表紙に、指の形の白い染みが"},
-	"margin_stain":  {"label": "余白の白濁した染み",         "satoshi_line": "余白に、白濁した染みが、点々と"},
+	"page_stain":    {"label": "ページ三十七行目の白い滲み", "description": "開いた一節、白い液体が散った跡"},
+	"finger_trace":  {"label": "ページ裏の指で撫でた跡",     "description": "何度も読み返した指の脂"},
+	"pillow_stain":  {"label": "枕カバーの白濁した飛沫",     "description": "ベッドで読みながら飛んだ白濁"},
+	"cover_finger":  {"label": "表紙の指の形の白い染み",     "description": "二本指の形に残った白濁の染み"},
+	"margin_stain":  {"label": "余白の白濁した染み",         "description": "ページ余白に点々と落ちた白濁"},
 	# === MISS 側（ありきたりの痕跡、デコイ）===
-	"bookmark":      {"label": "折り込まれた栞",             "satoshi_line": "栞が、折り込まれて"},
-	"wear":          {"label": "角の擦り切れ",               "satoshi_line": "角に、擦り切れが"},
-	"dust":          {"label": "表紙の埃",                   "satoshi_line": "表紙に、薄く埃が"},
-	"fold":          {"label": "ページの折り目",             "satoshi_line": "ページに、小さな折り目が"},
-	"flower":        {"label": "ページに挟まった押し花",     "satoshi_line": "ページの間に、押し花が"},
-	"binding":       {"label": "装丁の解れ",                 "satoshi_line": "装丁の縁に、解れが"},
-	"gilt":          {"label": "金箔の剥がれ",               "satoshi_line": "表紙の金箔に、剥がれが"},
-	"cord":          {"label": "栞紐の擦り跡",               "satoshi_line": "栞紐の通り道に、擦り跡が"},
+	"bookmark":      {"label": "折り込まれた栞",             "description": "読みかけのページに挟まれた栞"},
+	"wear":          {"label": "角の擦り切れ",               "description": "本の角に出来た自然な擦り切れ"},
+	"dust":          {"label": "表紙の埃",                   "description": "薄く積もった埃"},
+	"fold":          {"label": "ページの折り目",             "description": "印を付けるための小さな折り目"},
+	"flower":        {"label": "ページに挟まった押し花",     "description": "間に挟まれて乾いた押し花"},
+	"binding":       {"label": "装丁の解れ",                 "description": "装丁の縁が解れている"},
+	"gilt":          {"label": "金箔の剥がれ",               "description": "表紙装飾の金箔が剥がれた跡"},
+	"cord":          {"label": "栞紐の擦り跡",               "description": "栞紐の通り道に出来た擦り跡"},
 }
 const HIT_EVIDENCE_KEYS := ["page_stain", "finger_trace", "pillow_stain", "cover_finger", "margin_stain"]
 const MISS_EVIDENCE_KEYS := ["bookmark", "wear", "dust", "fold", "flower", "binding", "gilt", "cord"]
@@ -317,11 +317,13 @@ func _apply_choice(bt, chapter: String, evidence: String):
 	var c_info: Dictionary = CHAPTERS.get(chapter, {})
 	var e_info: Dictionary = EVIDENCES.get(evidence, {})
 
-	# サトシの朗読＋物証提示（2 バブル）
+	# サトシの朗読：章タイトル → 引用 → 物証提示（3 バブル）
 	bt.set_bubble_side("bottom-left")
-	bt.narrator_band("サトシ:\n聖女マグダレナ様。\n%s より。" % c_info.get("satoshi_line", ""), "satoshi", "res://assets/ui/speakers/satoshi_gentle.png")
+	bt.narrator_band("サトシ:\n聖女マグダレナ様。\n%s より。" % c_info.get("label", ""), "satoshi", "res://assets/ui/speakers/satoshi_gentle.png")
 	await bt.wait(0.0)
-	bt.narrator_band("サトシ:\n%s、ございます。" % e_info.get("satoshi_line", ""), "satoshi", "res://assets/ui/speakers/satoshi_gentle.png")
+	bt.narrator_band("サトシ:\n「%s」" % c_info.get("excerpt", ""), "satoshi", "res://assets/ui/speakers/satoshi_gentle.png")
+	await bt.wait(0.0)
+	bt.narrator_band("サトシ:\n%s、ございます。" % e_info.get("description", ""), "satoshi", "res://assets/ui/speakers/satoshi_gentle.png")
 	await bt.wait(0.0)
 
 	var combo: Dictionary = _find_valid_combo(chapter, evidence)
@@ -442,15 +444,17 @@ func _build_ui(bt: Node):
 	_make_column_header("物証",         Vector2(490, 120))
 
 	# 章ボタン（左列・4 個） — 中身は毎ターン _refresh_button_labels で差し替え
+	# 2 行表示（タイトル + 引用）に合わせて高さを増やす
 	var book_root := VBoxContainer.new()
 	book_root.position = Vector2(40, 170)
-	book_root.size = Vector2(440, 280)
+	book_root.size = Vector2(440, 380)
 	book_root.add_theme_constant_override("separation", 6)
 	_ui_root.add_child(book_root)
 
 	_chapter_buttons.clear()
 	for i in range(4):
 		var btn := _make_choice_button("")
+		btn.custom_minimum_size = Vector2(440, 88)
 		var idx_capture: int = i
 		btn.pressed.connect(func(): _on_chapter_button_pressed(idx_capture))
 		book_root.add_child(btn)
@@ -459,13 +463,14 @@ func _build_ui(bt: Node):
 	# 物証ボタン（右列・4 個）
 	var evidence_root := VBoxContainer.new()
 	evidence_root.position = Vector2(490, 170)
-	evidence_root.size = Vector2(440, 280)
+	evidence_root.size = Vector2(440, 380)
 	evidence_root.add_theme_constant_override("separation", 6)
 	_ui_root.add_child(evidence_root)
 
 	_evidence_buttons.clear()
 	for i in range(4):
 		var btn := _make_choice_button("")
+		btn.custom_minimum_size = Vector2(440, 88)
 		var idx_capture: int = i
 		btn.pressed.connect(func(): _on_evidence_button_pressed(idx_capture))
 		evidence_root.add_child(btn)
@@ -473,7 +478,7 @@ func _build_ui(bt: Node):
 
 	# 決定 + ピー助任せ（下、横並び）
 	var bottom_root := HBoxContainer.new()
-	bottom_root.position = Vector2(40, 470)
+	bottom_root.position = Vector2(40, 570)
 	bottom_root.size = Vector2(900, 56)
 	bottom_root.add_theme_constant_override("separation", 16)
 	_ui_root.add_child(bottom_root)
@@ -558,9 +563,11 @@ func _refresh_button_labels():
 			continue
 		btn.visible = true
 		var key: String = _current_chapter_keys[i]
-		var label: String = CHAPTERS.get(key, {}).get("label", key)
+		var info: Dictionary = CHAPTERS.get(key, {})
+		var title: String = info.get("label", key)
+		var excerpt: String = info.get("excerpt", "")
 		var marker: String = "▶ " if key == _selected_chapter else ""
-		btn.text = "[%d] %s%s" % [i + 1, marker, label]
+		btn.text = "[%d] %s%s\n   「%s」" % [i + 1, marker, title, excerpt]
 	for i in range(_evidence_buttons.size()):
 		var btn: Button = _evidence_buttons[i]
 		if i >= _current_evidence_keys.size():
@@ -568,9 +575,11 @@ func _refresh_button_labels():
 			continue
 		btn.visible = true
 		var key: String = _current_evidence_keys[i]
-		var label: String = EVIDENCES.get(key, {}).get("label", key)
+		var info: Dictionary = EVIDENCES.get(key, {})
+		var title: String = info.get("label", key)
+		var desc: String = info.get("description", "")
 		var marker: String = "▶ " if key == _selected_evidence else ""
-		btn.text = "[%d] %s%s" % [i + 5, marker, label]
+		btn.text = "[%d] %s%s\n   %s" % [i + 5, marker, title, desc]
 	if _decide_button:
 		_decide_button.disabled = _selected_chapter.is_empty() or _selected_evidence.is_empty()
 
