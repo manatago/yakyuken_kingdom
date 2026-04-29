@@ -16,9 +16,8 @@ extends BattleChapterBase
 const MAGDALENA_PORTRAIT := "res://assets/characters/stage3/magdalena_001.png"
 const MAGDALENA_ID := "magdalena"
 
-const GAUGE_MAX := 130
-const GAUGE_START := 110       # スクリプト導入前
-const SCRIPTED_BACKFIRE := 10  # 開幕で +10（サトシのとちり）
+const GAUGE_MAX := 130     # 共通リミット（_common_rules.md 参照）
+const GAUGE_START := 100   # 共通基本 start（バックファイアなし）
 
 # --- アイコン ---
 const ICO_SATOSHI_NORMAL     := "res://assets/ui/speakers/satoshi_normal.png"
@@ -269,12 +268,6 @@ func _play_scripted_intro(bt):
 
 	bt.set_bubble_side("right")
 	bt.narrator_band("マグダレナ:\n……ええ。罪人の魂、\nわたくしが受け止めましょう。", MAGDALENA_ID, ICO_MAGDALENA_DEFAULT)
-	await bt.wait(0.0)
-
-	_gauge = clamp(_gauge + SCRIPTED_BACKFIRE, 0, GAUGE_MAX)
-	bt.dialogue_band("narrator", "緊張のあまり、サトシは最初の聖句を噛んでしまった。\n（信仰の威厳 +%d）" % SCRIPTED_BACKFIRE, true)
-	await bt.wait(0.0)
-	bt.hide_dialogue_band()
 	await bt.wait(0.0)
 
 # === 選択肢ピック ===
