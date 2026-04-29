@@ -99,14 +99,18 @@ func _test_stage2_miss_choice_labels_fit() -> bool:
 # --- Stage3 テスト ---
 
 func _test_stage3_scenes_fit() -> bool:
-	# プール式：CHOICE_POOL の各エントリ + PISUKE_LINES の各エントリの
+	# プール式：HIT_POOL / MISS_POOL の各エントリ + PISUKE_LINES の各エントリの
 	# サトシ朗読／マグダレナ反応／ピー助セリフがバブル幅・行数に収まるか検証
 	var chapter = preload("res://battle/chapters/Stage3MinigameChapter.gd").new()
 	var failures: Array = []
-	for i in range(chapter.CHOICE_POOL.size()):
-		var c: Dictionary = chapter.CHOICE_POOL[i]
-		_check_text("st3.pool[%d].satoshi" % i, "サトシ:\n%s" % c.get("satoshi", ""), failures)
-		_check_text("st3.pool[%d].mag" % i, "マグダレナ:\n%s" % c.get("mag", ""), failures)
+	for i in range(chapter.HIT_POOL.size()):
+		var c: Dictionary = chapter.HIT_POOL[i]
+		_check_text("st3.hit[%d].satoshi" % i, "サトシ:\n%s" % c.get("satoshi", ""), failures)
+		_check_text("st3.hit[%d].mag" % i, "マグダレナ:\n%s" % c.get("mag", ""), failures)
+	for i in range(chapter.MISS_POOL.size()):
+		var c: Dictionary = chapter.MISS_POOL[i]
+		_check_text("st3.miss[%d].satoshi" % i, "サトシ:\n%s" % c.get("satoshi", ""), failures)
+		_check_text("st3.miss[%d].mag" % i, "マグダレナ:\n%s" % c.get("mag", ""), failures)
 	for i in range(chapter.PISUKE_LINES.size()):
 		var line: Dictionary = chapter.PISUKE_LINES[i]
 		_check_text("st3.pisuke[%d].opening" % i, "サトシ（ピー助の声色）:\n%s" % line.get("opening", ""), failures)
@@ -138,16 +142,17 @@ func _test_stage5_pisuke_finishes_fit() -> bool:
 	return _report(failures)
 
 func _test_stage3_miss_lines_fit() -> bool:
-	# プール式に MISS 反応はないので、CHOICE_POOL の delta=0/+10/-5 別カバレッジを確認
+	# 共通ルール（_common_rules.md）準拠を確認：
+	#  - HIT_POOL の全エントリが delta=-40
+	#  - MISS_POOL の全エントリが delta=+5
 	var chapter = preload("res://battle/chapters/Stage3MinigameChapter.gd").new()
-	var deltas: Array = []
-	for c in chapter.CHOICE_POOL:
-		deltas.append(int(c.get("delta", 0)))
 	var failures: Array = []
-	if not deltas.has(0):
-		failures.append("CHOICE_POOL に delta=0（的外れ）が無い")
-	if not deltas.has(10):
-		failures.append("CHOICE_POOL に delta=+10（逆効果）が無い")
-	if not deltas.has(-5):
-		failures.append("CHOICE_POOL に delta=-5（軽刺激）が無い")
+	for i in range(chapter.HIT_POOL.size()):
+		var d: int = int(chapter.HIT_POOL[i].get("delta", 0))
+		if d != -40:
+			failures.append("HIT_POOL[%d] の delta が -40 ではない: %d" % [i, d])
+	for i in range(chapter.MISS_POOL.size()):
+		var d: int = int(chapter.MISS_POOL[i].get("delta", 0))
+		if d != 5:
+			failures.append("MISS_POOL[%d] の delta が +5 ではない: %d" % [i, d])
 	return _report(failures)

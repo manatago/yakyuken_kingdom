@@ -2,15 +2,13 @@ extends BattleChapterBase
 
 # ST3「シスター・マグダレナ」ミニゲーム
 #
-# 設計：docs/minigame_designs/st3_magdalena.md 準拠
+# 設計：docs/minigame_designs/_common_rules.md 準拠（HIT 1 + MISS 3 構造）
 # - 信仰の威厳ゲージを 0 にすれば成功、130 で失敗
-# - 毎ターン CHOICE_POOL からランダム 4 択 ＋ ピー助任せ ＝ 5 ボタン
-# - delta 値で効果分け：
-#     的外れ (0)：刺さらない、ゲージ変動なし
-#     逆効果 (+10)：神への帰依・殉教・祈り → 敬虔さ強化
-#     軽刺激 (-5)：筋肉/汗/入浴/共闘 → 萌えスイッチ軽タッチ
-#     ピー助任せ (-50 / -20 / -5)：直球 BL 妄想、減衰あり
-# - サトシは章タイトルだけ見て選ぶ → 的外れ／逆効果を選びがち
+# - 毎ターン HIT_POOL から 1 件 + MISS_POOL から 3 件 = 4 択 ＋ ピー助任せ = 5 ボタン
+# - HIT（正解）: delta=-40、BL 示唆描写でマグダレナの抑圧された妄想を刺激
+# - MISS（ハズレ）: delta=+5、ありきたりの宗教文・聖典・道徳論で刺さらない
+# - ピー助任せ: 直球 BL 妄想、減衰あり (-40 → -20 → -10)
+# - サトシは章タイトルだけ見て選ぶ → ありきたりの題目に流されがち
 # - プレイヤーは引用文を読んで「湯気」「汗」「二人きり」「傷」キーワードを拾う
 
 const MAGDALENA_PORTRAIT := "res://assets/characters/stage3/magdalena_001.png"
@@ -26,13 +24,56 @@ const ICO_SATOSHI_GENTLE     := "res://assets/ui/speakers/satoshi_gentle.png"
 const ICO_SATOSHI_APOLOGETIC := "res://assets/ui/speakers/satoshi_apologetic.png"
 const ICO_MAGDALENA_DEFAULT  := "res://assets/ui/speakers/magdalena_default.png"
 
-# --- 選択肢プール（毎ターン 4 つランダム抽出）---
-const CHOICE_POOL := [
-	# === 的外れ (delta 0) — 刺さらない ===
+# --- HIT_POOL（正解、delta=-40）— BL 示唆描写でマグダレナの抑圧妄想を刺激 ---
+const HIT_POOL := [
+	{
+		"label": "『朝日に汗する若き騎士』第3章 湯浴み",
+		"excerpt": "湯気立ち昇る浴場で、鍛えられた背筋が──",
+		"delta": -40,
+		"satoshi": "聖女マグダレナ様。\n「湯気立ち昇る浴場で、鍛えられた背筋が──」",
+		"mag": "……っ、そ、その章は……\n（頬が真っ赤に染まる）",
+		"explain": "湯気と汗の描写、彼女の妄想を直撃した。",
+	},
+	{
+		"label": "『聖なる鍛錬 第二部』第7章 相互加護",
+		"excerpt": "傷を労る手つきの優しさ──",
+		"delta": -40,
+		"satoshi": "聖女マグダレナ様。\n「傷を労る手つきの優しさ──」",
+		"mag": "……っ、そ、その描写……\n（指先が震えて聖典を取り落としかける）",
+		"explain": "戦友の傷手当描写、指先が震えた。",
+	},
+	{
+		"label": "『双子剣士の朝露』最終章 二人の誓い",
+		"excerpt": "二人きりの夜明けに、指を重ねて──",
+		"delta": -40,
+		"satoshi": "聖女マグダレナ様。\n「二人きりの夜明けに、指を重ねて──」",
+		"mag": "……っ、夜明けの……二人きりの……\n（声が上ずり、息が乱れる）",
+		"explain": "二人きりの誓いの描写、息が乱れた。",
+	},
+	{
+		"label": "『武者修行日記』",
+		"excerpt": "汗だくで鍛錬し、もつれ合う二人の体──",
+		"delta": -40,
+		"satoshi": "聖女マグダレナ様。\n「汗だくで鍛錬し、もつれ合う二人の体──」",
+		"mag": "……っ、も、もつれ合う、二人の体……\n（息を呑み、太腿を擦り合わせる）",
+		"explain": "もつれ合う描写、彼女が太腿を擦り合わせた。",
+	},
+	{
+		"label": "『剣友録』第12章",
+		"excerpt": "同胞の傷を、素手で押さえた──",
+		"delta": -40,
+		"satoshi": "聖女マグダレナ様。\n「同胞の傷を、素手で押さえた──」",
+		"mag": "……っ、素手で、肌に直接……\n（瞳が潤み、唇が震える）",
+		"explain": "素手で肌に触れる描写、瞳が潤んだ。",
+	},
+]
+
+# --- MISS_POOL（ハズレ、delta=+5）— ありきたりの宗教文／道徳論／戦記、刺さらない ---
+const MISS_POOL := [
 	{
 		"label": "『聖戦の譜』第1章",
 		"excerpt": "勇敢な騎士は盾を構えた──",
-		"delta": 0,
+		"delta": 5,
 		"satoshi": "聖女マグダレナ様。\n「勇敢な騎士は盾を構えた──」",
 		"mag": "……勇ましきお話ですわ。",
 		"explain": "戦闘描写は彼女の心に届かない。",
@@ -40,7 +81,7 @@ const CHOICE_POOL := [
 	{
 		"label": "『懺悔の書』序章",
 		"excerpt": "罪深き者よ、膝をつきなさい──",
-		"delta": 0,
+		"delta": 5,
 		"satoshi": "聖女マグダレナ様。\n「罪深き者よ、膝をつきなさい──」",
 		"mag": "……ええ、ご立派な心がけでございます。",
 		"explain": "形式的な訓話、サトシ自身がうろたえる。",
@@ -48,7 +89,7 @@ const CHOICE_POOL := [
 	{
 		"label": "『建国記』第5章",
 		"excerpt": "王は国を統べると誓った──",
-		"delta": 0,
+		"delta": 5,
 		"satoshi": "聖女マグダレナ様。\n「王は国を統べると誓った──」",
 		"mag": "……歴史のお話ですか。",
 		"explain": "政治史で彼女の心は動かない。",
@@ -56,7 +97,7 @@ const CHOICE_POOL := [
 	{
 		"label": "『神の慈愛』序章",
 		"excerpt": "神は万物を愛で包みたまう──",
-		"delta": 0,
+		"delta": 5,
 		"satoshi": "聖女マグダレナ様。\n「神は万物を愛で包みたまう──」",
 		"mag": "……心地よきお言葉ですわ。",
 		"explain": "ありきたりの慈愛訓話、彼女には日常。",
@@ -64,32 +105,31 @@ const CHOICE_POOL := [
 	{
 		"label": "『道徳論』第2章",
 		"excerpt": "節制こそ徳の礎──",
-		"delta": 0,
+		"delta": 5,
 		"satoshi": "聖女マグダレナ様。\n「節制こそ徳の礎──」",
 		"mag": "……至極ごもっとも。",
 		"explain": "道徳論で彼女は微動だにしない。",
 	},
-	# === 逆効果 (delta +10) — 敬虔心が再燃 ===
 	{
 		"label": "『聖典』創世篇",
 		"excerpt": "光あれ──神は仰せられた──",
-		"delta": 10,
+		"delta": 5,
 		"satoshi": "聖女マグダレナ様。\n「光あれ──神は仰せられた──」",
-		"mag": "……素晴らしき朗読ですわ。\n心が洗われる気持ちでございます。",
-		"explain": "聖典そのまま読み、敬虔さが強化された。",
+		"mag": "……素晴らしき朗読ですわ。",
+		"explain": "聖典そのまま読み、敬虔さが揺らがない。",
 	},
 	{
 		"label": "『殉教者録』最終章",
 		"excerpt": "主のために血を流し、天国へ昇った──",
-		"delta": 10,
+		"delta": 5,
 		"satoshi": "聖女マグダレナ様。\n「主のために血を流し、天国へ昇った──」",
-		"mag": "……美しきお話。\n殉教の誉れ、わたくしも続きとうございます。",
+		"mag": "……美しきお話でございますわ。",
 		"explain": "殉教譚で使命感に火がついた。",
 	},
 	{
 		"label": "『祈祷集』朝の祈り",
 		"excerpt": "主よ、わが魂を御許に──",
-		"delta": 10,
+		"delta": 5,
 		"satoshi": "聖女マグダレナ様。\n「主よ、わが魂を御許に──」",
 		"mag": "……ありがたきお祈り。\n心が澄み渡りますわ。",
 		"explain": "祈祷で彼女の信仰が深まった。",
@@ -97,51 +137,10 @@ const CHOICE_POOL := [
 	{
 		"label": "『聖母マリア讃歌』",
 		"excerpt": "汚れなきマリアよ、我らを──",
-		"delta": 10,
+		"delta": 5,
 		"satoshi": "聖女マグダレナ様。\n「汚れなきマリアよ、我らを──」",
-		"mag": "……汚れなき御方への讃歌、\nわたくしの心の支えでございます。",
-		"explain": "聖母讃歌で彼女の敬虔さが固まった。",
-	},
-	# === 軽刺激 (delta -5) — 萌えスイッチ軽タッチ ===
-	{
-		"label": "『朝日に汗する若き騎士』第3章 湯浴み",
-		"excerpt": "湯気立ち昇る浴場で、鍛えられた背筋が──",
-		"delta": -5,
-		"satoshi": "聖女マグダレナ様。\n「湯気立ち昇る浴場で、鍛えられた背筋が──」",
-		"mag": "……っ、そ、その章は……\n（頬がわずかに紅潮）",
-		"explain": "湯気と汗の描写で、わずかに頬が染まった。",
-	},
-	{
-		"label": "『聖なる鍛錬 第二部』第7章 相互加護",
-		"excerpt": "傷を労る手つきの優しさ──",
-		"delta": -5,
-		"satoshi": "聖女マグダレナ様。\n「傷を労る手つきの優しさ──」",
-		"mag": "……っ、そ、その描写は……\n（指先がわずかに震える）",
-		"explain": "戦友の傷手当描写で、指先が震えた。",
-	},
-	{
-		"label": "『双子剣士の朝露』最終章 二人の誓い",
-		"excerpt": "二人きりの夜明けに、指を重ねて──",
-		"delta": -5,
-		"satoshi": "聖女マグダレナ様。\n「二人きりの夜明けに、指を重ねて──」",
-		"mag": "……っ、夜明けの場面は……\n（声が微かに上ずる）",
-		"explain": "二人きりの誓いの描写で、声が上ずった。",
-	},
-	{
-		"label": "『武者修行日記』",
-		"excerpt": "汗だくで鍛錬し、もつれ合う二人の体──",
-		"delta": -5,
-		"satoshi": "聖女マグダレナ様。\n「汗だくで鍛錬し、もつれ合う二人の体──」",
-		"mag": "……っ、もつれ合う……\n（息を呑む）",
-		"explain": "もつれ合う描写で、彼女が息を呑んだ。",
-	},
-	{
-		"label": "『剣友録』第12章",
-		"excerpt": "同胞の傷を、素手で押さえた──",
-		"delta": -5,
-		"satoshi": "聖女マグダレナ様。\n「同胞の傷を、素手で押さえた──」",
-		"mag": "……っ、素手で……\n（瞳が潤む）",
-		"explain": "同胞の傷を素手で押さえる描写、瞳が潤んだ。",
+		"mag": "……汚れなき御方への讃歌、\n心の支えでございます。",
+		"explain": "聖母讃歌で敬虔さが固まった。",
 	},
 ]
 
@@ -175,7 +174,8 @@ var _gauge: int = GAUGE_START
 var _pisuke_used_count: int = 0
 var _pisuke_used_lines: Array = []
 var _current_choices: Array = []
-var _last_pool_indices: Array = []
+var _last_hit_idx: int = -1
+var _last_miss_indices: Array = []
 var _turns_done: int = 0
 
 # --- UI 参照 ---
@@ -273,23 +273,42 @@ func _play_scripted_intro(bt):
 # === 選択肢ピック ===
 
 func _pick_current_choices():
-	var avail: Array = []
-	for i in range(CHOICE_POOL.size()):
-		if not _last_pool_indices.has(i):
-			avail.append(i)
-	if avail.size() < 4:
-		avail.clear()
-		for i in range(CHOICE_POOL.size()):
-			avail.append(i)
-	avail.shuffle()
-	var picked: Array = avail.slice(0, 4)
-	_last_pool_indices = picked.duplicate()
+	# HIT_POOL から 1 件、MISS_POOL から 3 件を抽出してシャッフル提示。
+	# 直前ターンと同じインデックスは可能なら避ける。
+	var hit_avail: Array = []
+	for i in range(HIT_POOL.size()):
+		if i != _last_hit_idx:
+			hit_avail.append(i)
+	if hit_avail.is_empty():
+		for i in range(HIT_POOL.size()):
+			hit_avail.append(i)
+	hit_avail.shuffle()
+	var hit_idx: int = hit_avail[0]
+	_last_hit_idx = hit_idx
 
-	_current_choices.clear()
-	for idx in picked:
-		var c: Dictionary = CHOICE_POOL[idx].duplicate(true)
-		c["pool_idx"] = idx
-		_current_choices.append(c)
+	var miss_avail: Array = []
+	for i in range(MISS_POOL.size()):
+		if not _last_miss_indices.has(i):
+			miss_avail.append(i)
+	if miss_avail.size() < 3:
+		miss_avail.clear()
+		for i in range(MISS_POOL.size()):
+			miss_avail.append(i)
+	miss_avail.shuffle()
+	var miss_picks: Array = miss_avail.slice(0, 3)
+	_last_miss_indices = miss_picks.duplicate()
+
+	var entries: Array = []
+	var hit_entry: Dictionary = HIT_POOL[hit_idx].duplicate(true)
+	hit_entry["is_hit"] = true
+	entries.append(hit_entry)
+	for mi in miss_picks:
+		var miss_entry: Dictionary = MISS_POOL[mi].duplicate(true)
+		miss_entry["is_hit"] = false
+		entries.append(miss_entry)
+	entries.shuffle()
+
+	_current_choices = entries
 
 	var pisuke_locked: bool = _turns_done < 1
 	var pisuke_label: String = "[5] ピー助に任せる"
@@ -310,11 +329,8 @@ func _apply_choice(bt, idx: int):
 		return
 
 	var delta: int = int(choice.get("delta", 0))
-	var sat_ico: String = ICO_SATOSHI_APOLOGETIC
-	if delta < 0:
-		sat_ico = ICO_SATOSHI_GENTLE
-	elif delta > 0:
-		sat_ico = ICO_SATOSHI_NERVOUS
+	var is_hit: bool = bool(choice.get("is_hit", false))
+	var sat_ico: String = ICO_SATOSHI_GENTLE if is_hit else ICO_SATOSHI_APOLOGETIC
 
 	bt.set_bubble_side("bottom-left")
 	bt.narrator_band("サトシ:\n%s" % choice.get("satoshi", ""), "satoshi", sat_ico)
