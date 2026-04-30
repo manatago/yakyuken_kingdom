@@ -794,7 +794,7 @@ func _show_loss_message():
 		_lost_gold = 0
 	if not has_cards and _lost_gold <= 0:
 		return
-	var panel := _create_result_panel("奪われました……", Color(0.9, 0.3, 0.3))
+	var panel := _create_result_panel("奪われました...", Color(0.9, 0.3, 0.3))
 	var vbox: VBoxContainer = panel.get_child(0)
 	if has_cards:
 		for card in _captured_by_opponent:

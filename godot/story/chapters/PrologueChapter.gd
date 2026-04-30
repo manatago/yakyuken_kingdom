@@ -90,7 +90,7 @@ func _build_prologue(b):
 		"position_mode": "offset",
 		"position": [0, 100],
 	})
-	heroine.band("あ、サトシ。こんなとこでブラブラして……また講義サボったでしょ。")
+	heroine.band("あ、サトシ。こんなとこでブラブラして...また講義サボったでしょ。")
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_003.png", {"scale": 0.5})
 	hero.band("みのり？ なんでこっちにいんの。")
 	heroine.set_portrait("res://assets/characters/prologue/char02_pg_002.png", {"scale": 0.5})
@@ -106,11 +106,11 @@ func _build_prologue(b):
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_006.png", {"scale": 0.5, "position": [25, 0]})
 	hero.band("12人の同志な。革命はいつだって少数から始まるんだよ。")
 	heroine.set_portrait("res://assets/characters/prologue/char02_pg_005.png", {"scale": 0.5})
-	heroine.band("……はぁ。あんた去年も単位落としてたでしょ。\nもう後がないんじゃないの？")
+	heroine.band("...はぁ。あんた去年も単位落としてたでしょ。\nもう後がないんじゃないの？")
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_007.png", {"scale": 0.5, "position": [25, 0]})
 	hero.band("へーきへーき。なんとかなるって。")
 	heroine.set_portrait("res://assets/characters/prologue/char02_pg_006.png", {"scale": 0.5})
-	heroine.band("……なんとかなったこと、一度もないじゃない。")
+	heroine.band("...なんとかなったこと、一度もないじゃない。")
 	heroine.set_portrait("res://assets/characters/prologue/char02_pg_007.png", {"scale": 0.5})
 	heroine.band("あっ、もう行かなきゃ。")
 	heroine.set_portrait("res://assets/characters/prologue/char02_pg_008.png", {"scale": 0.5, "position": [150, 200]})
@@ -143,7 +143,7 @@ func _build_prologue(b):
 	# hero.set_portrait("res://assets/characters/prologue/char01_pg_008.png", {"scale": 0.5})
 	hero.band("（部屋はエロゲ箱と政治パンフと教科書の雪崩。俺の人生を縮図みたく語ってくれるインスタレーションアートだ。）")
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_009.png", {"scale": 0.5})
-	hero.band("けど……単位があと三つ足りないのはガチで笑えない。目の前の編集済みセーブデータより、現実の単位をロードし直さないと。")
+	hero.band("けど...単位があと三つ足りないのはガチで笑えない。目の前の編集済みセーブデータより、現実の単位をロードし直さないと。")
 
 	b.narrator_band("スマホが震えた。みのりからのメッセージだ。")
 
@@ -167,11 +167,11 @@ func _build_prologue(b):
 		"exit_duration": 0.8,
 	})
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_010.png")
-	hero.band("……なんでお前が俺の大学の掲示板チェックしてんだよ。")
+	hero.band("...なんでお前が俺の大学の掲示板チェックしてんだよ。")
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_011.png")
-	hero.band("とは打てずに、「調査済み✌」とだけ返した。かっこわる。……ていうか全然調査してなかった。")
+	hero.band("とは打てずに、「調査済み✌」とだけ返した。かっこわる。...ていうか全然調査してなかった。")
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_012.png")
-	hero.band("掲示板……あった。ギリギリ滑り込むしかない。")
+	hero.band("掲示板...あった。ギリギリ滑り込むしかない。")
 	hero.leave({
 		"exit_effect": "fade_slide",
 		"exit_to": "right",
@@ -193,7 +193,7 @@ func _build_prologue(b):
 		"position_mode": "offset",
 		"position": [0, 0],
 	})
-	hero.band("ここが噂の研究施設……SPring-8にそっくりじゃないか。")
+	hero.band("ここが噂の研究施設...SPring-8にそっくりじゃないか。")
 
 	receptionist.appear({
 		"side": "right",
@@ -210,7 +210,7 @@ func _build_prologue(b):
 	receptionist.band("学生さん？ 実験補助のバイトね。はい、これ白衣と防護メガネ。")
 	receptionist.set_portrait("res://assets/characters/prologue/char03_pg_002.png", {"scale": 0.5, "flip": 0})
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_014.png", {"scale": 0.5})
-	hero.band("あ、どうも。えっと、具体的に何をすれば……")
+	hero.band("あ、どうも。えっと、具体的に何をすれば...")
 	receptionist.set_portrait("res://assets/characters/prologue/char03_pg_003.png", {"scale": 0.5, "flip": 0})
 	receptionist.band("簡単よ。制御室に入って、合図があったらボタンを押すだけ。それ以外は絶対に触らないでね。")
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_015.png", {"scale": 0.5})
@@ -285,7 +285,7 @@ func _build_prologue(b):
 		"position_mode": "offset",
 		"position": [50, -300],
 	})
-	hero.band("（身体の輪郭が空気に溶ける。慣性も重力も感じない。加速器って、テレポーターだったのかよ……！）")
+	hero.band("（身体の輪郭が空気に溶ける。慣性も重力も感じない。加速器って、テレポーターだったのかよ...！）")
 	hero.leave({
 		"side": "center",
 		"exit_effect": "shrink",
@@ -331,9 +331,9 @@ func _build_prologue(b):
 		"position_mode": "offset",
 		"position": [0, -0],
 	})
-	hero.band("いてて……。石畳……？ 城壁に塔……ここ、どこだ？")
+	hero.band("いてて...。石畳...？ 城壁に塔...ここ、どこだ？")
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_025.png", {"scale": 0.55})
-	hero.band("なんか中世ヨーロッパみたいな街だな。コスプレイベント？:\nいや、空気が違う。匂いも……リアルすぎる。")
+	hero.band("なんか中世ヨーロッパみたいな街だな。コスプレイベント？:\nいや、空気が違う。匂いも...リアルすぎる。")
 	passerby_female.appear({
 		"side": "right",
 		"appear_effect": "fade_slide",
@@ -357,7 +357,7 @@ func _build_prologue(b):
 	})
 
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_027.png", {"scale": 0.6})
-	hero.band("……うわっ、裸!? 俺、裸じゃねーか！")
+	hero.band("...うわっ、裸!? 俺、裸じゃねーか！")
 	passerby_male.appear({
 		"side": "right",
 		"appear_effect": "fade_slide",
@@ -393,7 +393,7 @@ func _build_prologue(b):
 		"position_mode": "offset",
 		"position": [0, 0],
 	})
-	guard.band("何の騒ぎだ。……おい、そこの露出狂の変態！ 何してやがる。")
+	guard.band("何の騒ぎだ。...おい、そこの露出狂の変態！ 何してやがる。")
 
 
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_030.png", {"scale": 0.6, "flip": 1})
@@ -402,12 +402,12 @@ func _build_prologue(b):
 	guard.band("何言ってやがる。変態なうえに、気がくるっているのか？")
 
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_031.png", {"scale": 0.6, "flip": 1})
-	hero.band("いや待って、ここどこですか？ 日本……だよな？")
+	hero.band("いや待って、ここどこですか？ 日本...だよな？")
 	guard.set_portrait("res://assets/characters/prologue/char04_pg_003.png", {"scale": 0.5, "flip": 1})
 	guard.band("ニホン？ 何を寝ぼけてやがる。ここはヤクケン王国の王都アレクシアだ。")
 
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_032.png", {"scale": 1.05, "flip": 1})
-	hero.band("ヤクケン王国……？ マジの異世界じゃねーか")
+	hero.band("ヤクケン王国...？ マジの異世界じゃねーか")
 	guard.set_portrait("res://assets/characters/prologue/char04_pg_004.png", {"scale": 0.5, "flip": 1})
 	guard.band("おい聞いてんのか！ 王都のど真ん中で裸とは、不敬罪もいいところだ。ちょっとこっちに来い！")
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_033.png", {"scale": 1.05})
@@ -479,16 +479,16 @@ func _build_prologue(b):
 	hero.band("(また変態って...)\nサトシ...です。日本ってところから来た？と思います。")
 
 	matilda.set_portrait("res://assets/characters/prologue/char07_pg_003.png", {"scale": 0.45, "position": [-80, 0]})
-	matilda.band("ニホン？ 聞いたことないね。この大陸の国じゃないのは確かだ。\n……まあ、異界渡りってやつかい。珍しいけど、前例がないわけじゃない。")
+	matilda.band("ニホン？ 聞いたことないね。この大陸の国じゃないのは確かだ。\n...まあ、異界渡りってやつかい。珍しいけど、前例がないわけじゃない。")
 
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_038.png", {"scale": 0.5, "flip": 1})
-	hero.band("異界渡り……？ そういう概念があるんですか。\nあの、ヤクケン王国って番兵の人が言ってたんですけど、ここは一体どういう国なんですか？")
+	hero.band("異界渡り...？ そういう概念があるんですか。\nあの、ヤクケン王国って番兵の人が言ってたんですけど、ここは一体どういう国なんですか？")
 
 	matilda.set_portrait("res://assets/characters/prologue/char07_pg_001.png", {"scale": 0.45, "position": [0, 10]})
 	matilda.band("あんた本当に何も知らないんだね。\nこの大陸で一番でかい国さ。")
 
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_037.png", {"scale": 0.5, "flip": 1})
-	hero.band("国の名前からして嫌な予感しかしないんですけど……。")
+	hero.band("国の名前からして嫌な予感しかしないんですけど...。")
 
 	matilda.set_portrait("res://assets/characters/prologue/char07_pg_004.png", {"scale": 0.45, "position": [-200, 10]})
 	matilda.band("質問の前に、まずは身体検査だ。\n牢に入る奴は全員やる決まりでね。じっとしてな。")
@@ -496,19 +496,19 @@ func _build_prologue(b):
 	b.narrator_band("マチルダが手のひらをサトシの額にかざすと、淡い光が走った。\nだが――")
 
 	matilda.set_portrait("res://assets/characters/prologue/char07_pg_005.png", {"scale": 0.65, "position": [-100, 10]})
-	matilda.band("……エラー？ IDが存在しない……？\nまさか、脳にチップが入っていないの！？")
+	matilda.band("...エラー？ IDが存在しない...？\nまさか、脳にチップが入っていないの！？")
 
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_039.png", {"scale": 0.5, "flip": 1})
 	hero.band("チップ？ 脳に？ な、なんの話ですか？")
 
 	matilda.set_portrait("res://assets/characters/prologue/char07_pg_006.png", {"scale": 0.45, "position": [-120, 0], "flip": 0})
-	matilda.band("この世界の住人は、生まれた時に識別チップを脳に埋め込まれるんだ。身分証であり、戦闘システムへのインターフェースでもある。それがないってことは……本当に異界の人間なんだね、あんた。")
+	matilda.band("この世界の住人は、生まれた時に識別チップを脳に埋め込まれるんだ。身分証であり、戦闘システムへのインターフェースでもある。それがないってことは...本当に異界の人間なんだね、あんた。")
 
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_040.png", {"scale": 0.7, "flip": 1})
-	hero.band("だから最初からそう言ってるじゃないですか……。")
+	hero.band("だから最初からそう言ってるじゃないですか...。")
 
 	matilda.set_portrait("res://assets/characters/prologue/char07_pg_007.png", {"scale": 0.65, "position": [-120, 10], "flip": 0})
-	matilda.band("……しょうがないね。特例だ。")
+	matilda.band("...しょうがないね。特例だ。")
 	b.narrator_band("マチルダは懐から小さな注射器のようなものを取り出した。")
 	matilda.band("旧式の汎用チップだけど、ないよりマシさ。うなじを出しな。ちょっとチクっとするよ。")
 
@@ -558,13 +558,13 @@ func _build_prologue(b):
 	matilda.band("そういうこと。強い奴が出世し、弱い奴は這いつくばる。\n実力主義のわかりやすい世界だろ？")
 
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_045.png", {"scale": 0.5, "side": "left", "flip": 1})
-	hero.band("（確率と読み合い……それ、まさに俺が大学で研究してた分野じゃないか。）")
-	hero.band("（混合戦略のナッシュ均衡、ベイズ推定による相手の手の予測……。\nここでは俺の数学が、そのまま「戦闘力」になるってことか？））")
+	hero.band("（確率と読み合い...それ、まさに俺が大学で研究してた分野じゃないか。）")
+	hero.band("（混合戦略のナッシュ均衡、ベイズ推定による相手の手の予測...。\nここでは俺の数学が、そのまま「戦闘力」になるってことか？））")
 	matilda.set_portrait("res://assets/characters/prologue/char07_pg_010.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
 	matilda.band("おい、なに黙り込んでるんだ。怖気づいたか？")
 
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_046.png", {"scale": 0.5, "side": "left", "flip": 1})
-	hero.band("……いえ、ちょっとワクワクしてき……ました。")
+	hero.band("...いえ、ちょっとワクワクしてき...ました。")
 
 	matilda.set_portrait("res://assets/characters/prologue/char07_pg_011.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
 	matilda.band("は？ 牢屋の中でワクワクとか、やっぱり変態じゃないか。")
@@ -628,10 +628,10 @@ func _build_battle_lose_retry(b):
 	matilda.set_portrait("res://assets/characters/prologue/char07_pg_012.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
 	matilda.band("ふっ、カードは返してやる。\nその代わり、もう一度来な。")
 	matilda.set_portrait("res://assets/characters/prologue/char07_pg_001.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
-	matilda.band("……それとも、このまま尻尾を巻いて帰るかい？")
+	matilda.band("...それとも、このまま尻尾を巻いて帰るかい？")
 
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_045.png", {"scale": 0.5, "side": "left", "flip": 1})
-	hero.band("（くそっ……だが、ここで諦めるわけにはいかない。）")
+	hero.band("（くそっ...だが、ここで諦めるわけにはいかない。）")
 
 
 

@@ -53,12 +53,12 @@ func _report(failures: Array) -> bool:
 func _test_stage2_briefing_fits() -> bool:
 	# Stage2MinigameChapter._play_briefing で出力される 7 メッセージを再現
 	var failures: Array = []
-	_check_text("briefing-1", "レイラ:\n……再検証、開始いたします。\n条件は、前回と同様で。", failures)
-	_check_text("briefing-2", "サトシ（ピー助の声色で）:\n……レイラさん、一つだけ、\n伺ってもよろしいですか。", failures)
-	_check_text("briefing-3", "レイラ:\n……ええ、どうぞ。", failures)
+	_check_text("briefing-1", "レイラ:\n...再検証、開始いたします。\n条件は、前回と同様で。", failures)
+	_check_text("briefing-2", "サトシ（ピー助の声色で）:\n...レイラさん、一つだけ、\n伺ってもよろしいですか。", failures)
+	_check_text("briefing-3", "レイラ:\n...ええ、どうぞ。", failures)
 	_check_text("briefing-4", "サトシ（ピー助の声色で）:\nあなたの所作、見事でした。\nですが、一点だけ、引っかかって。", failures)
 	_check_text("briefing-5", "サトシ（ピー助の声色で）:\n本当は、男に触れたこと、\n一度もないんでしょう？", failures)
-	_check_text("briefing-6", "レイラ:\n……っ、ふざけたことを。\n男の体なんて、何度でも、見てきたわ。", failures)
+	_check_text("briefing-6", "レイラ:\n...っ、ふざけたことを。\n男の体なんて、何度でも、見てきたわ。", failures)
 	_check_text("briefing-7", "サトシ（ピー助の声色で）:\nじゃあ、確かめさせてもらいますね。\n表情を動かさなければ、信じます。", failures)
 	return _report(failures)
 

@@ -111,7 +111,7 @@ func tutorial(bt):
 		bt.unhighlight()
 	elif result == "lose":
 		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_007.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
-		matilda.band("……あんた、パーを出せって言っただろ。")
+		matilda.band("...あんた、パーを出せって言っただろ。")
 		matilda.band("まぁいい、次で取り返しな。", {"append": true})
 	else:
 		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
@@ -148,7 +148,7 @@ func tutorial(bt):
 	# 締め
 	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_005.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
 	matilda.band("これがじゃんけんバトルの基本だ。", {"append": true})
-	matilda.band("カードの使い方、グレードの活かし方……", {"append": true})
+	matilda.band("カードの使い方、グレードの活かし方...", {"append": true})
 	matilda.band("勝つための戦略を考えるのが醍醐味さ。", {"append": true})
 	matilda.band("ルールは理解したか？本番はもっと厳しいからな。", {"append": true})
 
@@ -197,7 +197,7 @@ func outfit_2(bt):
 
 	if result == "win":
 		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_012.png", {"scale": 0.80, "side": "center", "position": [0, -215]})
-		matilda.band("……っ、負けた...")
+		matilda.band("...っ、負けた...")
 		await bt.play_video("res://assets/videos/prologue_win_2.ogv")
 	elif result == "lose":
 		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_013.png", {"scale": 0.8, "side": "center", "position": [0, -199]})
@@ -212,14 +212,14 @@ func outfit_1(bt):
 	var matilda = bt.character("matilda")
 
 	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_015.png", {"scale": 0.80, "side": "center", "position": [0, -204],})
-	matilda.band("……変態、こっちをみるな")
+	matilda.band("...変態、こっちをみるな")
 
 	var selection = await bt.select_hand()
 	var result = await bt.janken(selection, {"win_rate": 0.6})
 
 	if result == "win":
 		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_016.png", {"scale": 0.80, "side": "center", "position": [0, -204]})
-		matilda.band("……変態に見られる...。")
+		matilda.band("...変態に見られる...。")
 		await bt.play_video("res://assets/videos/prologue_win_3.ogv")
 	elif result == "lose":
 		matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_017.png", {"scale": 0.80, "side": "center", "position": [0, -204]})

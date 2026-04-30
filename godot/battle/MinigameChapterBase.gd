@@ -106,7 +106,7 @@ func minigame(bt):
 	await _play_rules_intro(bt)
 	await _play_scripted_intro(bt)
 
-	await _narrate_wait(bt, "……さあ、次の一言をどう選ぶか。")
+	await _narrate_wait(bt, "...さあ、次の一言をどう選ぶか。")
 	_set_buttons_visible(true)
 
 	var gauge_max: int = cfg.get("gauge_max", 130)
@@ -204,7 +204,7 @@ func _apply_choice(bt, idx: int):
 			var z: String = _get_zone(_gauge)
 			opp_text = choice.opponent_by_zone.get(z, "")
 		if opp_text.is_empty():
-			opp_text = choice.get("opponent", "……")
+			opp_text = choice.get("opponent", "...")
 		bt.narrator_band("%s:\n%s" % [get_opponent_name(), opp_text], cfg.get("opponent_id", "opponent"), opp_ico)
 		await bt.wait(0.0)
 
@@ -244,7 +244,7 @@ func _apply_pisuke(bt):
 	var opp_id: String = cfg.get("opponent_id", "opponent")
 
 	bt.set_bubble_side(BUBBLE_SIDE_SATOSHI)
-	bt.narrator_band("サトシ:\n……えっと──", "satoshi", ico_nervous)
+	bt.narrator_band("サトシ:\n...えっと──", "satoshi", ico_nervous)
 	await bt.wait(0.0)
 	bt.narrator_band("ピー助（サトシの声に被せて）:\n%s" % line.opening, "pisuke")
 	await bt.wait(0.0)
@@ -277,10 +277,10 @@ func _apply_pisuke(bt):
 	# 1周目のみ: 決めの追撃ボーナス -15
 	if _pisuke_cycle == 0:
 		bt.set_bubble_side(BUBBLE_SIDE_SATOSHI)
-		bt.narrator_band("ピー助（止めの一撃）:\n……どうですか、心、丸裸にされた感想は？", "pisuke")
+		bt.narrator_band("ピー助（止めの一撃）:\n...どうですか、心、丸裸にされた感想は？", "pisuke")
 		await bt.wait(0.0)
 		bt.set_bubble_side(BUBBLE_SIDE_OPPONENT)
-		bt.narrator_band("%s:\n……っ！ ……や、やめて、もう、許して……！" % get_opponent_name(), opp_id, opp_ico)
+		bt.narrator_band("%s:\n...っ！ ...や、やめて、もう、許して...！" % get_opponent_name(), opp_id, opp_ico)
 		await bt.wait(0.0)
 		await _apply_gauge_change(bt, -15)
 

@@ -48,10 +48,10 @@ func get_lose_redirect() -> Dictionary:
 func get_farewell(result: String) -> Dictionary:
 	if result == "lose":
 		return {
-			"narration": "サトシは盗賊マルコに敗北した。\nこれ以上先に進むのは危険だ……。",
+			"narration": "サトシは盗賊マルコに敗北した。\nこれ以上先に進むのは危険だ...。",
 			"portrait": "res://assets/characters/subevent1/marco_st2_001.png",
 			"portrait_scale": 0.34,
-			"text": "…………。帰れ。",
+			"text": "......。帰れ。",
 		}
 	return {}
 
@@ -65,7 +65,7 @@ func setup_scene(bt):
 func outfit_1(bt):
 	var marco = bt.character("marco")
 	marco.set_portrait("res://assets/characters/subevent1_battle/marco_battle_001.png", {"scale": 0.35, "side": "center", "position": [0, -199]})
-	marco.band("…………。")
+	marco.band("......。")
 
 	var selection = await bt.select_hand()
 	await bt.janken(selection)

@@ -39,7 +39,7 @@ func _get_config() -> Dictionary:
 		],
 		"scripted_intro": {
 			"opening": "フェリアは騎士剣を抜き、心鏡の珠を取り出した。\n珠は範囲内で最も動揺する者を追尾する。",
-			"satoshi": "は、はい……。",
+			"satoshi": "は、はい...。",
 			"opponent": "",
 			"opponent_chunks": [
 				"貴殿、王都四傑連破の咎、これより尋問させていただく。",
@@ -51,13 +51,13 @@ func _get_config() -> Dictionary:
 			# 特定チャンクの後にサトシの中間反応を挟む（after_chunk は 0-index）
 			"satoshi_mid_reaction": {
 				"after_chunk": 1,
-				"text": "そ、そんな……！\n卑怯だなんて、決してそんなつもりは……！",
+				"text": "そ、そんな...！\n卑怯だなんて、決してそんなつもりは...！",
 			},
-			"thought": "スクリーン映像「……怯えた罪人。良い兆候」\n珠の針は、完全にサトシ側に固定されている。",
+			"thought": "スクリーン映像「...怯えた罪人。良い兆候」\n珠の針は、完全にサトシ側に固定されている。",
 			"color_change": "",
 			"pisuke": "フェリアの質問には、彼女の癖が漏れた語が一つ混じる。\n諜報疑惑なら使わない、妙に具体的な語が目印だ。\n──それを含む選択肢を選べば、心鏡の珠の針が彼女に振れる。",
 		},
-		"win_narration": "心鏡の珠の針が、完全にフェリア側に固定された。\nフェリアは膝をつき、剣を取り落とす。\n「……ま、まさか、私が……」\n「……も、もう、お許しを……」\n何年も鍛え上げた「絶対に動じぬ心」が、今、崩れ落ちた。",
+		"win_narration": "心鏡の珠の針が、完全にフェリア側に固定された。\nフェリアは膝をつき、剣を取り落とす。\n「...ま、まさか、私が...」\n「...も、もう、お許しを...」\n何年も鍛え上げた「絶対に動じぬ心」が、今、崩れ落ちた。",
 		"lose_narration": "珠の針はサトシ側に固定されたまま、揺るがなかった。\nフェリアの剣が閃く——\nサトシの首筋に冷たい鋼、視界が暗転。",
 		"pisuke_explain_hit": "フェリアの「絶対」が揺らぎ、珠の針が彼女側に振れた。",
 		"pisuke_explain_miss": "珠の針は依然サトシ側。動揺の主役は、まだお前だ。",
@@ -85,10 +85,10 @@ const QUESTIONS_RED := [
 		"leak": "必ず行う仕度",
 		"hit": {
 			"label": "必ず行う仕度、ですか…",
-			"satoshi": "……必ず行う仕度、ですか……",
+			"satoshi": "...必ず行う仕度、ですか...",
 			"pisuke_attack": "なぜ「必ず行う仕度」なんですか？\n通常なら「就寝の準備」と聞くはず。\nご自身に毎晩の必須儀がお有りで？",
-			"feria_react": "……っ！　な、私の寝る前の仕度など──！",
-			"feria_inner": "……「必ず」、なぜ口から……？",
+			"feria_react": "...っ！　な、私の寝る前の仕度など──！",
+			"feria_inner": "...「必ず」、なぜ口から...？",
 			"pisuke_finish": [
 				"──「必ず」と漏れた、その執着、しかと聞きました。",
 				"──夜更け、扉を閉めた瞬間、片手は太もも、もう片手で乳房を握り。",
@@ -98,26 +98,26 @@ const QUESTIONS_RED := [
 		"misses": [
 			{
 				"label": "対戦前夜、ですか…",
-				"satoshi": "……対戦前夜、ですか……",
-				"feria_react": "……そうだ、対戦前夜の話だ。質問に答えよ。",
+				"satoshi": "...対戦前夜、ですか...",
+				"feria_react": "...そうだ、対戦前夜の話だ。質問に答えよ。",
 				"pisuke_scold": "「対戦前夜」は時期の話だ、針が動かない！\n漏らしは「必ず行う仕度」、なぜ毎晩の必須性を前提にしたかが本丸だ！",
 			},
 			{
 				"label": "寝る前に、ですか…",
-				"satoshi": "……寝る前に、ですか……",
-				"feria_react": "……そうだ、就寝前の話だ。",
+				"satoshi": "...寝る前に、ですか...",
+				"feria_react": "...そうだ、就寝前の話だ。",
 				"pisuke_scold": "「寝る前に」だけなら普通の時間帯だ、針が動かない！\n核心は「必ず行う仕度」、その「必ず」が彼女の漏らしだ！",
 			},
 			{
 				"label": "仕度、ですか…",
-				"satoshi": "……仕度、ですか……",
-				"feria_react": "……何らかの準備の有無を問うておる。",
+				"satoshi": "...仕度、ですか...",
+				"feria_react": "...何らかの準備の有無を問うておる。",
 				"pisuke_scold": "「仕度」だけじゃ広すぎる！\n「必ず行う」という強迫的な前提こそ、彼女の漏らしだ！",
 			},
 			{
 				"label": "必ず、ですか…",
-				"satoshi": "……必ず、ですか……",
-				"feria_react": "……そう、必ず行うか否か、を問うておる。",
+				"satoshi": "...必ず、ですか...",
+				"feria_react": "...そう、必ず行うか否か、を問うておる。",
 				"pisuke_scold": "惜しい、サトシ！「必ず」だけじゃ弱い！\n「必ず行う仕度」と全部を投げ返さないと、針は動かない！",
 			},
 		],
@@ -128,10 +128,10 @@ const QUESTIONS_RED := [
 		"leak": "念入りに揉みほぐす",
 		"hit": {
 			"label": "念入りに揉みほぐす、ですか…",
-			"satoshi": "……念入りに揉みほぐす、ですか……",
+			"satoshi": "...念入りに揉みほぐす、ですか...",
 			"pisuke_attack": "なぜ「念入りに揉みほぐす」なんですか？\n通常なら「ストレッチ」と聞くはず。\nご自身の動作だから、思いついたんじゃ？",
-			"feria_react": "……っ！　わ、私が念入りに揉みほぐすなど──！",
-			"feria_inner": "……「念入りに」、なぜ、口から──！",
+			"feria_react": "...っ！　わ、私が念入りに揉みほぐすなど──！",
+			"feria_inner": "...「念入りに」、なぜ、口から──！",
 			"pisuke_finish": [
 				"──「念入りに」、何分かけて揉んでらっしゃる？",
 				"──太ももの内側、指で割って、奥へ、奥へ、入念に。",
@@ -141,26 +141,26 @@ const QUESTIONS_RED := [
 		"misses": [
 			{
 				"label": "対戦前、ですか…",
-				"satoshi": "……対戦前、ですか……",
-				"feria_react": "……そうだ、対戦前の話だ。",
+				"satoshi": "...対戦前、ですか...",
+				"feria_react": "...そうだ、対戦前の話だ。",
 				"pisuke_scold": "「対戦前」は時期だ、針が動かない！\n漏らしは「念入りに揉みほぐす」、なぜ「念入りに」と強調したかが本丸！",
 			},
 			{
 				"label": "身体のどこか、ですか…",
-				"satoshi": "……身体のどこか、ですか……",
-				"feria_react": "……身体の部位を問うておる。",
+				"satoshi": "...身体のどこか、ですか...",
+				"feria_react": "...身体の部位を問うておる。",
 				"pisuke_scold": "「身体のどこか」は曖昧な逃げ道だ！\n核心は「念入りに揉みほぐす」、彼女の動作の癖だ！",
 			},
 			{
 				"label": "揉みほぐす、ですか…",
-				"satoshi": "……揉みほぐす、ですか……",
-				"feria_react": "……整える動作の有無を問うておる。",
+				"satoshi": "...揉みほぐす、ですか...",
+				"feria_react": "...整える動作の有無を問うておる。",
 				"pisuke_scold": "「揉みほぐす」だけなら普通のストレッチ語だ！\n「念入りに」という強調こそ、彼女の漏らしだ！",
 			},
 			{
 				"label": "念入りに、ですか…",
-				"satoshi": "……念入りに、ですか……",
-				"feria_react": "……念を入れるか否か、を問うておる。",
+				"satoshi": "...念入りに、ですか...",
+				"feria_react": "...念を入れるか否か、を問うておる。",
 				"pisuke_scold": "惜しい！「念入りに」だけじゃ弱い！\n「念入りに揉みほぐす」と動作まで含めて投げ返さないと、針が動かない！",
 			},
 		],
@@ -171,10 +171,10 @@ const QUESTIONS_RED := [
 		"leak": "いつもの時刻にいつもの動作",
 		"hit": {
 			"label": "いつもの時刻にいつもの動作、ですか…",
-			"satoshi": "……いつもの時刻にいつもの動作、ですか……",
+			"satoshi": "...いつもの時刻にいつもの動作、ですか...",
 			"pisuke_attack": "なぜ「いつもの時刻」「いつもの動作」と二重限定？\n通常なら「就寝前の習慣」と聞くはず。\nご自身が毎晩欠かさぬから、思いついたんじゃ？",
-			"feria_react": "……っ！　わ、私の毎晩の動作など──！",
-			"feria_inner": "……「いつもの」、規則性まで……！",
+			"feria_react": "...っ！　わ、私の毎晩の動作など──！",
+			"feria_inner": "...「いつもの」、規則性まで...！",
 			"pisuke_finish": [
 				"──「いつもの時刻」、二十二時の鐘ですよね？",
 				"──鐘が鳴ると、体が勝手に。手が太ももへ、迷わず奥へ。",
@@ -184,26 +184,26 @@ const QUESTIONS_RED := [
 		"misses": [
 			{
 				"label": "対戦前夜、ですか…",
-				"satoshi": "……対戦前夜、ですか……",
-				"feria_react": "……そうだ、対戦前夜の話だ。",
+				"satoshi": "...対戦前夜、ですか...",
+				"feria_react": "...そうだ、対戦前夜の話だ。",
 				"pisuke_scold": "「対戦前夜」は時期だ、針が動かない！\n漏らしは「いつもの時刻にいつもの動作」、規則性の前提が本丸！",
 			},
 			{
 				"label": "欠かさぬ、ですか…",
-				"satoshi": "……欠かさぬ、ですか……",
-				"feria_react": "……欠かすか否か、を問うておる。",
+				"satoshi": "...欠かさぬ、ですか...",
+				"feria_react": "...欠かすか否か、を問うておる。",
 				"pisuke_scold": "動詞の言い回しに逃げるな！\n核心は「いつもの時刻にいつもの動作」、彼女の規則性の漏らしだ！",
 			},
 			{
 				"label": "時刻、ですか…",
-				"satoshi": "……時刻、ですか……",
-				"feria_react": "……時間帯を問うておる。",
+				"satoshi": "...時刻、ですか...",
+				"feria_react": "...時間帯を問うておる。",
 				"pisuke_scold": "「時刻」だけじゃ弱い！\n「いつもの時刻に」「いつもの動作」の二重特定こそ漏らしだ！",
 			},
 			{
 				"label": "いつもの、ですか…",
-				"satoshi": "……いつもの、ですか……",
-				"feria_react": "……いつも欠かさぬか否か、を問うておる。",
+				"satoshi": "...いつもの、ですか...",
+				"feria_react": "...いつも欠かさぬか否か、を問うておる。",
 				"pisuke_scold": "惜しい！「いつもの」だけじゃ片手落ちだ！\n「いつもの時刻に」「いつもの動作」、両方含めて投げ返さないと、針が動かない！",
 			},
 		],
@@ -214,10 +214,10 @@ const QUESTIONS_RED := [
 		"leak": "身を清める",
 		"hit": {
 			"label": "身を清める、ですか…",
-			"satoshi": "……身を清める、ですか……",
+			"satoshi": "...身を清める、ですか...",
 			"pisuke_attack": "なぜ「身を清める」なんですか？\n通常なら「入浴」と聞くはず。\n清める儀式をお持ちだから、思いついたんじゃ？",
-			"feria_react": "……っ！　わ、私が身を清めるのは、ただの──！",
-			"feria_inner": "……「清める」、なぜ、口から……？",
+			"feria_react": "...っ！　わ、私が身を清めるのは、ただの──！",
+			"feria_inner": "...「清める」、なぜ、口から...？",
 			"pisuke_finish": [
 				"──「清める」って、汚した後の話ですよね？",
 				"──毎晩、自分で乱れて、シーツに白いのを撒いて、その始末を。",
@@ -227,26 +227,26 @@ const QUESTIONS_RED := [
 		"misses": [
 			{
 				"label": "対戦前夜、ですか…",
-				"satoshi": "……対戦前夜、ですか……",
-				"feria_react": "……そうだ、対戦前夜の話だ。",
+				"satoshi": "...対戦前夜、ですか...",
+				"feria_react": "...そうだ、対戦前夜の話だ。",
 				"pisuke_scold": "「対戦前夜」は時期だ、針が動かない！\n核心は「身を清める」、なぜ宗教めいた語を選んだかが本丸だ！",
 			},
 			{
 				"label": "寝る前に、ですか…",
-				"satoshi": "……寝る前に、ですか……",
-				"feria_react": "……そう、就寝前の話だ。",
+				"satoshi": "...寝る前に、ですか...",
+				"feria_react": "...そう、就寝前の話だ。",
 				"pisuke_scold": "「寝る前に」は普通の時間帯だ、針が動かない！\n漏らしは「身を清める」、儀式語が彼女の漏らしだ！",
 			},
 			{
 				"label": "丁寧に、ですか…",
-				"satoshi": "……丁寧に、ですか……",
-				"feria_react": "……念入りか否か、を問うておる。",
+				"satoshi": "...丁寧に、ですか...",
+				"feria_react": "...念入りか否か、を問うておる。",
 				"pisuke_scold": "「丁寧に」だけなら強調語だ、針が動かない！\n核心は「身を清める」、その語の選び方が漏らしだ！",
 			},
 			{
 				"label": "清める、ですか…",
-				"satoshi": "……清める、ですか……",
-				"feria_react": "……清めるか否か、を問うておる。",
+				"satoshi": "...清める、ですか...",
+				"feria_react": "...清めるか否か、を問うておる。",
 				"pisuke_scold": "惜しい！「清める」だけじゃ弱い！\n「身を清める」と全部投げ返さないと、針が動かない！",
 			},
 		],
@@ -257,10 +257,10 @@ const QUESTIONS_RED := [
 		"leak": "独り部屋に篭もる",
 		"hit": {
 			"label": "独り部屋に篭もる、ですか…",
-			"satoshi": "……独り部屋に篭もる、ですか……",
+			"satoshi": "...独り部屋に篭もる、ですか...",
 			"pisuke_attack": "なぜ「独り」「篭もる」なんですか？\n通常なら「精神統一の時間など」と聞くはず。\n独り篭もって何かなさってるから、思いついたんじゃ？",
-			"feria_react": "……っ！　わ、私が篭もるなど──！",
-			"feria_inner": "……「篭もる」、なぜ口から──！",
+			"feria_react": "...っ！　わ、私が篭もるなど──！",
+			"feria_inner": "...「篭もる」、なぜ口から──！",
 			"pisuke_finish": [
 				"──「篭もって」、扉に鍵までかけて、誰にも見せられない動作。",
 				"──ベッドの上、片手は乳房、もう片手は太ももの間、声を殺して。",
@@ -270,26 +270,26 @@ const QUESTIONS_RED := [
 		"misses": [
 			{
 				"label": "対戦前夜、ですか…",
-				"satoshi": "……対戦前夜、ですか……",
-				"feria_react": "……そうだ、対戦前夜の話だ。",
+				"satoshi": "...対戦前夜、ですか...",
+				"feria_react": "...そうだ、対戦前夜の話だ。",
 				"pisuke_scold": "「対戦前夜」は時期だ、針が動かない！\n漏らしは「独り部屋に篭もる」、外界遮断の前提が本丸！",
 			},
 			{
 				"label": "部屋、ですか…",
-				"satoshi": "……部屋、ですか……",
-				"feria_react": "……場所を問うておる。",
+				"satoshi": "...部屋、ですか...",
+				"feria_react": "...場所を問うておる。",
 				"pisuke_scold": "「部屋」は普通の語だ、針が動かない！\n核心は「独り」「篭もる」の組み合わせ、彼女の漏らしだ！",
 			},
 			{
 				"label": "時間、ですか…",
-				"satoshi": "……時間、ですか……",
-				"feria_react": "……時間の有無を問うておる。",
+				"satoshi": "...時間、ですか...",
+				"feria_react": "...時間の有無を問うておる。",
 				"pisuke_scold": "「時間」は中立な語だ、針が動かない！\n核心は「独り部屋に篭もる」、外界遮断の語彙が漏らしだ！",
 			},
 			{
 				"label": "独り、ですか…",
-				"satoshi": "……独り、ですか……",
-				"feria_react": "……単独の有無を問うておる。",
+				"satoshi": "...独り、ですか...",
+				"feria_react": "...単独の有無を問うておる。",
 				"pisuke_scold": "惜しい！「独り」だけじゃ弱い！\n「独り部屋に篭もる」と外界遮断まで投げ返さないと、針が動かない！",
 			},
 		],
@@ -300,10 +300,10 @@ const QUESTIONS_RED := [
 		"leak": "入念に敷き直す",
 		"hit": {
 			"label": "入念に敷き直す、ですか…",
-			"satoshi": "……入念に敷き直す、ですか……",
+			"satoshi": "...入念に敷き直す、ですか...",
 			"pisuke_attack": "なぜ「入念に敷き直す」なんですか？\n通常なら「枕の高さなど」と聞くはず。\n入念に敷き直してから何かなさるから、思いついたんじゃ？",
-			"feria_react": "……っ！　わ、私が寝具を敷き直すなど──！",
-			"feria_inner": "……「入念に」、なぜ口から──！",
+			"feria_react": "...っ！　わ、私が寝具を敷き直すなど──！",
+			"feria_inner": "...「入念に」、なぜ口から──！",
 			"pisuke_finish": [
 				"──「敷き直す」、これから乱す前提ですよね？",
 				"──シーツを整え、枕を並べ、自分の指で、自分を乱す準備。",
@@ -313,26 +313,26 @@ const QUESTIONS_RED := [
 		"misses": [
 			{
 				"label": "対戦前夜、ですか…",
-				"satoshi": "……対戦前夜、ですか……",
-				"feria_react": "……そう、対戦前夜の話だ。",
+				"satoshi": "...対戦前夜、ですか...",
+				"feria_react": "...そう、対戦前夜の話だ。",
 				"pisuke_scold": "「対戦前夜」は時期だ、針が動かない！\n核心は「入念に敷き直す」、寝具に念を入れる前提が本丸！",
 			},
 			{
 				"label": "寝具、ですか…",
-				"satoshi": "……寝具、ですか……",
-				"feria_react": "……寝具の話だ。",
+				"satoshi": "...寝具、ですか...",
+				"feria_react": "...寝具の話だ。",
 				"pisuke_scold": "「寝具」は普通の語だ、針が動かない！\n核心は「入念に敷き直す」、寝具への念入り作業が漏らしだ！",
 			},
 			{
 				"label": "床に就く、ですか…",
-				"satoshi": "……床に就く、ですか……",
-				"feria_react": "……就寝の有無を問うておる。",
+				"satoshi": "...床に就く、ですか...",
+				"feria_react": "...就寝の有無を問うておる。",
 				"pisuke_scold": "「床に就く」は普通の就寝動作だ、針が動かない！\n核心は「入念に敷き直す」、整える動作の前提が漏らしだ！",
 			},
 			{
 				"label": "敷き直す、ですか…",
-				"satoshi": "……敷き直す、ですか……",
-				"feria_react": "……敷き直すか否か、を問うておる。",
+				"satoshi": "...敷き直す、ですか...",
+				"feria_react": "...敷き直すか否か、を問うておる。",
 				"pisuke_scold": "惜しい！「敷き直す」だけじゃ弱い！\n「入念に」を含めて投げ返さないと、針が動かない！",
 			},
 		],
@@ -345,14 +345,14 @@ const QUESTIONS_RED := [
 const QUESTIONS_STRONG := [
 	{
 		"id": "S1",
-		"feria": "……っ、では、別の問いだ。貴殿、対戦前夜、肌に密着させて持ち込む物はあるか？",
+		"feria": "...っ、では、別の問いだ。貴殿、対戦前夜、肌に密着させて持ち込む物はあるか？",
 		"leak": "肌に密着させて持ち込む",
 		"hit": {
 			"label": "肌に密着させて持ち込む、ですか…",
-			"satoshi": "……肌に密着させて持ち込む、ですか……",
+			"satoshi": "...肌に密着させて持ち込む、ですか...",
 			"pisuke_attack": "なぜ「肌に密着させて」なんですか？\n通常なら「お守りなど」と聞くはず。\n密着の感触をご存知だから、思いついたんじゃ？",
-			"feria_react": "……っ！　わ、私が肌に密着させるなど──！",
-			"feria_inner": "……「密着」、なぜ口から──！",
+			"feria_react": "...っ！　わ、私が肌に密着させるなど──！",
+			"feria_inner": "...「密着」、なぜ口から──！",
 			"pisuke_finish": [
 				"──「肌に密着」、お守りなら服の上で十分です。",
 				"──冷たい金属を、直接、乳首に、太ももの内側に、何度も擦って。",
@@ -362,26 +362,26 @@ const QUESTIONS_STRONG := [
 		"misses": [
 			{
 				"label": "対戦前夜、ですか…",
-				"satoshi": "……対戦前夜、ですか……",
-				"feria_react": "……そう、対戦前夜の話だ。",
+				"satoshi": "...対戦前夜、ですか...",
+				"feria_react": "...そう、対戦前夜の話だ。",
 				"pisuke_scold": "「対戦前夜」は時期だ、針が動かない！\n核心は「肌に密着させて持ち込む」、密着前提の語が本丸だ！",
 			},
 			{
 				"label": "持ち込む、ですか…",
-				"satoshi": "……持ち込む、ですか……",
-				"feria_react": "……所持の有無を問うておる。",
+				"satoshi": "...持ち込む、ですか...",
+				"feria_react": "...所持の有無を問うておる。",
 				"pisuke_scold": "「持ち込む」だけじゃ動作の話だ！\n「肌に密着させて」こそ、彼女の漏らしだ！",
 			},
 			{
 				"label": "物、ですか…",
-				"satoshi": "……物、ですか……",
-				"feria_react": "……所持物を問うておる。",
+				"satoshi": "...物、ですか...",
+				"feria_react": "...所持物を問うておる。",
 				"pisuke_scold": "「物」だけじゃ広すぎる！\n核心は「肌に密着させて」、密着の前提が漏らしだ！",
 			},
 			{
 				"label": "密着、ですか…",
-				"satoshi": "……密着、ですか……",
-				"feria_react": "……密着させるか否か、を問うておる。",
+				"satoshi": "...密着、ですか...",
+				"feria_react": "...密着させるか否か、を問うておる。",
 				"pisuke_scold": "惜しい！「密着」だけじゃ弱い！\n「肌に密着させて持ち込む」と全部投げ返さないと、針が動かない！",
 			},
 		],
@@ -392,10 +392,10 @@ const QUESTIONS_STRONG := [
 		"leak": "息を整える特別な術",
 		"hit": {
 			"label": "息を整える特別な術、ですか…",
-			"satoshi": "……息を整える特別な術、ですか……",
+			"satoshi": "...息を整える特別な術、ですか...",
 			"pisuke_attack": "なぜ「息を整える特別な術」なんですか？\n通常なら「呼吸法など」と聞くはず。\nなぜ「特別」と限定？　ご自身がお持ちだから？",
-			"feria_react": "……っ！　わ、私が息を整える術など──！",
-			"feria_inner": "……「特別な術」、なぜ口から──！",
+			"feria_react": "...っ！　わ、私が息を整える術など──！",
+			"feria_inner": "...「特別な術」、なぜ口から──！",
 			"pisuke_finish": [
 				"──「特別な術」って、普通の呼吸じゃないんですよね？",
 				"──昂ぶった時の、押し殺した、断続的な、あの呼吸。",
@@ -405,26 +405,26 @@ const QUESTIONS_STRONG := [
 		"misses": [
 			{
 				"label": "対戦前夜、ですか…",
-				"satoshi": "……対戦前夜、ですか……",
-				"feria_react": "……そう、対戦前夜の話だ。",
+				"satoshi": "...対戦前夜、ですか...",
+				"feria_react": "...そう、対戦前夜の話だ。",
 				"pisuke_scold": "「対戦前夜」は時期だ、針が動かない！\n核心は「息を整える特別な術」、なぜ「特別」と限定したかが本丸！",
 			},
 			{
 				"label": "術、ですか…",
-				"satoshi": "……術、ですか……",
-				"feria_react": "……何らかの技術の有無を問うておる。",
+				"satoshi": "...術、ですか...",
+				"feria_react": "...何らかの技術の有無を問うておる。",
 				"pisuke_scold": "「術」だけじゃ広すぎる！\n「息を整える」「特別な」の二重限定こそ、彼女の漏らしだ！",
 			},
 			{
 				"label": "整える、ですか…",
-				"satoshi": "……整える、ですか……",
-				"feria_react": "……息を整えるか否か、を問うておる。",
+				"satoshi": "...整える、ですか...",
+				"feria_react": "...息を整えるか否か、を問うておる。",
 				"pisuke_scold": "動詞だけじゃ意味ない！\n「特別な術」、その「特別」が彼女の漏らしだ！",
 			},
 			{
 				"label": "特別な、ですか…",
-				"satoshi": "……特別な、ですか……",
-				"feria_react": "……特別な何かがあるか、を問うておる。",
+				"satoshi": "...特別な、ですか...",
+				"feria_react": "...特別な何かがあるか、を問うておる。",
 				"pisuke_scold": "惜しい！「特別な」だけじゃ片手落ちだ！\n「息を整える特別な術」と全部投げ返さないと、針が動かない！",
 			},
 		],
@@ -435,10 +435,10 @@ const QUESTIONS_STRONG := [
 		"leak": "独り深く昂ぶる",
 		"hit": {
 			"label": "独り深く昂ぶる、ですか…",
-			"satoshi": "……独り深く昂ぶる、ですか……",
+			"satoshi": "...独り深く昂ぶる、ですか...",
 			"pisuke_attack": "なぜ「独り」「深く」「昂ぶる」と三重限定？\n通常なら「気合いの入れ方など」と聞くはず。\nご自身が独り昂ぶってらっしゃるから？",
-			"feria_react": "……っ！！　わ、私が独り昂ぶるなど──！",
-			"feria_inner": "……「独り」「深く」、なぜ口から──！",
+			"feria_react": "...っ！！　わ、私が独り昂ぶるなど──！",
+			"feria_inner": "...「独り」「深く」、なぜ口から──！",
 			"pisuke_finish": [
 				"──「昂ぶる」、対象がないと使わない動詞ですよね？",
 				"──独りで、深く、何かを想像して、自分の指で、自分を高めていく。",
@@ -448,26 +448,26 @@ const QUESTIONS_STRONG := [
 		"misses": [
 			{
 				"label": "対戦前夜、ですか…",
-				"satoshi": "……対戦前夜、ですか……",
-				"feria_react": "……そう、対戦前夜の話だ。",
+				"satoshi": "...対戦前夜、ですか...",
+				"feria_react": "...そう、対戦前夜の話だ。",
 				"pisuke_scold": "「対戦前夜」は時期だ、針が動かない！\n核心は「独り深く昂ぶる」、その三重特定が本丸だ！",
 			},
 			{
 				"label": "独り、ですか…",
-				"satoshi": "……独り、ですか……",
-				"feria_react": "……単独の有無を問うておる。",
+				"satoshi": "...独り、ですか...",
+				"feria_react": "...単独の有無を問うておる。",
 				"pisuke_scold": "「独り」だけじゃ弱い！\n「独り」「深く」「昂ぶる」の三重特定こそ、彼女の漏らしだ！",
 			},
 			{
 				"label": "昂ぶる、ですか…",
-				"satoshi": "……昂ぶる、ですか……",
-				"feria_react": "……感情の高ぶりを問うておる。",
+				"satoshi": "...昂ぶる、ですか...",
+				"feria_react": "...感情の高ぶりを問うておる。",
 				"pisuke_scold": "動詞だけじゃ意味ない！\n「独り」「深く」と組み合わさった「昂ぶる」こそ漏らしだ！",
 			},
 			{
 				"label": "深く、ですか…",
-				"satoshi": "……深く、ですか……",
-				"feria_react": "……深い高ぶりがあるか、を問うておる。",
+				"satoshi": "...深く、ですか...",
+				"feria_react": "...深い高ぶりがあるか、を問うておる。",
 				"pisuke_scold": "惜しい！「深く」だけじゃ弱い！\n「独り深く昂ぶる」と全部投げ返さないと、針が動かない！",
 			},
 		],
@@ -478,10 +478,10 @@ const QUESTIONS_STRONG := [
 		"leak": "身悶える",
 		"hit": {
 			"label": "身悶える、ですか…",
-			"satoshi": "……身悶える、ですか……",
+			"satoshi": "...身悶える、ですか...",
 			"pisuke_attack": "なぜ「身悶える」なんですか？\n通常なら「寝相など」と聞くはず。\nご自身の動作だから、官能的な響きの語が？",
-			"feria_react": "……っ！　わ、私が身悶えるなど──！",
-			"feria_inner": "……「身悶える」、なぜ口から──！",
+			"feria_react": "...っ！　わ、私が身悶えるなど──！",
+			"feria_inner": "...「身悶える」、なぜ口から──！",
 			"pisuke_finish": [
 				"──「身悶える」、文字通り、身が悶えるほどの何か。",
 				"──シーツを掴み、足を絡め、声を噛み殺し、腰を浮かす。",
@@ -491,26 +491,26 @@ const QUESTIONS_STRONG := [
 		"misses": [
 			{
 				"label": "対戦前夜、ですか…",
-				"satoshi": "……対戦前夜、ですか……",
-				"feria_react": "……そうだ、対戦前夜の話だ。",
+				"satoshi": "...対戦前夜、ですか...",
+				"feria_react": "...そうだ、対戦前夜の話だ。",
 				"pisuke_scold": "「対戦前夜」は時期だ、針が動かない！\n核心は「身悶える」、なぜ官能的な語を選んだかが本丸！",
 			},
 			{
 				"label": "寝具、ですか…",
-				"satoshi": "……寝具、ですか……",
-				"feria_react": "……寝具の中での話だ。",
+				"satoshi": "...寝具、ですか...",
+				"feria_react": "...寝具の中での話だ。",
 				"pisuke_scold": "「寝具」は普通の語だ、針が動かない！\n核心は「身悶える」、その語の選び方が漏らしだ！",
 			},
 			{
 				"label": "ようなこと、ですか…",
-				"satoshi": "……ようなこと、ですか……",
-				"feria_react": "……そう、その類のことだ。",
+				"satoshi": "...ようなこと、ですか...",
+				"feria_react": "...そう、その類のことだ。",
 				"pisuke_scold": "「ようなこと」は曖昧で逃げ道だ！\n核心は「身悶える」、彼女の漏らしはそこだ！",
 			},
 			{
 				"label": "悶える、ですか…",
-				"satoshi": "……悶える、ですか……",
-				"feria_react": "……悶える動作の有無を問うておる。",
+				"satoshi": "...悶える、ですか...",
+				"feria_react": "...悶える動作の有無を問うておる。",
 				"pisuke_scold": "惜しい！「悶える」だけじゃ弱い！\n「身悶える」と全部投げ返さないと、針が動かない！",
 			},
 		],
@@ -521,10 +521,10 @@ const QUESTIONS_STRONG := [
 		"leak": "肌を撫でて",
 		"hit": {
 			"label": "肌を撫でて、ですか…",
-			"satoshi": "……肌を撫でて、ですか……",
+			"satoshi": "...肌を撫でて、ですか...",
 			"pisuke_attack": "なぜ「肌を撫でて」なんですか？\n通常なら「深呼吸など」と聞くはず。\nご自身の動作だから、思いついたんじゃ？",
-			"feria_react": "……っ！　わ、私が肌を撫でるなど──！",
-			"feria_inner": "……「撫でる」、なぜ口から──！",
+			"feria_react": "...っ！　わ、私が肌を撫でるなど──！",
+			"feria_inner": "...「撫でる」、なぜ口から──！",
 			"pisuke_finish": [
 				"──「肌を撫でて」、自分の指で自分の肌を撫でる夜の動作。",
 				"──首筋、鎖骨、乳房、お腹、太ももの内側、奥の方まで、ゆっくり。",
@@ -534,26 +534,26 @@ const QUESTIONS_STRONG := [
 		"misses": [
 			{
 				"label": "対戦前夜、ですか…",
-				"satoshi": "……対戦前夜、ですか……",
-				"feria_react": "……そう、対戦前夜の話だ。",
+				"satoshi": "...対戦前夜、ですか...",
+				"feria_react": "...そう、対戦前夜の話だ。",
 				"pisuke_scold": "「対戦前夜」は時期だ、針が動かない！\n核心は「肌を撫でて」、自分の肌に触れる前提が本丸！",
 			},
 			{
 				"label": "心を鎮める、ですか…",
-				"satoshi": "……心を鎮める、ですか……",
-				"feria_react": "……精神を整えるか否か、を問うておる。",
+				"satoshi": "...心を鎮める、ですか...",
+				"feria_react": "...精神を整えるか否か、を問うておる。",
 				"pisuke_scold": "「心を鎮める」は普通の精神修養語だ、針が動かない！\n核心は「肌を撫でて」、その前段の動作が漏らしだ！",
 			},
 			{
 				"label": "術、ですか…",
-				"satoshi": "……術、ですか……",
-				"feria_react": "……手段の有無を問うておる。",
+				"satoshi": "...術、ですか...",
+				"feria_react": "...手段の有無を問うておる。",
 				"pisuke_scold": "「術」だけじゃ広すぎる！\n核心は「肌を撫でて」、肌への接触が漏らしだ！",
 			},
 			{
 				"label": "撫でる、ですか…",
-				"satoshi": "……撫でる、ですか……",
-				"feria_react": "……撫でる動作の有無を問うておる。",
+				"satoshi": "...撫でる、ですか...",
+				"feria_react": "...撫でる動作の有無を問うておる。",
 				"pisuke_scold": "惜しい！「撫でる」だけじゃ弱い！\n「肌を撫でて」と肌の対象まで投げ返さないと、針が動かない！",
 			},
 		],
@@ -564,10 +564,10 @@ const QUESTIONS_STRONG := [
 		"leak": "声を漏らさぬよう",
 		"hit": {
 			"label": "声を漏らさぬよう、ですか…",
-			"satoshi": "……声を漏らさぬよう、ですか……",
+			"satoshi": "...声を漏らさぬよう、ですか...",
 			"pisuke_attack": "なぜ「声を漏らさぬよう」なんですか？\n通常なら「不審な囁きなど」と聞くはず。\n漏らしうる声の存在を、ご自身が知ってらっしゃるから？",
-			"feria_react": "……っ！　わ、私が漏らしうる声など──！",
-			"feria_inner": "……「漏らす」、なぜ口から──！",
+			"feria_react": "...っ！　わ、私が漏らしうる声など──！",
+			"feria_inner": "...「漏らす」、なぜ口から──！",
 			"pisuke_finish": [
 				"──「漏らさぬ」、漏れる前提の声があるんですよね？",
 				"──押し殺した嬌声、噛んだ唇から漏れる吐息、シーツを掴む指。",
@@ -577,26 +577,26 @@ const QUESTIONS_STRONG := [
 		"misses": [
 			{
 				"label": "対戦前夜、ですか…",
-				"satoshi": "……対戦前夜、ですか……",
-				"feria_react": "……そう、対戦前夜の話だ。",
+				"satoshi": "...対戦前夜、ですか...",
+				"feria_react": "...そう、対戦前夜の話だ。",
 				"pisuke_scold": "「対戦前夜」は時期だ、針が動かない！\n核心は「声を漏らさぬよう」、漏らしうる声の前提が本丸！",
 			},
 			{
 				"label": "細心の注意、ですか…",
-				"satoshi": "……細心の注意、ですか……",
-				"feria_react": "……注意を払うか否か、を問うておる。",
+				"satoshi": "...細心の注意、ですか...",
+				"feria_react": "...注意を払うか否か、を問うておる。",
 				"pisuke_scold": "「細心の注意」は形式語だ、針が動かない！\n核心は「声を漏らさぬよう」、その前段が漏らしだ！",
 			},
 			{
 				"label": "払う、ですか…",
-				"satoshi": "……払う、ですか……",
-				"feria_react": "……注意を払うか否か、を問うておる。",
+				"satoshi": "...払う、ですか...",
+				"feria_react": "...注意を払うか否か、を問うておる。",
 				"pisuke_scold": "動詞だけじゃ意味ない！\n核心は「声を漏らさぬよう」、彼女の漏らしはそこだ！",
 			},
 			{
 				"label": "漏らさぬ、ですか…",
-				"satoshi": "……漏らさぬ、ですか……",
-				"feria_react": "……漏らすか否か、を問うておる。",
+				"satoshi": "...漏らさぬ、ですか...",
+				"feria_react": "...漏らすか否か、を問うておる。",
 				"pisuke_scold": "惜しい！「漏らさぬ」だけじゃ弱い！\n「声を漏らさぬよう」と「声」の対象まで投げ返さないと、針が動かない！",
 			},
 		],
@@ -702,9 +702,9 @@ func _apply_pisuke(bt):
 	var ico_nervous: String = cfg.get("ico_satoshi_nervous", "res://assets/ui/speakers/satoshi_nervous.png")
 
 	bt.set_bubble_side(BUBBLE_SIDE_SATOSHI)
-	bt.narrator_band("サトシ:\n（……どう返せば──）", "satoshi", ico_nervous)
+	bt.narrator_band("サトシ:\n（...どう返せば──）", "satoshi", ico_nervous)
 	await bt.wait(0.0)
-	bt.narrator_band("ピー助（小声）:\n……これだ。「%s」、これを彼女に向け直せ。" % _active_question.get("leak", ""), "pisuke")
+	bt.narrator_band("ピー助（小声）:\n...これだ。「%s」、これを彼女に向け直せ。" % _active_question.get("leak", ""), "pisuke")
 	await bt.wait(0.0)
 
 	await _play_hit_lines(bt, _active_question)
@@ -719,7 +719,7 @@ func _play_hit_lines(bt, q: Dictionary):
 
 	# サトシの台詞はオウム返しの一言だけ
 	bt.set_bubble_side(BUBBLE_SIDE_SATOSHI)
-	bt.narrator_band("サトシ:\n%s" % hit.get("satoshi", "……"), "satoshi", satoshi_ico)
+	bt.narrator_band("サトシ:\n%s" % hit.get("satoshi", "..."), "satoshi", satoshi_ico)
 	await bt.wait(0.0)
 
 	# ピー助の解剖攻撃（サトシに被せて）
@@ -757,7 +757,7 @@ func _play_hit_lines(bt, q: Dictionary):
 
 	# フェリアの屈服反応
 	bt.set_bubble_side(BUBBLE_SIDE_OPPONENT)
-	bt.narrator_band("%s:\n……っ！ ……そ、それは──！" % get_opponent_name(), opp_id, opp_ico)
+	bt.narrator_band("%s:\n...っ！ ...そ、それは──！" % get_opponent_name(), opp_id, opp_ico)
 	await bt.wait(0.0)
 
 	# ナレーション
@@ -775,7 +775,7 @@ func _play_miss_lines(bt, miss: Dictionary):
 	var opp_id: String = cfg.get("opponent_id", "feria")
 
 	bt.set_bubble_side(BUBBLE_SIDE_SATOSHI)
-	bt.narrator_band("サトシ:\n%s" % miss.get("satoshi", "……"), "satoshi", satoshi_ico)
+	bt.narrator_band("サトシ:\n%s" % miss.get("satoshi", "..."), "satoshi", satoshi_ico)
 	await bt.wait(0.0)
 
 	bt.set_bubble_side(BUBBLE_SIDE_OPPONENT)
@@ -918,7 +918,7 @@ func _display_question(bt):
 	var opp_id: String = cfg.get("opponent_id", "feria")
 	var opp_ico: String = cfg.get("opponent_icon", "")
 	bt.set_bubble_side(BUBBLE_SIDE_OPPONENT)
-	bt.narrator_band("%s:\n%s" % [get_opponent_name(), _active_question.get("feria", "……")], opp_id, opp_ico)
+	bt.narrator_band("%s:\n%s" % [get_opponent_name(), _active_question.get("feria", "...")], opp_id, opp_ico)
 	await bt.wait(0.0)
 
 # --- 事前収集物証 3 枚の畳みかけ（勝利時の最終演出） ---
@@ -928,7 +928,7 @@ func _play_pre_collected_evidence(bt):
 	var opp_id: String = cfg.get("opponent_id", "feria")
 	var opp_ico: String = cfg.get("opponent_icon", "")
 
-	await _narrate_wait(bt, "心鏡の珠の針が、完全にフェリア側に固定された。針は揺るがない。\n……だが、ピー助の追い打ちは、まだ終わらぬ。")
+	await _narrate_wait(bt, "心鏡の珠の針が、完全にフェリア側に固定された。針は揺るがない。\n...だが、ピー助の追い打ちは、まだ終わらぬ。")
 
 	bt.set_bubble_side(BUBBLE_SIDE_SATOSHI)
 	bt.narrator_band("ピー助:\n騎士団長様、最後にお見せしたい物がございます。\n実は事前に、三つ、手に入れておりまして。", "pisuke")
@@ -940,7 +940,7 @@ func _play_pre_collected_evidence(bt):
 	bt.narrator_band("ピー助:\n一つ目——騎士団長様の手帳の一頁。\n「明日の鍛錬予定」の下に、小さく「いつもの時刻、忘れず」と。\n──「いつもの時刻」とは、何時の、何の予定で？", "pisuke")
 	await bt.wait(0.0)
 	bt.set_bubble_side(BUBBLE_SIDE_OPPONENT)
-	bt.narrator_band("%s:\n……っ！　そ、それは、どこで、それを……！" % get_opponent_name(), opp_id, opp_ico)
+	bt.narrator_band("%s:\n...っ！　そ、それは、どこで、それを...！" % get_opponent_name(), opp_id, opp_ico)
 	await bt.wait(0.0)
 
 	# 物証 2：影絵
@@ -949,16 +949,16 @@ func _play_pre_collected_evidence(bt):
 	bt.narrator_band("ピー助:\n二つ目——影絵魔導具で記録した、騎士団長室の寝室の動作。\n寝具の上の影、規則的に上下する片手の動き、二十分継続。\n──手の動き、なんとなく規則的で。何を握ってらっしゃるんで？", "pisuke")
 	await bt.wait(0.0)
 	bt.set_bubble_side(BUBBLE_SIDE_OPPONENT)
-	bt.narrator_band("%s:\n……ぅ、そ、それは、武具の手入れを──！\n夜間の、鍛錬の、ひとつで……！" % get_opponent_name(), opp_id, opp_ico)
+	bt.narrator_band("%s:\n...ぅ、そ、それは、武具の手入れを──！\n夜間の、鍛錬の、ひとつで...！" % get_opponent_name(), opp_id, opp_ico)
 	await bt.wait(0.0)
 
 	# 物証 3：音声
 	await _narrate_wait(bt, "【UI 演出】録声魔導具が起動。乱れた呼吸音と、抑制された高音がループ再生される。")
 	bt.set_bubble_side(BUBBLE_SIDE_SATOSHI)
-	bt.narrator_band("ピー助:\n三つ目——録声魔導具による音声記録。\n「……ぁ……っ……」「……騎士、さま……」\n──ご自分の声、お聞き分けになれますね？\n武具の手入れで、こんな呼吸になりますかね？", "pisuke")
+	bt.narrator_band("ピー助:\n三つ目——録声魔導具による音声記録。\n「...ぁ...っ...」「...騎士、さま...」\n──ご自分の声、お聞き分けになれますね？\n武具の手入れで、こんな呼吸になりますかね？", "pisuke")
 	await bt.wait(0.0)
 	bt.set_bubble_side(BUBBLE_SIDE_OPPONENT)
-	bt.narrator_band("%s:\n……っ！！ ……ぁ、ぁぁ……！\nもう、お許しを、お許しください……！" % get_opponent_name(), opp_id, opp_ico)
+	bt.narrator_band("%s:\n...っ！！ ...ぁ、ぁぁ...！\nもう、お許しを、お許しください...！" % get_opponent_name(), opp_id, opp_ico)
 	await bt.wait(0.0)
 
 	await _narrate_wait(bt, "心鏡の珠の判定、フェリア側に完全に固定されている。\n事前収集の三物証が、彼女の「絶対」を、跡形もなく粉砕した。")

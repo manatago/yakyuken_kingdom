@@ -74,53 +74,53 @@ func belka_outfit_3(bt):
 
 	if result == "win":
 		belka.set_portrait("res://assets/characters/subevent1_battle/belka_battle_002.png", {"scale": 0.64, "side": "center", "position": [0, -275]})
-		belka.band("……っ！ やるじゃん……。")
+		belka.band("...っ！ やるじゃん...。")
 	elif result == "lose":
 		belka.set_portrait("res://assets/characters/subevent1_battle/belka_battle_003.png", {"scale": 0.64, "side": "center", "position": [0, -275]})
 		belka.band("ゲハハ！ ボクの読み、甘く見んなよ。")
 	else:
 		belka.set_portrait("res://assets/characters/subevent1_battle/belka_battle_004.png", {"scale": 0.64, "side": "center", "position": [0, -275]})
-		belka.band("あいこ？ ……ふーん、なかなかやるね。")
+		belka.band("あいこ？ ...ふーん、なかなかやるね。")
 
 # --- ベルカ Outfit 2: 1枚脱いだ ---
 
 func belka_outfit_2(bt):
 	var belka = bt.character("belka")
 	belka.set_portrait("res://assets/characters/subevent1_battle/belka_battle_005.png", {"scale": 0.64, "side": "center", "position": [0, -275]})
-	belka.band("……ちっ、調子乗んなよ。ここからが本気だ。")
+	belka.band("...ちっ、調子乗んなよ。ここからが本気だ。")
 
 	var selection = await bt.select_hand()
 	var result = await bt.janken(selection, {"win_rate": 0.5})
 
 	if result == "win":
 		belka.set_portrait("res://assets/characters/subevent1_battle/belka_battle_006.png", {"scale": 0.64, "side": "center", "position": [0, -275]})
-		belka.band("……マジかよ。あんた、ボクの手を読んでるだろ。")
+		belka.band("...マジかよ。あんた、ボクの手を読んでるだろ。")
 	elif result == "lose":
 		belka.set_portrait("res://assets/characters/subevent1_battle/belka_battle_007.png", {"scale": 0.64, "side": "center", "position": [0, -275]})
 		belka.band("へへっ、まだまだだね。")
 	else:
 		belka.set_portrait("res://assets/characters/subevent1_battle/belka_battle_008.png", {"scale": 0.64, "side": "center", "position": [0, -275]})
-		belka.band("……また引き分けかよ。しつこいヤツだな。")
+		belka.band("...また引き分けかよ。しつこいヤツだな。")
 
 # --- ベルカ Outfit 1: あと1枚 ---
 
 func belka_outfit_1(bt):
 	var belka = bt.character("belka")
 	belka.set_portrait("res://assets/characters/subevent1_battle/belka_battle_009.png", {"scale": 0.64, "side": "center", "position": [0, -275]})
-	belka.band("……っ！ こ、これ以上はダメだって！ 見んな！")
+	belka.band("...っ！ こ、これ以上はダメだって！ 見んな！")
 
 	var selection = await bt.select_hand()
 	var result = await bt.janken(selection, {"win_rate": 0.4})
 
 	if result == "win":
 		belka.set_portrait("res://assets/characters/subevent1_battle/belka_battle_010.png", {"scale": 0.64, "side": "center", "position": [0, -275]})
-		belka.band("う、うそだろ……ボクが……負けた……！")
+		belka.band("う、うそだろ...ボクが...負けた...！")
 	elif result == "lose":
 		belka.set_portrait("res://assets/characters/subevent1_battle/belka_battle_011.png", {"scale": 0.64, "side": "center", "position": [0, -275]})
-		belka.band("……ふぅ。危なかった……。")
+		belka.band("...ふぅ。危なかった...。")
 	else:
 		belka.set_portrait("res://assets/characters/subevent1_battle/belka_battle_012.png", {"scale": 0.64, "side": "center", "position": [0, -275]})
-		belka.band("……まだ続くのかよ……勘弁してくれ……。")
+		belka.band("...まだ続くのかよ...勘弁してくれ...。")
 
 func get_lose_behavior() -> String:
 	return "abort"
@@ -131,7 +131,7 @@ func get_lose_redirect() -> Dictionary:
 func get_farewell(result: String) -> Dictionary:
 	if result == "lose":
 		return {
-			"narration": "サトシはベルカに敗北した。\n盗賊団のアジトから撤退するしかない……。",
+			"narration": "サトシはベルカに敗北した。\n盗賊団のアジトから撤退するしかない...。",
 			"portrait": "res://assets/characters/subevent1_battle/belka_battle_003.png",
 			"portrait_scale": 0.64,
 			"text": "ゲハハ！ ボクに勝てると思ったのかよ？\n出直してきな！",

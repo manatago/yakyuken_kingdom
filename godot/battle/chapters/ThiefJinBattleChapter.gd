@@ -47,7 +47,7 @@ func get_lose_redirect() -> Dictionary:
 func get_farewell(result: String) -> Dictionary:
 	if result == "lose":
 		return {
-			"narration": "サトシは盗賊ジンに敗北した。\nこれ以上先に進むのは危険だ……。",
+			"narration": "サトシは盗賊ジンに敗北した。\nこれ以上先に進むのは危険だ...。",
 			"portrait": "res://assets/characters/subevent1/jin_st2_001.png",
 			"portrait_scale": 0.33,
 			"text": "へっ！ 雑魚が！ 出直してこい！",

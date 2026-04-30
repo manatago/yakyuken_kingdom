@@ -53,7 +53,7 @@ func tutorial(bt):
 
 	# サトシ（左下）
 	bt.set_bubble_side("bottom-left")
-	bt.narrator_band("サトシ:（心の声）\n1回負けたら終了……。シビアだな。")
+	bt.narrator_band("サトシ:（心の声）\n1回負けたら終了...。シビアだな。")
 
 	# ピー助（右下）
 	bt.set_bubble_side("bottom-right")
@@ -68,14 +68,14 @@ func tutorial(bt):
 
 	# サトシ（左下）
 	bt.set_bubble_side("bottom-left")
-	bt.narrator_band("サトシ:（心の声）\nデッキが勝手にセットされた……。まあ、ピー助に任せるか。")
+	bt.narrator_band("サトシ:（心の声）\nデッキが勝手にセットされた...。まあ、ピー助に任せるか。")
 
-	bt.narrator_band("サトシ:（心の声）\nよし……。ベイズ・アイを起動する……！")
+	bt.narrator_band("サトシ:（心の声）\nよし...。ベイズ・アイを起動する...！")
 
 	# ベイズ・アイ表示
 	bt.show_bayes_eye()
 
-	bt.narrator_band("サトシ:（心の声）\n……見える。確率が表示されてる。\nグーの確率が圧倒的に高い……。")
+	bt.narrator_band("サトシ:（心の声）\n...見える。確率が表示されてる。\nグーの確率が圧倒的に高い...。")
 
 	# ピー助（右下）
 	bt.set_bubble_side("bottom-right")
@@ -88,7 +88,7 @@ func tutorial(bt):
 
 	# サトシ（左下）
 	bt.set_bubble_side("bottom-left")
-	bt.narrator_band("サトシ:\nうわっ、手が勝手に……！ パー……？")
+	bt.narrator_band("サトシ:\nうわっ、手が勝手に...！ パー...？")
 
 	# ピー助（右下）
 	bt.set_bubble_side("bottom-right")
@@ -101,7 +101,7 @@ func tutorial(bt):
 
 	# サトシ（左下）
 	bt.set_bubble_side("bottom-left")
-	bt.narrator_band("サトシ:（心の声）\n勝った……！ 本当にグーを出してきた……！\n確率通りだ……。この感覚、覚えたぞ。")
+	bt.narrator_band("サトシ:（心の声）\n勝った...！ 本当にグーを出してきた...！\n確率通りだ...。この感覚、覚えたぞ。")
 
 	# ピー助（右下）
 	bt.set_bubble_side("bottom-right")
@@ -125,7 +125,7 @@ func outfit_3(bt):
 	var result = await bt.janken(selection, {"win_rate": 0.6})
 
 	if result == "win":
-		adv.band("な……！？ まぐれだ、まぐれ！")
+		adv.band("な...！？ まぐれだ、まぐれ！")
 	elif result == "lose":
 		adv.band("ガハハ！ やっぱ新顔は弱ぇな！")
 	else:
@@ -136,30 +136,30 @@ func outfit_3(bt):
 func outfit_2(bt):
 	var adv = bt.character("adventurer_a")
 	adv.set_portrait("res://assets/characters/stage1_battle/char09_st1_battle_001.png", {"scale": 0.74, "side": "center", "position": [0, -199]})
-	adv.band("テメェ……調子に乗りやがって……！")
+	adv.band("テメェ...調子に乗りやがって...！")
 
 	var selection = await bt.select_hand()
 	var result = await bt.janken(selection, {"win_rate": 0.5})
 
 	if result == "win":
-		adv.band("嘘だろ……！？")
+		adv.band("嘘だろ...！？")
 	elif result == "lose":
 		adv.band("ハッ！ まだまだだな！")
 	else:
-		adv.band("引き分けだと……！？")
+		adv.band("引き分けだと...！？")
 
 # --- Outfit 1: あと1枚 ---
 
 func outfit_1(bt):
 	var adv = bt.character("adventurer_a")
 	adv.set_portrait("res://assets/characters/stage1_battle/char09_st1_battle_001.png", {"scale": 0.74, "side": "center", "position": [0, -199]})
-	adv.band("くそっ……こっからが本気だ！")
+	adv.band("くそっ...こっからが本気だ！")
 
 	var selection = await bt.select_hand()
 	var result = await bt.janken(selection)
 
 	if result == "win":
-		adv.band("バカな……！")
+		adv.band("バカな...！")
 	elif result == "lose":
 		adv.band("ざまぁみろ！")
 	else:

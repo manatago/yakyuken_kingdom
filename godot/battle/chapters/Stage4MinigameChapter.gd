@@ -30,12 +30,12 @@ func _get_config() -> Dictionary:
 		"scripted_intro": {
 			"opening": "セレスは小さな手で杖を構え、詠唱を始める。\n空気が熱を帯びる。",
 			"satoshi": "（ドMなら強気でいけばいいんだな！？）\nセレス！　奴隷のように這いつくばれ！！",
-			"opponent": "……っ！ 無礼な！　わたくしを誰と心得ておる！\n身分をわきまえよ！",
-			"thought": "スクリーン映像「……無礼者。身分を侮るなど、許さぬ」\nいきなり強気は赤ゾーンでは反発。集中がむしろ高まる。",
+			"opponent": "...っ！ 無礼な！　わたくしを誰と心得ておる！\n身分をわきまえよ！",
+			"thought": "スクリーン映像「...無礼者。身分を侮るなど、許さぬ」\nいきなり強気は赤ゾーンでは反発。集中がむしろ高まる。",
 			"color_change": "魔法の魔力が、さらに強く渦巻く。",
-			"pisuke": "いきなり強すぎだ、サトシ。\nゲージを見ろ。今は「赤」だ。\n……まずは軽口で、じわじわ慣らせ。",
+			"pisuke": "いきなり強すぎだ、サトシ。\nゲージを見ろ。今は「赤」だ。\n...まずは軽口で、じわじわ慣らせ。",
 		},
-		"win_narration": "セレスの杖が揺らぎ、詠唱が途切れる。\n膝をつき潤んだ瞳でサトシを見上げる。「……もっと、命令、してください……」",
+		"win_narration": "セレスの杖が揺らぎ、詠唱が途切れる。\n膝をつき潤んだ瞳でサトシを見上げる。「...もっと、命令、してください...」",
 		"lose_narration": "高位魔法が炸裂。視界が灼熱の白に染まり——サトシは炭化した。",
 		"pisuke_explain_hit": "セレスのドMツボに刺さり、魔法集中は大きく崩れた。",
 		"pisuke_explain_miss": "ゾーンに合わない言葉は、サトシの方が決まり悪くなった。",
@@ -49,10 +49,10 @@ func _get_config() -> Dictionary:
 const LIGHT_POOL := [
 	{
 		"label": "ちょっと黙ってろ",
-		"satoshi": "……おい、セレス。ちょっと黙ってろ。",
-		"opponent_hit": "……っ！　急に命令口調……体が痺れる……！",
-		"opponent_miss": "……ふん、その程度では、もう……",
-		"thought": "命令口調、わたしのプライドの隙間に、ちくり……！",
+		"satoshi": "...おい、セレス。ちょっと黙ってろ。",
+		"opponent_hit": "...っ！　急に命令口調...体が痺れる...！",
+		"opponent_miss": "...ふん、その程度では、もう...",
+		"thought": "命令口調、わたしのプライドの隙間に、ちくり...！",
 		"explain_hit": "軽い命令が赤ゾーンのプライドに刺さり、集中が乱れた。",
 		"explain_miss": "ゾーンが進むと軽口は刺激不足。サトシの方が決まり悪くなった。",
 		"pisuke_chase": "命令されただけで体が痺れる、って、毎晩、誰かに命令されて遊んでるからじゃないですか？\n師団長室の盗聴魔導具、夜中の声、規則的に拾えてますよ。",
@@ -60,9 +60,9 @@ const LIGHT_POOL := [
 	{
 		"label": "そのまま立ってろ",
 		"satoshi": "そのまま立ってろ、セレス。動くな。",
-		"opponent_hit": "……っ！　なぜ、体が、従ってしまう……！",
-		"opponent_miss": "……ふむ、緩いな……",
-		"thought": "動くな、と言われた途端、足が固まって……！",
+		"opponent_hit": "...っ！　なぜ、体が、従ってしまう...！",
+		"opponent_miss": "...ふむ、緩いな...",
+		"thought": "動くな、と言われた途端、足が固まって...！",
 		"explain_hit": "軽い拘束指示が赤ゾーンで効く。",
 		"explain_miss": "ゾーンが進むと軽口は刺激不足。",
 		"pisuke_chase": "「動くな」で勝手に固まる、その反射神経。\n師団長室の壁、足輪を引っ掛ける金具の跡、しっかり残ってますよ？",
@@ -70,9 +70,9 @@ const LIGHT_POOL := [
 	{
 		"label": "お前の判断は間違いだ",
 		"satoshi": "お前の判断は間違いだ、セレス。素直に認めろ。",
-		"opponent_hit": "……っ！　判断、否定された……頭が痺れる……！",
-		"opponent_miss": "……もっと、強い、否定が欲しい……",
-		"thought": "判断を、否定される、ぞくっ……！",
+		"opponent_hit": "...っ！　判断、否定された...頭が痺れる...！",
+		"opponent_miss": "...もっと、強い、否定が欲しい...",
+		"thought": "判断を、否定される、ぞくっ...！",
 		"explain_hit": "軽い否定が赤ゾーンで効く。",
 		"explain_miss": "ゾーンが進むと軽口は弱すぎる。",
 		"pisuke_chase": "否定されて頭が痺れる、その性癖、師団内ではもう公然の秘密ですよ。\nシスター・アンナとシスター・リーラが、セレス師団長の癖、噂してるの、録音済みです。",
@@ -83,10 +83,10 @@ const LIGHT_POOL := [
 const STRONG_POOL := [
 	{
 		"label": "奴隷のように這え",
-		"satoshi": "……奴隷のように這いつくばれ、セレス。",
-		"opponent_hit": "……ぁ、ぁぁ……這う……這い、ます……！",
-		"opponent_miss": "……っ！　無礼な！　身分をわきまえよ！",
-		"thought": "奴隷、這う、わたしの一番、深いところ……！",
+		"satoshi": "...奴隷のように這いつくばれ、セレス。",
+		"opponent_hit": "...ぁ、ぁぁ...這う...這い、ます...！",
+		"opponent_miss": "...っ！　無礼な！　身分をわきまえよ！",
+		"thought": "奴隷、這う、わたしの一番、深いところ...！",
 		"explain_hit": "侮辱がドMツボの最深部に刺さる。",
 		"explain_miss": "赤ゾーンでいきなり侮辱は反発を招き、集中が逆に高まる。",
 		"pisuke_chase": "「這え」の一言で、その姿勢が即座に取れる。\nご自宅の絨毯、両膝の擦り跡、戦闘じゃ絶対つかない位置ですよ？\n夜な夜な、自主練、してますよね？",
@@ -94,9 +94,9 @@ const STRONG_POOL := [
 	{
 		"label": "俺の足を舐めろ",
 		"satoshi": "俺の足を舐めろ、セレス。忠誠の証として。",
-		"opponent_hit": "……ぁ、舐める、舐めます、どうか……！",
-		"opponent_miss": "……無礼！　ぶち切れるぞ、わらわは！",
-		"thought": "舐める、忠誠、わたしの極み……！",
+		"opponent_hit": "...ぁ、舐める、舐めます、どうか...！",
+		"opponent_miss": "...無礼！　ぶち切れるぞ、わらわは！",
+		"thought": "舐める、忠誠、わたしの極み...！",
 		"explain_hit": "究極侮蔑が炸裂、トドメに近づく。",
 		"explain_miss": "赤ゾーンでは反発、プライドが固まる。",
 		"pisuke_chase": "「舐めます、どうか」、その懇願の語尾、毎晩鏡の前で練習してますよね？\n師団長室の床、唇の形の染みまで、鑑定魔法で出てますよ。",
@@ -104,9 +104,9 @@ const STRONG_POOL := [
 	{
 		"label": "許しを乞うて泣け",
 		"satoshi": "許しを乞うて、泣きながら懇願しろ、セレス。",
-		"opponent_hit": "……ぅ、ぐすっ……ゆるして、くださ、い……！",
-		"opponent_miss": "……無礼者！　身分を弁えよ！",
-		"thought": "泣いて、許しを乞う、わたしの最深部……！",
+		"opponent_hit": "...ぅ、ぐすっ...ゆるして、くださ、い...！",
+		"opponent_miss": "...無礼者！　身分を弁えよ！",
+		"thought": "泣いて、許しを乞う、わたしの最深部...！",
 		"explain_hit": "涙の懇願まで引き出した。",
 		"explain_miss": "赤ゾーンでは反発、プライドが固まる。",
 		"pisuke_chase": "泣いて懇願、本当にお得意ですね。\nそれ、誰の前で身につけたんですか？\n師団長室の机の下、涙の塩分が染み込んだ床板、検出されてますよ。",
@@ -117,31 +117,31 @@ const STRONG_POOL := [
 const MISS_POOL := [
 	{
 		"label": "天気、いいですね",
-		"satoshi": "い、いい天気ですね、今日……。",
-		"opponent": "……世間話で時間を稼ぐつもりか。",
+		"satoshi": "い、いい天気ですね、今日...。",
+		"opponent": "...世間話で時間を稼ぐつもりか。",
 		"explain": "あたりさわりない話題は彼女の心を動かさない。",
 		"pisuke_chase": "ゲコッ、サトシ、世間話で時間稼ぐな！\nゲージ見ろ、ゲージを！",
 	},
 	{
 		"label": "その帽子、素敵ですね",
-		"satoshi": "その魔女帽子、素敵ですね……。",
-		"opponent": "……お世辞は不要。",
+		"satoshi": "その魔女帽子、素敵ですね...。",
+		"opponent": "...お世辞は不要。",
 		"explain": "装飾品への言及は効果なし。",
-		"pisuke_chase": "お世辞は逆効果に近い……！\nセレスは「下に見られた」って受け取るぞ！",
+		"pisuke_chase": "お世辞は逆効果に近い...！\nセレスは「下に見られた」って受け取るぞ！",
 	},
 	{
 		"label": "師団長様、お許しを",
-		"satoshi": "師団長様、どうか、どうか、お許しを……！",
-		"opponent": "……ふん、跪いて懇願するか。見苦しい。",
+		"satoshi": "師団長様、どうか、どうか、お許しを...！",
+		"opponent": "...ふん、跪いて懇願するか。見苦しい。",
 		"explain": "恭順な懇願はセレスのサディスト優越感を満たす。",
 		"pisuke_chase": "ゲコッ、懇願は完全に逆効果だ！\nサトシ、彼女のプライドが上がってる！",
 	},
 	{
 		"label": "お若いのに、ご立派で",
-		"satoshi": "お若いのに、こんなに師団長を務められて、ご立派です……！",
-		"opponent": "……ふふん、当然のこと。",
+		"satoshi": "お若いのに、こんなに師団長を務められて、ご立派です...！",
+		"opponent": "...ふふん、当然のこと。",
 		"explain": "プライドが満たされて集中が強化された。",
-		"pisuke_chase": "持ち上げてどうする……！\nセレスは「見下す相手が増えた」って思ってるぞ！",
+		"pisuke_chase": "持ち上げてどうする...！\nセレスは「見下す相手が増えた」って思ってるぞ！",
 	},
 ]
 
@@ -282,9 +282,9 @@ func _apply_pisuke(bt):
 
 	# ピー助が選んだことを示す短い導入
 	bt.set_bubble_side(BUBBLE_SIDE_SATOSHI)
-	bt.narrator_band("サトシ:\n……えっと、何を言えば──", "satoshi", ico_nervous)
+	bt.narrator_band("サトシ:\n...えっと、何を言えば──", "satoshi", ico_nervous)
 	await bt.wait(0.0)
-	bt.narrator_band("ピー助（小声）:\n……これだ。言え。", "pisuke")
+	bt.narrator_band("ピー助（小声）:\n...これだ。言え。", "pisuke")
 	await bt.wait(0.0)
 
 	var choice: Dictionary = pool[pick]
@@ -304,7 +304,7 @@ func _play_strength_lines(bt, choice: Dictionary, is_hit: bool, delta: int):
 	var opp_id: String = cfg.get("opponent_id", "seles")
 
 	bt.set_bubble_side(BUBBLE_SIDE_SATOSHI)
-	bt.narrator_band("サトシ:\n%s" % choice.get("satoshi", "……"), "satoshi", satoshi_ico)
+	bt.narrator_band("サトシ:\n%s" % choice.get("satoshi", "..."), "satoshi", satoshi_ico)
 	await bt.wait(0.0)
 
 	var opp_text: String = choice.get("opponent_hit", "") if is_hit else choice.get("opponent_miss", "")
@@ -319,7 +319,7 @@ func _play_strength_lines(bt, choice: Dictionary, is_hit: bool, delta: int):
 			bt.narrator_band("ピー助（畳みかけて）:\n%s" % chase, "pisuke")
 			await bt.wait(0.0)
 			bt.set_bubble_side(BUBBLE_SIDE_OPPONENT)
-			bt.narrator_band("%s:\n……っ！ ……や、やめて、もう、許して……！" % get_opponent_name(), opp_id, opp_ico)
+			bt.narrator_band("%s:\n...っ！ ...や、やめて、もう、許して...！" % get_opponent_name(), opp_id, opp_ico)
 			await bt.wait(0.0)
 
 	var thought: String = choice.get("thought", "") if is_hit else ""
@@ -348,11 +348,11 @@ func _play_miss_lines(bt, choice: Dictionary, delta: int):
 	var opp_id: String = cfg.get("opponent_id", "seles")
 
 	bt.set_bubble_side(BUBBLE_SIDE_SATOSHI)
-	bt.narrator_band("サトシ:\n%s" % choice.get("satoshi", "……"), "satoshi", satoshi_ico)
+	bt.narrator_band("サトシ:\n%s" % choice.get("satoshi", "..."), "satoshi", satoshi_ico)
 	await bt.wait(0.0)
 
 	bt.set_bubble_side(BUBBLE_SIDE_OPPONENT)
-	bt.narrator_band("%s:\n%s" % [get_opponent_name(), choice.get("opponent", "……")], opp_id, opp_ico)
+	bt.narrator_band("%s:\n%s" % [get_opponent_name(), choice.get("opponent", "...")], opp_id, opp_ico)
 	await bt.wait(0.0)
 
 	var chase: String = choice.get("pisuke_chase", "")

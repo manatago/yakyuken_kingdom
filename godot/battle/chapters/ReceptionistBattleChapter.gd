@@ -56,7 +56,7 @@ func outfit_3(bt):
 
 	if result == "win":
 		rec.set_portrait("res://assets/characters/stage2_battle/char10_st2_battle_002.png", {"scale": 0.32, "side": "center", "position": [0, -275]})
-		rec.band("え……うそ……。")
+		rec.band("え...うそ...。")
 	elif result == "lose":
 		rec.set_portrait("res://assets/characters/stage2_battle/char10_st2_battle_003.png", {"scale": 0.32, "side": "center", "position": [0, -275]})
 		rec.band("ふふ、まだまだね。")
@@ -69,27 +69,27 @@ func outfit_3(bt):
 func outfit_2(bt):
 	var rec = bt.character("receptionist")
 	rec.set_portrait("res://assets/characters/stage2_battle/char10_st2_battle_005.png", {"scale": 0.73, "side": "center", "position": [0, -275]})
-	rec.band("……ちょっと、見ないでよ。")
+	rec.band("...ちょっと、見ないでよ。")
 
 	var selection = await bt.select_hand()
 	var result = await bt.janken(selection, {"win_rate": 0.5})
 
 	if result == "win":
 		rec.set_portrait("res://assets/characters/stage2_battle/char10_st2_battle_006.png", {"scale": 0.73, "side": "center", "position": [0, -275]})
-		rec.band("……っ、また負けた……。")
+		rec.band("...っ、また負けた...。")
 	elif result == "lose":
 		rec.set_portrait("res://assets/characters/stage2_battle/char10_st2_battle_007.png", {"scale": 0.73, "side": "center", "position": [0, -275]})
 		rec.band("ほら、油断するからよ。")
 	else:
 		rec.set_portrait("res://assets/characters/stage2_battle/char10_st2_battle_008.png", {"scale": 0.73, "side": "center", "position": [0, -275]})
-		rec.band("また引き分け……集中しなさい。")
+		rec.band("また引き分け...集中しなさい。")
 
 # --- Outfit 1: あと1枚 ---
 
 func outfit_1(bt):
 	var rec = bt.character("receptionist")
 	rec.set_portrait("res://assets/characters/stage2_battle/char10_st2_battle_009.png", {"scale": 0.73, "side": "center", "position": [0, -275]})
-	rec.band("……こ、これ以上は絶対にダメ！")
+	rec.band("...こ、これ以上は絶対にダメ！")
 
 	var selection = await bt.select_hand()
 	var result = await bt.janken(selection, {"win_rate": 0.4})
@@ -99,7 +99,7 @@ func outfit_1(bt):
 		rec.band("いやぁぁぁ！！")
 	elif result == "lose":
 		rec.set_portrait("res://assets/characters/stage2_battle/char10_st2_battle_011.png", {"scale": 0.73, "side": "center", "position": [0, -275]})
-		rec.band("ふぅ……助かった……。")
+		rec.band("ふぅ...助かった...。")
 	else:
 		rec.set_portrait("res://assets/characters/stage2_battle/char10_st2_battle_012.png", {"scale": 0.73, "side": "center", "position": [0, -275]})
-		rec.band("……まだ終わらないの？")
+		rec.band("...まだ終わらないの？")
