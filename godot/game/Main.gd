@@ -11,8 +11,9 @@ signal result_updated(text)
 @onready var title_menu = $TitleMenu
 @onready var new_game_button = $TitleMenu/NewGameButton
 @onready var continue_button = $TitleMenu/ContinueButton
+@onready var edit_mode_button = $TitleMenu/EditModeButton
 @onready var jump_menu = $JumpMenu
-@onready var jump_list = $JumpMenu/JumpList
+@onready var jump_list = $JumpMenu/JumpScroll/JumpList
 @onready var back_button = $JumpMenu/BackButton
 @onready var battle_result_screen = $BattleResultScreen
 @onready var result_title = $BattleResultScreen/ResultMenu/ResultTitle
@@ -52,6 +53,8 @@ var _jump_points: Array = [
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {}, "money": 0}},
 	{"label": "_result:lose", "name": "バトル後（敗北）",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {}, "money": 0}},
+	{"label": "_matilda_lose_retry", "name": "マチルダ敗北後（牢屋retry）",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {}, "money": 0}},
 	{"label": "scene_guild_street", "name": "--- Stage1 ---",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true}, "money": 0}},
 	{"label": "scene_guild_street", "name": "ギルド通り", "sequence": "stage1",
@@ -70,6 +73,26 @@ var _jump_points: Array = [
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true, "guild_registered": true}, "money": 100}},
 	{"label": "_subevent_post:subevent1", "name": "サブイベント1 後半（ベルカ決着後）",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true, "guild_registered": true}, "money": 100}},
+	{"label": "_subevent_pre1:subevent2", "name": "サブイベント2 前半1（ギルド→教会裏庭）",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true, "guild_registered": true, "subevent1_complete": true}, "money": 200}},
+	{"label": "_subevent_pre2:subevent2", "name": "サブイベント2 前半2（礼拝室→シスター長戦）",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true, "guild_registered": true, "subevent1_complete": true}, "money": 200}},
+	{"label": "_subevent_post:subevent2", "name": "サブイベント2 後半（シスター長決着後）",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true, "guild_registered": true, "subevent1_complete": true}, "money": 200}},
+	{"label": "_minigame:minigame_smoke", "name": "--- ミニゲーム ---",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {}, "money": 0}},
+	{"label": "_minigame:minigame_smoke", "name": "＜ミニゲーム＞スモークテスト",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {}, "money": 0}},
+	{"label": "_minigame:minigame_subevent3", "name": "＜ミニゲーム＞サブイベント3（羞恥の儀）",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {}, "money": 0}},
+	{"label": "_minigame:minigame_stage2", "name": "＜ミニゲーム＞ST2（レイラ・相手の動揺を指摘せよ）",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {}, "money": 0}},
+	{"label": "_minigame:minigame_stage3", "name": "＜ミニゲーム＞ST3（マグダレナ・書棚で妄想を誘発せよ）",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {}, "money": 0}},
+	{"label": "_minigame:minigame_stage4", "name": "＜ミニゲーム＞ST4（セレス・強度を合わせて崩せ）",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {}, "money": 0}},
+	{"label": "_minigame:minigame_stage5", "name": "＜ミニゲーム＞ST5（フェリア・距離を詰めて自白を引き出せ）",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {}, "money": 0}},
 ]
 
 var story_scene_scene = preload("res://StoryScene.tscn")
@@ -86,6 +109,7 @@ func _ready():
 	GameState.init_default_inventory()
 	new_game_button.pressed.connect(_on_new_game)
 	continue_button.pressed.connect(_on_continue)
+	edit_mode_button.pressed.connect(_on_edit_mode)
 	back_button.pressed.connect(_on_jump_back)
 	title_menu.visible = true
 	jump_menu.visible = false
@@ -104,9 +128,28 @@ func _on_continue():
 func _show_jump_menu():
 	for child in jump_list.get_children():
 		child.queue_free()
-	# キャラ編集ボタン
+	# 通常ジャンプポイント
+	for point in _jump_points:
+		var btn := Button.new()
+		btn.text = point.name
+		btn.add_theme_font_size_override("font_size", 20)
+		btn.pressed.connect(_on_jump_selected.bind(point))
+		jump_list.add_child(btn)
+	jump_menu.visible = true
+
+# --- 編集モード選択メニュー ---
+
+func _on_edit_mode():
+	title_menu.visible = false
+	_show_edit_menu()
+
+func _show_edit_menu():
+	title_menu.visible = false
+	for child in jump_list.get_children():
+		child.queue_free()
+	# ランダムバトル編集ボタン
 	var edit_btn := Button.new()
-	edit_btn.text = "▶ キャラ編集モード"
+	edit_btn.text = "▶ ランダムバトル編集"
 	edit_btn.add_theme_font_size_override("font_size", 20)
 	edit_btn.add_theme_color_override("font_color", Color(0.3, 1.0, 0.5))
 	edit_btn.pressed.connect(_on_char_edit_mode)
@@ -125,16 +168,6 @@ func _show_jump_menu():
 	story_edit_btn.add_theme_color_override("font_color", Color(0.5, 0.8, 1.0))
 	story_edit_btn.pressed.connect(_on_story_edit_mode)
 	jump_list.add_child(story_edit_btn)
-	# セパレータ
-	var sep := HSeparator.new()
-	jump_list.add_child(sep)
-	# 通常ジャンプポイント
-	for point in _jump_points:
-		var btn := Button.new()
-		btn.text = point.name
-		btn.add_theme_font_size_override("font_size", 20)
-		btn.pressed.connect(_on_jump_selected.bind(point))
-		jump_list.add_child(btn)
 	jump_menu.visible = true
 
 func _on_jump_selected(point: Dictionary):
@@ -149,6 +182,28 @@ func _on_jump_selected(point: Dictionary):
 	GameState.label = label_name
 	if label_name == "_guild_home":
 		await _show_guild_home()
+		title_menu.visible = true
+		return
+	if label_name == "_matilda_lose_retry":
+		_create_story_scene()
+		await _play_scene("prologue_battle_lose_retry")
+		var matilda_choice: String = await _show_choice_overlay(["再挑戦する", "ホームに戻る"])
+		print("[JUMP] 選択: %s" % matilda_choice)
+		if story_scene_instance:
+			story_scene_instance.queue_free()
+			story_scene_instance = null
+		title_menu.visible = true
+		return
+	if label_name.begins_with("_subevent_pre1:"):
+		var quest_id := label_name.substr(15)
+		await _run_subevent_part_standalone(quest_id, "pre1")
+		title_menu.visible = true
+		return
+	if label_name.begins_with("_subevent_pre2:"):
+		var quest_id := label_name.substr(15)
+		await _run_subevent_part_standalone(quest_id, "pre2")
+		if GameState.last_battle_result == "lose":
+			await _show_guild_home()
 		title_menu.visible = true
 		return
 	if label_name.begins_with("_subevent_pre:"):
@@ -168,6 +223,11 @@ func _on_jump_selected(point: Dictionary):
 		await _run_subevent_standalone(quest_id)
 		if GameState.last_battle_result == "lose":
 			await _show_guild_home()
+		title_menu.visible = true
+		return
+	if label_name.begins_with("_minigame:"):
+		var minigame_id := label_name.substr(10)
+		await _run_minigame_standalone(minigame_id)
 		title_menu.visible = true
 		return
 	if label_name.begins_with("_result:"):
@@ -201,7 +261,7 @@ func _on_jump_back():
 	jump_menu.visible = false
 	title_menu.visible = true
 
-# --- キャラ編集モード ---
+# --- ランダムバトル編集モード ---
 
 signal _char_edit_selected(char_id: String)
 
@@ -225,8 +285,7 @@ func _show_char_select(chars: Dictionary):
 	back_btn2.text = "← 戻る"
 	back_btn2.add_theme_font_size_override("font_size", 20)
 	back_btn2.pressed.connect(func():
-		jump_menu.visible = false
-		title_menu.visible = true)
+		_show_edit_menu())
 	jump_list.add_child(back_btn2)
 	var sep := HSeparator.new()
 	jump_list.add_child(sep)
@@ -302,7 +361,7 @@ func _run_char_edit_test(encounter_data: Dictionary):
 	# エンカウント表示を強制実行
 	print("[EDIT] showing encounter for: %s" % encounter_data.get("name", ""))
 	home.narration_band.visible = true
-	home.narration_label.text = "【キャラ編集モード】"
+	home.narration_label.text = "【ランダムバトル編集モード】"
 
 	var accepted: bool = await home._show_encounter(encounter_data)
 	print("[EDIT] encounter result: accepted=%s" % str(accepted))
@@ -320,6 +379,8 @@ func _run_char_edit_test(encounter_data: Dictionary):
 
 	# バトル用の編集パネルを新規作成
 	var battle_edit_panel := _create_edit_overlay(encounter_data)
+	battle_edit_panel.set_meta("chapter_path", "res://encounter/EncounterDatabase.gd")
+	battle_edit_panel.set_meta("encounter_id", encounter_data.get("id", ""))
 	add_child(battle_edit_panel)
 
 	var edit_battle = battle_scene_scene.instantiate()
@@ -329,6 +390,12 @@ func _run_char_edit_test(encounter_data: Dictionary):
 	edit_battle.start_battle(chapter)
 	move_child(battle_edit_panel, get_child_count() - 1)
 	_connect_edit_to_battle(battle_edit_panel, edit_battle, encounter_data)
+
+	var char_back_btn: Button = battle_edit_panel.find_child("EditBackButton", true, false)
+	if char_back_btn:
+		char_back_btn.pressed.connect(func():
+			if is_instance_valid(edit_battle):
+				edit_battle.battle_finished.emit("abort"))
 
 	var edit_result: String = await edit_battle.battle_finished
 	var edit_rewards = edit_battle.get_battle_rewards()
@@ -720,6 +787,24 @@ func _create_edit_overlay(encounter_data: Dictionary) -> PanelContainer:
 	)
 	vbox.add_child(copy_btn)
 
+	# 保存ボタン（バトル編集モード用。chapter_path meta が設定されている時のみ動作）
+	var save_btn := Button.new()
+	save_btn.name = "EditSaveButton"
+	save_btn.text = "保存（同じ画像の全箇所）"
+	save_btn.add_theme_font_size_override("font_size", 14)
+	save_btn.add_theme_color_override("font_color", Color(0.5, 1.0, 0.5))
+	save_btn.pressed.connect(func():
+		_save_battle_edit(panel, info))
+	vbox.add_child(save_btn)
+
+	# 戻るボタン（編集モード選択に戻る）
+	var back_btn := Button.new()
+	back_btn.name = "EditBackButton"
+	back_btn.text = "← 編集メニューに戻る"
+	back_btn.add_theme_font_size_override("font_size", 14)
+	back_btn.add_theme_color_override("font_color", Color(1.0, 0.7, 0.7))
+	vbox.add_child(back_btn)
+
 	return panel
 
 func _create_slider_row(label_text: String, slider_name: String, min_val: float, max_val: float, step_val: float, default_val: float, _fmt: String = "") -> HBoxContainer:
@@ -868,10 +953,9 @@ func _process(_delta: float):
 	var char_rect: TextureRect = _find_visible_char_rect(story_sc)
 	if not char_rect:
 		return
-	# 画像が変わったらスライダーを実際の値に更新
+	# 画像が変わったらスライダーを実際の値に更新（シグナル抑止して一括反映）
 	if char_rect.texture != _battle_edit_last_tex:
 		_battle_edit_last_tex = char_rect.texture
-		_set_slider_range(_battle_edit_sl.scale, _battle_edit_sl.scale_spin, 0.1, 1.5, 0.01, char_rect.scale.x)
 		var vp_size: Vector2 = get_viewport_rect().size
 		var tex_size: Vector2 = char_rect.texture.get_size()
 		var s: float = char_rect.scale.x
@@ -881,8 +965,21 @@ func _process(_delta: float):
 		var base_y: float = vp_size.y - visual_h
 		var offset_x: float = char_rect.position.x - base_x
 		var offset_y: float = char_rect.position.y - base_y
+		_battle_edit_sl.scale.set_block_signals(true)
+		_battle_edit_sl.x.set_block_signals(true)
+		_battle_edit_sl.y.set_block_signals(true)
+		if _battle_edit_sl.scale_spin: _battle_edit_sl.scale_spin.set_block_signals(true)
+		if _battle_edit_sl.x_spin: _battle_edit_sl.x_spin.set_block_signals(true)
+		if _battle_edit_sl.y_spin: _battle_edit_sl.y_spin.set_block_signals(true)
+		_set_slider_range(_battle_edit_sl.scale, _battle_edit_sl.scale_spin, 0.1, 1.5, 0.01, s)
 		_set_slider_range(_battle_edit_sl.x, _battle_edit_sl.x_spin, -500, 500, 1, offset_x)
 		_set_slider_range(_battle_edit_sl.y, _battle_edit_sl.y_spin, -600, 300, 1, offset_y)
+		_battle_edit_sl.scale.set_block_signals(false)
+		_battle_edit_sl.x.set_block_signals(false)
+		_battle_edit_sl.y.set_block_signals(false)
+		if _battle_edit_sl.scale_spin: _battle_edit_sl.scale_spin.set_block_signals(false)
+		if _battle_edit_sl.x_spin: _battle_edit_sl.x_spin.set_block_signals(false)
+		if _battle_edit_sl.y_spin: _battle_edit_sl.y_spin.set_block_signals(false)
 
 func _find_visible_char_rect(story_sc) -> TextureRect:
 	for rect in [story_sc.center_char, story_sc.left_char, story_sc.right_char]:
@@ -906,8 +1003,13 @@ func _on_battle_slider(_value: float, sl: Dictionary, battle_ref):
 	var vp_size: Vector2 = get_viewport_rect().size
 	var visual_w: float = tex_size.x * s
 	var visual_h: float = tex_size.y * s
-	char_rect.position.x = (vp_size.x - visual_w) / 2.0 + sl.x.value
-	char_rect.position.y = vp_size.y - visual_h + sl.y.value
+	var new_pos := Vector2(
+		(vp_size.x - visual_w) / 2.0 + sl.x.value,
+		vp_size.y - visual_h + sl.y.value
+	)
+	char_rect.position = new_pos
+	if story_sc._char_locked_positions.has(char_rect):
+		story_sc._char_locked_positions[char_rect] = new_pos
 	var row_parent2 = sl.scale.get_parent().get_parent()
 	var info: Label = row_parent2.find_child("InfoLabel", true, false)
 	if info:
@@ -1007,6 +1109,20 @@ func _on_battle_requested(cmd):
 		story_scene_instance.complete_battle("win")
 		return
 
+	if cmd.is_minigame:
+		story_scene_instance.visible = false
+		var mg_battle = battle_scene_scene.instantiate()
+		add_child(mg_battle)
+		mg_battle.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		mg_battle.setup(story_script.get_cast(), story_scene_instance.background_rect.texture, GameState.inventory)
+		mg_battle.start_battle(cmd.chapter, false, true)
+		var mg_result: String = await mg_battle.battle_finished
+		mg_battle.queue_free()
+		story_scene_instance.visible = true
+		cmd.result = mg_result
+		story_scene_instance.complete_battle(mg_result)
+		return
+
 	if cmd.is_tutorial:
 		story_scene_instance.visible = false
 		var tut_battle = battle_scene_scene.instantiate()
@@ -1054,10 +1170,21 @@ func _on_battle_requested(cmd):
 		# リダイレクト判定
 		if lose_behavior == "redirect":
 			var redirect: Dictionary = cmd.chapter.get_lose_redirect()
-			if redirect.get("type", "") == "retry_scene":
+			var rtype: String = redirect.get("type", "")
+			if rtype == "retry_scene":
 				var choice: String = await _show_retry_scene(redirect)
 				if choice == "retry":
-					continue  # 再バトル
+					continue
+				else:
+					final_result = "lose"
+					break
+			elif rtype == "story_sequence":
+				# ストーリーシーケンスを再生 → 選択肢
+				story_scene_instance.visible = true
+				await _play_scene(redirect.get("sequence_id", ""))
+				var choice2: String = await _show_choice_overlay(redirect.get("choices", ["再挑戦する", "ホームに戻る"]))
+				if choice2 == "retry":
+					continue
 				else:
 					final_result = "lose"
 					break
@@ -1209,6 +1336,24 @@ func _show_retry_scene(redirect: Dictionary) -> String:
 			panel.add_child(bg_rect)
 			panel.move_child(bg_rect, 0)
 
+	# ポートレート（敵キャラなど）
+	var portrait_path: String = redirect.get("portrait", "")
+	if not portrait_path.is_empty():
+		var portrait_tex = load(portrait_path)
+		if portrait_tex:
+			var portrait_rect := TextureRect.new()
+			portrait_rect.texture = portrait_tex
+			portrait_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			portrait_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			var ptw: float = portrait_tex.get_width()
+			var pth: float = portrait_tex.get_height()
+			var p_scale: float = redirect.get("portrait_scale", 0.6)
+			portrait_rect.custom_minimum_size = Vector2(ptw * p_scale, pth * p_scale)
+			portrait_rect.size = Vector2(ptw * p_scale, pth * p_scale)
+			portrait_rect.set_anchors_preset(Control.PRESET_CENTER_RIGHT)
+			portrait_rect.position = Vector2(-ptw * p_scale - 40, -pth * p_scale * 0.5)
+			panel.add_child(portrait_rect)
+
 	# ナレーション
 	var narration: String = redirect.get("narration", "")
 	if not narration.is_empty():
@@ -1241,6 +1386,43 @@ func _show_retry_scene(redirect: Dictionary) -> String:
 
 func _on_retry_choice(choice: String):
 	_retry_choice_made.emit(choice)
+
+# ストーリーシーン上に半透明の選択肢オーバーレイを表示
+func _show_choice_overlay(choices: Array) -> String:
+	var panel := PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.0, 0.0, 0.0, 0.55)
+	style.corner_radius_top_left = 12
+	style.corner_radius_top_right = 12
+	style.corner_radius_bottom_left = 12
+	style.corner_radius_bottom_right = 12
+	style.content_margin_left = 30
+	style.content_margin_right = 30
+	style.content_margin_top = 20
+	style.content_margin_bottom = 20
+	panel.add_theme_stylebox_override("panel", style)
+	panel.set_anchors_preset(Control.PRESET_CENTER)
+	panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	panel.grow_vertical = Control.GROW_DIRECTION_BOTH
+	add_child(panel)
+
+	var btn_row := HBoxContainer.new()
+	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	btn_row.add_theme_constant_override("separation", 30)
+	panel.add_child(btn_row)
+
+	for i in choices.size():
+		var btn := Button.new()
+		btn.text = choices[i]
+		btn.add_theme_font_size_override("font_size", 22)
+		btn.custom_minimum_size = Vector2(220, 56)
+		var choice_val: String = "retry" if i == 0 else "home"
+		btn.pressed.connect(_on_retry_choice.bind(choice_val))
+		btn_row.add_child(btn)
+
+	var choice: String = await _retry_choice_made
+	panel.queue_free()
+	return choice
 
 # --- Battle Result Screen ---
 
@@ -1351,6 +1533,7 @@ func _on_town_battle(area_id: String, chapter: BattleChapterBase, home: GuildHom
 # --- サブイベント実行 ---
 
 const Subevent1ChapterScript := preload("res://story/chapters/Subevent1Chapter.gd")
+const Subevent2ChapterScript := preload("res://story/chapters/Subevent2Chapter.gd")
 var _subevent_in_progress := false
 
 const SUBEVENT_CHAPTERS := {
@@ -1360,7 +1543,13 @@ const SUBEVENT_CHAPTERS := {
 		"pre_sequence_id": "subevent1_pre",
 		"post_sequence_id": "subevent1_post",
 	},
-	"subevent2": {"name": "教会の不正を暴け！", "chapter_script": "", "pre_sequence_id": ""},
+	"subevent2": {
+		"name": "教会の不正を暴け！",
+		"chapter_script": "Subevent2ChapterScript",
+		"pre_sequence_id": "subevent2_pre1",
+		"pre2_sequence_id": "subevent2_pre2",
+		"post_sequence_id": "subevent2_post",
+	},
 	"subevent3": {"name": "呪われた鎧を脱がせ！", "chapter_script": "", "pre_sequence_id": ""},
 	"subevent4": {"name": "受付嬢を脱がせ！", "chapter_script": "", "pre_sequence_id": ""},
 }
@@ -1371,6 +1560,9 @@ func _ensure_subevent_registered(quest_id: String):
 	if quest_id == "subevent1":
 		if not story_script.get_sequence("subevent1_pre"):
 			story_script._register_chapter(Subevent1ChapterScript.new())
+	elif quest_id == "subevent2":
+		if not story_script.get_sequence("subevent2_pre1"):
+			story_script._register_chapter(Subevent2ChapterScript.new())
 
 func _run_subevent(quest_id: String, home: GuildHome):
 	var quest_data: Dictionary = SUBEVENT_CHAPTERS.get(quest_id, {})
@@ -1405,7 +1597,7 @@ func _run_subevent(quest_id: String, home: GuildHome):
 	else:
 		story_scene_instance.visible = true
 
-	# 前半ストーリー再生（手下戦 + ベルカ戦を含む）
+	# 前半ストーリー再生
 	await story_scene_instance.play_sequence(pre_seq, {"id": pre_id})
 
 	# バトルで負けたらギルドホームに戻る
@@ -1414,6 +1606,18 @@ func _run_subevent(quest_id: String, home: GuildHome):
 		story_scene_instance.visible = false
 		home.visible = true
 		return
+
+	# 前半2（分割されている場合のみ）
+	var pre2_id: String = quest_data.get("pre2_sequence_id", "")
+	if not pre2_id.is_empty():
+		var pre2_seq = story_script.get_sequence(pre2_id)
+		if pre2_seq:
+			await story_scene_instance.play_sequence(pre2_seq, {"id": pre2_id})
+			if GameState.last_battle_result == "lose":
+				_subevent_in_progress = false
+				story_scene_instance.visible = false
+				home.visible = true
+				return
 
 	# 後半ストーリー再生
 	var post_id: String = quest_data.get("post_sequence_id", "")
@@ -1433,8 +1637,10 @@ func _run_subevent_part_standalone(quest_id: String, part: String):
 		return
 
 	var seq_id: String = ""
-	if part == "pre":
+	if part == "pre" or part == "pre1":
 		seq_id = quest_data.get("pre_sequence_id", "")
+	elif part == "pre2":
+		seq_id = quest_data.get("pre2_sequence_id", "")
 	elif part == "post":
 		seq_id = quest_data.get("post_sequence_id", "")
 	if seq_id.is_empty():
@@ -1475,7 +1681,7 @@ func _run_subevent_standalone(quest_id: String):
 		print("[QUEST] Sequence not found: ", pre_id)
 		return
 
-	# 前半（手下戦 + ベルカ戦を含む）
+	# 前半
 	await story_scene_instance.play_sequence(pre_seq, {"id": pre_id})
 
 	# バトルで負けたら終了
@@ -1485,6 +1691,19 @@ func _run_subevent_standalone(quest_id: String):
 			story_scene_instance.queue_free()
 			story_scene_instance = null
 		return
+
+	# 前半2（分割されている場合のみ）
+	var pre2_id: String = quest_data.get("pre2_sequence_id", "")
+	if not pre2_id.is_empty():
+		var pre2_seq = story_script.get_sequence(pre2_id)
+		if pre2_seq:
+			await story_scene_instance.play_sequence(pre2_seq, {"id": pre2_id})
+			if GameState.last_battle_result == "lose":
+				_subevent_in_progress = false
+				if story_scene_instance:
+					story_scene_instance.queue_free()
+					story_scene_instance = null
+				return
 
 	# 後半
 	var post_id: String = quest_data.get("post_sequence_id", "")
@@ -1503,6 +1722,9 @@ func _run_subevent_standalone(quest_id: String):
 const STORY_EDIT_SEQUENCES := [
 	{"id": "subevent1_pre", "name": "サブイベント1 前半（盗賊団）", "chapter": "Subevent1ChapterScript"},
 	{"id": "subevent1_post", "name": "サブイベント1 後半（盗賊団決着）", "chapter": "Subevent1ChapterScript"},
+	{"id": "subevent2_pre1", "name": "サブイベント2 前半1（ギルド→教会裏庭）", "chapter": "Subevent2ChapterScript"},
+	{"id": "subevent2_pre2", "name": "サブイベント2 前半2（礼拝室→シスター長戦）", "chapter": "Subevent2ChapterScript"},
+	{"id": "subevent2_post", "name": "サブイベント2 後半（教会決着）", "chapter": "Subevent2ChapterScript"},
 	{"id": "prologue", "name": "プロローグ"},
 	{"id": "stage1", "name": "ステージ1"},
 ]
@@ -1536,12 +1758,12 @@ func _on_story_edit_mode():
 	var selected: int = await _story_edit_selected
 	jump_menu.visible = false
 	if selected < 0:
-		_show_jump_menu()
+		_show_edit_menu()
 		return
 
 	var entry = STORY_EDIT_SEQUENCES[selected]
 	await _run_story_edit(entry)
-	title_menu.visible = true
+	_show_edit_menu()
 
 func _run_story_edit(entry: Dictionary):
 	var sequence_id: String = entry.id
@@ -1552,6 +1774,9 @@ func _run_story_edit(entry: Dictionary):
 	if entry.has("chapter") and entry.chapter == "Subevent1ChapterScript":
 		if not story_script.get_sequence("subevent1_pre"):
 			story_script._register_chapter(Subevent1ChapterScript.new())
+	elif entry.has("chapter") and entry.chapter == "Subevent2ChapterScript":
+		if not story_script.get_sequence("subevent2_pre1"):
+			story_script._register_chapter(Subevent2ChapterScript.new())
 
 	var seq = story_script.get_sequence(sequence_id)
 	if not seq:
@@ -1594,6 +1819,8 @@ func _run_story_edit(entry: Dictionary):
 	var source_file: String = ""
 	if entry.has("chapter") and entry.chapter == "Subevent1ChapterScript":
 		source_file = "res://story/chapters/Subevent1Chapter.gd"
+	elif entry.has("chapter") and entry.chapter == "Subevent2ChapterScript":
+		source_file = "res://story/chapters/Subevent2Chapter.gd"
 	elif sequence_id == "prologue":
 		source_file = "res://story/chapters/PrologueChapter.gd"
 	elif sequence_id == "stage1":
@@ -1603,7 +1830,19 @@ func _run_story_edit(entry: Dictionary):
 	# Disable StoryScene input handling in edit mode
 	story_scene_instance._waiting_for_input = false
 
-	# Execute first command
+	# 初期セットアップ: 最初の発話（text付きBand/Line）に到達するまでの命令を実行
+	# これにより StoryScene.tscn のデフォルト背景（大学キャンパス）ではなく、対象シーンの正しい背景が初期表示される
+	var setup_end := 0
+	for i in range(entries.size()):
+		var e_scan = entries[i]
+		if e_scan is StoryCommands.Line and not e_scan.text.is_empty():
+			setup_end = i
+			break
+		if e_scan is StoryCommands.Band and not e_scan.text.is_empty():
+			setup_end = i
+			break
+	if setup_end > 0:
+		idx = setup_end
 	_story_edit_execute_to(entries, idx, story_scene_instance)
 	_story_edit_update_info(idx_label, cmd_label, entries, idx)
 	_story_edit_update_sliders(edit_panel, story_scene_instance)
@@ -1946,6 +2185,88 @@ func _on_story_edit_slider(_value: float, panel: PanelContainer):
 	var output := '"scale": %.2f, "position": [%d, %d]' % [s, int(sl.x.value), int(sl.y.value)]
 	print("[STORY_EDIT] %s" % output)
 
+func _save_battle_edit(edit_panel: PanelContainer, info: Label):
+	if not edit_panel.has_meta("chapter_path"):
+		info.text = "[保存NG] chapter_pathが未設定"
+		return
+	if not is_instance_valid(_battle_edit_ref):
+		info.text = "[保存NG] バトル参照なし"
+		return
+	var story_sc = _battle_edit_ref._story_scene
+	if not story_sc:
+		info.text = "[保存NG] story_sceneなし"
+		return
+	var char_rect: TextureRect = _find_visible_char_rect(story_sc)
+	if not char_rect or not char_rect.texture:
+		info.text = "[保存NG] 対象キャラなし"
+		return
+	var tex_path: String = char_rect.texture.resource_path
+	if tex_path.is_empty():
+		info.text = "[保存NG] テクスチャpath不明"
+		return
+	var portrait_filename: String = tex_path.get_file()
+
+	var sl := _get_edit_sliders(edit_panel)
+	var new_scale: float = sl.scale.value
+	var new_x: int = int(sl.x.value)
+	var new_y: int = int(sl.y.value)
+
+	var chapter_path: String = edit_panel.get_meta("chapter_path")
+	var abs_path: String = ProjectSettings.globalize_path(chapter_path)
+	var file := FileAccess.open(abs_path, FileAccess.READ)
+	if not file:
+		info.text = "[保存NG] ファイルを開けない"
+		return
+	var lines: PackedStringArray = file.get_as_text().split("\n")
+	file.close()
+
+	var regex_scale := RegEx.new()
+	regex_scale.compile('"scale":\\s*[\\d.]+')
+	var regex_pos := RegEx.new()
+	regex_pos.compile('"position":\\s*\\[[^\\]]*\\]')
+
+	var updated_count := 0
+	var is_encounter_db: bool = "EncounterDatabase.gd" in chapter_path
+	if is_encounter_db:
+		# EncounterDatabase.gd 形式: path 行を探し、近傍数行の scale/position を更新
+		for i in range(lines.size()):
+			if portrait_filename in lines[i] and '"path"' in lines[i]:
+				for j in range(i, min(i + 4, lines.size())):
+					var new_line: String = lines[j]
+					var changed := false
+					if '"scale"' in new_line:
+						new_line = regex_scale.sub(new_line, '"scale": %.2f' % new_scale)
+						changed = true
+					if '"position"' in new_line:
+						new_line = regex_pos.sub(new_line, '"position": [%d, %d]' % [new_x, new_y])
+						changed = true
+					if changed:
+						lines[j] = new_line
+						updated_count += 1
+	else:
+		# バトルチャプター形式: set_portrait 行を直接更新
+		for i in range(lines.size()):
+			if portrait_filename in lines[i] and "set_portrait" in lines[i] and '"scale"' in lines[i]:
+				var new_line: String = lines[i]
+				new_line = regex_scale.sub(new_line, '"scale": %.2f' % new_scale)
+				if '"position"' in new_line:
+					new_line = regex_pos.sub(new_line, '"position": [%d, %d]' % [new_x, new_y])
+				lines[i] = new_line
+				updated_count += 1
+
+	if updated_count == 0:
+		info.text = "[保存NG] 該当行なし: %s" % portrait_filename
+		return
+
+	var write_file := FileAccess.open(abs_path, FileAccess.WRITE)
+	if not write_file:
+		info.text = "[保存NG] 書き込み不可"
+		return
+	write_file.store_string("\n".join(lines))
+	write_file.close()
+	info.text = "[保存] %s を %d 箇所更新" % [portrait_filename, updated_count]
+	print("[BATTLE_EDIT] SAVED %s: scale=%.2f pos=[%d,%d] (%d lines)" % [portrait_filename, new_scale, new_x, new_y, updated_count])
+
 func _story_edit_save_current(entries: Array, idx: int, edit_panel: PanelContainer):
 	var e = entries[idx]
 	if not (e is StoryCommands.ShowCharacter):
@@ -2044,9 +2365,16 @@ func _story_edit_save_current(entries: Array, idx: int, edit_panel: PanelContain
 
 const EVENT_BATTLE_CHAPTERS := [
 	{"id": "prologue", "name": "プロローグ（マチルダ戦）", "path": "res://battle/chapters/PrologueBattleChapter.gd", "bg": "res://assets/backgrounds/prologue/bg05_prison_cell.png"},
-	{"id": "stage1", "name": "ステージ1（冒険者A戦）", "path": "res://battle/chapters/Stage1BattleChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_guild_hall.png"},
-	{"id": "stage2", "name": "ステージ2（受付嬢戦）", "path": "res://battle/chapters/ReceptionistBattleChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_guild_hall.png"},
+	{"id": "stage1", "name": "ステージ1（冒険者A戦）", "path": "res://battle/chapters/Stage1BattleChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png"},
+	{"id": "stage2", "name": "ステージ2（受付嬢戦）", "path": "res://battle/chapters/ReceptionistBattleChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png"},
 	{"id": "subevent1_boss", "name": "サブイベント1（ベルカ戦）", "path": "res://battle/chapters/Stage2BattleChapter.gd", "bg": "res://assets/backgrounds/prologue/bg06_prison_arena.png"},
+	{"id": "subevent2_boss", "name": "サブイベント2（シスター長戦）", "path": "res://battle/chapters/SisterBattleChapter.gd", "bg": "res://assets/backgrounds/subevent2/bg05_church_peep_room.png"},
+	{"id": "minigame_smoke", "name": "＜ミニゲーム＞スモークテスト", "path": "res://battle/chapters/MinigameSmokeChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png", "mode": "minigame"},
+	{"id": "minigame_subevent3", "name": "＜ミニゲーム＞サブイベント3（羞恥の儀）", "path": "res://battle/chapters/Subevent3MinigameChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png", "mode": "minigame"},
+	{"id": "minigame_stage2", "name": "＜ミニゲーム＞ST2（レイラ・相手の動揺を指摘せよ）", "path": "res://battle/chapters/Stage2MinigameChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png", "mode": "minigame"},
+	{"id": "minigame_stage3", "name": "＜ミニゲーム＞ST3（マグダレナ・書棚で妄想を誘発せよ）", "path": "res://battle/chapters/Stage3MinigameChapter.gd", "bg": "res://assets/backgrounds/subevent2/bg05_church_peep_room.png", "mode": "minigame"},
+	{"id": "minigame_stage4", "name": "＜ミニゲーム＞ST4（セレス・強度を合わせて崩せ）", "path": "res://battle/chapters/Stage4MinigameChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png", "mode": "minigame"},
+	{"id": "minigame_stage5", "name": "＜ミニゲーム＞ST5（フェリア・距離を詰めて自白を引き出せ）", "path": "res://battle/chapters/Stage5MinigameChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png", "mode": "minigame"},
 ]
 
 signal _event_chapter_selected(index: int)
@@ -2062,8 +2390,7 @@ func _show_event_chapter_select():
 	back_btn.text = "← 戻る"
 	back_btn.add_theme_font_size_override("font_size", 20)
 	back_btn.pressed.connect(func():
-		jump_menu.visible = false
-		title_menu.visible = true)
+		_show_edit_menu())
 	jump_list.add_child(back_btn)
 	var sep := HSeparator.new()
 	jump_list.add_child(sep)
@@ -2089,8 +2416,7 @@ func _show_event_chapter_select():
 		back_btn2.text = "← 戻る"
 		back_btn2.add_theme_font_size_override("font_size", 20)
 		back_btn2.pressed.connect(func():
-			jump_menu.visible = false
-			title_menu.visible = true)
+			_show_edit_menu())
 		jump_list.add_child(back_btn2)
 		var sep2 := HSeparator.new()
 		jump_list.add_child(sep2)
@@ -2109,7 +2435,8 @@ func _run_event_battle_edit(ch_info: Dictionary):
 	GameState.init_default_inventory()
 	GameState.money = 1000
 
-	var script_res = load(ch_info.path)
+	# 編集中のファイルを反映するためキャッシュを無視して再読込
+	var script_res = ResourceLoader.load(ch_info.path, "", ResourceLoader.CACHE_MODE_REPLACE)
 	if not script_res:
 		return
 	var chapter = script_res.new()
@@ -2127,11 +2454,54 @@ func _run_event_battle_edit(ch_info: Dictionary):
 		story_script = DefaultStoryScript.new()
 	event_battle.setup(story_script.get_cast(), bg_tex, GameState.inventory)
 	event_battle.force_result_mode = true
-	event_battle.start_battle(chapter)
+	# 編集モードのモード判定:
+	#   mode == "minigame" or chapter.minigame 実装 → ミニゲームモード
+	#   mode == "tutorial" or chapter.tutorial 実装 → チュートリアルモード
+	#   それ以外 → 通常バトル
+	var entry_mode: String = ch_info.get("mode", "")
+	var use_minigame: bool = entry_mode == "minigame" or (entry_mode.is_empty() and chapter.has_method("minigame"))
+	var use_tutorial: bool = not use_minigame and (entry_mode == "tutorial" or chapter.has_method("tutorial"))
+	event_battle.start_battle(chapter, use_tutorial, use_minigame)
 	move_child(edit_panel, get_child_count() - 1)
+	edit_panel.set_meta("chapter_path", ch_info.path)
 	_connect_edit_to_battle(edit_panel, event_battle, {})
 
-	var result: String = await event_battle.battle_finished
+	# 戻るボタンで battle_finished をエミットして終了
+	var back_btn: Button = edit_panel.find_child("EditBackButton", true, false)
+	if back_btn:
+		back_btn.pressed.connect(func():
+			if is_instance_valid(event_battle):
+				event_battle.battle_finished.emit("abort"))
+
+	var _result: String = await event_battle.battle_finished
 	_battle_edit_active = false
 	event_battle.queue_free()
 	edit_panel.queue_free()
+
+# --- 中断（Continue）からミニゲーム単体起動 ---
+func _run_minigame_standalone(minigame_id: String):
+	var entry: Dictionary = {}
+	for info in EVENT_BATTLE_CHAPTERS:
+		if info.get("id", "") == minigame_id and info.get("mode", "") == "minigame":
+			entry = info
+			break
+	if entry.is_empty():
+		push_error("Minigame not found: %s" % minigame_id)
+		return
+
+	var script_res = ResourceLoader.load(entry.path, "", ResourceLoader.CACHE_MODE_REPLACE)
+	if not script_res:
+		push_error("Failed to load minigame chapter: %s" % entry.path)
+		return
+	var chapter = script_res.new()
+	var bg_tex = load(entry.bg) if not entry.bg.is_empty() else null
+
+	var mg_battle = battle_scene_scene.instantiate()
+	add_child(mg_battle)
+	mg_battle.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	if not story_script:
+		story_script = DefaultStoryScript.new()
+	mg_battle.setup(story_script.get_cast(), bg_tex, GameState.inventory)
+	mg_battle.start_battle(chapter, false, true)
+	var _result: String = await mg_battle.battle_finished
+	mg_battle.queue_free()

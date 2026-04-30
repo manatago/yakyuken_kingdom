@@ -10,12 +10,14 @@ const Cmd := preload("res://story/StoryCommands.gd")
 const StoryScenePacked := preload("res://StoryScene.tscn")
 const DefaultStoryScript := preload("res://story/DefaultStory.gd")
 const Subevent1ChapterScript := preload("res://story/chapters/Subevent1Chapter.gd")
+const Subevent2ChapterScript := preload("res://story/chapters/Subevent2Chapter.gd")
 
 const BattleChapterBase := preload("res://battle/BattleChapterBase.gd")
 const ThiefJinChapter := preload("res://battle/chapters/ThiefJinBattleChapter.gd")
 const ThiefMarcoChapter := preload("res://battle/chapters/ThiefMarcoBattleChapter.gd")
 const ThiefGaldChapter := preload("res://battle/chapters/ThiefGaldBattleChapter.gd")
 const Stage2Chapter := preload("res://battle/chapters/Stage2BattleChapter.gd")
+const SisterChapter := preload("res://battle/chapters/SisterBattleChapter.gd")
 const PrologueChapter := preload("res://battle/chapters/PrologueBattleChapter.gd")
 const Stage1Chapter := preload("res://battle/chapters/Stage1BattleChapter.gd")
 const ReceptionistChapter := preload("res://battle/chapters/ReceptionistBattleChapter.gd")
@@ -53,6 +55,7 @@ func _get_all_chapters() -> Array:
 		{"name": "ThiefMarco", "instance": ThiefMarcoChapter.new()},
 		{"name": "ThiefGald", "instance": ThiefGaldChapter.new()},
 		{"name": "Stage2(Belka)", "instance": Stage2Chapter.new()},
+		{"name": "Sister(SisterHead)", "instance": SisterChapter.new()},
 		{"name": "Prologue(Matilda)", "instance": PrologueChapter.new()},
 		{"name": "Stage1(AdvA)", "instance": Stage1Chapter.new()},
 		{"name": "Receptionist", "instance": ReceptionistChapter.new()},
@@ -84,6 +87,7 @@ func _test_lose_behavior() -> bool:
 		"ThiefMarco": "abort",
 		"ThiefGald": "abort",
 		"Stage2(Belka)": "abort",
+		"Sister(SisterHead)": "abort",
 		"Prologue(Matilda)": "redirect",
 		"Stage1(AdvA)": "continue",
 		"Receptionist": "continue",
@@ -180,13 +184,13 @@ func _test_battle_paths_in_sequence() -> bool:
 
 func _test_portrait_paths() -> bool:
 	var story_script = DefaultStoryScript.new()
-	var chapter = Subevent1ChapterScript.new()
-	story_script._register_chapter(chapter)
+	story_script._register_chapter(Subevent1ChapterScript.new())
+	story_script._register_chapter(Subevent2ChapterScript.new())
 
 	var all_ok := true
 	var checked := {}
 
-	for seq_id in ["subevent1_pre", "subevent1_post"]:
+	for seq_id in ["subevent1_pre", "subevent1_post", "subevent2_pre1", "subevent2_pre2", "subevent2_post"]:
 		var seq = story_script.get_sequence(seq_id)
 		if seq == null:
 			continue

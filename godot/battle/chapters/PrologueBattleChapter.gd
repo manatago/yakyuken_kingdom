@@ -43,7 +43,7 @@ func get_gold_reward() -> Dictionary:
 
 func tutorial(bt):
 	var matilda = bt.character("matilda")
-	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_019.png", {"scale": 0.80, "side": "center", "position": [0, -160]})
 
 	bt.set_bubble_side("left")
 
@@ -155,15 +155,15 @@ func tutorial(bt):
 # --- 初期表示（デッキ構築時） ---
 
 func setup_scene(bt):
-	bt.deck("res://assets/battle/decks/deck_002.png", {"scale": 0.75, "position": [0, 230]})
+	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.55, "position": [0, 180]})
 	var matilda = bt.character("matilda")
-	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_000.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_019.png", {"scale": 0.80, "side": "center", "position": [0, -160]})
 
 # --- Outfit 3: フル装備 ---
 
 func outfit_3(bt):
 	var matilda = bt.character("matilda")
-	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_001.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+	matilda.set_portrait("res://assets/characters/prologue_battle/char04_pg_battle_019.png", {"scale": 0.80, "side": "center", "position": [0, -160]})
 	matilda.band("さあ、始めようか。手加減はしないよ。")
 
 	var selection = await bt.select_hand()
@@ -233,17 +233,11 @@ func get_lose_behavior() -> String:
 
 func get_lose_redirect() -> Dictionary:
 	return {
-		"type": "retry_scene",
-		"background": "res://assets/backgrounds/prologue/bg05_prison_cell.png",
-		"narration": "サトシは力及ばず、マチルダに敗北した。\nしかし、このまま牢屋に閉じ込められるわけにはいかない。",
+		"type": "story_sequence",
+		"sequence_id": "prologue_battle_lose_retry",
 		"choices": ["再挑戦する", "ホームに戻る"],
 	}
 
-func get_farewell(result: String) -> Dictionary:
-	if result == "lose":
-		return {
-			"portrait": "res://assets/characters/prologue_battle/char04_pg_battle_017.png",
-			"portrait_scale": 0.80,
-			"text": "残念だったね。また挑戦しな。",
-		}
+func get_farewell(_result: String) -> Dictionary:
+	# 敗北演出はストーリーシーケンス側で行うため farewell は空
 	return {}

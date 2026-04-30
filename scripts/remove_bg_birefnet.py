@@ -105,7 +105,7 @@ def main():
 
     # Initialize BiRefNet session (downloads model on first run, ~400MB)
     print("Loading BiRefNet model (may take a while on first run)...")
-    session = new_session("birefnet-general")
+    session = new_session("birefnet-general", providers=["CPUExecutionProvider"])
     print("Model loaded.\n")
 
     success = 0

@@ -40,7 +40,8 @@ func _build_subevent1_pre(b):
 		"appear_duration": 0.8,
 		"appear_distance": 200,
 		"portrait": "res://assets/characters/stage1/char01_st1_006.png",
-		"portrait_scale": 0.53,
+		# (旧スケール) "portrait_scale": 0.53,
+		"portrait_scale": 0.6,
 		"flip": 0,
 		"position": [0, 70],
 	})
@@ -54,7 +55,8 @@ func _build_subevent1_pre(b):
 
 	pisuke.band("ゲコッ、金貨50枚ありゃ当分は食える。\nやるしかねえだろ。", {"side": "left"})
 
-	hero.set_portrait("res://assets/characters/stage1/char01_st1_025.png", {"scale": 0.53, "side": "left", "flip": 0, "position": [0, 69]})
+	# (旧スケール) hero.set_portrait("res://assets/characters/stage1/char01_st1_025.png", {"scale": 0.53, "side": "left", "flip": 0, "position": [0, 69]})
+	hero.set_portrait("res://assets/characters/stage1/char01_st1_025.png", {"scale": 0.6, "side": "left", "flip": 0, "position": [0, 69]})
 	hero.band("いや待て。「パンツ専門盗賊団」って何だよ。\n……金品じゃなくてパンツだけ盗むのか？")
 
 	pisuke.band("この世界じゃ下着にも魔力が宿るんだよ。\n特に美女の下着は闘市場で高値がつく。\n……まあ、それ以外の動機もあるんだろうがな。", {"side": "left"})
@@ -82,7 +84,8 @@ func _build_subevent1_pre(b):
 	receptionist.set_portrait("res://assets/characters/stage1/char10_st1_001.png", {"side": "right", "flip": 0})
 	receptionist.band("……はい。しかも返り討ちにされた冒険者は全員、\nパンツを奪われて帰ってきました。\n……男性冒険者も、です。")
 
-	hero.set_portrait("res://assets/characters/stage1/char01_st1_016.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	# (旧スケール) hero.set_portrait("res://assets/characters/stage1/char01_st1_016.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/stage1/char01_st1_016.png", {"scale": 0.6, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("男のパンツも……？")
 
 	receptionist.band("……ええ。ですので、この依頼は現在、\n受注者ゼロの状態が3か月続いています。")
@@ -92,13 +95,15 @@ func _build_subevent1_pre(b):
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_038.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 74]})
 	hero.band("（全然清々しくない……。でも金貨50枚は魅力的だ。）")
 
-	hero.set_portrait("res://assets/characters/stage1/char01_st1_008.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 65]})
+	# (旧スケール) hero.set_portrait("res://assets/characters/stage1/char01_st1_008.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 65]})
+	hero.set_portrait("res://assets/characters/stage1/char01_st1_008.png", {"scale": 0.6, "side": "left", "flip": 1, "position": [0, 65]})
 	hero.band("……受けます。この依頼。")
 
 	receptionist.set_portrait("res://assets/characters/stage1/char10_st1_002.png", {"side": "right", "flip": 0})
 	receptionist.band("……本気ですか？")
 
-	hero.set_portrait("res://assets/characters/stage1/char01_st1_017.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 65]})
+	# (旧スケール) hero.set_portrait("res://assets/characters/stage1/char01_st1_017.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 65]})
+	hero.set_portrait("res://assets/characters/stage1/char01_st1_017.png", {"scale": 0.6, "side": "left", "flip": 1, "position": [0, 65]})
 	hero.band("はい。……たぶん。")
 	# ピー助がサトシの声色で叫ぶ
 	hero.band("パンツ盗賊を許すわけにはいかねえ！\nパンツは俺が守る！ この手で！ この目で！\n美女のパンツは俺が取り戻してやるぜ！")
@@ -109,7 +114,8 @@ func _build_subevent1_pre(b):
 	receptionist.set_portrait("res://assets/characters/stage1/char10_st1_004.png", {"side": "right", "flip": 0})
 	receptionist.band("……サトシ様。")
 
-	hero.set_portrait("res://assets/characters/stage1/char01_st1_018.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 64]})
+	# (旧スケール) hero.set_portrait("res://assets/characters/stage1/char01_st1_018.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 64]})
+	hero.set_portrait("res://assets/characters/stage1/char01_st1_018.png", {"scale": 0.6, "side": "left", "flip": 1, "position": [0, 64]})
 	hero.band("は、はい。")
 
 	receptionist.band("……今の発言、記録しました。")
@@ -120,7 +126,8 @@ func _build_subevent1_pre(b):
 	receptionist.set_portrait("res://assets/characters/stage1/char10_st1_003.png", {"side": "right", "flip": 0})
 	receptionist.band("……この依頼は「盗品の回収」も含まれます。\n押収した盗品は、全てギルドに提出してください。\n……全て、です。1枚残らず。")
 
-	hero.set_portrait("res://assets/characters/stage1/char01_st1_018.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 64]})
+	# (旧スケール) hero.set_portrait("res://assets/characters/stage1/char01_st1_018.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 64]})
+	hero.set_portrait("res://assets/characters/stage1/char01_st1_018.png", {"scale": 0.6, "side": "left", "flip": 1, "position": [0, 64]})
 	hero.band("もちろんです！")
 
 	receptionist.band("……生還をお祈りしております。\n……パンツではなく、あなたの。")
@@ -144,7 +151,8 @@ func _build_subevent1_pre(b):
 	b.background("res://assets/backgrounds/prologue/bg06_prison_arena.png", 0.5)
 	b.show_band()
 
-	hero.set_portrait("res://assets/characters/stage1/char01_st1_015.png", {"scale": 0.53, "side": "left", "flip": 0, "position": [0, 70]})
+	# (旧スケール) hero.set_portrait("res://assets/characters/stage1/char01_st1_015.png", {"scale": 0.53, "side": "left", "flip": 0, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/stage1/char01_st1_015.png", {"scale": 0.6, "side": "left", "flip": 0, "position": [0, 70]})
 	hero.band("……この辺りか。受付嬢が教えてくれた場所に向かって……。\nにしても、裏路地って昼間でも薄暗いな。")
 
 	pisuke.band("おい、サトシ。前方に反応がある。\n……1人だ。こっちを見張ってやがる。", {"side": "left"})
@@ -233,7 +241,8 @@ func _build_subevent1_pre(b):
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_044.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("（バランス型か……。偏りがない相手は確率で優位を取りにくい。\nこういう時こそ、相手の「癖」を観察するんだ。）")
 
-	hero.set_portrait("res://assets/characters/stage1/char01_st1_007.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	# (旧スケール) hero.set_portrait("res://assets/characters/stage1/char01_st1_007.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/stage1/char01_st1_007.png", {"scale": 0.6, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("……行くぞ。")
 
 	marco.band("…………。")
@@ -268,7 +277,8 @@ func _build_subevent1_pre(b):
 	b.label("scene_hideout_entrance")
 	b.show_band()
 
-	hero.set_portrait("res://assets/characters/stage1/char01_st1_015.png", {"scale": 0.53, "side": "left", "flip": 0, "position": [0, 70]})
+	# (旧スケール) hero.set_portrait("res://assets/characters/stage1/char01_st1_015.png", {"scale": 0.53, "side": "left", "flip": 0, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/stage1/char01_st1_015.png", {"scale": 0.6, "side": "left", "flip": 0, "position": [0, 70]})
 	hero.band("ここがアジトか。……思ったよりちゃんとした建物だな。")
 
 	pisuke.band("中に3人だ。副首領のガルドと、もう1人の構成員。\nそれと首領。……正面から行くのか？", {"side": "left"})
@@ -297,7 +307,8 @@ func _build_subevent1_pre(b):
 
 	gald.band("あぁん？ 誰だてめえ。\n……ひとりで来たのか？ 度胸あるな。")
 
-	hero.set_portrait("res://assets/characters/stage1/char01_st1_018.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 64]})
+	# (旧スケール) hero.set_portrait("res://assets/characters/stage1/char01_st1_018.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 64]})
+	hero.set_portrait("res://assets/characters/stage1/char01_st1_018.png", {"scale": 0.6, "side": "left", "flip": 1, "position": [0, 64]})
 	hero.band("あ、いや、これは誤解で……。")
 
 	gald.set_portrait("res://assets/characters/subevent1/gald_st2_002.png", {"scale": 0.50, "side": "right", "flip": 0, "position": [0, 62]})
@@ -311,7 +322,8 @@ func _build_subevent1_pre(b):
 	gald.set_portrait("res://assets/characters/subevent1/gald_st2_002.png", {"scale": 0.50, "side": "right", "flip": 0, "position": [0, 62]})
 	gald.band("てめえ、冒険者ギルドの刺客か。\n上等だ。ここで俺と勝負しろ！\n負けたらてめえのパンツ、いただくぜ！")
 
-	hero.set_portrait("res://assets/characters/stage1/char01_st1_016.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	# (旧スケール) hero.set_portrait("res://assets/characters/stage1/char01_st1_016.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/stage1/char01_st1_016.png", {"scale": 0.6, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("俺のパンツに何の価値が……。")
 
 	gald.set_portrait("res://assets/characters/subevent1/gald_st2_002.png", {"scale": 0.50, "side": "right", "flip": 0, "position": [0, 62]})
@@ -319,7 +331,8 @@ func _build_subevent1_pre(b):
 
 	pisuke.band("……掟にすんなよ。まあいい、こいつは雑魚だ。\nデッキをスキャンしたが、脳筋タイプだ。グーばっかり。\nベイズ・アイで楽勝だぞ。", {"side": "left"})
 
-	hero.set_portrait("res://assets/characters/stage1/char01_st1_021.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	# (旧スケール) hero.set_portrait("res://assets/characters/stage1/char01_st1_021.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/stage1/char01_st1_021.png", {"scale": 0.6, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("……はぁ。今日何回目だこの展開。\nいいよ、来いよ。")
 
 	b.hide_band()
@@ -340,7 +353,8 @@ func _build_subevent1_pre(b):
 
 	b.narrator_band("サトシはガルドを退け、アジトの中へ足を踏み入れた。\n薄暗い倉庫の中は、壁一面に額縁入りのパンツが飾られていた。")
 
-	hero.set_portrait("res://assets/characters/stage1/char01_st1_004.png", {"scale": 0.53, "side": "left", "flip": 0, "position": [0, 70]})
+	# (旧スケール) hero.set_portrait("res://assets/characters/stage1/char01_st1_004.png", {"scale": 0.53, "side": "left", "flip": 0, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/stage1/char01_st1_004.png", {"scale": 0.6, "side": "left", "flip": 0, "position": [0, 70]})
 	hero.band("……うわ。壁にパンツが飾ってある。しかも額縁入り。\n……美術館かよ。")
 
 	pisuke.band("「パンツ・ギャラリー」だな……。\n作品名のプレートまで付いてやがる。\n「朝露に濡れたシルク」「黄昏のレース」……。", {"side": "left"})
@@ -385,10 +399,12 @@ func _build_subevent1_pre(b):
 
 	pisuke.band("おい、こいつヤバいぞ。チップのデータ、相当なもんだ。\n元A級冒険者ってのは本当だ。カードの質も高い。\n……見た目に騙されるなよ。", {"side": "left"})
 
-	hero.set_portrait("res://assets/characters/stage1/char01_st1_020.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 61]})
+	# (旧スケール) hero.set_portrait("res://assets/characters/stage1/char01_st1_020.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 61]})
+	hero.set_portrait("res://assets/characters/stage1/char01_st1_020.png", {"scale": 0.6, "side": "left", "flip": 1, "position": [0, 61]})
 	hero.band("（ピー助の存在を説明できない……。\nでも否定すると「じゃあ誰が言ったの？」ってなるし……。\n……詰んでる。）")
 
-	hero.set_portrait("res://assets/characters/stage1/char01_st1_015.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	# (旧スケール) hero.set_portrait("res://assets/characters/stage1/char01_st1_015.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/stage1/char01_st1_015.png", {"scale": 0.6, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("あ、えっと……シルキーファングの首領さんですか？\nパンツ泥棒をやめるように……。")
 
 	belka.set_portrait("res://assets/characters/subevent1/belka_st2_006.png", {"scale": 0.49, "side": "right", "flip": 0, "position": [0, 61]})
@@ -403,7 +419,8 @@ func _build_subevent1_pre(b):
 	belka.set_portrait("res://assets/characters/subevent1/belka_st2_007.png", {"scale": 0.49, "side": "right", "flip": 0, "position": [0, 61]})
 	belka.band("ボクのコレクション、見たろ？\nあれは「解放された魂の結晶」だ。\n芸術が分かんないヤツは帰りな。")
 
-	hero.set_portrait("res://assets/characters/stage1/char01_st1_016.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	# (旧スケール) hero.set_portrait("res://assets/characters/stage1/char01_st1_016.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/stage1/char01_st1_016.png", {"scale": 0.6, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("盗んだパンツを額縁に入れてるだけでは……。")
 
 	# belka.set_portrait("res://assets/characters/subevent1/belka_st2_001.png", {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 61]})
@@ -426,7 +443,8 @@ func _build_subevent1_pre(b):
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_038.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 74]})
 	hero.band("（なるほど……部下との戦いはデータ収集も兼ねてたのか。\n偽の癖を見せて、裏をかく。\n数学的に言えば「ベイジアン・トラップ」だ。）")
 
-	hero.set_portrait("res://assets/characters/stage1/char01_st1_007.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	# (旧スケール) hero.set_portrait("res://assets/characters/stage1/char01_st1_007.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/stage1/char01_st1_007.png", {"scale": 0.6, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("……いいですよ。受けて立ちます。")
 
 	belka.set_portrait("res://assets/characters/subevent1/belka_st2_001.png", {"scale": 0.49, "side": "right", "flip": 0, "position": [0, 61]})
@@ -557,7 +575,8 @@ func _build_subevent1_post(b):
 		"flip": 0,
 	})
 
-	hero.set_portrait("res://assets/characters/stage1/char01_st1_003.png", {"scale": 0.53, "side": "left", "flip": 0, "position": [0, 70]})
+	# (旧スケール) hero.set_portrait("res://assets/characters/stage1/char01_st1_003.png", {"scale": 0.53, "side": "left", "flip": 0, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/stage1/char01_st1_003.png", {"scale": 0.6, "side": "left", "flip": 0, "position": [0, 70]})
 
 	receptionist.band("サトシ様。盗賊団討伐の報酬です。金貨50枚。\n……お見事でした。")
 
@@ -576,7 +595,8 @@ func _build_subevent1_post(b):
 	receptionist.set_portrait("res://assets/characters/stage1/char10_st1_003.png", {"side": "right", "flip": 0})
 	receptionist.band("……金貨50枚、確かにお渡ししました。\n……次の依頼もお待ちしております。\n……犯罪歴がつかない範囲で。")
 
-	hero.set_portrait("res://assets/characters/stage1/char01_st1_028.png", {"scale": 0.53, "side": "left", "flip": 0, "position": [0, 70]})
+	# (旧スケール) hero.set_portrait("res://assets/characters/stage1/char01_st1_028.png", {"scale": 0.53, "side": "left", "flip": 0, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/stage1/char01_st1_028.png", {"scale": 0.6, "side": "left", "flip": 0, "position": [0, 70]})
 	hero.band("（パンツ盗賊団を壊滅させた英雄のはずなのに……\nなんであの番兵がまた来るんだ……運が悪すぎる……。）")
 
 	pisuke.band("ゲコッ。まあ、金は稼げたな。次の仕事を探すぞ。", {"side": "left"})

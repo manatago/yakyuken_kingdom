@@ -6,6 +6,7 @@ func get_sequence_builders() -> Array:
 		{"id": "prologue", "builder": "_build_prologue"},
 		{"id": "prologue_battle_win", "builder": "_build_battle_win"},
 		{"id": "prologue_battle_lose", "builder": "_build_battle_lose"},
+		{"id": "prologue_battle_lose_retry", "builder": "_build_battle_lose_retry"},
 	]
 
 func _build_prologue(b):
@@ -609,6 +610,28 @@ func _build_battle_lose(b):
 	matilda.band("残念だったね。")
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_037.png", {"scale": 0.5, "side": "left", "flip": 1})
 	hero.band("くそっ...負けた...")
+
+# --- バトル敗北 → 再挑戦選択（牢屋シーン） ---
+
+func _build_battle_lose_retry(b):
+	var hero = b.character("main")
+	var matilda = b.character("matilda")
+
+	b.background("res://assets/backgrounds/prologue/bg05_prison_cell.png", 0)
+
+	matilda.set_portrait("res://assets/characters/prologue/char07_pg_001.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
+	hero.set_portrait("res://assets/characters/prologue/char01_pg_037.png", {"scale": 0.5, "side": "left", "flip": 1})
+
+	b.narrator_band("サトシはマチルダに敗北し、再び牢屋に放り込まれた。")
+	b.narrator_band("だが、取り上げられたはずのカードは、温情か、すべて手元に戻されていた。")
+
+	matilda.set_portrait("res://assets/characters/prologue/char07_pg_012.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
+	matilda.band("ふっ、カードは返してやる。\nその代わり、もう一度来な。")
+	matilda.set_portrait("res://assets/characters/prologue/char07_pg_001.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
+	matilda.band("……それとも、このまま尻尾を巻いて帰るかい？")
+
+	hero.set_portrait("res://assets/characters/prologue/char01_pg_045.png", {"scale": 0.5, "side": "left", "flip": 1})
+	hero.band("（くそっ……だが、ここで諦めるわけにはいかない。）")
 
 
 

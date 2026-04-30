@@ -158,11 +158,11 @@ func _init():
 			"portraits": {
 				"encounter": {
 					"path": "res://assets/characters/random_battle/char001_random_01.png",
-					"scale": 0.73, "side": "center", "position": [0, -50],
+					"scale": 0.70, "side": "center", "position": [0, -180],
 				},
 				"battle": {
-					"path": "res://assets/characters/random_battle/char001_random_02.png",
-					"scale": 0.35, "side": "center", "position": [0, -182],
+					"path": "res://assets/characters/random_battle/char001_random_01.png",
+					"scale": 0.70, "side": "center", "position": [0, -180],
 				},
 				"farewell_win": {
 					"path": "res://assets/characters/random_battle/char001_random_03.png",
@@ -208,7 +208,7 @@ func _init():
 					"scale": 0.5, "side": "center", "position": [0, -50],
 				},
 				"battle": {
-					"path": "res://assets/characters/random_battle/char002_random_02.png",
+					"path": "res://assets/characters/random_battle/char002_random_01.png",
 					"scale": 0.42, "side": "center", "position": [0, -248],
 				},
 				"farewell_win": {
@@ -252,11 +252,11 @@ func _init():
 			"portraits": {
 				"encounter": {
 					"path": "res://assets/characters/random_battle/char003_random_01.png",
-					"side": "center", "scale": 0.5, "position": [0, 0],
+					"side": "center", "scale": 0.50, "position": [0, -60],
 				},
 				"battle": {
-					"path": "res://assets/characters/random_battle/char003_random_02.png",
-					"scale": 0.50, "side": "center", "position": [0, -225],
+					"path": "res://assets/characters/random_battle/char003_random_01.png",
+					"scale": 0.50, "side": "center", "position": [0, -60],
 				},
 				"farewell_win": {
 					"path": "res://assets/characters/random_battle/char003_random_03.png",

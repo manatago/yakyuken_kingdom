@@ -7,7 +7,7 @@ func get_opponent_name() -> String:
 	return "受付嬢"
 
 func get_battle_background() -> String:
-	return "res://assets/backgrounds/stage1/bg07_guild_hall.png"
+	return "res://assets/backgrounds/stage1/bg07_st1_001.png"
 
 func get_opponent_outfit_count() -> int:
 	return 3
@@ -40,7 +40,7 @@ func get_gold_reward() -> Dictionary:
 # --- 初期表示 ---
 
 func setup_scene(bt):
-	bt.deck("res://assets/battle/decks/deck_002.png", {"scale": 0.75, "position": [0, 230]})
+	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.55, "position": [0, 180]})
 	var rec = bt.character("receptionist")
 	rec.set_portrait("res://assets/characters/stage2_battle/char10_st2_battle_001.png", {"scale": 0.32, "side": "center", "position": [0, -275]})
 

@@ -1,8 +1,10 @@
 extends Node
 class_name BattleChapterBase
 
-# --- 必須オーバーライド（派生クラスで定義すること） ---
+# --- 必須オーバーライド（通常バトルで派生クラスが定義すること） ---
 # デフォルト値を持たない。設定漏れ時は push_error で警告。
+# ※ミニゲームチャプター（minigame()のみ実装）ではカード・デッキ系は呼ばれないため
+#   オーバーライド不要。
 
 func get_opponent_id() -> String:
 	push_error("BattleChapterBase.get_opponent_id() must be overridden")
@@ -31,6 +33,11 @@ func get_opponent_deck_size() -> int:
 func get_player_deck_size() -> int:
 	push_error("BattleChapterBase.get_player_deck_size() must be overridden")
 	return 3
+
+# --- ミニゲーム用フック ---
+# minigame(bt) を実装すると、BattleScene をミニゲームモードで起動可能。
+# カードUI・デッキ構築はスキップされ、背景・立ち絵・バンド台詞・独自UIのみ動く。
+# 戻り値: "win"/"lose"/"draw"（Boolでも可）
 
 # --- 任意オーバーライド（合理的なデフォルトあり） ---
 

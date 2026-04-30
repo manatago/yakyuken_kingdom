@@ -6,6 +6,7 @@ const StoryScriptTests := preload("res://tests/StoryScriptTests.gd")
 const StorySequenceRuntimeTests := preload("res://tests/StorySequenceRuntimeTests.gd")
 const StorySceneTests := preload("res://tests/StorySceneTests.gd")
 const E2EBattleTests := preload("res://tests/E2EBattleTests.gd")
+const BubbleOverflowTests := preload("res://tests/BubbleOverflowTests.gd")
 
 var _suites := []
 
@@ -16,6 +17,7 @@ func _ready():
 		StorySequenceRuntimeTests.new(),
 		StorySceneTests.new(),
 		E2EBattleTests.new(),
+		BubbleOverflowTests.new(),
 	]
 	# tree_enteredの後に非同期テストを開始
 	_start_tests.call_deferred()

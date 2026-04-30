@@ -142,37 +142,41 @@ func setup(cast: Dictionary, bg_texture: Texture2D = null, inventory: Array = []
 	_player_inventory = inventory.duplicate(true)
 
 var _is_tutorial := false
+var _is_minigame := false
 
-func start_battle(chapter: BattleChapterBase, is_tutorial := false):
+func start_battle(chapter: BattleChapterBase, is_tutorial := false, is_minigame := false):
 	_chapter = chapter
 	_is_tutorial = is_tutorial
+	_is_minigame = is_minigame
 	add_child(_chapter)
-	_card_paths = chapter.get_card_paths()
-	_card_back_tex = load(chapter.get_card_back())
-	_opponent_outfit = chapter.get_opponent_outfit_count()
-	_player_outfit = chapter.get_player_outfit_count()
 	_dsl = Cmd.new(_cast)
 	_captured_by_player.clear()
 	_captured_by_opponent.clear()
 
-	# Load card textures
-	_card_textures = {
-		Hand.ROCK: load(_card_paths.get("rock", "res://assets/battle/cards/rock.png")),
-		Hand.SCISSORS: load(_card_paths.get("scissors", "res://assets/battle/cards/scissors.png")),
-		Hand.PAPER: load(_card_paths.get("paper", "res://assets/battle/cards/paper.png")),
-	}
+	if not _is_minigame:
+		_card_paths = chapter.get_card_paths()
+		_card_back_tex = load(chapter.get_card_back())
+		_opponent_outfit = chapter.get_opponent_outfit_count()
+		_player_outfit = chapter.get_player_outfit_count()
 
-	# Parse opponent deck (built from hand randomly)
-	_opponent_deck.clear()
-	for card in chapter.get_opponent_deck():
-		_opponent_deck.append({
-			"hand": HAND_FROM_KEY.get(card.hand, Hand.ROCK),
-			"grade": int(card.grade),
-			"used": false,
-		})
-	# Load opponent tendency
-	_opponent_tendency = chapter.get_opponent_tendency()
-	_player_deck_size = chapter.get_player_deck_size()
+		# Load card textures
+		_card_textures = {
+			Hand.ROCK: load(_card_paths.get("rock", "res://assets/battle/cards/rock.png")),
+			Hand.SCISSORS: load(_card_paths.get("scissors", "res://assets/battle/cards/scissors.png")),
+			Hand.PAPER: load(_card_paths.get("paper", "res://assets/battle/cards/paper.png")),
+		}
+
+		# Parse opponent deck (built from hand randomly)
+		_opponent_deck.clear()
+		for card in chapter.get_opponent_deck():
+			_opponent_deck.append({
+				"hand": HAND_FROM_KEY.get(card.hand, Hand.ROCK),
+				"grade": int(card.grade),
+				"used": false,
+			})
+		# Load opponent tendency
+		_opponent_tendency = chapter.get_opponent_tendency()
+		_player_deck_size = chapter.get_player_deck_size()
 
 	# Embedded story scene
 	_story_scene = _story_scene_tscn.instantiate()
@@ -184,15 +188,24 @@ func start_battle(chapter: BattleChapterBase, is_tutorial := false):
 	_apply_bg_blur(_story_scene.background_rect, 15.0)
 
 	# Show battle UI elements
-	card_bar.visible = true
-	item_panel.visible = true
+	card_bar.visible = _is_minigame == false
+	item_panel.visible = _is_minigame == false
+	# ミニゲームモードでは HP / アクションプロンプト / 手札も非表示
+	if _is_minigame:
+		$PlayerHPPanel.visible = false
+		$OpponentHPPanel.visible = false
+		action_prompt.visible = false
+		hand_panel.visible = false
 
 	# Show opponent before deck building
 	if _chapter.has_method("setup_scene"):
 		_chapter.call("setup_scene", self)
 		await _flush_pending()
 
-	if _is_tutorial:
+	if _is_minigame:
+		# Minigame mode: no deck building, no card UI, chapter drives everything
+		_run_battle()
+	elif _is_tutorial:
 		# Tutorial mode: show hand panel, let tutorial function control the flow
 		hand_panel.visible = true
 		_refresh_inventory_display()
@@ -375,8 +388,34 @@ func background(path: String, fade := 0.0):
 func pause(duration: float):
 	_add_command(_dsl.pause(duration))
 
-func narrator_band(text: String):
-	_pending_commands.append({"_battle_bubble": true, "text": text})
+# ミニゲーム向け: 溜まっているコマンドを全て反映してから指定秒数待つ
+func wait(duration: float):
+	await _flush_pending()
+	if duration > 0.0:
+		await get_tree().create_timer(duration).timeout
+
+func narrator_band(text: String, speaker: String = "", icon_path: String = ""):
+	# speaker: 空文字 = アイコン無し / "satoshi" "pisuke" "fiona" "sebas" = 話者プリセット
+	# icon_path: 指定時はプリセットよりこちらが優先（セリフごとの表情差替用）
+	_pending_commands.append({"_battle_bubble": true, "text": text, "speaker": speaker, "icon_path": icon_path})
+
+# ミニゲーム向け: StoryScene の DialogueBand（VN風テキスト枠）で表示
+# speaker_id が "narrator" or 空 → 中央ナレーター枠
+# speaker_id がキャラID → 左右バンド
+# wait_input=true にすると Enter/クリックまで次のコマンドに進まない
+func dialogue_band(speaker_id: String, text: String, wait_input: bool = false):
+	var cmd := Cmd.Band.new()
+	cmd.speaker_id = speaker_id
+	cmd.text = text
+	cmd.visible = true
+	cmd.wait_for_input = wait_input
+	# _add_command を通さない（通すとバブル化されてしまう）
+	_pending_commands.append(cmd)
+
+func hide_dialogue_band():
+	var cmd := Cmd.Band.new()
+	cmd.visible = false
+	_pending_commands.append(cmd)
 
 func show_band():
 	_add_command(_dsl.band_show())
@@ -407,7 +446,7 @@ func _setup_deck(path: String, extra: Dictionary = {}):
 		_deck_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		_deck_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		_story_scene.add_child(_deck_rect)
-		_story_scene.move_child(_deck_rect, 2)
+		_story_scene.move_child(_deck_rect, 5)
 	_deck_rect.texture = tex
 	_deck_rect.visible = true
 	var s: float = extra.get("scale", 1.0)
@@ -565,6 +604,19 @@ func janken(selection: Dictionary, ai_opts: Dictionary = {}) -> String:
 # ============================================================
 
 func _run_battle():
+	# Minigame mode: single function, no card UI, no reward message
+	if _is_minigame and _chapter.has_method("minigame"):
+		var mg_result = await _chapter.call("minigame", self)
+		await _flush_pending()
+		_cleanup()
+		var result_str: String = "win"
+		if mg_result is String:
+			result_str = mg_result
+		elif mg_result is bool:
+			result_str = "win" if mg_result else "lose"
+		battle_finished.emit(result_str)
+		return
+
 	# Tutorial mode: single function, no outfit loop
 	if _is_tutorial and _chapter.has_method("tutorial"):
 		await _chapter.call("tutorial", self)
@@ -1075,9 +1127,12 @@ func _flush_pending():
 				story_batch.clear()
 				await _story_scene.play_sequence(seq)
 			var is_append: bool = cmd.get("append", false)
+			var speaker: String = cmd.get("speaker", "")
+			var icon_path: String = cmd.get("icon_path", "")
 			# Close previous bubble if starting a new one (not append)
 			if not is_append and speech_bubble.visible:
 				await _hide_bubble()
+			_apply_speaker_icon(speaker, icon_path)
 			await _show_bubble(cmd.text, is_append)
 		elif cmd is Dictionary and cmd.has("_highlight"):
 			_highlight_target(cmd.target, cmd.get("options", {}))
@@ -1662,15 +1717,16 @@ func _apply_bubble_side(side: String):
 	if speech_bubble.visible:
 		speech_bubble.visible = false
 		speech_bubble.modulate = Color.WHITE
+	# 全サイドを 33% 幅で統一（サトシ／フェリアの吹き出し幅を揃える）
 	match side:
 		"left":
-			speech_bubble.anchor_left = 0.04
-			speech_bubble.anchor_right = 0.32
+			speech_bubble.anchor_left = 0.02
+			speech_bubble.anchor_right = 0.35
 			speech_bubble.anchor_top = 0.05
 			speech_bubble.anchor_bottom = 0.32
 		"right":
-			speech_bubble.anchor_left = 0.68
-			speech_bubble.anchor_right = 0.96
+			speech_bubble.anchor_left = 0.65
+			speech_bubble.anchor_right = 0.98
 			speech_bubble.anchor_top = 0.05
 			speech_bubble.anchor_bottom = 0.32
 		"center":
@@ -1695,20 +1751,146 @@ func _setup_bubble_style():
 var _bubble_indicator: Label = null
 var _indicator_tween: Tween = null
 
+# --- スピーカーアイコン（吹き出し左上バッジ） ---
+
+# 話者プリセット: デフォルトアイコン
+# icon 指定があれば画像、なければ色円＋頭文字でフォールバック
+# セリフ毎に差し替えたい場合は narrator_band(text, speaker, icon_path) の icon_path 引数で上書き
+const SPEAKER_PRESETS := {
+	"satoshi": {"color": Color(0.35, 0.55, 0.90), "initial": "サ",
+		"icon": "res://assets/ui/speakers/satoshi_normal.png"},
+	"pisuke":  {"color": Color(0.35, 0.75, 0.40), "initial": "ピ",
+		"icon": ""},  # 画像未作成 → 頭文字フォールバック
+	"fiona":   {"color": Color(0.70, 0.45, 0.80), "initial": "フ",
+		"icon": "res://assets/ui/speakers/fiona_default.png"},
+	"sebas":   {"color": Color(0.45, 0.45, 0.50), "initial": "セ",
+		"icon": "res://assets/ui/speakers/sebas_normal.png"},  # 仮: 盗賊ガルドの顔を流用
+}
+
+var _bubble_speaker_icon: Control = null
+
+func _ensure_bubble_speaker_icon():
+	if _bubble_speaker_icon and is_instance_valid(_bubble_speaker_icon):
+		return
+	_bubble_speaker_icon = Control.new()
+	_bubble_speaker_icon.name = "SpeakerIcon"
+	# 吹き出しの右上コーナーからはみ出す配置（プロフィールバッジ風 / 128×128）
+	# 旧位置 (-96, 32, -40, 88) よりやや右上にシフトし、吹き出し内へのめり込みを軽減。
+	_bubble_speaker_icon.anchor_left = 1.0
+	_bubble_speaker_icon.anchor_right = 1.0
+	_bubble_speaker_icon.anchor_top = 0.0
+	_bubble_speaker_icon.anchor_bottom = 0.0
+	_bubble_speaker_icon.offset_left = -80   # 内側へのめり込み 96 → 80 に縮小
+	_bubble_speaker_icon.offset_right = 48   # overhang 右 32 → 48 に拡大
+	_bubble_speaker_icon.offset_top = -56    # overhang 上 40 → 56 に拡大
+	_bubble_speaker_icon.offset_bottom = 72  # offset_top + size (-56 + 128)
+	_bubble_speaker_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# 円形の背景パネル
+	var bg := Panel.new()
+	bg.name = "IconBG"
+	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_bubble_speaker_icon.add_child(bg)
+	# 顔画像（優先表示）
+	var tex := TextureRect.new()
+	tex.name = "IconTex"
+	tex.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	tex.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tex.visible = false
+	_bubble_speaker_icon.add_child(tex)
+	# 頭文字ラベル（画像未設定時のフォールバック）
+	var label := Label.new()
+	label.name = "IconLabel"
+	label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", 64)
+	label.add_theme_color_override("font_color", Color.WHITE)
+	label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.7))
+	label.add_theme_constant_override("shadow_offset_x", 2)
+	label.add_theme_constant_override("shadow_offset_y", 2)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_bubble_speaker_icon.add_child(label)
+	speech_bubble.add_child(_bubble_speaker_icon)
+
+const BUBBLE_LABEL_RIGHT_DEFAULT := 0.96
+const BUBBLE_LABEL_RIGHT_WITH_ICON := 0.82  # アイコン領域を避けて右余白を確保
+
+func _apply_speaker_icon(speaker: String, override_icon: String = ""):
+	if speaker.is_empty() and override_icon.is_empty():
+		if _bubble_speaker_icon and is_instance_valid(_bubble_speaker_icon):
+			_bubble_speaker_icon.visible = false
+		# アイコンなし時は通常の右余白に戻す
+		if bubble_label:
+			bubble_label.anchor_right = BUBBLE_LABEL_RIGHT_DEFAULT
+		return
+	_ensure_bubble_speaker_icon()
+	# アイコン表示時はテキスト領域の右側を狭めてアイコンと重ならないようにする
+	if bubble_label:
+		bubble_label.anchor_right = BUBBLE_LABEL_RIGHT_WITH_ICON
+	var preset: Dictionary = SPEAKER_PRESETS.get(speaker, {})
+	var col: Color = preset.get("color", Color(0.5, 0.5, 0.5))
+	var initial: String = preset.get("initial", "?")
+	# override_icon が指定されていればプリセット画像より優先
+	var icon_path: String = override_icon if not override_icon.is_empty() else preset.get("icon", "")
+
+	# 円形背景スタイル（境界線付き / 128×128 の半径 = 64）
+	var bg: Panel = _bubble_speaker_icon.get_node("IconBG")
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = col
+	sb.corner_radius_top_left = 64
+	sb.corner_radius_top_right = 64
+	sb.corner_radius_bottom_left = 64
+	sb.corner_radius_bottom_right = 64
+	sb.border_width_left = 4
+	sb.border_width_right = 4
+	sb.border_width_top = 4
+	sb.border_width_bottom = 4
+	sb.border_color = Color(1, 1, 1, 0.92)
+	sb.shadow_color = Color(0, 0, 0, 0.55)
+	sb.shadow_size = 6
+	bg.add_theme_stylebox_override("panel", sb)
+
+	# 画像 or 頭文字
+	var tex: TextureRect = _bubble_speaker_icon.get_node("IconTex")
+	var label: Label = _bubble_speaker_icon.get_node("IconLabel")
+	if not icon_path.is_empty() and ResourceLoader.exists(icon_path):
+		tex.texture = load(icon_path)
+		tex.visible = true
+		label.visible = false
+	else:
+		tex.visible = false
+		label.visible = true
+		label.text = initial
+	_bubble_speaker_icon.visible = true
+
+const BUBBLE_TYPE_CHAR_SPEED := 0.06  # 1文字あたりの秒数
+
 func _show_bubble(text: String, append: bool = false):
+	# 句読点優先のスマート改行を事前適用（Godot の autowrap が変な位置で切るのを防ぐ）
+	var wrapped := BubbleWrap.wrap(text)
 	if append and speech_bubble.visible:
-		# Append to existing text
-		bubble_label.text += "\n" + text
+		# Append to existing text (instant for簡易)
+		bubble_label.text += "\n" + wrapped
+		bubble_label.visible_characters = -1
 	else:
 		# New bubble
-		bubble_label.text = text
+		bubble_label.text = wrapped
+		bubble_label.visible_characters = 0  # hide all until typewriter reveals
 		speech_bubble.visible = true
 		speech_bubble.modulate = Color(1, 1, 1, 0)
 		var fade_in := create_tween()
 		fade_in.tween_property(speech_bubble, "modulate:a", 1.0, 0.2)
 		await fade_in.finished
+		# タイプライター効果（クリックで全文スキップ可）
+		await _run_bubble_typewriter(wrapped.length())
 
-	# Show ▼ indicator
+	# 自動折り返し／はみ出し検出（開発時の警告）
+	_check_bubble_overflow(wrapped)
+
+	# タイプライター完了後に ▼ 表示
 	_show_indicator()
 
 	# Wait for click/input
@@ -1716,6 +1898,60 @@ func _show_bubble(text: String, append: bool = false):
 
 	# Hide indicator
 	_hide_indicator()
+
+func _check_bubble_overflow(source_text: String) -> void:
+	if not bubble_label or not is_instance_valid(bubble_label):
+		return
+	# レイアウト確定を待つ
+	await get_tree().process_frame
+	if not is_instance_valid(bubble_label):
+		return
+	var actual_lines: int = bubble_label.get_line_count()
+	var explicit_lines: int = source_text.count("\n") + 1
+	var visible_lines: int = bubble_label.get_visible_line_count()
+	var preview: String = source_text.replace("\n", " / ")
+	if preview.length() > 60:
+		preview = preview.substr(0, 60) + "…"
+	if actual_lines > explicit_lines:
+		push_warning("[Bubble autowrap] %d→%d 行: \"%s\"" % [explicit_lines, actual_lines, preview])
+	if actual_lines > visible_lines:
+		push_warning("[Bubble overflow] %d 行のうち %d 行のみ表示: \"%s\"" % [actual_lines, visible_lines, preview])
+
+var _bubble_typing_tween: Tween = null
+
+# タイプライター再生＋クリックで全文スキップ対応
+func _run_bubble_typewriter(total_chars: int):
+	if total_chars <= 0:
+		return
+	# 前の tween が残っていれば kill
+	if _bubble_typing_tween and _bubble_typing_tween.is_valid():
+		_bubble_typing_tween.kill()
+	_bubble_typing_tween = create_tween()
+	_bubble_typing_tween.tween_property(bubble_label, "visible_characters", total_chars, total_chars * BUBBLE_TYPE_CHAR_SPEED)
+	var done := [false]
+	_bubble_typing_tween.finished.connect(func(): done[0] = true)
+
+	# 直前のクリック押下が残っていたら離すまで待つ（タイピングは継続）
+	while Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) or Input.is_action_pressed("ui_accept"):
+		if done[0]:
+			break
+		await get_tree().process_frame
+
+	# 新しい押下でスキップ／またはタイプ完了まで待つ
+	while not done[0]:
+		if Input.is_action_just_pressed("ui_accept"):
+			break
+		if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+			var hovered = get_viewport().gui_get_hovered_control()
+			if not (hovered is BaseButton or hovered is Slider or hovered is SpinBox or hovered is LineEdit or _is_in_panel(hovered)):
+				break
+		await get_tree().process_frame
+
+	# 強制全文表示して終了
+	if _bubble_typing_tween and _bubble_typing_tween.is_valid():
+		_bubble_typing_tween.kill()
+	_bubble_typing_tween = null
+	bubble_label.visible_characters = -1
 
 func _hide_bubble():
 	var fade_out := create_tween()
@@ -1729,19 +1965,24 @@ func _show_indicator():
 	_bubble_indicator = Label.new()
 	_bubble_indicator.text = "▼"
 	var ls := LabelSettings.new()
-	ls.font_size = 16
-	ls.font_color = Color(0.4, 0.35, 0.25, 0.8)
+	ls.font_size = 28
+	ls.font_color = Color(0.30, 0.22, 0.12)
+	ls.outline_size = 4
+	ls.outline_color = Color(1.0, 0.95, 0.75, 0.9)
 	_bubble_indicator.label_settings = ls
 	_bubble_indicator.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_bubble_indicator.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
-	_bubble_indicator.offset_left = -30
-	_bubble_indicator.offset_top = -24
+	# 吹き出しの枠線と被らないよう内側に寄せる
+	_bubble_indicator.offset_left = -60
+	_bubble_indicator.offset_top = -58
+	_bubble_indicator.offset_right = -20
+	_bubble_indicator.offset_bottom = -18
 	_bubble_indicator.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	speech_bubble.add_child(_bubble_indicator)
 	# Pulse
 	_indicator_tween = create_tween()
 	_indicator_tween.set_loops()
-	_indicator_tween.tween_property(_bubble_indicator, "modulate:a", 0.3, 0.5)
+	_indicator_tween.tween_property(_bubble_indicator, "modulate:a", 0.35, 0.5)
 	_indicator_tween.tween_property(_bubble_indicator, "modulate:a", 1.0, 0.5)
 
 func _hide_indicator():

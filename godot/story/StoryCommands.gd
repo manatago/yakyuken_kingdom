@@ -120,6 +120,7 @@ class Battle extends Base:
 	var chapter_path: String = ""
 	var chapter: BattleChapterBase = null
 	var is_tutorial: bool = false
+	var is_minigame: bool = false
 	var result: String = ""  # "win" / "lose" / "draw"
 	func execute(scene):
 		return scene.request_battle(self)
@@ -311,6 +312,15 @@ func tutorial(chapter_path: String):
 	var entry := Battle.new()
 	entry.chapter_path = chapter_path
 	entry.is_tutorial = true
+	var script = load(chapter_path)
+	if script:
+		entry.chapter = script.new()
+	return entry
+
+func minigame(chapter_path: String):
+	var entry := Battle.new()
+	entry.chapter_path = chapter_path
+	entry.is_minigame = true
 	var script = load(chapter_path)
 	if script:
 		entry.chapter = script.new()
@@ -552,6 +562,9 @@ class _CommandCollector:
 
 	func tutorial(chapter_path: String):
 		_add_command(_dsl.tutorial(chapter_path))
+
+	func minigame(chapter_path: String):
+		_add_command(_dsl.minigame(chapter_path))
 
 	func label(name: String):
 		_add_command(_dsl.label(name))

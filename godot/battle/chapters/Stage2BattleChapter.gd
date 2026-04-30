@@ -58,7 +58,7 @@ func outfit_1(bt):
 # =============================================
 
 func belka_setup_scene(bt):
-	bt.deck("res://assets/battle/decks/deck_002.png", {"scale": 0.75, "position": [0, 230]})
+	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.55, "position": [0, 180]})
 	var belka = bt.character("belka")
 	belka.set_portrait("res://assets/characters/subevent1_battle/belka_battle_001.png", {"scale": 0.64, "side": "center", "position": [0, -275]})
 

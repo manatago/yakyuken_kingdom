@@ -78,7 +78,7 @@ func _get_battle_portrait() -> Dictionary:
 	return EncounterDatabase.get_portrait(_data, "battle")
 
 func setup_scene(bt):
-	bt.deck("res://assets/battle/decks/deck_003.png", {"scale": 0.75, "position": [0, 150]})
+	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.55, "position": [0, 180]})
 	var portrait: Dictionary = _get_battle_portrait()
 	var p_path: String = portrait.get("path", "")
 	if p_path.is_empty():

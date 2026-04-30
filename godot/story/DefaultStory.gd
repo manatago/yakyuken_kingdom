@@ -25,6 +25,8 @@ func _init() -> void:
 		"marco": _character("marco", "盗賊マルコ", ""),
 		"gald": _character("gald", "ガルド", ""),
 		"belka": _character("belka", "ベルカ", ""),
+		"sister_head": _character("sister_head", "シスター長", ""),
+		"sister_a": _character("sister_a", "シスターA", ""),
 	}
 	_build_chapters()
 

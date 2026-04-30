@@ -7,7 +7,7 @@ func get_opponent_name() -> String:
 	return "冒険者A"
 
 func get_battle_background() -> String:
-	return "res://assets/backgrounds/stage1/bg07_guild_hall.png"
+	return "res://assets/backgrounds/stage1/bg07_st1_001.png"
 
 # ランダムバトル: HP1、デッキ3枚
 func get_opponent_outfit_count() -> int:
@@ -43,7 +43,7 @@ func get_gold_reward() -> Dictionary:
 
 func tutorial(bt):
 	var adv = bt.character("adventurer_a")
-	adv.set_portrait("res://assets/characters/stage1_battle/char09_st1_battle_001.png", {"scale": 0.74, "side": "center", "position": [0, -199]})
+	adv.set_portrait("res://assets/characters/stage1/char09_st1_001.png", {"scale": 0.50, "side": "center", "position": [0, -200]})
 
 	# ピー助: 情報提供（右下）
 	bt.set_bubble_side("bottom-right")
@@ -110,7 +110,7 @@ func tutorial(bt):
 # --- 初期表示（デッキ構築時） ---
 
 func setup_scene(bt):
-	bt.deck("res://assets/battle/decks/deck_002.png", {"scale": 0.75, "position": [0, 230]})
+	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.55, "position": [0, 180]})
 	var adv = bt.character("adventurer_a")
 	adv.set_portrait("res://assets/characters/stage1_battle/char09_st1_battle_001.png", {"scale": 0.74, "side": "center", "position": [0, -199]})
 

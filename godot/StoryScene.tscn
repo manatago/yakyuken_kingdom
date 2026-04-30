@@ -18,10 +18,10 @@ corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_left = 4
 corner_radius_bottom_right = 4
-content_margin_left = 16.0
-content_margin_top = 6.0
-content_margin_right = 16.0
-content_margin_bottom = 6.0
+content_margin_left = 10.0
+content_margin_top = 3.0
+content_margin_right = 10.0
+content_margin_bottom = 3.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_menu_btn_hover"]
 bg_color = Color(0.25, 0.25, 0.35, 0.8)
@@ -29,10 +29,10 @@ corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_left = 4
 corner_radius_bottom_right = 4
-content_margin_left = 16.0
-content_margin_top = 6.0
-content_margin_right = 16.0
-content_margin_bottom = 6.0
+content_margin_left = 10.0
+content_margin_top = 3.0
+content_margin_right = 10.0
+content_margin_bottom = 3.0
 
 [node name="StoryScene" type="Control"]
 script = ExtResource("1_script")
@@ -88,7 +88,7 @@ anchor_left = 0.0
 anchor_right = 1.0
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -264.0
+offset_top = -220.0
 offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 0
@@ -108,13 +108,13 @@ theme_override_constants/separation = 8
 
 [node name="SpeakerLabel" type="Label" parent="DialogueBand/VBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 20
 text = "Speaker"
 horizontal_alignment = 0
 
 [node name="BodyLabel" type="Label" parent="DialogueBand/VBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 24
 text = ""
 autowrap_mode = 3
 horizontal_alignment = 0
@@ -126,10 +126,10 @@ anchor_left = 0.0
 anchor_right = 0.48
 anchor_top = 0.0
 offset_left = 20.0
-offset_top = 10.0
+offset_top = 6.0
 offset_right = -8.0
-offset_bottom = 40.0
-theme_override_font_sizes/font_size = 24
+offset_bottom = 28.0
+theme_override_font_sizes/font_size = 18
 theme_override_colors/font_color = Color(0.75, 0.8, 0.9, 1.0)
 text = ""
 horizontal_alignment = 0
@@ -141,10 +141,10 @@ anchor_left = 0.52
 anchor_right = 1.0
 anchor_top = 0.0
 offset_left = 28.0
-offset_top = 10.0
+offset_top = 6.0
 offset_right = -20.0
-offset_bottom = 40.0
-theme_override_font_sizes/font_size = 24
+offset_bottom = 28.0
+theme_override_font_sizes/font_size = 18
 theme_override_colors/font_color = Color(0.75, 0.8, 0.9, 1.0)
 text = ""
 horizontal_alignment = 0
@@ -157,9 +157,9 @@ anchor_right = 0.48
 anchor_top = 0.0
 anchor_bottom = 1.0
 offset_left = 16.0
-offset_top = 42.0
+offset_top = 30.0
 offset_right = -8.0
-offset_bottom = -52.0
+offset_bottom = -36.0
 
 [node name="BubbleBG" type="NinePatchRect" parent="DialogueBand/InnerLeft"]
 layout_mode = 1
@@ -183,7 +183,7 @@ anchor_right = 0.96
 anchor_bottom = 0.92
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 24
 text = ""
 autowrap_mode = 3
 horizontal_alignment = 0
@@ -197,9 +197,9 @@ anchor_right = 1.0
 anchor_top = 0.0
 anchor_bottom = 1.0
 offset_left = 8.0
-offset_top = 42.0
+offset_top = 30.0
 offset_right = -16.0
-offset_bottom = -52.0
+offset_bottom = -36.0
 
 [node name="BubbleBG" type="NinePatchRect" parent="DialogueBand/InnerRight"]
 layout_mode = 1
@@ -223,7 +223,7 @@ anchor_right = 0.96
 anchor_bottom = 0.92
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 24
 text = ""
 autowrap_mode = 3
 horizontal_alignment = 0
@@ -235,17 +235,17 @@ anchor_left = 0.5
 anchor_right = 0.5
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = -350.0
-offset_top = -40.0
-offset_right = 350.0
-offset_bottom = -8.0
-theme_override_constants/separation = 12
+offset_left = -300.0
+offset_top = -28.0
+offset_right = 300.0
+offset_bottom = -4.0
+theme_override_constants/separation = 8
 alignment = 1
 
 [node name="ItemButton" type="Button" parent="DialogueBand/MenuBar"]
 layout_mode = 2
 focus_mode = 0
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("StyleBoxFlat_menu_btn_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_menu_btn_hover")
 text = "Item"
@@ -253,7 +253,7 @@ text = "Item"
 [node name="EquipButton" type="Button" parent="DialogueBand/MenuBar"]
 layout_mode = 2
 focus_mode = 0
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("StyleBoxFlat_menu_btn_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_menu_btn_hover")
 text = "Equip"
@@ -261,7 +261,7 @@ text = "Equip"
 [node name="SkipButton" type="Button" parent="DialogueBand/MenuBar"]
 layout_mode = 2
 focus_mode = 0
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("StyleBoxFlat_menu_btn_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_menu_btn_hover")
 text = "Skip"
@@ -269,7 +269,7 @@ text = "Skip"
 [node name="SaveButton" type="Button" parent="DialogueBand/MenuBar"]
 layout_mode = 2
 focus_mode = 0
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("StyleBoxFlat_menu_btn_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_menu_btn_hover")
 text = "Save"
@@ -277,7 +277,7 @@ text = "Save"
 [node name="LoadButton" type="Button" parent="DialogueBand/MenuBar"]
 layout_mode = 2
 focus_mode = 0
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("StyleBoxFlat_menu_btn_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_menu_btn_hover")
 text = "Load"
@@ -285,7 +285,7 @@ text = "Load"
 [node name="ConfigButton" type="Button" parent="DialogueBand/MenuBar"]
 layout_mode = 2
 focus_mode = 0
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("StyleBoxFlat_menu_btn_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_menu_btn_hover")
 text = "Config"
@@ -293,7 +293,7 @@ text = "Config"
 [node name="ExitButton" type="Button" parent="DialogueBand/MenuBar"]
 layout_mode = 2
 focus_mode = 0
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("StyleBoxFlat_menu_btn_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_menu_btn_hover")
 text = "Exit"

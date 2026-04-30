@@ -37,6 +37,38 @@ godot4 --path godot --run
 godot4 --headless --path godot --run TestRunner
 ```
 
+### Macでのローカル実行（Godot.app）
+```bash
+# ゲーム実行
+/Applications/Godot.app/Contents/MacOS/Godot --path godot --run
+
+# テスト実行（推奨ランナー: TestRunnerMain.gd）
+/Applications/Godot.app/Contents/MacOS/Godot --path godot --headless --script res://tests/TestRunnerMain.gd
+```
+
+## テスト実行ルール（重要）
+
+以下の変更を行った後は **必ずテストを実行して結果を確認すること**:
+
+- `godot/game/Main.gd` の編集
+- `godot/game/BattleScene.gd` の編集
+- `godot/game/StoryScene.gd` の編集
+- `godot/battle/chapters/*.gd` の編集
+- `godot/story/chapters/*.gd` の編集
+- `godot/encounter/EncounterDatabase.gd` の編集
+
+### 実行コマンド（Mac）
+```bash
+/Applications/Godot.app/Contents/MacOS/Godot --path godot --headless --script res://tests/TestRunnerMain.gd 2>&1 | tail -60
+```
+
+### チェック項目
+- E2EBattle スイートが全てパスすること（特に `all_chapters_load`, `all_portrait_paths_exist`, `main_battle_requested_connected`）
+- 新規パースエラー（`SCRIPT ERROR:`）が発生していないこと
+- 既存の失敗テスト（StorySceneの `_ready` / `apply_band_command` 参照）は既知の未対応項目なので、これらが増えていなければOK
+
+テストが落ちた場合は、コミットや次の作業に進む前に修正すること。
+
 ## Architecture
 
 ### Core Game Loop (`godot/scripts/Main.gd`)

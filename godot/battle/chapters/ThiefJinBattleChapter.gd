@@ -57,7 +57,7 @@ func get_farewell(result: String) -> Dictionary:
 # --- バトル演出 ---
 
 func setup_scene(bt):
-	bt.deck("res://assets/battle/decks/deck_002.png", {"scale": 0.75, "position": [0, 230]})
+	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.55, "position": [0, 180]})
 	var jin = bt.character("jin")
 	jin.set_portrait("res://assets/characters/subevent1_battle/jin_battle_001.png", {"scale": 0.33, "side": "center", "position": [0, -199]})
 
