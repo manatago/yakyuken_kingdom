@@ -239,6 +239,7 @@ var _chapter_buttons: Array[Button] = []
 var _evidence_buttons: Array[Button] = []
 var _decide_button: Button = null
 var _pisuke_button: Button = null
+var _column_headers: Array[Label] = []  # 「本のジャンル」「物証」見出し
 
 signal _action_triggered(action: String)
 
@@ -270,13 +271,13 @@ func minigame(bt):
 		var action: String = await _action_triggered
 
 		_set_buttons_enabled(false)
+		_set_buttons_visible(false)  # 吹き出しに被らないよう、決定後すぐ隠す
 
 		if action == "_pisuke":
 			await _apply_pisuke(bt)
 		else:
 			await _apply_choice(bt, _selected_chapter, _selected_evidence)
 		_turns_done += 1
-		_set_buttons_visible(false)
 
 	_teardown_ui()
 
@@ -510,6 +511,7 @@ func _make_column_header(text: String, pos: Vector2):
 	label.add_theme_constant_override("shadow_outline_size", 4)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	_ui_root.add_child(label)
+	_column_headers.append(label)
 
 # === 選択肢ピック（毎ターン HIT 1 + MISS 3、両軸とも 4 択）===
 
@@ -650,6 +652,8 @@ func _set_buttons_enabled(active: bool):
 			_pisuke_button.text = "[ピー助に任せる]" if not locked else "[ピー助に任せる]（残り 1 ターン）"
 
 func _set_buttons_visible(visible: bool):
+	# 章/物証/決定/ピー助のボタン群と「本のジャンル」「物証」見出しを一括表示制御。
+	# 吹き出し（dialogue/narrator band）と重ならないよう、台詞表示中は false で隠す。
 	for btn in _chapter_buttons:
 		btn.visible = visible
 	for btn in _evidence_buttons:
@@ -658,6 +662,8 @@ func _set_buttons_visible(visible: bool):
 		_decide_button.visible = visible
 	if _pisuke_button:
 		_pisuke_button.visible = visible
+	for header in _column_headers:
+		header.visible = visible
 
 # === ボタンハンドラ ===
 
@@ -787,6 +793,7 @@ func _teardown_ui():
 	_evidence_buttons.clear()
 	_decide_button = null
 	_pisuke_button = null
+	_column_headers.clear()
 
 func _update_gauge_display():
 	if not _gauge_bar:
