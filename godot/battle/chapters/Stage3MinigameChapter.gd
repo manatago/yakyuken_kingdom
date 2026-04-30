@@ -96,31 +96,31 @@ const MISS_EVIDENCE_KEYS := ["bookmark", "wear", "dust", "fold", "flower", "bind
 #   chest       : cover_finger
 #   draft       : margin_stain
 const VALID_COMBOS := [
-	# 1. bath × page_stain（湯浴み章のページ三十七行目の白濁滲み）
+	# 1. bath × page_stain（湯浴み章のページ三十七行目の不審な滲み）
 	{
 		"chapter": "bath",
 		"evidence": "page_stain",
 		"mag_react": "……っ！ そ、その章は、どこで……どこで手に！",
 		"mag_thought": "床板の下、なぜ、なぜそこに……！",
 		"pisuke_chase": [
-			"──ページ三十七行目、白濁した滲み。",
+			"──ページ三十七行目、不審な滲み。",
 			"──騎士二人、湯気の中で、硬いアレを擦り合う、淫靡な描写。",
-			"──読みながら片手でご自身を慰め、ページに白いのを散らしています。",
-			"──毎晩、湯浴みの章で自分を慰めて、愛液を撒き散らしてしまったんですよね？",
+			"──読みながら片手でご自身を慰め、ページに何かを散らしています。",
+			"──毎晩、湯浴みの章で自分を慰めて、ページに痕跡を撒き散らしてしまったんですよね？",
 		],
 		"mag_pile": "……っ！ ……や、やめて、もう、許して……！",
 	},
-	# 2. night_drill × crust（夜更けの鍛錬章にこびりついた愛液の塊）
+	# 2. night_drill × crust（夜更けの鍛錬章のページに固まった謎の物質）
 	{
 		"chapter": "night_drill",
 		"evidence": "crust",
 		"mag_react": "……っ！ そ、その章の存在を、なぜ、お前が──！",
 		"mag_thought": "夜更けの鍛錬章、若き戦士たちが腰を打ち付け合う場面、わたくし……！",
 		"pisuke_chase": [
-			"──ページの間、固まった白濁の塊。",
-			"──夜更けに二人の戦士が腰を打ち付け合う場面、興奮で噴き出した、ご自身の。",
+			"──ページの間、固まった謎の塊。",
+			"──夜更けに二人の戦士が腰を打ち付け合う場面、興奮で噴き出した、ご自身の何か。",
 			"──開いたまま閉じ忘れて、乾いてページに張り付いている。",
-			"──毎晩、夜更けの鍛錬章で果てて、ご自身の精を本に流し込んでらっしゃる、ですよね？",
+			"──毎晩、夜更けの鍛錬章で果てて、ご自身の体液を本に流し込んでらっしゃる、ですよね？",
 		],
 		"mag_pile": "……っ！ ……あの章を、見られた、見られた……！",
 	},
@@ -138,17 +138,17 @@ const VALID_COMBOS := [
 		],
 		"mag_pile": "……っ！ ……お願い、もう、見ないで……！",
 	},
-	# 4. blood_oath × pillow_stain（血盟の儀章を読みながら枕に飛んだ白濁）
+	# 4. blood_oath × pillow_stain（血盟の儀章を読みながら枕に飛んだ何か）
 	{
 		"chapter": "blood_oath",
 		"evidence": "pillow_stain",
 		"mag_react": "……っ！ そ、それは、寝具の、汚れで──！",
 		"mag_thought": "血盟の儀の章を読みながら、わたくし、枕に……！",
 		"pisuke_chase": [
-			"──枕カバーに、白濁した飛沫が、点々と。",
+			"──枕カバーに、何かが弾けた飛沫が、点々と。",
 			"──血盟の儀を読み終えた瞬間、ご自身が果てた跡。",
 			"──戦士たちが互いの血を舐め合う場面、ベッドの上で読みながら。",
-			"──毎晩、血盟の儀の章で果てて、枕を愛液で濡らしてしまったんですよね？",
+			"──毎晩、血盟の儀の章で果てて、枕を何かで濡らしてしまったんですよね？",
 		],
 		"mag_pile": "……っ！ ……枕の、染みまで……！",
 	},
@@ -174,13 +174,13 @@ const VALID_COMBOS := [
 		"mag_thought": "あの本、誰にも触らせていないのに、なぜ……！",
 		"pisuke_chase": [
 			"──鑑定魔法によると、これ、汗ではございません。",
-			"──白濁した体液、人差し指と中指の、二本の形で。",
+			"──不審な体液、人差し指と中指の、二本の形で。",
 			"──片手で本を持ちながら、もう一方の手で何を？",
 			"──毎晩、この本を腿の間に挟んで、擦りつけて果ててたんですよね？",
 		],
 		"mag_pile": "……っ！ ……あの本だけは、あの本だけは……！",
 	},
-	# 7. draft × margin_stain（書きかけ草稿章の余白に白濁染み）
+	# 7. draft × margin_stain（書きかけ草稿章の余白の謎の染み）
 	{
 		"chapter": "draft",
 		"evidence": "margin_stain",
@@ -188,7 +188,7 @@ const VALID_COMBOS := [
 		"mag_thought": "書きながら、つい、片手で……まさか、それまで……！",
 		"pisuke_chase": [
 			"──余白の点々染み、墨ではございません。",
-			"──検出されたのは、ご本人の、白濁した体液でして。",
+			"──検出されたのは、ご本人の、不審な体液でして。",
 			"──執筆に夢中になりながら、もう一方の手で何を？",
 			"──書きながら、片手は筆、もう片手で自分のアソコをいじっていたんですよね？",
 		],
@@ -197,11 +197,13 @@ const VALID_COMBOS := [
 ]
 
 # --- MISS 時の汎用反応 ---
-const MISS_MAG := "……？ その物証、わたくしには、心当たりが……。"
-const MISS_SCOLD := "ゲコッ、組み合わせが違う！\n本と物証、別の対応を試せ！"
+# 不正解の組み合わせは、彼女の側からは「ありきたりの懺悔朗読が続いているだけ」に見える。
+# 物証も身に覚えのないものなので、敬虔に受け止め、心が穏やかになる ＝ 信仰の威厳が回復。
+const MISS_MAG := "……ええ、敬虔なお言葉。\nわたくしの心も、穏やかになりますわ。"
+const MISS_SCOLD := "ゲコッ、刺さらん！\nマグダレナの妄想スイッチを突け！"
 
 # 既使用 HIT に再挑戦したとき
-const ALREADY_USED_MAG := "……そのお話、先ほど伺いました。"
+const ALREADY_USED_MAG := "……ええ、それは先ほど伺いました。\n別のお話を、お願いします。"
 const ALREADY_USED_SCOLD := "ゲコッ、もう使った組み合わせだ！\n別の本×物証を試せ！"
 
 func get_opponent_id() -> String:
@@ -390,7 +392,7 @@ func _play_miss(bt):
 	bt.narrator_band("ピー助(小声で叱責):\n%s" % MISS_SCOLD, "pisuke")
 	await bt.wait(0.0)
 
-	bt.dialogue_band("narrator", "見当違い、シラけられた。\n(信仰の威厳 +%d)" % MISS_DELTA, true)
+	bt.dialogue_band("narrator", "敬虔な朗読として受け止められた。\n(信仰の威厳 +%d)" % MISS_DELTA, true)
 	await bt.wait(0.0)
 	bt.hide_dialogue_band()
 	await bt.wait(0.0)
@@ -404,7 +406,7 @@ func _play_already_used(bt):
 	bt.narrator_band("ピー助(小声で叱責):\n%s" % ALREADY_USED_SCOLD, "pisuke")
 	await bt.wait(0.0)
 
-	bt.dialogue_band("narrator", "同じネタ、二度目は刺さらない。\n(信仰の威厳 +%d)" % MISS_DELTA, true)
+	bt.dialogue_band("narrator", "同じ朗読、二度目は刺さらない。\n(信仰の威厳 +%d)" % MISS_DELTA, true)
 	await bt.wait(0.0)
 	bt.hide_dialogue_band()
 	await bt.wait(0.0)
