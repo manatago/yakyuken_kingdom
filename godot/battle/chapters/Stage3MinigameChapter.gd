@@ -66,13 +66,13 @@ const MISS_CHAPTER_KEYS := ["war", "history", "morals", "mary", "martyr", "praye
 # ありきたりで決して VALID_COMBOS に登場しないデコイ。
 const EVIDENCES := {
 	# === HIT 側（VALID_COMBOS で使用される示唆的物証）===
-	"page_stain":    {"label": "ページ三十七行目の白い滲み", "description": "開いた一節、白い液体が散った跡"},
-	"finger_trace":  {"label": "ページ裏の指で撫でた跡",     "description": "何度も読み返した指の脂"},
-	"pillow_stain":  {"label": "枕カバーの白濁した飛沫",     "description": "ベッドで読みながら飛んだ白濁"},
-	"cover_finger":  {"label": "表紙の指の形の白い染み",     "description": "二本指の形に残った白濁の染み"},
-	"margin_stain":  {"label": "余白の白濁した染み",         "description": "ページ余白に点々と落ちた白濁"},
-	"crust":         {"label": "ページ間の固まった愛液",     "description": "ページの間に乾いた白濁の塊"},
-	"kiss_mark":     {"label": "表紙裏の口づけの跡",         "description": "表紙の裏側に残った唇形の染み"},
+	"page_stain":    {"label": "ページ三十七行目の不審な滲み", "description": "開いた一節、何かが弾けたような跡"},
+	"finger_trace":  {"label": "ページ裏の指で撫でた跡",       "description": "何度も読み返した指の脂"},
+	"pillow_stain":  {"label": "枕カバーの広範囲な染み",       "description": "ベッドで何かが弾けた痕跡"},
+	"cover_finger":  {"label": "表紙の指の形の湿った跡",       "description": "二本指の形に残った染み"},
+	"margin_stain":  {"label": "余白の点々染み",               "description": "執筆中に飛び散った何かの跡"},
+	"crust":         {"label": "ページ間に固まった謎の物質",   "description": "ページ同士を貼り付ける乾いた何か"},
+	"kiss_mark":     {"label": "表紙裏の口づけの跡",           "description": "表紙の裏側に残った唇形の染み"},
 	# === MISS 側（ありきたりの痕跡、デコイ）===
 	"bookmark":      {"label": "折り込まれた栞",             "description": "読みかけのページに挟まれた栞"},
 	"wear":          {"label": "角の擦り切れ",               "description": "本の角に出来た自然な擦り切れ"},
