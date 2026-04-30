@@ -170,7 +170,11 @@ func _build_subevent1_pre(b):
 		"position": [0, 68],
 	})
 
-	jin.band("へっ、来たな冒険者。\nアジトの場所を嗅ぎつけるとは、やるじゃねえか。\nだが、ここから先は通さねえぜ。")
+	jin.band_retry(
+		"encounter_jin_seen",
+		"へっ、来たな冒険者。\nアジトの場所を嗅ぎつけるとは、やるじゃねえか。\nだが、ここから先は通さねえぜ。",
+		"お、また来たのか...懲りねぇ奴だな。\n今度こそ、二度と起き上がれねぇようにしてやるぜ。"
+	)
 
 	hero.set_portrait("res://assets/characters/prologue/char01_pg_034.png", {"scale": 0.75, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("見張り...か。")
@@ -191,6 +195,8 @@ func _build_subevent1_pre(b):
 
 	b.hide_band()
 
+	# 戦闘前に「初遭遇済み」フラグを立てる：再受注時、上の jin.band_retry が retry_text を選ぶ
+	b.set_flag("encounter_jin_seen", true)
 	# --- ランダムバトル：盗賊ジン戦 ---
 	b.battle("res://battle/chapters/ThiefJinBattleChapter.gd")
 
@@ -249,6 +255,9 @@ func _build_subevent1_pre(b):
 
 	b.hide_band()
 
+	# マルコは無口設定。retry セリフは作らない（キャラ崩壊回避）。
+	# フラグだけは整合のため立てておく。
+	b.set_flag("encounter_marco_seen", true)
 	# --- ランダムバトル：盗賊マルコ戦 ---
 	b.battle("res://battle/chapters/ThiefMarcoBattleChapter.gd")
 
@@ -305,7 +314,11 @@ func _build_subevent1_pre(b):
 		"flip": 0,
 	})
 
-	gald.band("あぁん？ 誰だてめえ。\n...ひとりで来たのか？ 度胸あるな。")
+	gald.band_retry(
+		"encounter_gald_seen",
+		"あぁん？ 誰だてめえ。\n...ひとりで来たのか？ 度胸あるな。",
+		"おう、てめえか。何度来ても結果は同じだぜ。\nパンツの追加献納に来たってことか？　ガハハ！"
+	)
 
 	# (旧スケール) hero.set_portrait("res://assets/characters/stage1/char01_st1_018.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 64]})
 	hero.set_portrait("res://assets/characters/stage1/char01_st1_018.png", {"scale": 0.6, "side": "left", "flip": 1, "position": [0, 64]})
@@ -337,6 +350,7 @@ func _build_subevent1_pre(b):
 
 	b.hide_band()
 
+	b.set_flag("encounter_gald_seen", true)
 	# --- ランダムバトル：ガルド戦 ---
 	b.battle("res://battle/chapters/ThiefGaldBattleChapter.gd")
 
@@ -383,10 +397,18 @@ func _build_subevent1_pre(b):
 		"flip": 0,
 	})
 
-	belka.band("...うっさいな。何の騒ぎだよ。")
+	belka.band_retry(
+		"encounter_belka_seen",
+		"...うっさいな。何の騒ぎだよ。",
+		"...あんたか。学習能力ねぇな。\n何度ボコられりゃ気が済むんだよ？"
+	)
 
 	belka.set_portrait("res://assets/characters/subevent1/belka_st2_002.png", {"scale": 0.49, "side": "right", "flip": 0, "position": [0, 61]})
-	belka.band("ジンもマルコもガルドもやられたって？\n...ひとりで？ マジで？\n...あんた、ギルドの冒険者？\nなんか頼りなさそうだけど...。")
+	belka.band_retry(
+		"encounter_belka_seen",
+		"ジンもマルコもガルドもやられたって？\n...ひとりで？ マジで？\n...あんた、ギルドの冒険者？\nなんか頼りなさそうだけど...。",
+		"まあ、ボクのコレクションが増えるなら、\nそれはそれで歓迎だけどね。\n...今度こそ、丁寧に剥いでやるよ。"
+	)
 
 	belka.set_portrait("res://assets/characters/subevent1/belka_st2_003.png", {"scale": 0.49, "side": "right", "flip": 0, "position": [0, 61]})
 	belka.band("...ふーん。ボクのギャラリー、じっくり見てたろ。\nさっき聞こえたぜ。「保存状態がプロの仕事」だって？")
@@ -454,6 +476,7 @@ func _build_subevent1_pre(b):
 
 	# --- イベントバトル：ベルカ戦 ---
 	b.label("subevent1_boss_battle")
+	b.set_flag("encounter_belka_seen", true)
 	b.battle("res://battle/chapters/Stage2BattleChapter.gd")
 
 # =============================================

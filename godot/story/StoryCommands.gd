@@ -86,8 +86,30 @@ class Band extends Base:
 	var side_override: String = ""
 	var clear_text: bool = false
 	var append: bool = false
+	# 再戦時バリアント：retry_flag_key が GameState.flags で true の時、
+	# text の代わりに retry_text を使う。空文字なら無効。
+	var retry_flag_key: String = ""
+	var retry_text: String = ""
 	func execute(scene):
-		return scene.apply_band_command(self)
+		var original_text: String = text
+		if retry_flag_key != "" and retry_text != "" and scene != null:
+			var gs = scene.get_node_or_null("/root/GameState") if scene.has_method("get_node_or_null") else null
+			if gs != null and gs.flags.get(retry_flag_key, false):
+				text = retry_text
+		var ret = scene.apply_band_command(self)
+		text = original_text
+		return ret
+
+class SetFlag extends Base:
+	var flag_key: String = ""
+	var value: bool = true
+	func execute(scene):
+		if flag_key == "" or scene == null:
+			return null
+		var gs = scene.get_node_or_null("/root/GameState") if scene.has_method("get_node_or_null") else null
+		if gs != null:
+			gs.flags[flag_key] = value
+		return null
 
 class BandColor extends Base:
 	var color: Color = Color(0.50, 0.38, 0.18, 0.85)
@@ -247,7 +269,7 @@ func hide_character(character_id: String, extra: Dictionary = {}):
 	return entry
 
 func band(text: String, extra: Dictionary = {}):
-	return _band_command(
+	var cmd = _band_command(
 		true,
 		text,
 		extra.get("speaker_id", ""),
@@ -258,6 +280,19 @@ func band(text: String, extra: Dictionary = {}):
 		false,
 		extra.get("append", false)
 	)
+	# 再戦バリアント：extra に retry_flag_key と retry_text があれば設定
+	var rkey: String = extra.get("retry_flag_key", "")
+	var rtext: String = extra.get("retry_text", "")
+	if rkey != "" and rtext != "":
+		cmd.retry_flag_key = rkey
+		cmd.retry_text = rtext
+	return cmd
+
+func set_flag(flag_key: String, value: bool = true):
+	var entry := SetFlag.new()
+	entry.flag_key = flag_key
+	entry.value = value
+	return entry
 
 func band_show():
 	return _band_command(true)
@@ -474,6 +509,18 @@ class CharacterHandle:
 			options["wait_for_input"] = true
 		return _record(_dsl.band(text, options))
 
+	# 再戦バリアント付き band: GameState.flags[retry_flag_key] が true なら retry_text、
+	# それ以外は default_text を表示する。
+	func band_retry(retry_flag_key: String, default_text: String, retry_text: String, extra: Dictionary = {}):
+		var options := extra.duplicate()
+		if not options.has("speaker_id"):
+			options["speaker_id"] = _character_id
+		if not options.has("wait_for_input"):
+			options["wait_for_input"] = true
+		options["retry_flag_key"] = retry_flag_key
+		options["retry_text"] = retry_text
+		return _record(_dsl.band(default_text, options))
+
 	func hide_dialogue():
 		return _record(_dsl.hide_dialogue())
 
@@ -572,3 +619,9 @@ class _CommandCollector:
 
 	func micro_motion(mode: String, extra: Dictionary = {}):
 		_add_command(_dsl.micro_motion(mode, extra))
+
+	# 実行時に GameState.flags[flag_key] = value をセットするコマンドを追加。
+	# 主に再戦時バリアント band_retry と組み合わせて使う：戦闘前にフラグを立て、
+	# 次回の同じシーケンス再生時に retry_text が選ばれるようにする。
+	func set_flag(flag_key: String, value: bool = true):
+		_add_command(_dsl.set_flag(flag_key, value))
