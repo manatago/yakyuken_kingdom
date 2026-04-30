@@ -4,11 +4,11 @@ extends BattleChapterBase
 #
 # 設計：
 # - 本の章（CHAPTERS）と物証（EVIDENCES）はそれぞれ HIT 用キーと MISS 用キーに分かれる:
-#     * HIT_CHAPTER_KEYS (5)  : マグダレナの自選集の章。VALID_COMBOS に登場
+#     * HIT_CHAPTER_KEYS (7)  : マグダレナの自選集の章。VALID_COMBOS に 1 回ずつ登場
 #     * MISS_CHAPTER_KEYS (8) : ありきたりな本（聖戦の譜・建国記など）。デコイ
-#     * HIT_EVIDENCE_KEYS (5) : 白濁／指跡など示唆的物証。VALID_COMBOS に登場
+#     * HIT_EVIDENCE_KEYS (7) : 白濁／指跡など示唆的物証。VALID_COMBOS に 1 回ずつ登場
 #     * MISS_EVIDENCE_KEYS (8): 栞・埃・折り目など普通の痕跡。デコイ
-# - VALID_COMBOS = 7 通り（HIT 側のキー同士のみで構成、テーマ重複を排除）
+# - VALID_COMBOS = 7 通り（章 7 × 物証 7 の 1 対 1 マッピング、各キーは 1 回ずつ登場）
 # - 毎ターンの提示:
 #     * 章ボタン 4 個 = HIT 章 1（その回の正解 combo の章）+ MISS 章 3 (MISS_CHAPTER_KEYS から)
 #     * 物証ボタン 4 個 = HIT 物証 1 + MISS 物証 3 (MISS_EVIDENCE_KEYS から)
@@ -41,11 +41,13 @@ const MISS_DELTA := 5
 # MISS_CHAPTER_KEYS を使い分け、MISS は決して HIT 側から引かない。
 const CHAPTERS := {
 	# === HIT 側（マグダレナの自選集の章、いずれかが VALID_COMBOS に出る）===
-	"bath":     {"label": "「湯浴み」章",         "excerpt": "湯気立ち昇る浴場で、鍛えられた背筋が──"},
-	"guardian": {"label": "「相互加護」章",       "excerpt": "戦友の傷を労る手つきの優しさ──"},
-	"oath":     {"label": "「朝露の誓い」章",     "excerpt": "二人きりの夜明けに、指を重ねて──"},
-	"chest":    {"label": "「胸筋と誓約」章",     "excerpt": "鍛え抜かれた胸を寄せ合い、無言の誓いを──"},
-	"draft":    {"label": "「書きかけ草稿」章",   "excerpt": "汗だくで鍛錬し、もつれ合う二人の体──"},
+	"bath":         {"label": "「湯浴み」章",         "excerpt": "湯気立つ浴場で、二人の男が裸身を擦り合わせ──"},
+	"guardian":     {"label": "「相互加護」章",       "excerpt": "戦友の傷を労ると見せかけ、指は脇腹を這い回り──"},
+	"oath":         {"label": "「朝露の誓い」章",     "excerpt": "二人きりの夜明け、汗ばむ指を絡め、唇を寄せ──"},
+	"chest":        {"label": "「胸筋と誓約」章",     "excerpt": "鍛え抜かれた胸と胸を擦り合わせ、汗ばむ肌で誓約を──"},
+	"draft":        {"label": "「書きかけ草稿」章",   "excerpt": "汗だくで腰を打ち付け合い、もつれ合う二人の裸体──"},
+	"night_drill":  {"label": "「夜更けの鍛錬」章",   "excerpt": "篝火の影で、二人の若き戦士が腰を打ち付け合い──"},
+	"blood_oath":   {"label": "「血盟の儀」章",       "excerpt": "互いの腕に刃を当て、流れる血を舐め合いながら──"},
 	# === MISS 側（ありきたりの本、デコイ）===
 	"war":      {"label": "『聖戦の譜』第1章",     "excerpt": "勇敢な騎士は盾を構えた──"},
 	"history":  {"label": "『建国記』第5章",       "excerpt": "王は国を統べると誓った──"},
@@ -56,7 +58,7 @@ const CHAPTERS := {
 	"mercy":    {"label": "『神の慈愛』序章",     "excerpt": "神は万物を愛で包みたまう──"},
 	"repent":   {"label": "『懺悔の書』序章",     "excerpt": "罪深き者よ、膝をつきなさい──"},
 }
-const HIT_CHAPTER_KEYS := ["bath", "guardian", "oath", "chest", "draft"]
+const HIT_CHAPTER_KEYS := ["bath", "guardian", "oath", "chest", "draft", "night_drill", "blood_oath"]
 const MISS_CHAPTER_KEYS := ["war", "history", "morals", "mary", "martyr", "prayer", "mercy", "repent"]
 
 # --- 物証 ---
@@ -69,6 +71,8 @@ const EVIDENCES := {
 	"pillow_stain":  {"label": "枕カバーの白濁した飛沫",     "description": "ベッドで読みながら飛んだ白濁"},
 	"cover_finger":  {"label": "表紙の指の形の白い染み",     "description": "二本指の形に残った白濁の染み"},
 	"margin_stain":  {"label": "余白の白濁した染み",         "description": "ページ余白に点々と落ちた白濁"},
+	"crust":         {"label": "ページ間の固まった愛液",     "description": "ページの間に乾いた白濁の塊"},
+	"kiss_mark":     {"label": "表紙裏の口づけの跡",         "description": "表紙の裏側に残った唇形の染み"},
 	# === MISS 側（ありきたりの痕跡、デコイ）===
 	"bookmark":      {"label": "折り込まれた栞",             "description": "読みかけのページに挟まれた栞"},
 	"wear":          {"label": "角の擦り切れ",               "description": "本の角に出来た自然な擦り切れ"},
@@ -79,16 +83,18 @@ const EVIDENCES := {
 	"gilt":          {"label": "金箔の剥がれ",               "description": "表紙装飾の金箔が剥がれた跡"},
 	"cord":          {"label": "栞紐の擦り跡",               "description": "栞紐の通り道に出来た擦り跡"},
 }
-const HIT_EVIDENCE_KEYS := ["page_stain", "finger_trace", "pillow_stain", "cover_finger", "margin_stain"]
+const HIT_EVIDENCE_KEYS := ["page_stain", "finger_trace", "pillow_stain", "cover_finger", "margin_stain", "crust", "kiss_mark"]
 const MISS_EVIDENCE_KEYS := ["bookmark", "wear", "dust", "fold", "flower", "binding", "gilt", "cord"]
 
-# --- 正解組み合わせ 7 件 ---
-# 章×物証で 5×5 = 25 セル中、7 セルが正解。テーマ重複を排除した構成。
-#   bath     : page_stain  + finger_trace
-#   guardian : finger_trace + pillow_stain
-#   oath     : page_stain
-#   chest    : cover_finger
-#   draft    : margin_stain
+# --- 正解組み合わせ 7 件（章 7×物証 7、1 対 1 マッピング）---
+# 各章・各物証は VALID_COMBOS に 1 回ずつだけ登場する。
+#   bath        : page_stain
+#   night_drill : crust
+#   guardian    : finger_trace
+#   blood_oath  : pillow_stain
+#   oath        : kiss_mark
+#   chest       : cover_finger
+#   draft       : margin_stain
 const VALID_COMBOS := [
 	# 1. bath × page_stain（湯浴み章のページ三十七行目の白濁滲み）
 	{
@@ -104,19 +110,19 @@ const VALID_COMBOS := [
 		],
 		"mag_pile": "……っ！ ……や、やめて、もう、許して……！",
 	},
-	# 2. bath × finger_trace（湯浴み章のページ裏の指跡）
+	# 2. night_drill × crust（夜更けの鍛錬章にこびりついた愛液の塊）
 	{
-		"chapter": "bath",
-		"evidence": "finger_trace",
-		"mag_react": "……っ！ そ、その章のページ裏まで、なぜ──！",
-		"mag_thought": "湯浴み章、何度も読み返したから、指の跡が、ページ裏にまで……！",
+		"chapter": "night_drill",
+		"evidence": "crust",
+		"mag_react": "……っ！ そ、その章の存在を、なぜ、お前が──！",
+		"mag_thought": "夜更けの鍛錬章、若き戦士たちが腰を打ち付け合う場面、わたくし……！",
 		"pisuke_chase": [
-			"──湯浴み章の裏側、指の腹で何度も撫でた跡。",
-			"──騎士二人が湯気で抱き合う場面、何十回読み返したのか。",
-			"──興奮で湿った指の脂、紙の繊維に染み込んでます。",
-			"──ページを撫でながら、もう片手で自分の敏感なところを触って慰めていたんですよね？",
+			"──ページの間、固まった白濁の塊。",
+			"──夜更けに二人の戦士が腰を打ち付け合う場面、興奮で噴き出した、ご自身の。",
+			"──開いたまま閉じ忘れて、乾いてページに張り付いている。",
+			"──毎晩、夜更けの鍛錬章で果てて、ご自身の精を本に流し込んでらっしゃる、ですよね？",
 		],
-		"mag_pile": "……っ！ ……あの章は、わたくしの、聖域なのに……！",
+		"mag_pile": "……っ！ ……あの章を、見られた、見られた……！",
 	},
 	# 3. guardian × finger_trace（相互加護章のページ裏指跡）
 	{
@@ -132,33 +138,33 @@ const VALID_COMBOS := [
 		],
 		"mag_pile": "……っ！ ……お願い、もう、見ないで……！",
 	},
-	# 4. guardian × pillow_stain（相互加護章を読みながら枕に飛んだ白濁）
+	# 4. blood_oath × pillow_stain（血盟の儀章を読みながら枕に飛んだ白濁）
 	{
-		"chapter": "guardian",
+		"chapter": "blood_oath",
 		"evidence": "pillow_stain",
 		"mag_react": "……っ！ そ、それは、寝具の、汚れで──！",
-		"mag_thought": "相互加護の章を読みながら、わたくし、枕に……！",
+		"mag_thought": "血盟の儀の章を読みながら、わたくし、枕に……！",
 		"pisuke_chase": [
 			"──枕カバーに、白濁した飛沫が、点々と。",
-			"──相互加護を読み終えた瞬間、ご自身が果てた跡。",
-			"──戦友二人が抱き合う場面、ベッドの上で読みながら。",
-			"──毎晩、相互加護の章で果てて、枕を愛液で濡らしてしまったんですよね？",
+			"──血盟の儀を読み終えた瞬間、ご自身が果てた跡。",
+			"──戦士たちが互いの血を舐め合う場面、ベッドの上で読みながら。",
+			"──毎晩、血盟の儀の章で果てて、枕を愛液で濡らしてしまったんですよね？",
 		],
 		"mag_pile": "……っ！ ……枕の、染みまで……！",
 	},
-	# 5. oath × page_stain（朝露の誓い章のページ滲み）
+	# 5. oath × kiss_mark（朝露の誓い章を読みながら表紙裏に残した口づけ跡）
 	{
 		"chapter": "oath",
-		"evidence": "page_stain",
-		"mag_react": "……っ！ そ、その章のページにまで、滲みなど──！",
-		"mag_thought": "双子の絡み、夜明けの場面、わたくし、読みながら……！",
+		"evidence": "kiss_mark",
+		"mag_react": "……っ！ そ、その表紙の裏まで、なぜ──！",
+		"mag_thought": "双子の絡み、夜明けの場面、わたくし、表紙の裏に……！",
 		"pisuke_chase": [
-			"──双子剣士の絡みの場面、ページに、白濁の滲み。",
-			"──夜明けに兄弟が指を絡める描写、夢中になられて。",
-			"──ページを濡らしたのは、朝露ではない、ですよね？",
-			"──双子が絡む場面で、自分のアソコに指を入れて、果ててたんですよね？",
+			"──表紙の裏側、ご自身の唇の形が、はっきりと残っている。",
+			"──夜明けに兄弟が口づけを交わす描写、夢中になられて。",
+			"──ページを閉じ、表紙の裏に唇を押し付け、舐め回したんですよね？",
+			"──双子が絡む場面で、ご自身も唇を本に押し付けて、果ててたんですよね？",
 		],
-		"mag_pile": "……っ！ ……双子の絡みまで、見られて……！",
+		"mag_pile": "……っ！ ……表紙の裏まで、見られて……！",
 	},
 	# 6. chest × cover_finger（胸筋と誓約章を含む本の表紙の指染み）
 	{
