@@ -5,6 +5,7 @@ const StoryDsl := preload("res://story/StoryCommands.gd")
 const StoryCharacterResource := preload("res://story/StoryCharacter.gd")
 const PrologueChapterScript := preload("res://story/chapters/PrologueChapter.gd")
 const Stage1ChapterScript := preload("res://story/chapters/Stage1Chapter.gd")
+const Subevent3ChapterScript := preload("res://story/chapters/Subevent3Chapter.gd")
 
 
 var _cast: Dictionary = {}  # character_id -> StoryCharacter
@@ -27,6 +28,8 @@ func _init() -> void:
 		"belka": _character("belka", "ベルカ", ""),
 		"sister_head": _character("sister_head", "シスター長", ""),
 		"sister_a": _character("sister_a", "シスターA", ""),
+		"fiona": _character("fiona", "フィオナ", ""),
+		"sebas": _character("sebas", "セバス", ""),
 	}
 	_build_chapters()
 
@@ -34,6 +37,11 @@ func _build_chapters() -> void:
 	var chapters := [
 		PrologueChapterScript.new(),
 		Stage1ChapterScript.new(),
+		# Subevent3 はストーリー本編は未実装だが、敗北時のリトライ用
+		# シーケンス（subevent3_minigame_lose / battle_lose）が
+		# Subevent3MinigameChapter からの redirect で参照されるため、
+		# セッション開始時に登録しておく。
+		Subevent3ChapterScript.new(),
 	]
 	for chapter in chapters:
 		_register_chapter(chapter)

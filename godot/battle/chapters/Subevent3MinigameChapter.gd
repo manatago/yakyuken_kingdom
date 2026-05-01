@@ -911,4 +911,12 @@ func _on_choice_pressed(idx: int):
 	_choice_emitted.emit(idx)
 
 func get_lose_behavior() -> String:
-	return "continue"
+	return "redirect"
+
+func get_lose_redirect() -> Dictionary:
+	# 加護度 130 到達時：水晶球漆黒→セバスが「日を改めて」
+	# → 共通ロスト・ナレ → ギルドホーム送還
+	return {
+		"type": "story_sequence_then_guild_home",
+		"sequence_id": "subevent3_minigame_lose",
+	}
