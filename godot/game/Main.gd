@@ -2595,5 +2595,69 @@ func _run_minigame_standalone(minigame_id: String):
 		story_script = DefaultStoryScript.new()
 	mg_battle.setup(story_script.get_cast(), bg_tex, GameState.inventory)
 	mg_battle.start_battle(chapter, false, true)
-	var _result: String = await mg_battle.battle_finished
+	var result: String = await mg_battle.battle_finished
 	mg_battle.queue_free()
+
+	# 敗北時：chapter の get_lose_redirect に従ってロストシーケンスを再生
+	# + 共通ロスト・ナレーション。standalone でも本筋と同じ挙動を提供。
+	if result == "lose":
+		var lose_behavior: String = chapter.get_lose_behavior()
+		if lose_behavior == "redirect":
+			var redirect: Dictionary = chapter.get_lose_redirect()
+			var rtype: String = redirect.get("type", "")
+			if rtype == "story_sequence_then_guild_home":
+				_create_story_scene()
+				var seq_id: String = redirect.get("sequence_id", "")
+				if seq_id != "":
+					await _play_scene(seq_id)
+				# standalone では cmd オブジェクトがないので、デフォルトで共通ナレを再生
+				var fake_cmd: Dictionary = {
+					"chapter": chapter,
+					"lose_opponent": "",
+					"lose_patterns": [],
+				}
+				await _play_common_lose_narration_dict(fake_cmd)
+				if story_scene_instance:
+					story_scene_instance.queue_free()
+					story_scene_instance = null
+
+# Dictionary 版ヘルパー（cmd が Battle インスタンスではなく Dictionary の場合）
+func _play_common_lose_narration_dict(cmd: Dictionary) -> void:
+	var SatoshiLoseNarrationsScript = load("res://battle/SatoshiLoseNarrations.gd")
+	if SatoshiLoseNarrationsScript == null:
+		return
+	var allowed: Array = cmd.get("lose_patterns", [])
+	if allowed.is_empty():
+		allowed = SatoshiLoseNarrationsScript.ALL_IDS
+	if allowed.size() == 1 and String(allowed[0]) == "__skip__":
+		return
+	var last_id: String = String(GameState.flags.get("last_lose_narration_id", ""))
+	var pattern: Dictionary = SatoshiLoseNarrationsScript.pick_random(allowed, last_id)
+	GameState.flags["last_lose_narration_id"] = pattern.get("id", "")
+
+	var opponent_name: String = String(cmd.get("lose_opponent", ""))
+	if opponent_name == "":
+		var ch = cmd.get("chapter", null)
+		if ch != null and ch.has_method("get_opponent_name"):
+			opponent_name = ch.get_opponent_name()
+	if opponent_name == "":
+		opponent_name = "相手"
+
+	var rendered_frames: Array = SatoshiLoseNarrationsScript.render_frames(pattern, opponent_name)
+	var Cmd = load("res://story/StoryCommands.gd")
+	var seq = Cmd.Sequence.new()
+	seq.id = "_satoshi_lose_narration"
+	for f in rendered_frames:
+		var band = Cmd.Band.new()
+		band.visible = true
+		band.text = String(f[1])
+		band.speaker_id = String(f[0])
+		band.wait_for_input = true
+		seq.entries.append(band)
+
+	if story_scene_instance and story_scene_instance.has_method("play_sequence"):
+		await story_scene_instance.play_sequence(seq)
+
+	if pattern.get("outcome", "") == "lose_clothes":
+		var cost: int = SatoshiLoseNarrationsScript.REPLACEMENT_COST
+		GameState.money = max(0, GameState.money - cost)
