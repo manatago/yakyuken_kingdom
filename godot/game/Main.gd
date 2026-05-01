@@ -1188,9 +1188,24 @@ func _on_battle_requested(cmd):
 				else:
 					final_result = "lose"
 					break
+			elif rtype == "story_sequence_then_guild_home":
+				# 章固有のロスト・ナレーションを先に再生 → 共通ロスト・ナレーション
+				# → ギルドホーム送還（選択肢なし）
+				story_scene_instance.visible = true
+				var seq_id: String = redirect.get("sequence_id", "")
+				if seq_id != "":
+					await _play_scene(seq_id)
+				if not _should_skip_common_lose_narration(cmd):
+					await _play_common_lose_narration(cmd)
+				final_result = "lose"
+				break
 			else:
 				break
 		elif lose_behavior == "abort":
+			# farewell の後、共通ロスト・ナレーションを再生してから guild_home へ
+			if not _should_skip_common_lose_narration(cmd):
+				story_scene_instance.visible = true
+				await _play_common_lose_narration(cmd)
 			break
 		else:
 			break
@@ -1201,6 +1216,59 @@ func _on_battle_requested(cmd):
 	if final_result == "lose" and lose_behavior != "continue":
 		story_scene_instance._abort_sequence = true
 	story_scene_instance.complete_battle(final_result)
+
+# ---------------------------------------------------------------
+# サトシ敗北時の共通ロスト・ナレーション挿入
+# ---------------------------------------------------------------
+
+func _should_skip_common_lose_narration(cmd) -> bool:
+	# cmd.lose_patterns == ["__skip__"] なら明示的にスキップ
+	var patterns = cmd.get("lose_patterns") if cmd.has_method("get") else []
+	if patterns is Array and patterns.size() == 1 and String(patterns[0]) == "__skip__":
+		return true
+	return false
+
+func _play_common_lose_narration(cmd) -> void:
+	var SatoshiLoseNarrationsScript = load("res://battle/SatoshiLoseNarrations.gd")
+	if SatoshiLoseNarrationsScript == null:
+		push_warning("SatoshiLoseNarrations module not found")
+		return
+	var allowed: Array = cmd.lose_patterns if "lose_patterns" in cmd else []
+	if allowed.is_empty():
+		allowed = SatoshiLoseNarrationsScript.ALL_IDS
+	var last_id: String = String(GameState.flags.get("last_lose_narration_id", ""))
+	var pattern: Dictionary = SatoshiLoseNarrationsScript.pick_random(allowed, last_id)
+	GameState.flags["last_lose_narration_id"] = pattern.get("id", "")
+
+	var opponent_name: String = String(cmd.lose_opponent if "lose_opponent" in cmd else "")
+	if opponent_name == "":
+		opponent_name = cmd.chapter.get_opponent_name()
+	if opponent_name == "":
+		opponent_name = "相手"
+
+	var rendered_frames: Array = SatoshiLoseNarrationsScript.render_frames(pattern, opponent_name)
+
+	# 一時シーケンスを構築して StoryScene で再生
+	var Cmd = load("res://story/StoryCommands.gd")
+	var seq = Cmd.Sequence.new()
+	seq.id = "_satoshi_lose_narration"
+	for f in rendered_frames:
+		var speaker: String = String(f[0])
+		var text: String = String(f[1])
+		var band = Cmd.Band.new()
+		band.visible = true
+		band.text = text
+		band.speaker_id = speaker
+		band.wait_for_input = true
+		seq.entries.append(band)
+
+	if story_scene_instance and story_scene_instance.has_method("play_sequence"):
+		await story_scene_instance.play_sequence(seq)
+
+	# outcome 適用：服を取られたパターンは服の買い直し費用を減算
+	if pattern.get("outcome", "") == "lose_clothes":
+		var cost: int = SatoshiLoseNarrationsScript.REPLACEMENT_COST
+		GameState.money = max(0, GameState.money - cost)
 
 # --- バトル実行共通関数 ---
 

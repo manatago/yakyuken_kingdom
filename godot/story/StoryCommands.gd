@@ -144,6 +144,12 @@ class Battle extends Base:
 	var is_tutorial: bool = false
 	var is_minigame: bool = false
 	var result: String = ""  # "win" / "lose" / "draw"
+	# 敗北時の共通ナレーション設定（呼び出し側で指定可、省略時はランタイムで解決）
+	# lose_opponent: 共通ナレーション内 {opponent} に入る名前。"" なら chapter.get_opponent_name()
+	# lose_patterns: 使用許可するパターン ID 配列。空なら SatoshiLoseNarrations.ALL_IDS
+	#                 ["__skip__"] のみを指定すると共通ナレ挿入をスキップ
+	var lose_opponent: String = ""
+	var lose_patterns: Array = []
 	func execute(scene):
 		return scene.request_battle(self)
 
@@ -335,9 +341,11 @@ func stop_portrait_animation(character_id: String):
 	entry.character_id = character_id
 	return entry
 
-func battle(chapter_path: String):
+func battle(chapter_path: String, opts: Dictionary = {}):
 	var entry := Battle.new()
 	entry.chapter_path = chapter_path
+	entry.lose_opponent = String(opts.get("lose_opponent", ""))
+	entry.lose_patterns = opts.get("lose_patterns", [])
 	var script = load(chapter_path)
 	if script:
 		entry.chapter = script.new()
@@ -604,8 +612,8 @@ class _CommandCollector:
 	func stop_portrait_animation(character_id: String):
 		_add_command(_dsl.stop_portrait_animation(character_id))
 
-	func battle(chapter_path: String):
-		_add_command(_dsl.battle(chapter_path))
+	func battle(chapter_path: String, opts: Dictionary = {}):
+		_add_command(_dsl.battle(chapter_path, opts))
 
 	func tutorial(chapter_path: String):
 		_add_command(_dsl.tutorial(chapter_path))
