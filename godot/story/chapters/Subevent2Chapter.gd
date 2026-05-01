@@ -42,6 +42,7 @@ func get_sequence_builders() -> Array:
 		{"id": "subevent2_pre2", "builder": "_build_subevent2_pre2"},
 		{"id": "subevent2_post", "builder": "_build_subevent2_post"},
 		{"id": "subevent2_battle_lose_retry", "builder": "_build_subevent2_battle_lose_retry"},
+		{"id": "subevent2_rematch", "builder": "_build_subevent2_rematch"},
 	]
 
 # =============================================
@@ -670,3 +671,55 @@ func _build_subevent2_battle_lose_retry(b):
 		"exit_duration": 0.6,
 		"wait_for_exit": true,
 	})
+
+
+# =============================================
+# 再受注時の短縮ルート
+# 場面4.7：教会・特別礼拝室に直接潜入 → シスター長と即対面 → バトル
+# encounter_sister_long_seen フラグが立っている時、Main.gd の subevent
+# runner が pre1/pre2 の代わりにこのシーケンスを再生する。
+# =============================================
+func _build_subevent2_rematch(b):
+	var hero = b.character("main")
+	var pisuke = b.character("pisuke")
+	var sister_head = b.character("sister_head")
+
+	b.set_protagonist("main")
+	b.band_color("indigo")
+
+	b.label("subevent2_rematch")
+	b.background(BG_PEEP_ROOM, 0.5)
+	b.show_band()
+
+	b.narrator_band("サトシは再び教会へ向かい、誰にも見られないよう、\n特別礼拝室に潜入した。\nシスター長は、まるで待ち構えていたかのように、\n扉が開く前から、そこに立っていた。")
+
+	hero.appear({
+		"side": "left",
+		"appear_effect": "fade",
+		"appear_duration": 0.5,
+		"portrait": "res://assets/characters/stage1/char01_st1_006.png",
+		"portrait_scale": 0.6,
+		"flip": 1,
+		"position": [0, 70],
+	})
+
+	sister_head.appear({
+		"side": "right",
+		"appear_effect": "fade",
+		"appear_duration": 0.5,
+		"portrait": SISTER_HEAD_NORMAL,
+		"portrait_scale": 0.55,
+		"flip": 0,
+		"position": [0, 60],
+	})
+
+	# 再戦専用シーケンスなので band_retry 不要、直接再戦セリフを流す
+	sister_head.band("...またあなたですか。懲りない方ね。\n日を改めて、性懲りもなくお戻りになるとは。\n...今度こそ、神の名のもとに、裁かせていただきます。")
+
+	hero.set_portrait("res://assets/characters/stage1/char01_st1_007.png", {"scale": 0.6, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.band("...今度こそ、終わらせます。")
+
+	b.hide_band()
+
+	b.set_flag("encounter_sister_long_seen", true)
+	b.battle("res://battle/chapters/SisterBattleChapter.gd")

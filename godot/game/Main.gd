@@ -1617,6 +1617,10 @@ const SUBEVENT_CHAPTERS := {
 		"pre_sequence_id": "subevent2_pre1",
 		"pre2_sequence_id": "subevent2_pre2",
 		"post_sequence_id": "subevent2_post",
+		# 再受注時の短縮ルート: encounter_sister_long_seen フラグが立っていれば
+		# pre1/pre2 をスキップしてこのシーケンスを再生（特別礼拝室直接潜入→対面→バトル）
+		"rematch_sequence_id": "subevent2_rematch",
+		"rematch_flag": "encounter_sister_long_seen",
 	},
 	"subevent3": {"name": "呪われた鎧を脱がせ！", "chapter_script": "", "pre_sequence_id": ""},
 	"subevent4": {"name": "受付嬢を脱がせ！", "chapter_script": "", "pre_sequence_id": ""},
@@ -1645,7 +1649,25 @@ func _run_subevent(quest_id: String, home: GuildHome):
 
 	_ensure_subevent_registered(quest_id)
 
-	var pre_seq = story_script.get_sequence(pre_id)
+	# 再受注時の短縮ルート判定:
+	# rematch_flag が立っていれば pre1/pre2 を飛ばして rematch_sequence_id へ
+	var rematch_id: String = quest_data.get("rematch_sequence_id", "")
+	var rematch_flag: String = quest_data.get("rematch_flag", "")
+	var use_rematch: bool = (
+		rematch_id != ""
+		and rematch_flag != ""
+		and GameState.flags.get(rematch_flag, false)
+	)
+
+	var pre_seq = null
+	if use_rematch:
+		pre_seq = story_script.get_sequence(rematch_id)
+		if not pre_seq:
+			# rematch シーケンスがなければ通常ルートに fallback
+			print("[QUEST] Rematch sequence not found, using full pre: ", rematch_id)
+			use_rematch = false
+	if not use_rematch:
+		pre_seq = story_script.get_sequence(pre_id)
 	if not pre_seq:
 		print("[QUEST] Sequence not found: ", pre_id)
 		return
@@ -1665,8 +1687,9 @@ func _run_subevent(quest_id: String, home: GuildHome):
 	else:
 		story_scene_instance.visible = true
 
-	# 前半ストーリー再生
-	await story_scene_instance.play_sequence(pre_seq, {"id": pre_id})
+	# 前半ストーリー再生（rematch 時は短縮ルート、それ以外は pre1）
+	var played_id: String = rematch_id if use_rematch else pre_id
+	await story_scene_instance.play_sequence(pre_seq, {"id": played_id})
 
 	# バトルで負けたらギルドホームに戻る
 	if GameState.last_battle_result == "lose":
@@ -1675,17 +1698,18 @@ func _run_subevent(quest_id: String, home: GuildHome):
 		home.visible = true
 		return
 
-	# 前半2（分割されている場合のみ）
-	var pre2_id: String = quest_data.get("pre2_sequence_id", "")
-	if not pre2_id.is_empty():
-		var pre2_seq = story_script.get_sequence(pre2_id)
-		if pre2_seq:
-			await story_scene_instance.play_sequence(pre2_seq, {"id": pre2_id})
-			if GameState.last_battle_result == "lose":
-				_subevent_in_progress = false
-				story_scene_instance.visible = false
-				home.visible = true
-				return
+	# 前半2（分割されている場合のみ）— rematch ルートではスキップ
+	if not use_rematch:
+		var pre2_id: String = quest_data.get("pre2_sequence_id", "")
+		if not pre2_id.is_empty():
+			var pre2_seq = story_script.get_sequence(pre2_id)
+			if pre2_seq:
+				await story_scene_instance.play_sequence(pre2_seq, {"id": pre2_id})
+				if GameState.last_battle_result == "lose":
+					_subevent_in_progress = false
+					story_scene_instance.visible = false
+					home.visible = true
+					return
 
 	# 後半ストーリー再生
 	var post_id: String = quest_data.get("post_sequence_id", "")
