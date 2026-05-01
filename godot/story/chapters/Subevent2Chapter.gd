@@ -41,6 +41,7 @@ func get_sequence_builders() -> Array:
 		{"id": "subevent2_pre1", "builder": "_build_subevent2_pre1"},
 		{"id": "subevent2_pre2", "builder": "_build_subevent2_pre2"},
 		{"id": "subevent2_post", "builder": "_build_subevent2_post"},
+		{"id": "subevent2_battle_lose_retry", "builder": "_build_subevent2_battle_lose_retry"},
 	]
 
 # =============================================
@@ -424,6 +425,7 @@ func _build_subevent2_pre2(b):
 
 	# --- イベントバトル：シスター長戦 ---
 	b.label("subevent2_boss_battle")
+	b.set_flag("encounter_sister_long_seen", true)
 	b.battle("res://battle/chapters/SisterBattleChapter.gd")
 
 # =============================================
@@ -621,5 +623,50 @@ func _build_subevent2_post(b):
 		"exit_effect": "fade_slide",
 		"exit_to": "left",
 		"exit_duration": 0.8,
+		"wait_for_exit": true,
+	})
+
+
+# =============================================
+# シスター長戦敗北時のシーケンス
+# 場面4.5：教会地下牢・脱獄〜街潜伏〜ギルド帰還
+# SisterBattleChapter.get_lose_redirect から呼ばれる
+# =============================================
+func _build_subevent2_battle_lose_retry(b):
+	var hero = b.character("main")
+	var pisuke = b.character("pisuke")
+
+	b.set_protagonist("main")
+	b.band_color("indigo")
+
+	b.label("subevent2_battle_lose_retry")
+	b.background(BG_DUNGEON, 0.5)
+	b.show_band()
+
+	b.narrator_band("サトシは番兵に拘束され、教会の地下牢に放り込まれた...。")
+
+	hero.appear({
+		"side": "left",
+		"appear_effect": "fade",
+		"appear_duration": 0.6,
+		"portrait": "res://assets/characters/prologue/char01_pg_037.png",
+		"portrait_scale": 0.6,
+		"flip": 1,
+		"position": [0, 70],
+	})
+	hero.band("(小声で) くそっ...こんなところに連れて来られて...。")
+
+	pisuke.band("(小声) ゲコッ。これくらいの檻、俺様にかかれば余裕だ。\n看守の鍵、解析完了。今だ、出るぞ。", {"side": "left"})
+
+	b.narrator_band("ピー助の機転で、サトシは地下牢を抜け出した。\n裏路地に身を潜め、夜が明けるのを待つ。\n教会側はサトシの脱獄に気付いていないらしい。")
+
+	hero.set_portrait("res://assets/characters/stage1/char01_st1_007.png", {"scale": 0.6, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.band("...一旦、ギルドに戻る。\nカードは一部失った。立て直してから、もう一度あの聖女を叩く。")
+
+	b.narrator_band("サトシは人通りに紛れ、ギルドホームへ戻った。")
+
+	hero.leave({
+		"exit_effect": "fade",
+		"exit_duration": 0.6,
 		"wait_for_exit": true,
 	})

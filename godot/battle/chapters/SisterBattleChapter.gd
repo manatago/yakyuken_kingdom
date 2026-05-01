@@ -133,17 +133,16 @@ func sister_outfit_1(bt):
 		sister.band("...まだ、粘るの？ 往生際が悪いですわ。")
 
 func get_lose_behavior() -> String:
-	return "abort"
+	return "redirect"
 
 func get_lose_redirect() -> Dictionary:
-	return {"type": "guild_home"}
+	# 敗北時は地下牢→脱獄→ギルド帰還シーケンス → 共通ロスト・ナレーション
+	# → ギルドホーム送還
+	return {
+		"type": "story_sequence_then_guild_home",
+		"sequence_id": "subevent2_battle_lose_retry",
+	}
 
 func get_farewell(result: String) -> Dictionary:
-	if result == "lose":
-		return {
-			"narration": "サトシはシスター長に敗北し、\n「覗き魔・三度目の現行犯」として教会の地下牢に放り込まれた...。",
-			"portrait": SISTER_BATTLE_LAUGH,
-			"portrait_scale": 0.60,
-			"text": "神の裁きよ。...罪を悔い改めなさい。",
-		}
+	# 敗北演出はシーケンス側に委譲（farewell は空）
 	return {}

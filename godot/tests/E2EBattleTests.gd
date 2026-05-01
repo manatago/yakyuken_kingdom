@@ -87,7 +87,7 @@ func _test_lose_behavior() -> bool:
 		"ThiefMarco": "abort",
 		"ThiefGald": "abort",
 		"Stage2(Belka)": "abort",
-		"Sister(SisterHead)": "abort",
+		"Sister(SisterHead)": "redirect",
 		"Prologue(Matilda)": "redirect",
 		"Stage1(AdvA)": "continue",
 		"Receptionist": "continue",
