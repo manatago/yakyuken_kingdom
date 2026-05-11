@@ -48,7 +48,7 @@ func get_farewell(result: String) -> Dictionary:
 	if result == "lose":
 		return {
 			"narration": "サトシはガルドに敗北した。\nこれ以上先に進むのは危険だ...。",
-			"portrait": "res://assets/characters/subevent1/gald_st2_002.png",
+			"portrait": "res://assets/characters/mob/gald/clothed/gald_clothed_002.png",
 			"portrait_scale": 0.33,
 			"text": "ガハハ！ 帰んな、弱虫！",
 		}
@@ -59,11 +59,11 @@ func get_farewell(result: String) -> Dictionary:
 func setup_scene(bt):
 	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.55, "position": [0, 180]})
 	var gald = bt.character("gald")
-	gald.set_portrait("res://assets/characters/subevent1_battle/gald_battle_001.png", {"scale": 0.34, "side": "center", "position": [0, -199]})
+	gald.set_portrait("res://assets/characters/mob/gald/nude/gald_nude_001.png", {"scale": 0.34, "side": "center", "position": [0, -199]})
 
 func outfit_1(bt):
 	var gald = bt.character("gald")
-	gald.set_portrait("res://assets/characters/subevent1_battle/gald_battle_001.png", {"scale": 0.34, "side": "center", "position": [0, -199]})
+	gald.set_portrait("res://assets/characters/mob/gald/nude/gald_nude_001.png", {"scale": 0.34, "side": "center", "position": [0, -199]})
 	gald.band("ガハハ！ 俺の拳で吹っ飛ばしてやる！")
 
 	var selection = await bt.select_hand()

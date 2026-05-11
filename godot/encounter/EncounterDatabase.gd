@@ -16,19 +16,19 @@ func _init():
 			"name": "チンピラA",
 			"portraits": {
 				"encounter": {
-					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
+					"path": "res://assets/characters/mob/adventurer_a/nude/adventurer_a_nude_001.png",
 					"side": "center", "scale": 0.5, "position": [0, 0],
 				},
 				"battle": {
-					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
+					"path": "res://assets/characters/mob/adventurer_a/nude/adventurer_a_nude_001.png",
 					"side": "center", "scale": 0.4, "position": [0, -199],
 				},
 				"farewell_win": {
-					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
+					"path": "res://assets/characters/mob/adventurer_a/nude/adventurer_a_nude_001.png",
 					"side": "center", "scale": 0.4, "position": [0, -199],
 				},
 				"farewell_lose": {
-					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
+					"path": "res://assets/characters/mob/adventurer_a/nude/adventurer_a_nude_001.png",
 					"side": "center", "scale": 0.4, "position": [0, -199],
 				},
 			},
@@ -63,19 +63,19 @@ func _init():
 			"name": "ゴロツキ",
 			"portraits": {
 				"encounter": {
-					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
+					"path": "res://assets/characters/mob/adventurer_a/nude/adventurer_a_nude_001.png",
 					"side": "center", "scale": 0.5, "position": [0, 0],
 				},
 				"battle": {
-					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
+					"path": "res://assets/characters/mob/adventurer_a/nude/adventurer_a_nude_001.png",
 					"side": "center", "scale": 0.4, "position": [0, -199],
 				},
 				"farewell_win": {
-					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
+					"path": "res://assets/characters/mob/adventurer_a/nude/adventurer_a_nude_001.png",
 					"side": "center", "scale": 0.4, "position": [0, -199],
 				},
 				"farewell_lose": {
-					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
+					"path": "res://assets/characters/mob/adventurer_a/nude/adventurer_a_nude_001.png",
 					"side": "center", "scale": 0.4, "position": [0, -199],
 				},
 			},
@@ -110,19 +110,19 @@ func _init():
 			"name": "酔っ払い冒険者",
 			"portraits": {
 				"encounter": {
-					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
+					"path": "res://assets/characters/mob/adventurer_a/nude/adventurer_a_nude_001.png",
 					"side": "center", "scale": 0.5, "position": [0, 0],
 				},
 				"battle": {
-					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
+					"path": "res://assets/characters/mob/adventurer_a/nude/adventurer_a_nude_001.png",
 					"side": "center", "scale": 0.4, "position": [0, -199],
 				},
 				"farewell_win": {
-					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
+					"path": "res://assets/characters/mob/adventurer_a/nude/adventurer_a_nude_001.png",
 					"side": "center", "scale": 0.4, "position": [0, -199],
 				},
 				"farewell_lose": {
-					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
+					"path": "res://assets/characters/mob/adventurer_a/nude/adventurer_a_nude_001.png",
 					"side": "center", "scale": 0.4, "position": [0, -199],
 				},
 			},
@@ -157,19 +157,19 @@ func _init():
 			"name": "恰幅のいい商人",
 			"portraits": {
 				"encounter": {
-					"path": "res://assets/characters/random_battle/char001_random_01.png",
+					"path": "res://assets/characters/random_battle/char001/clothed/char001_clothed_001.png",
 					"scale": 0.70, "side": "center", "position": [0, -180],
 				},
 				"battle": {
-					"path": "res://assets/characters/random_battle/char001_random_01.png",
+					"path": "res://assets/characters/random_battle/char001/clothed/char001_clothed_001.png",
 					"scale": 0.70, "side": "center", "position": [0, -180],
 				},
 				"farewell_win": {
-					"path": "res://assets/characters/random_battle/char001_random_03.png",
+					"path": "res://assets/characters/random_battle/char001/clothed/char001_clothed_003.png",
 					"scale": 0.8, "side": "center", "position": [0, -30],
 				},
 				"farewell_lose": {
-					"path": "res://assets/characters/random_battle/char001_random_04.png",
+					"path": "res://assets/characters/random_battle/char001/clothed/char001_clothed_004.png",
 					"scale": 0.53, "side": "center", "position": [0, 200],
 				},
 			},
@@ -204,19 +204,19 @@ func _init():
 			"name": "怪しい商人",
 			"portraits": {
 				"encounter": {
-					"path": "res://assets/characters/random_battle/char002_random_01.png",
+					"path": "res://assets/characters/random_battle/char002/clothed/char002_clothed_001.png",
 					"scale": 0.5, "side": "center", "position": [0, -50],
 				},
 				"battle": {
-					"path": "res://assets/characters/random_battle/char002_random_01.png",
+					"path": "res://assets/characters/random_battle/char002/clothed/char002_clothed_001.png",
 					"scale": 0.42, "side": "center", "position": [0, -248],
 				},
 				"farewell_win": {
-					"path": "res://assets/characters/random_battle/char002_random_03.png",
+					"path": "res://assets/characters/random_battle/char002/clothed/char002_clothed_003.png",
 					"scale": 0.45, "side": "center", "position": [0, 160],
 				},
 				"farewell_lose": {
-					"path": "res://assets/characters/random_battle/char002_random_04.png",
+					"path": "res://assets/characters/random_battle/char002/clothed/char002_clothed_004.png",
 					"scale": 0.53, "side": "center", "position": [0, 50],
 				},
 			},
@@ -251,19 +251,19 @@ func _init():
 			"name": "荒くれ船乗り",
 			"portraits": {
 				"encounter": {
-					"path": "res://assets/characters/random_battle/char003_random_01.png",
+					"path": "res://assets/characters/random_battle/char003/clothed/char003_clothed_001.png",
 					"side": "center", "scale": 0.50, "position": [0, -60],
 				},
 				"battle": {
-					"path": "res://assets/characters/random_battle/char003_random_01.png",
+					"path": "res://assets/characters/random_battle/char003/clothed/char003_clothed_001.png",
 					"scale": 0.50, "side": "center", "position": [0, -60],
 				},
 				"farewell_win": {
-					"path": "res://assets/characters/random_battle/char003_random_03.png",
+					"path": "res://assets/characters/random_battle/char003/clothed/char003_clothed_003.png",
 					"scale": 0.60, "side": "center", "position": [0, 100],
 				},
 				"farewell_lose": {
-					"path": "res://assets/characters/random_battle/char003_random_04.png",
+					"path": "res://assets/characters/random_battle/char003/clothed/char003_clothed_004.png",
 					"scale": 0.50, "side": "center", "position": [0, 0],
 				},
 			},
@@ -298,19 +298,19 @@ func _init():
 			"name": "野盗",
 			"portraits": {
 				"encounter": {
-					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
+					"path": "res://assets/characters/mob/adventurer_a/nude/adventurer_a_nude_001.png",
 					"side": "center", "scale": 0.5, "position": [0, 0],
 				},
 				"battle": {
-					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
+					"path": "res://assets/characters/mob/adventurer_a/nude/adventurer_a_nude_001.png",
 					"side": "center", "scale": 0.4, "position": [0, -199],
 				},
 				"farewell_win": {
-					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
+					"path": "res://assets/characters/mob/adventurer_a/nude/adventurer_a_nude_001.png",
 					"side": "center", "scale": 0.4, "position": [0, -199],
 				},
 				"farewell_lose": {
-					"path": "res://assets/characters/stage1_battle/char09_st1_battle_001.png",
+					"path": "res://assets/characters/mob/adventurer_a/nude/adventurer_a_nude_001.png",
 					"side": "center", "scale": 0.4, "position": [0, -199],
 				},
 			},

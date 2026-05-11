@@ -16,7 +16,7 @@ extends MinigameChapterBase
 # - MISS（普通の語彙をオウム返し）→ 針はサトシ側のまま → +5
 # - 質問プールはゾーン別（赤 3 件 / 黄・緑 3 件）
 
-const FERIA_PORTRAIT := "res://assets/characters/stage5/feria_001.png"
+const FERIA_PORTRAIT := "res://assets/characters/main/feria/clothed/feria_clothed_001.png"
 const FERIA_ICON := "res://assets/ui/speakers/feria_default.png"
 
 const HIT_DELTA := -40

@@ -58,14 +58,14 @@ func outfit_1(bt):
 # ※専用バトル立ち絵が未作成のため、subevent2/ の感情差分画像を流用
 # =============================================
 
-const SISTER_BATTLE_NORMAL := "res://assets/characters/subevent2/sister_head_001.png"
-const SISTER_BATTLE_SARCASM := "res://assets/characters/subevent2/sister_head_002.png"
-const SISTER_BATTLE_SAD := "res://assets/characters/subevent2/sister_head_003.png"
-const SISTER_BATTLE_ANGRY := "res://assets/characters/subevent2/sister_head_004.png"
-const SISTER_BATTLE_COMPOSED := "res://assets/characters/subevent2/sister_head_005.png"
-const SISTER_BATTLE_DEFEAT := "res://assets/characters/subevent2/sister_head_006.png"
-const SISTER_BATTLE_SHOUT := "res://assets/characters/subevent2/sister_head_007.png"
-const SISTER_BATTLE_LAUGH := "res://assets/characters/subevent2/sister_head_008.png"
+const SISTER_BATTLE_NORMAL := "res://assets/characters/main/sister_head/clothed/sister_head_clothed_001.png"
+const SISTER_BATTLE_SARCASM := "res://assets/characters/main/sister_head/clothed/sister_head_clothed_002.png"
+const SISTER_BATTLE_SAD := "res://assets/characters/main/sister_head/clothed/sister_head_clothed_003.png"
+const SISTER_BATTLE_ANGRY := "res://assets/characters/main/sister_head/clothed/sister_head_clothed_004.png"
+const SISTER_BATTLE_COMPOSED := "res://assets/characters/main/sister_head/clothed/sister_head_clothed_005.png"
+const SISTER_BATTLE_DEFEAT := "res://assets/characters/main/sister_head/clothed/sister_head_clothed_006.png"
+const SISTER_BATTLE_SHOUT := "res://assets/characters/main/sister_head/clothed/sister_head_clothed_007.png"
+const SISTER_BATTLE_LAUGH := "res://assets/characters/main/sister_head/clothed/sister_head_clothed_008.png"
 
 func sister_setup_scene(bt):
 	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.55, "position": [0, 180]})
@@ -140,7 +140,7 @@ func get_lose_redirect() -> Dictionary:
 	# → ギルドホーム送還
 	return {
 		"type": "story_sequence_then_guild_home",
-		"sequence_id": "subevent2_battle_lose_retry",
+		"sequence_id": "subevent2_battle_lose",
 	}
 
 func get_farewell(result: String) -> Dictionary:

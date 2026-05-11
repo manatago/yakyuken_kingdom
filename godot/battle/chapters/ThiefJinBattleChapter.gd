@@ -48,7 +48,7 @@ func get_farewell(result: String) -> Dictionary:
 	if result == "lose":
 		return {
 			"narration": "サトシは盗賊ジンに敗北した。\nこれ以上先に進むのは危険だ...。",
-			"portrait": "res://assets/characters/subevent1/jin_st2_001.png",
+			"portrait": "res://assets/characters/mob/jin/clothed/jin_clothed_001.png",
 			"portrait_scale": 0.33,
 			"text": "へっ！ 雑魚が！ 出直してこい！",
 		}
@@ -59,11 +59,11 @@ func get_farewell(result: String) -> Dictionary:
 func setup_scene(bt):
 	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.55, "position": [0, 180]})
 	var jin = bt.character("jin")
-	jin.set_portrait("res://assets/characters/subevent1_battle/jin_battle_001.png", {"scale": 0.33, "side": "center", "position": [0, -199]})
+	jin.set_portrait("res://assets/characters/mob/jin/nude/jin_nude_001.png", {"scale": 0.33, "side": "center", "position": [0, -199]})
 
 func outfit_1(bt):
 	var jin = bt.character("jin")
-	jin.set_portrait("res://assets/characters/subevent1_battle/jin_battle_001.png", {"scale": 0.33, "side": "center", "position": [0, -199]})
+	jin.set_portrait("res://assets/characters/mob/jin/nude/jin_nude_001.png", {"scale": 0.33, "side": "center", "position": [0, -199]})
 	jin.band("俺の「疾風のハサミ」を食らいな！")
 
 	var selection = await bt.select_hand()

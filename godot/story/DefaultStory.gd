@@ -5,7 +5,14 @@ const StoryDsl := preload("res://story/StoryCommands.gd")
 const StoryCharacterResource := preload("res://story/StoryCharacter.gd")
 const PrologueChapterScript := preload("res://story/chapters/PrologueChapter.gd")
 const Stage1ChapterScript := preload("res://story/chapters/Stage1Chapter.gd")
+const Stage2ChapterScript := preload("res://story/chapters/Stage2Chapter.gd")
+const Stage3ChapterScript := preload("res://story/chapters/Stage3Chapter.gd")
+const Stage4ChapterScript := preload("res://story/chapters/Stage4Chapter.gd")
+const Stage5ChapterScript := preload("res://story/chapters/Stage5Chapter.gd")
+const Stage6ChapterScript := preload("res://story/chapters/Stage6Chapter.gd")
+const Stage7ChapterScript := preload("res://story/chapters/Stage7Chapter.gd")
 const Subevent3ChapterScript := preload("res://story/chapters/Subevent3Chapter.gd")
+const Subevent4ChapterScript := preload("res://story/chapters/Subevent4Chapter.gd")
 
 
 var _cast: Dictionary = {}  # character_id -> StoryCharacter
@@ -30,6 +37,21 @@ func _init() -> void:
 		"sister_a": _character("sister_a", "シスターA", ""),
 		"fiona": _character("fiona", "フィオナ", ""),
 		"sebas": _character("sebas", "セバス", ""),
+		"goren": _character("goren", "鍛冶師ゴルン", ""),
+		"layla": _character("layla", "レイラ", ""),
+		"magdalena": _character("magdalena", "マグダレナ", ""),
+		"seles": _character("seles", "セレス", ""),
+		"feria": _character("feria", "フェリア", ""),
+		"princess": _character("princess", "王女アレクシア", ""),
+		"staff_b": _character("staff_b", "ギルド職員B", ""),
+		"adv_c": _character("adv_c", "冒険者C", ""),
+		"adv_d": _character("adv_d", "冒険者D", ""),
+		"adv_e": _character("adv_e", "冒険者E", ""),
+		"church_follower": _character("church_follower", "教会信徒", ""),
+		"orphan": _character("orphan", "孤児院の子", ""),
+		"mage_staff": _character("mage_staff", "魔法師団員", ""),
+		"chamberlain": _character("chamberlain", "宮中侍従長", ""),
+		"noble": _character("noble", "大貴族", ""),
 	}
 	_build_chapters()
 
@@ -37,11 +59,14 @@ func _build_chapters() -> void:
 	var chapters := [
 		PrologueChapterScript.new(),
 		Stage1ChapterScript.new(),
-		# Subevent3 はストーリー本編は未実装だが、敗北時のリトライ用
-		# シーケンス（subevent3_minigame_lose / battle_lose）が
-		# Subevent3MinigameChapter からの redirect で参照されるため、
-		# セッション開始時に登録しておく。
+		Stage2ChapterScript.new(),
+		Stage3ChapterScript.new(),
+		Stage4ChapterScript.new(),
+		Stage5ChapterScript.new(),
+		Stage6ChapterScript.new(),
+		Stage7ChapterScript.new(),
 		Subevent3ChapterScript.new(),
+		Subevent4ChapterScript.new(),
 	]
 	for chapter in chapters:
 		_register_chapter(chapter)

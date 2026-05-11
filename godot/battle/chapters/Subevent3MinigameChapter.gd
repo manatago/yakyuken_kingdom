@@ -4,7 +4,7 @@ extends BattleChapterBase
 # 呪いの加護度ゲージを0にすれば成功、130で失敗。
 # docs/scenarios/subevent3_scenario.txt 準拠。
 
-const ARMOR_PORTRAIT := "res://assets/characters/subevent3/armor_001.png"
+const ARMOR_PORTRAIT := "res://assets/characters/main/fiona/clothed/fiona_clothed_001.png"
 const FIONA_ID := "fiona_armor"
 
 const GAUGE_MAX := 130

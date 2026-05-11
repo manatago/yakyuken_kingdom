@@ -25,7 +25,7 @@ extends BattleChapterBase
 # - 設計書 `docs/minigame_designs/st3_magdalena.md` の Decision Log を参照
 #   （2026-04-29: ST2 から組み合わせ機構を移動、HIT/MISS プール分離方式に再設計）
 
-const MAGDALENA_PORTRAIT := "res://assets/characters/stage3/magdalena_001.png"
+const MAGDALENA_PORTRAIT := "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png"
 const MAGDALENA_ICON := "res://assets/ui/speakers/magdalena_default.png"
 const MAGDALENA_ID := "magdalena"
 

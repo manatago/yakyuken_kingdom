@@ -49,7 +49,7 @@ func get_farewell(result: String) -> Dictionary:
 	if result == "lose":
 		return {
 			"narration": "サトシは盗賊マルコに敗北した。\nこれ以上先に進むのは危険だ...。",
-			"portrait": "res://assets/characters/subevent1/marco_st2_001.png",
+			"portrait": "res://assets/characters/mob/marco/clothed/marco_clothed_001.png",
 			"portrait_scale": 0.34,
 			"text": "......。帰れ。",
 		}
@@ -60,11 +60,11 @@ func get_farewell(result: String) -> Dictionary:
 func setup_scene(bt):
 	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.55, "position": [0, 180]})
 	var marco = bt.character("marco")
-	marco.set_portrait("res://assets/characters/subevent1_battle/marco_battle_001.png", {"scale": 0.35, "side": "center", "position": [0, -199]})
+	marco.set_portrait("res://assets/characters/mob/marco/nude/marco_nude_001.png", {"scale": 0.35, "side": "center", "position": [0, -199]})
 
 func outfit_1(bt):
 	var marco = bt.character("marco")
-	marco.set_portrait("res://assets/characters/subevent1_battle/marco_battle_001.png", {"scale": 0.35, "side": "center", "position": [0, -199]})
+	marco.set_portrait("res://assets/characters/mob/marco/nude/marco_nude_001.png", {"scale": 0.35, "side": "center", "position": [0, -199]})
 	marco.band("......。")
 
 	var selection = await bt.select_hand()

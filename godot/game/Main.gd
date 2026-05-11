@@ -53,7 +53,7 @@ var _jump_points: Array = [
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {}, "money": 0}},
 	{"label": "_result:lose", "name": "バトル後（敗北）",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {}, "money": 0}},
-	{"label": "_matilda_lose_retry", "name": "マチルダ敗北後（牢屋retry）",
+	{"label": "_matilda_lose", "name": "マチルダ敗北後",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {}, "money": 0}},
 	{"label": "scene_guild_street", "name": "--- Stage1 ---",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true}, "money": 0}},
@@ -79,6 +79,88 @@ var _jump_points: Array = [
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true, "guild_registered": true, "subevent1_complete": true}, "money": 200}},
 	{"label": "_subevent_post:subevent2", "name": "サブイベント2 後半（シスター長決着後）",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true, "guild_registered": true, "subevent1_complete": true}, "money": 200}},
+	{"label": "stage2_pre", "name": "--- Stage2 (レイラ) ---", "sequence": "stage2_pre",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "subevent1_complete": true, "subevent2_complete": true}, "money": 200}},
+	{"label": "stage2_pre", "name": "場面1 盗難濡れ衣", "sequence": "stage2_pre",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "subevent1_complete": true, "subevent2_complete": true}, "money": 200}},
+	{"label": "stage2_meet", "name": "場面2 月の葉亭・対面", "sequence": "stage2_meet",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "subevent1_complete": true, "subevent2_complete": true}, "money": 200}},
+	{"label": "stage2_recover", "name": "場面4 作戦会議", "sequence": "stage2_recover",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "subevent1_complete": true, "subevent2_complete": true}, "money": 200}},
+	{"label": "stage2_post", "name": "場面7 敗北後の恨み", "sequence": "stage2_post",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "subevent1_complete": true, "subevent2_complete": true}, "money": 200}},
+	{"label": "stage2_close", "name": "場面8 ギルド帰還", "sequence": "stage2_close",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "subevent1_complete": true, "subevent2_complete": true}, "money": 200}},
+	{"label": "stage3_harass", "name": "--- Stage3 (マグダレナ) ---", "sequence": "stage3_harass",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage2_complete": true}, "money": 300}},
+	{"label": "stage3_harass", "name": "場面1-2 教会嫌がらせ", "sequence": "stage3_harass",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage2_complete": true}, "money": 300}},
+	{"label": "stage3_challenge", "name": "場面3 教会乗り込み", "sequence": "stage3_challenge",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage2_complete": true}, "money": 300}},
+	{"label": "stage3_recover", "name": "場面5 作戦会議", "sequence": "stage3_recover",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage2_complete": true}, "money": 300}},
+	{"label": "stage3_post", "name": "場面8 嫌がらせ停止", "sequence": "stage3_post",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage2_complete": true}, "money": 300}},
+	{"label": "stage4_pre", "name": "--- Stage4 (セレス) ---", "sequence": "stage4_pre",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage3_complete": true}, "money": 400}},
+	{"label": "stage4_pre", "name": "場面1 挑戦状", "sequence": "stage4_pre",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage3_complete": true}, "money": 400}},
+	{"label": "stage4_infiltrate", "name": "場面2 潜入失敗", "sequence": "stage4_infiltrate",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage3_complete": true}, "money": 400}},
+	{"label": "stage4_meet", "name": "場面3 セレス対面", "sequence": "stage4_meet",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage3_complete": true}, "money": 400}},
+	{"label": "stage4_contract", "name": "場面4.5 契約執行", "sequence": "stage4_contract",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage3_complete": true}, "money": 400}},
+	{"label": "stage4_recover", "name": "場面5 ミニゲーム準備", "sequence": "stage4_recover",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage3_complete": true}, "money": 400}},
+	{"label": "stage4_post", "name": "場面8 セレスの執着", "sequence": "stage4_post",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage3_complete": true}, "money": 400}},
+	{"label": "stage4_close", "name": "場面9 ギルド帰還", "sequence": "stage4_close",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage3_complete": true}, "money": 400}},
+	{"label": "stage5_summon", "name": "--- Stage5 (フェリア) ---", "sequence": "stage5_summon",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage4_complete": true}, "money": 500}},
+	{"label": "stage5_summon", "name": "場面1-2 出頭命令", "sequence": "stage5_summon",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage4_complete": true}, "money": 500}},
+	{"label": "stage5_interrogation", "name": "場面3 取り調べ・決闘", "sequence": "stage5_interrogation",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage4_complete": true}, "money": 500}},
+	{"label": "stage5_recover", "name": "場面5 作戦会議", "sequence": "stage5_recover",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage4_complete": true}, "money": 500}},
+	{"label": "stage5_post", "name": "場面7 再戦勝利後", "sequence": "stage5_post",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage4_complete": true}, "money": 500}},
+	{"label": "stage5_close", "name": "場面9 ギルド帰還", "sequence": "stage5_close",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage4_complete": true}, "money": 500}},
+	{"label": "stage6_pre", "name": "--- Stage6 (王女) ---", "sequence": "stage6_pre",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage5_complete": true}, "money": 600}},
+	{"label": "stage6_pre", "name": "場面1 招待状", "sequence": "stage6_pre",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage5_complete": true}, "money": 600}},
+	{"label": "stage6_banquet", "name": "場面2 晩餐会・初戦", "sequence": "stage6_banquet",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage5_complete": true}, "money": 600}},
+	{"label": "stage6_recover", "name": "場面3 控えの間・ブチギレ", "sequence": "stage6_recover",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage5_complete": true}, "money": 600}},
+	{"label": "stage6_post", "name": "場面4 再戦勝利・余韻", "sequence": "stage6_post",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage5_complete": true}, "money": 600}},
+	{"label": "stage7_throne", "name": "--- Stage7 (エンディング) ---", "sequence": "stage7_throne",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage6_complete": true}, "money": 800}},
+	{"label": "stage7_throne", "name": "場面1 王座継承", "sequence": "stage7_throne",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage6_complete": true}, "money": 800}},
+	{"label": "stage7_epilogue", "name": "場面2 エピローグ", "sequence": "stage7_epilogue",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage6_complete": true}, "money": 800}},
+	{"label": "subevent3_pre", "name": "--- Subevent3 (フィオナ) ---", "sequence": "subevent3_pre",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
+	{"label": "subevent3_pre", "name": "場面1 依頼受注", "sequence": "subevent3_pre",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
+	{"label": "subevent3_blacksmith", "name": "場面2 鍛冶屋ゴルン", "sequence": "subevent3_blacksmith",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
+	{"label": "subevent3_visit", "name": "場面3-7 エドモンド邸", "sequence": "subevent3_visit",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
+	{"label": "subevent3_post", "name": "場面8 決着・後日談", "sequence": "subevent3_post",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
+	{"label": "subevent4_pre", "name": "--- Subevent4 (受付嬢) ---", "sequence": "subevent4_pre",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
+	{"label": "subevent4_pre", "name": "前半", "sequence": "subevent4_pre",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
+	{"label": "subevent4_post", "name": "後半", "sequence": "subevent4_post",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
 	{"label": "_minigame:minigame_smoke", "name": "--- ミニゲーム ---",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {}, "money": 0}},
 	{"label": "_minigame:minigame_smoke", "name": "＜ミニゲーム＞スモークテスト",
@@ -184,9 +266,9 @@ func _on_jump_selected(point: Dictionary):
 		await _show_guild_home()
 		title_menu.visible = true
 		return
-	if label_name == "_matilda_lose_retry":
+	if label_name == "_matilda_lose":
 		_create_story_scene()
-		await _play_scene("prologue_battle_lose_retry")
+		await _play_scene("prologue_battle_lose")
 		var matilda_choice: String = await _show_choice_overlay(["再挑戦する", "ホームに戻る"])
 		print("[JUMP] 選択: %s" % matilda_choice)
 		if story_scene_instance:
@@ -1812,13 +1894,82 @@ func _run_subevent_standalone(quest_id: String):
 # --- ストーリー編集モード ---
 
 const STORY_EDIT_SEQUENCES := [
+	# Prologue 場面label単位
+	{"id": "prologue", "label": "scene_university", "name": "大学"},
+	{"id": "prologue", "label": "scene_room", "name": "自室"},
+	{"id": "prologue", "label": "scene_lab1", "name": "研究室1"},
+	{"id": "prologue", "label": "scene_lab2", "name": "研究室2"},
+	{"id": "prologue", "label": "scene_teleport1", "name": "転送広場1"},
+	{"id": "prologue", "label": "scene_teleport2", "name": "転送広場2"},
+	{"id": "prologue", "label": "scene_prison", "name": "牢獄"},
+	{"id": "prologue", "label": "tutorial_start", "name": "チュートリアル"},
+	{"id": "prologue", "label": "after_tutorial", "name": "チュートリアル後〜バトル前"},
+	{"id": "prologue", "label": "battle_start", "name": "本番バトル"},
+	{"id": "prologue_battle_win", "name": "マチルダ戦 勝利後"},
+	{"id": "prologue_battle_lose", "name": "マチルダ戦 敗北後"},
+	# Stage1
+	{"separator": true, "name": "--- Stage1 ---"},
+	{"id": "stage1", "label": "scene_guild_street", "name": "ギルド通り"},
+	{"id": "stage1", "label": "scene_analysis", "name": "道中・解析"},
+	{"id": "stage1", "label": "scene_guild_hall", "name": "冒険者ギルド"},
+	{"id": "stage1", "label": "stage1_battle_start", "name": "冒険者Aバトル"},
+	{"id": "stage1", "label": "scene_guild_reception", "name": "ギルド受付"},
+	# Subevent1 / 2（シーケンス単位、prefix label のため細分なし）
+	{"separator": true, "name": "--- サブイベント ---"},
 	{"id": "subevent1_pre", "name": "サブイベント1 前半（盗賊団）", "chapter": "Subevent1ChapterScript"},
-	{"id": "subevent1_post", "name": "サブイベント1 後半（盗賊団決着）", "chapter": "Subevent1ChapterScript"},
+	{"id": "subevent1_post", "name": "サブイベント1 後半（ベルカ決着後）", "chapter": "Subevent1ChapterScript"},
 	{"id": "subevent2_pre1", "name": "サブイベント2 前半1（ギルド→教会裏庭）", "chapter": "Subevent2ChapterScript"},
 	{"id": "subevent2_pre2", "name": "サブイベント2 前半2（礼拝室→シスター長戦）", "chapter": "Subevent2ChapterScript"},
-	{"id": "subevent2_post", "name": "サブイベント2 後半（教会決着）", "chapter": "Subevent2ChapterScript"},
-	{"id": "prologue", "name": "プロローグ"},
-	{"id": "stage1", "name": "ステージ1"},
+	{"id": "subevent2_post", "name": "サブイベント2 後半（シスター長決着後）", "chapter": "Subevent2ChapterScript"},
+	# Stage2
+	{"separator": true, "name": "--- Stage2 ---"},
+	{"id": "stage2_pre", "name": "Stage2 場面1 盗難濡れ衣"},
+	{"id": "stage2_meet", "name": "Stage2 場面2 月の葉亭・対面"},
+	{"id": "stage2_recover", "name": "Stage2 場面4 作戦会議"},
+	{"id": "stage2_post", "name": "Stage2 場面7 敗北後の恨み"},
+	{"id": "stage2_close", "name": "Stage2 場面8 ギルド帰還"},
+	# Stage3
+	{"separator": true, "name": "--- Stage3 ---"},
+	{"id": "stage3_harass", "name": "Stage3 場面1-2 教会嫌がらせ"},
+	{"id": "stage3_challenge", "name": "Stage3 場面3 教会乗り込み"},
+	{"id": "stage3_recover", "name": "Stage3 場面5 作戦会議"},
+	{"id": "stage3_post", "name": "Stage3 場面8 嫌がらせ停止"},
+	# Stage4
+	{"separator": true, "name": "--- Stage4 ---"},
+	{"id": "stage4_pre", "name": "Stage4 場面1 挑戦状"},
+	{"id": "stage4_infiltrate", "name": "Stage4 場面2 潜入失敗"},
+	{"id": "stage4_meet", "name": "Stage4 場面3 セレス対面"},
+	{"id": "stage4_contract", "name": "Stage4 場面4.5 契約執行"},
+	{"id": "stage4_recover", "name": "Stage4 場面5 ミニゲーム準備"},
+	{"id": "stage4_post", "name": "Stage4 場面8 セレスの執着"},
+	{"id": "stage4_close", "name": "Stage4 場面9 ギルド帰還"},
+	# Stage5
+	{"separator": true, "name": "--- Stage5 ---"},
+	{"id": "stage5_summon", "name": "Stage5 場面1-2 出頭命令"},
+	{"id": "stage5_interrogation", "name": "Stage5 場面3 取り調べ・決闘"},
+	{"id": "stage5_recover", "name": "Stage5 場面5 作戦会議"},
+	{"id": "stage5_post", "name": "Stage5 場面7 再戦勝利後"},
+	{"id": "stage5_close", "name": "Stage5 場面9 ギルド帰還"},
+	# Stage6
+	{"separator": true, "name": "--- Stage6 (王女) ---"},
+	{"id": "stage6_pre", "name": "Stage6 場面1 招待状"},
+	{"id": "stage6_banquet", "name": "Stage6 場面2 晩餐会・初戦"},
+	{"id": "stage6_recover", "name": "Stage6 場面3 控えの間・ブチギレ"},
+	{"id": "stage6_post", "name": "Stage6 場面4 再戦勝利・余韻"},
+	# Stage7
+	{"separator": true, "name": "--- Stage7 (エンディング) ---"},
+	{"id": "stage7_throne", "name": "Stage7 場面1 王座継承"},
+	{"id": "stage7_epilogue", "name": "Stage7 場面2 エピローグ"},
+	# Subevent3
+	{"separator": true, "name": "--- Subevent3 (フィオナ) ---"},
+	{"id": "subevent3_pre", "name": "Subevent3 場面1 依頼受注"},
+	{"id": "subevent3_blacksmith", "name": "Subevent3 場面2 鍛冶屋"},
+	{"id": "subevent3_visit", "name": "Subevent3 場面3-7 エドモンド邸"},
+	{"id": "subevent3_post", "name": "Subevent3 場面8 決着・後日談"},
+	# Subevent4
+	{"separator": true, "name": "--- Subevent4 (受付嬢) ---"},
+	{"id": "subevent4_pre", "name": "Subevent4 前半"},
+	{"id": "subevent4_post", "name": "Subevent4 後半"},
 ]
 
 signal _story_edit_selected(index: int)
@@ -1835,6 +1986,14 @@ func _on_story_edit_mode():
 	jump_list.add_child(title_label)
 	for i in STORY_EDIT_SEQUENCES.size():
 		var seq_entry = STORY_EDIT_SEQUENCES[i]
+		if seq_entry.get("separator", false):
+			var sep_label := Label.new()
+			sep_label.text = seq_entry.name
+			sep_label.add_theme_font_size_override("font_size", 16)
+			sep_label.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7))
+			sep_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			jump_list.add_child(sep_label)
+			continue
 		var btn := Button.new()
 		btn.text = seq_entry.name
 		btn.add_theme_font_size_override("font_size", 20)
@@ -1922,10 +2081,25 @@ func _run_story_edit(entry: Dictionary):
 	# Disable StoryScene input handling in edit mode
 	story_scene_instance._waiting_for_input = false
 
-	# 初期セットアップ: 最初の発話（text付きBand/Line）に到達するまでの命令を実行
-	# これにより StoryScene.tscn のデフォルト背景（大学キャンパス）ではなく、対象シーンの正しい背景が初期表示される
-	var setup_end := 0
-	for i in range(entries.size()):
+	# 初期セットアップ: 指定labelがあればそのラベル直後の最初の発話まで進める。
+	# なければシーケンス先頭から最初の発話までの命令を実行。
+	# これにより StoryScene.tscn のデフォルト背景ではなく、対象シーンの背景・キャラ・ダイアログ枠が初期表示される
+	var start_label: String = entry.get("label", "")
+	var scan_from := 0
+	if not start_label.is_empty():
+		var label_idx := -1
+		for i in range(entries.size()):
+			var e_scan = entries[i]
+			if e_scan is StoryCommands.SeqLabel and e_scan.label_name == start_label:
+				label_idx = i
+				break
+		if label_idx < 0:
+			print("[STORY_EDIT] Label not found: ", start_label, " — fallback to start")
+		else:
+			scan_from = label_idx + 1
+	# scan_from から最初のtext付きBand/Lineまで進める
+	var setup_end := scan_from
+	for i in range(scan_from, entries.size()):
 		var e_scan = entries[i]
 		if e_scan is StoryCommands.Line and not e_scan.text.is_empty():
 			setup_end = i
@@ -1935,7 +2109,9 @@ func _run_story_edit(entry: Dictionary):
 			break
 	if setup_end > 0:
 		idx = setup_end
-	_story_edit_execute_to(entries, idx, story_scene_instance)
+	_story_edit_reset_scene(story_scene_instance)
+	# label指定時はラベル直後から実行（以前のシーンを再生しない）。指定なしは0から。
+	_story_edit_execute_to(entries, idx, story_scene_instance, scan_from)
 	_story_edit_update_info(idx_label, cmd_label, entries, idx)
 	_story_edit_update_sliders(edit_panel, story_scene_instance)
 
@@ -1971,13 +2147,15 @@ func _run_story_edit(entry: Dictionary):
 			if idx < entries.size() - 1:
 				idx += 1
 				var e = entries[idx]
-				if e != null and not (e is StoryCommands.Battle):
+				if e != null and not (e is StoryCommands.Battle) and not (e is StoryCommands.TerminalEffect):
 					_story_edit_execute_single(e, story_scene_instance)
 				_story_edit_update_info(idx_label, cmd_label, entries, idx)
 				_story_edit_update_sliders(edit_panel, story_scene_instance)
 			else:
+				# 末尾到達 → 編集終了（次へを連打すると閉じる）
 				_story_edit_auto_mode = false
 				auto_btn.text = "自動"
+				break
 
 	edit_panel.queue_free()
 	if story_scene_instance:
@@ -2040,12 +2218,16 @@ func _story_edit_execute_single(e, scene):
 		e.execute(scene)
 	scene._waiting_for_input = false
 
-func _story_edit_execute_to(entries: Array, target_idx: int, scene):
-	for i in range(target_idx + 1):
+func _story_edit_execute_to(entries: Array, target_idx: int, scene, start_idx: int = 0):
+	for i in range(start_idx, target_idx + 1):
 		var e = entries[i]
 		if e == null:
 			continue
 		if e is StoryCommands.Battle:
+			continue
+		# TerminalEffect は async でオーバーレイを生成する。edit modeでは
+		# overlay が永続化して次シーンに残るためスキップ
+		if e is StoryCommands.TerminalEffect:
 			continue
 		_story_edit_execute_single(e, scene)
 
@@ -2056,6 +2238,10 @@ func _story_edit_reset_scene(scene):
 	scene.right_char.visible = false
 	scene.dialogue_band.visible = false
 	scene._character_side_cache.clear()
+	# Remove any leftover terminal effect overlays (RichTextLabel/ColorRect)
+	for child in scene.get_children():
+		if child is RichTextLabel or (child is ColorRect and child.color.a < 1.0):
+			child.queue_free()
 
 func _story_edit_update_info(idx_label: Label, cmd_label: Label, entries: Array, idx: int):
 	idx_label.text = "%d / %d" % [idx + 1, entries.size()]
@@ -2459,7 +2645,7 @@ const EVENT_BATTLE_CHAPTERS := [
 	{"id": "prologue", "name": "プロローグ（マチルダ戦）", "path": "res://battle/chapters/PrologueBattleChapter.gd", "bg": "res://assets/backgrounds/prologue/bg05_prison_cell.png"},
 	{"id": "stage1", "name": "ステージ1（冒険者A戦）", "path": "res://battle/chapters/Stage1BattleChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png"},
 	{"id": "stage2", "name": "ステージ2（受付嬢戦）", "path": "res://battle/chapters/ReceptionistBattleChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png"},
-	{"id": "subevent1_boss", "name": "サブイベント1（ベルカ戦）", "path": "res://battle/chapters/Stage2BattleChapter.gd", "bg": "res://assets/backgrounds/prologue/bg06_prison_arena.png"},
+	{"id": "subevent1_boss", "name": "サブイベント1（ベルカ戦）", "path": "res://battle/chapters/BelkaBattleChapter.gd", "bg": "res://assets/backgrounds/prologue/bg06_prison_arena.png"},
 	{"id": "subevent2_boss", "name": "サブイベント2（シスター長戦）", "path": "res://battle/chapters/SisterBattleChapter.gd", "bg": "res://assets/backgrounds/subevent2/bg05_church_peep_room.png"},
 	{"id": "minigame_smoke", "name": "＜ミニゲーム＞スモークテスト", "path": "res://battle/chapters/MinigameSmokeChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png", "mode": "minigame"},
 	{"id": "minigame_subevent3", "name": "＜ミニゲーム＞サブイベント3（羞恥の儀）", "path": "res://battle/chapters/Subevent3MinigameChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png", "mode": "minigame"},

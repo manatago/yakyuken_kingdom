@@ -6,7 +6,7 @@ extends MinigameChapterBase
 # 軽口／侮辱は表示された時点で常に -50（ゾーン適合は提示時点で確定済み）。
 # ハズレは常に +5。値は固定で、選んだ時に文脈で変わらない。
 
-const SELES_PORTRAIT := "res://assets/characters/stage4/seles_001.png"
+const SELES_PORTRAIT := "res://assets/characters/main/seles/clothed/seles_clothed_001.png"
 const SELES_ICON := "res://assets/ui/speakers/seles_default.png"
 
 const HIT_DELTA := -40

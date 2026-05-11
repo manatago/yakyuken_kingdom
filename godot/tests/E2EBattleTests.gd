@@ -16,7 +16,7 @@ const BattleChapterBase := preload("res://battle/BattleChapterBase.gd")
 const ThiefJinChapter := preload("res://battle/chapters/ThiefJinBattleChapter.gd")
 const ThiefMarcoChapter := preload("res://battle/chapters/ThiefMarcoBattleChapter.gd")
 const ThiefGaldChapter := preload("res://battle/chapters/ThiefGaldBattleChapter.gd")
-const Stage2Chapter := preload("res://battle/chapters/Stage2BattleChapter.gd")
+const BelkaChapter := preload("res://battle/chapters/BelkaBattleChapter.gd")
 const SisterChapter := preload("res://battle/chapters/SisterBattleChapter.gd")
 const PrologueChapter := preload("res://battle/chapters/PrologueBattleChapter.gd")
 const Stage1Chapter := preload("res://battle/chapters/Stage1BattleChapter.gd")
@@ -54,7 +54,7 @@ func _get_all_chapters() -> Array:
 		{"name": "ThiefJin", "instance": ThiefJinChapter.new()},
 		{"name": "ThiefMarco", "instance": ThiefMarcoChapter.new()},
 		{"name": "ThiefGald", "instance": ThiefGaldChapter.new()},
-		{"name": "Stage2(Belka)", "instance": Stage2Chapter.new()},
+		{"name": "Belka", "instance": BelkaChapter.new()},
 		{"name": "Sister(SisterHead)", "instance": SisterChapter.new()},
 		{"name": "Prologue(Matilda)", "instance": PrologueChapter.new()},
 		{"name": "Stage1(AdvA)", "instance": Stage1Chapter.new()},
@@ -86,7 +86,7 @@ func _test_lose_behavior() -> bool:
 		"ThiefJin": "abort",
 		"ThiefMarco": "abort",
 		"ThiefGald": "abort",
-		"Stage2(Belka)": "abort",
+		"Belka": "abort",
 		"Sister(SisterHead)": "redirect",
 		"Prologue(Matilda)": "redirect",
 		"Stage1(AdvA)": "continue",

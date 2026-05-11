@@ -9,7 +9,7 @@ extends BattleChapterBase
 # - 表情と不一致 → +5 + ピー助の叱責
 # - 反応テキスト（既存）は補助信号として残す。表情画像が主信号。
 
-const LAYLA_PORTRAIT := "res://assets/characters/stage2/layla_001.png"
+const LAYLA_PORTRAIT := "res://assets/characters/main/layla/clothed/layla_clothed_001.png"
 const LAYLA_ICON := "res://assets/ui/speakers/layla_default.png"
 const LAYLA_ID := "layla"
 
