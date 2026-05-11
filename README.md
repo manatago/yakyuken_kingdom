@@ -23,3 +23,5 @@ Godot Engine 4.x を使用しています。
 ### アセット
 - カード画像やテクスチャは `godot/assets/` にあります。
 - メインのゲームロジックは `godot/Main.gd` と `godot/Table3D.gd` に記述されています。
+- 画像・動画は Git LFS で管理しているため、clone する場合は事前に `git-lfs` をインストールしてください。
+  詳しい手順は [docs/ONBOARDING.md](docs/ONBOARDING.md) を参照。
