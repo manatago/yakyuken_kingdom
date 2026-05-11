@@ -349,6 +349,7 @@ func _build_stage3_recover(b):
 	b.minigame("res://battle/chapters/Stage3MinigameChapter.gd")
 
 	# ミニゲーム成功後、再戦
+	b.set_flag("stage3_first_battle_done")
 	b.show_band()
 	b.label("stage3_battle2_start")
 	b.battle("res://battle/chapters/Stage3BattleChapter.gd")
@@ -427,3 +428,5 @@ func _build_stage3_post(b):
 
 	hero.set_portrait(HERO_DISTANT, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("俺、味方が一人もいないの、いつから定着したんだっけ...。")
+
+	b.set_flag("stage3_complete")

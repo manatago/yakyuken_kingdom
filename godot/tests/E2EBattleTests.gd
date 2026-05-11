@@ -21,6 +21,12 @@ const SisterChapter := preload("res://battle/chapters/SisterBattleChapter.gd")
 const PrologueChapter := preload("res://battle/chapters/PrologueBattleChapter.gd")
 const Stage1Chapter := preload("res://battle/chapters/Stage1BattleChapter.gd")
 const ReceptionistChapter := preload("res://battle/chapters/ReceptionistBattleChapter.gd")
+const Stage2Chapter := preload("res://battle/chapters/Stage2BattleChapter.gd")
+const Stage3Chapter := preload("res://battle/chapters/Stage3BattleChapter.gd")
+const Stage4Chapter := preload("res://battle/chapters/Stage4BattleChapter.gd")
+const Stage5Chapter := preload("res://battle/chapters/Stage5BattleChapter.gd")
+const Stage6Chapter := preload("res://battle/chapters/Stage6BattleChapter.gd")
+const FionaChapter := preload("res://battle/chapters/FionaBattleChapter.gd")
 
 func get_name() -> String:
 	return "E2EBattle"
@@ -59,6 +65,12 @@ func _get_all_chapters() -> Array:
 		{"name": "Prologue(Matilda)", "instance": PrologueChapter.new()},
 		{"name": "Stage1(AdvA)", "instance": Stage1Chapter.new()},
 		{"name": "Receptionist", "instance": ReceptionistChapter.new()},
+		{"name": "Stage2(Layla)", "instance": Stage2Chapter.new()},
+		{"name": "Stage3(Magdalena)", "instance": Stage3Chapter.new()},
+		{"name": "Stage4(Seles)", "instance": Stage4Chapter.new()},
+		{"name": "Stage5(Feria)", "instance": Stage5Chapter.new()},
+		{"name": "Stage6(Princess)", "instance": Stage6Chapter.new()},
+		{"name": "Fiona", "instance": FionaChapter.new()},
 	]
 
 func _test_all_chapters_load() -> bool:
@@ -91,6 +103,13 @@ func _test_lose_behavior() -> bool:
 		"Prologue(Matilda)": "redirect",
 		"Stage1(AdvA)": "continue",
 		"Receptionist": "continue",
+		# Stage2-6 は初戦 (1戦目=continue) を期待 — GameState フラグなしのため
+		"Stage2(Layla)": "continue",
+		"Stage3(Magdalena)": "continue",
+		"Stage4(Seles)": "continue",
+		"Stage5(Feria)": "continue",
+		"Stage6(Princess)": "continue",
+		"Fiona": "redirect",
 	}
 	var all_ok := true
 	for ch in _get_all_chapters():

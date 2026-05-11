@@ -446,6 +446,7 @@ func _build_stage4_recover(b):
 	b.minigame("res://battle/chapters/Stage4MinigameChapter.gd")
 
 	# ミニゲーム成功後、再戦
+	b.set_flag("stage4_first_battle_done")
 	b.show_band()
 	b.label("stage4_battle2_start")
 	b.battle("res://battle/chapters/Stage4BattleChapter.gd")
@@ -584,3 +585,5 @@ func _build_stage4_close(b):
 
 	hero.set_portrait(HERO_DESPAIR, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("ギルド、本気で俺の死亡リスク管理始めた...！")
+
+	b.set_flag("stage4_complete")

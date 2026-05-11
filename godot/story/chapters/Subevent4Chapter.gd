@@ -368,3 +368,5 @@ func _build_subevent4_post(b):
 
 	hero.set_portrait(HERO_IRRITATE, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("お前のせいで五件目が増えたんだけどな！！")
+
+	b.set_flag("subevent4_complete")

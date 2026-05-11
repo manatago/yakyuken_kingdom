@@ -399,6 +399,7 @@ func _build_stage6_post(b):
 
 	pisuke.band("サトシ、王女は完全に動揺状態だ。勅令も絶対王政も、もう出ない。\nベイズ・アイ、全開で読める。\n...どれか一つの勝負で、3本先取すれば、勝ちだ。", {"side": "left"})
 
+	b.set_flag("stage6_first_battle_done")
 	b.hide_band()
 	b.label("stage6_battle2_start")
 	# 通常バトル（再戦勝利）
@@ -416,3 +417,5 @@ func _build_stage6_post(b):
 	hero.band("...勝った...。本当に、勝ったのか...。")
 
 	pisuke.band("ゲコッ。サトシ、お前、王位継承権、ゲットしたぞ。", {"side": "left"})
+
+	b.set_flag("stage6_complete")

@@ -270,6 +270,7 @@ func _build_stage2_recover(b):
 	b.minigame("res://battle/chapters/Stage2MinigameChapter.gd")
 
 	# ミニゲーム成功後、再戦（場面6）
+	b.set_flag("stage2_first_battle_done")
 	b.show_band()
 	b.label("stage2_battle2_start")
 	b.battle("res://battle/chapters/Stage2BattleChapter.gd")
@@ -427,3 +428,5 @@ func _build_stage2_close(b):
 		"portrait": HERO_DUSK, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
 	})
 	hero.band("（指輪は、見つかったのに、俺の容疑は、更に、強化された...。\n一体、どういう、ことだよ...！）")
+
+	b.set_flag("stage2_complete")

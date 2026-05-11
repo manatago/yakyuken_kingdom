@@ -399,6 +399,7 @@ func _build_stage5_recover(b):
 	b.minigame("res://battle/chapters/Stage5MinigameChapter.gd")
 
 	# ミニゲーム成功後、再戦
+	b.set_flag("stage5_first_battle_done")
 	b.show_band()
 	b.label("stage5_battle2_start")
 	b.battle("res://battle/chapters/Stage5BattleChapter.gd")
@@ -538,3 +539,5 @@ func _build_stage5_close(b):
 	hero.band("...王女、本人から...。")
 
 	pisuke.band("...いよいよ、来たぞ。", {"side": "left"})
+
+	b.set_flag("stage5_complete")

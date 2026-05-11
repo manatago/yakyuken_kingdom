@@ -1704,8 +1704,20 @@ const SUBEVENT_CHAPTERS := {
 		"rematch_sequence_id": "subevent2_rematch",
 		"rematch_flag": "encounter_sister_long_seen",
 	},
-	"subevent3": {"name": "呪われた鎧を脱がせ！", "chapter_script": "", "pre_sequence_id": ""},
-	"subevent4": {"name": "受付嬢を脱がせ！", "chapter_script": "", "pre_sequence_id": ""},
+	"subevent3": {
+		"name": "呪われた鎧を脱がせ！",
+		"chapter_script": "Subevent3ChapterScript",
+		"pre_sequence_id": "subevent3_pre",
+		"pre2_sequence_id": "subevent3_blacksmith",
+		"pre3_sequence_id": "subevent3_visit",
+		"post_sequence_id": "subevent3_post",
+	},
+	"subevent4": {
+		"name": "受付嬢を脱がせ！",
+		"chapter_script": "Subevent4ChapterScript",
+		"pre_sequence_id": "subevent4_pre",
+		"post_sequence_id": "subevent4_post",
+	},
 }
 
 func _ensure_subevent_registered(quest_id: String):
@@ -1717,6 +1729,7 @@ func _ensure_subevent_registered(quest_id: String):
 	elif quest_id == "subevent2":
 		if not story_script.get_sequence("subevent2_pre1"):
 			story_script._register_chapter(Subevent2ChapterScript.new())
+	# subevent3, subevent4 は DefaultStory._build_chapters で登録済み
 
 func _run_subevent(quest_id: String, home: GuildHome):
 	var quest_data: Dictionary = SUBEVENT_CHAPTERS.get(quest_id, {})
@@ -1787,6 +1800,17 @@ func _run_subevent(quest_id: String, home: GuildHome):
 			var pre2_seq = story_script.get_sequence(pre2_id)
 			if pre2_seq:
 				await story_scene_instance.play_sequence(pre2_seq, {"id": pre2_id})
+				if GameState.last_battle_result == "lose":
+					_subevent_in_progress = false
+					story_scene_instance.visible = false
+					home.visible = true
+					return
+		# 前半3（4分割の場合のみ：subevent3 用）
+		var pre3_id: String = quest_data.get("pre3_sequence_id", "")
+		if not pre3_id.is_empty():
+			var pre3_seq = story_script.get_sequence(pre3_id)
+			if pre3_seq:
+				await story_scene_instance.play_sequence(pre3_seq, {"id": pre3_id})
 				if GameState.last_battle_result == "lose":
 					_subevent_in_progress = false
 					story_scene_instance.visible = false

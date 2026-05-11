@@ -324,7 +324,11 @@ func _build_subevent3_visit(b):
 
 	b.hide_band()
 	b.label("subevent3_battle_start")
-	b.battle("res://battle/chapters/FionaBattleChapter.gd")
+	# 共通ロスト・ナレーションは {opponent}=セバス、A〜C パターン限定
+	b.battle("res://battle/chapters/FionaBattleChapter.gd", {
+		"lose_opponent": "セバス",
+		"lose_patterns": ["A-1", "A-2", "A-3", "B-1", "B-2", "B-3", "C-1", "C-2", "C-3"],
+	})
 
 	# 場面7: 鎧崩壊・全裸中継
 	b.show_band()
@@ -409,6 +413,8 @@ func _build_subevent3_post(b):
 
 	hero.set_portrait(HERO_IRRITATE, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("お前のせいだろ！！")
+
+	b.set_flag("subevent3_complete")
 
 # =========================================================
 # 敗北時シーケンス（既存）
