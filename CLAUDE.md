@@ -87,28 +87,53 @@ Custom GDScript test harness in `godot/tests/`:
 
 ## アセット管理
 
-画像・動画はgit管理外。プロジェクトルートのZIPファイルで管理。
+画像・動画は **Git LFS** で管理(セルフホストの rudolfs サーバ on `49.212.195.249:8080`)。
+`.gitattributes` に列挙された拡張子(`*.png`, `*.jpg`, `*.mp4` など)は自動で LFS に乗る。
+SVG は意図的に対象外(XML 差分を読めるようにするため)。
 
-**最新アセット**: プロジェクトルートの `assets_*.zip`（最新のものを使用）
+ZIP ベースの旧ワークフロー(`assets_*.zip` + `scripts/restore-assets.{sh,ps1}`)は
+**LFS サーバが使えない時のフォールバック**として並走で残してある。
 
-### 別PCでのセットアップ
+### 別PCでのセットアップ(LFS メイン)
 ```bash
-# 1. Pull
-git pull origin main
+# 1. 初回のみ: git-lfs を入れる
+#    Mac:    brew install git-lfs
+#    Linux:  sudo dnf/apt install git-lfs
+#    Win:    https://git-lfs.com/ からインストーラ
+git lfs install
 
-# 2. ZIPファイルをプロジェクトルートにコピー（手動）
+# 2. clone(画像/動画も自動で LFS サーバから取得される)
+git clone git@github.com:manatago/yakyuken_kingdom.git
+# → 初回 LFS アクセス時に Basic Auth が要求される。
+#   ユーザー名: satoshi
+#   パスワード: 共有された LFS パスワード(VPS の ~/rudolfs/lfs.password.txt)
+
+# 3. 更新時は普通に
+git pull origin main           # 差分のみ取得
+
+# 4. 画像/動画の追加・差し替え
+#    .gitattributes 該当拡張子なら、何もせず通常の add/commit/push でOK
+git add path/to/new_image.png
+git commit -m "add image"
+git push origin main           # ポインタは GitHub、本体は VPS
+```
+
+### ZIP フォールバック(LFS サーバが落ちている/オフライン時)
+```bash
+# 1. Pull(LFS スキップでポインタだけ取得)
+GIT_LFS_SKIP_SMUDGE=1 git pull origin main
+
+# 2. assets_*.zip をプロジェクトルートにコピー(手動)
 
 # 3. 展開
 # Mac/Linux:
 ./scripts/restore-assets.sh
-
 # Windows PowerShell:
 .\scripts\restore-assets.ps1
 ```
 
-### アセットのアーカイブ（画像追加・変更後）
+### ZIP スナップショットを作る(リリース配布等で必要なら)
 ```bash
-# godot/ 内で実行
 cd godot
 python3 -c "
 import zipfile, os, subprocess
@@ -128,6 +153,12 @@ with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
 print(f'{count} files -> {zip_name}')
 "
 ```
+
+### LFS サーバ運用メモ(VPS 側 / satoshi@49.212.195.249)
+- 実体: `~/rudolfs/storage/` 配下に OID ベースで保存
+- 起動: rootless podman + systemd user unit(`systemctl --user status rudolfs`)
+- 認証: nginx Basic Auth(`/etc/nginx/conf.d/lfs.conf` + `/etc/nginx/lfs.htpasswd`)
+- 鍵: `~/rudolfs/key.env` の `RUDOLFS_KEY` で at-rest 暗号化
 
 ## Key Directories
 
