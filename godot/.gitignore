@@ -2,20 +2,13 @@
 .godot/
 /android/
 
-# Image assets (managed outside Git)
-*.png
-*.jpg
-*.jpeg
-*.webp
-*.gif
-*.bmp
-*.svg
-*.import
+# Image and video assets are now tracked via Git LFS (see /.gitattributes, /.lfsconfig).
+# The legacy ZIP-based workflow (assets_*.zip + scripts/restore-assets.{sh,ps1})
+# is retained as a fallback for offline distribution or LFS-server downtime.
+# SVGs remain in plain git so XML diffs stay readable.
 
-# Video assets (managed outside Git)
-*.ogv
-*.mp4
-*.webm
+# Godot re-imports these on every project open; tracking them causes churn.
+*.import
 
 # Local OneDrive dump accidentally inside the project tree
 OneDrive - shinya/
