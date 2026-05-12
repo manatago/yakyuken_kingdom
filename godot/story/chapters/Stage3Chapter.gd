@@ -81,7 +81,7 @@ func _build_stage3_harass(b):
 
 	orphan.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
-		"portrait": ORPHAN, "portrait_scale": 0.35, "position": [0, 150],
+		"portrait": ORPHAN, "portrait_scale": 0.5, "position": [0, 150],
 	})
 	orphan.band("あの人だよ、教会の聖女様を辱めた人...。\n近づかないほうがいいって、神父さんが。", {"side": "right"})
 
@@ -98,19 +98,19 @@ func _build_stage3_harass(b):
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
 		"portrait": HERO_TIRED, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
 	})
-	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.45, "side": "right"})
+	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right"})
 
 	receptionist.band("サトシ様。...本日もご来訪、ありがとうございます。")
 
 	hero.set_portrait(HERO_WEAK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("あ、受付嬢さん、お戻りになってたんですね...。\nあの、折り入って、ご相談、いいですか...。")
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.45, "side": "right"})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right"})
 	receptionist.band("...教会からの件、ですね。")
 
 	hero.band("は、はい...最近、毎日、手紙は届くし、市街では白い目で見られるし、\n宿は追い出されるし...。")
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.45, "side": "right"})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right"})
 	receptionist.band("...サトシ様。\n...ギルドに届いている苦情文書、本日時点で、五十七通でございます。")
 
 	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -121,14 +121,14 @@ func _build_stage3_harass(b):
 	hero.set_portrait(HERO_PROTEST, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("そ、それって、ちょっと、組織ぐるみじゃないですか！？\n俺、何も悪いこと、してないのに！")
 
-	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.45, "side": "right"})
+	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right"})
 	receptionist.band("...さようでございますか。")
 
 	receptionist.band("...サトシ様のこれまでの素行記録を、改めて、確認いたします。")
 
 	b.narrator_band("...召喚直後、王都中央広場に全裸で出現。\n...盗賊団討伐時、アジトにて下着の展示品に対し異常な鑑賞時間あり。\n...先日、教会の覗き部屋への侵入、現行犯三度目。\n...先日、ギルド職員に対する下心凝視の嫌疑、並びに盗難事件の証拠隠滅容疑、継続調査中。\n...同件の暗部検証にて、アサシンとの密室接触の末、相手方を「深く恨ませる形」で勝利。")
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.45, "side": "right"})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right"})
 	receptionist.band("...教会様が警戒なさるのは、極めて妥当な措置と、私は判断いたします。")
 
 	hero.set_portrait(HERO_PROTEST, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -136,7 +136,7 @@ func _build_stage3_harass(b):
 
 	receptionist.band("記録に残っているものが、事実でございます。")
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.45, "side": "right"})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right"})
 	receptionist.band("...ギルドから、サトシ様を庇護する特別措置は、差し上げられません。\n...宿の件、市街の件、各自でご対応願います。")
 
 	hero.set_portrait(HERO_WEAK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -174,7 +174,7 @@ func _build_stage3_challenge(b):
 	})
 	magdalena.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": MAGDALENA, "portrait_scale": 0.45, "position": [0, 10],
+		"portrait": MAGDALENA, "portrait_scale": 0.5, "position": [0, 10],
 	})
 
 	magdalena.band("...よくおいでくださいました、サトシ様。\nお呼びだてすることなく、自ら来てくださるとは。\n神のお導き、でしょうか。")
@@ -323,7 +323,7 @@ func _build_stage3_recover(b):
 	})
 	magdalena.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": MAGDALENA, "portrait_scale": 0.45, "position": [0, 10],
+		"portrait": MAGDALENA, "portrait_scale": 0.5, "position": [0, 10],
 	})
 
 	hero.band("ピー助、これから、何するんだ...？", {"side": "left"})
@@ -371,7 +371,7 @@ func _build_stage3_post(b):
 
 	magdalena.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": MAGDALENA, "portrait_scale": 0.45, "position": [0, 10],
+		"portrait": MAGDALENA, "portrait_scale": 0.5, "position": [0, 10],
 	})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
@@ -397,7 +397,7 @@ func _build_stage3_post(b):
 
 	# 場面9: ギルド帰還
 	b.background(BG_GUILD, 0.5)
-	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.45, "side": "right"})
+	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right"})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
 		"portrait": HERO_TIRED, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
@@ -408,7 +408,7 @@ func _build_stage3_post(b):
 	hero.set_portrait(HERO_RELIEF, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("あ、はい。ありがとうございます。宿主にも、もう追い出されずに\n済みそうです。")
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.45, "side": "right"})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right"})
 	receptionist.band("...なお、ギルドの記録に、本件を追記いたします。")
 
 	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -419,7 +419,7 @@ func _build_stage3_post(b):
 	hero.set_portrait(HERO_PROTEST, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("告発してないのに、記録するんですか！？")
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.45, "side": "right"})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right"})
 	receptionist.band("...業務上の、必要措置でございます。")
 
 	receptionist.band("...サトシ様の「要監視対象A」ランク、本件をもって、据え置きと\nいたします。\n...下がる要素は、ございませんので。")

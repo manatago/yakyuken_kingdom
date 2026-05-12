@@ -52,13 +52,13 @@ func _win_rate(default_rate: float) -> float:
 	return 0.0 if _is_first_battle() else default_rate
 
 func setup_scene(bt):
-	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.55, "position": [0, 180]})
+	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.5, "position": [0, 180]})
 	var mag = bt.character("magdalena")
-	mag.set_portrait(MAG_PORTRAIT, {"scale": 0.45, "side": "center", "position": [0, -260]})
+	mag.set_portrait(MAG_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 
 func outfit_3(bt):
 	var mag = bt.character("magdalena")
-	mag.set_portrait(MAG_PORTRAIT, {"scale": 0.45, "side": "center", "position": [0, -260]})
+	mag.set_portrait(MAG_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 	if _is_first_battle():
 		mag.band("神よ、光あれ。")
 	else:
@@ -76,7 +76,7 @@ func outfit_3(bt):
 
 func outfit_2(bt):
 	var mag = bt.character("magdalena")
-	mag.set_portrait(MAG_PORTRAIT, {"scale": 0.45, "side": "center", "position": [0, -260]})
+	mag.set_portrait(MAG_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 	if _is_first_battle():
 		mag.band("...次は、ございませんよ。")
 	else:
@@ -94,7 +94,7 @@ func outfit_2(bt):
 
 func outfit_1(bt):
 	var mag = bt.character("magdalena")
-	mag.set_portrait(MAG_PORTRAIT, {"scale": 0.45, "side": "center", "position": [0, -260]})
+	mag.set_portrait(MAG_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 	if _is_first_battle():
 		mag.band("...神の御前で、これ以上の屈辱は許されません。")
 	else:

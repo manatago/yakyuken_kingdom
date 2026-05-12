@@ -68,68 +68,68 @@ const SISTER_BATTLE_SHOUT := "res://assets/characters/main/sister_head/clothed/s
 const SISTER_BATTLE_LAUGH := "res://assets/characters/main/sister_head/clothed/sister_head_clothed_008.png"
 
 func sister_setup_scene(bt):
-	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.55, "position": [0, 180]})
+	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.5, "position": [0, 180]})
 	var sister = bt.character("sister_head")
-	sister.set_portrait(SISTER_BATTLE_NORMAL, {"scale": 0.60, "side": "center", "position": [0, -260]})
+	sister.set_portrait(SISTER_BATTLE_NORMAL, {"scale": 0.5, "side": "center", "position": [0, -260]})
 
 # --- シスター長 Outfit 3: フル装備 ---
 
 func sister_outfit_3(bt):
 	var sister = bt.character("sister_head")
-	sister.set_portrait(SISTER_BATTLE_COMPOSED, {"scale": 0.60, "side": "center", "position": [0, -260]})
+	sister.set_portrait(SISTER_BATTLE_COMPOSED, {"scale": 0.5, "side": "center", "position": [0, -260]})
 	sister.band("...神の御前で、正直になりましょうか。\n迷いは、私にはお見通しよ。")
 
 	var selection = await bt.select_hand()
 	var result = await bt.janken(selection)
 
 	if result == "win":
-		sister.set_portrait(SISTER_BATTLE_ANGRY, {"scale": 0.60, "side": "center", "position": [0, -260]})
+		sister.set_portrait(SISTER_BATTLE_ANGRY, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		sister.band("...あら。悪運だけはお強いようね。")
 	elif result == "lose":
-		sister.set_portrait(SISTER_BATTLE_LAUGH, {"scale": 0.60, "side": "center", "position": [0, -260]})
+		sister.set_portrait(SISTER_BATTLE_LAUGH, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		sister.band("ふふ。読み通りよ。\n...あなたの迷い、手に取るように分かる。")
 	else:
-		sister.set_portrait(SISTER_BATTLE_NORMAL, {"scale": 0.60, "side": "center", "position": [0, -260]})
+		sister.set_portrait(SISTER_BATTLE_NORMAL, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		sister.band("あら、偶然ね。...次は、そうはいきませんわ。")
 
 # --- シスター長 Outfit 2: 1枚脱いだ ---
 
 func sister_outfit_2(bt):
 	var sister = bt.character("sister_head")
-	sister.set_portrait(SISTER_BATTLE_SARCASM, {"scale": 0.60, "side": "center", "position": [0, -260]})
+	sister.set_portrait(SISTER_BATTLE_SARCASM, {"scale": 0.5, "side": "center", "position": [0, -260]})
 	sister.band("...こんなはずでは、と思ってる？\nふふ、ここからが本番ですわ。")
 
 	var selection = await bt.select_hand()
 	var result = await bt.janken(selection, {"win_rate": 0.5})
 
 	if result == "win":
-		sister.set_portrait(SISTER_BATTLE_SAD, {"scale": 0.60, "side": "center", "position": [0, -260]})
+		sister.set_portrait(SISTER_BATTLE_SAD, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		sister.band("...まさか、私の読みを裏切るなんて。")
 	elif result == "lose":
-		sister.set_portrait(SISTER_BATTLE_LAUGH, {"scale": 0.60, "side": "center", "position": [0, -260]})
+		sister.set_portrait(SISTER_BATTLE_LAUGH, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		sister.band("ご覧なさい。これが「神の裁き」よ。")
 	else:
-		sister.set_portrait(SISTER_BATTLE_COMPOSED, {"scale": 0.60, "side": "center", "position": [0, -260]})
+		sister.set_portrait(SISTER_BATTLE_COMPOSED, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		sister.band("...あいこ。面白い冒険者ね、あなた。")
 
 # --- シスター長 Outfit 1: あと1枚 ---
 
 func sister_outfit_1(bt):
 	var sister = bt.character("sister_head")
-	sister.set_portrait(SISTER_BATTLE_SHOUT, {"scale": 0.60, "side": "center", "position": [0, -260]})
+	sister.set_portrait(SISTER_BATTLE_SHOUT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 	sister.band("...っ！ こんな...こんな屈辱、許さない...！")
 
 	var selection = await bt.select_hand()
 	var result = await bt.janken(selection, {"win_rate": 0.4})
 
 	if result == "win":
-		sister.set_portrait(SISTER_BATTLE_DEFEAT, {"scale": 0.60, "side": "center", "position": [0, -260]})
+		sister.set_portrait(SISTER_BATTLE_DEFEAT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		sister.band("...そんな。わたしが...負けた...。")
 	elif result == "lose":
-		sister.set_portrait(SISTER_BATTLE_COMPOSED, {"scale": 0.60, "side": "center", "position": [0, -260]})
+		sister.set_portrait(SISTER_BATTLE_COMPOSED, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		sister.band("...ふう。危なかった。\nあなたも、もう終わりよ。")
 	else:
-		sister.set_portrait(SISTER_BATTLE_ANGRY, {"scale": 0.60, "side": "center", "position": [0, -260]})
+		sister.set_portrait(SISTER_BATTLE_ANGRY, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		sister.band("...まだ、粘るの？ 往生際が悪いですわ。")
 
 func get_lose_behavior() -> String:

@@ -73,7 +73,7 @@ func _build_stage2_pre(b):
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.5,
 		"portrait": STAFF_B, "portrait_scale": 0.5, "position": [0, 50],
 	})
-	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.45, "side": "right", "position": [0, 0]})
+	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right", "position": [0, 0]})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
 		"portrait": HERO_WEAK, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
@@ -81,24 +81,24 @@ func _build_stage2_pre(b):
 
 	staff_b.band("...私の指輪が、ないんです！ 昨日、カウンター裏の引き出しに、\n確かに入れていたのに...！ 祖母の形見の、銀の指輪で...！")
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.45, "side": "right"})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right"})
 	receptionist.band("...B嬢。カウンター裏への出入りは、職員と、許可を得た冒険者のみ。\n昨日の出入り者を、確認いたします。")
 
 	adv_c.appear({
 		"side": "center", "appear_effect": "fade", "appear_duration": 0.4,
-		"portrait": ADV_C, "portrait_scale": 0.4, "position": [-200, 100],
+		"portrait": ADV_C, "portrait_scale": 0.5, "position": [-200, 100],
 	})
 	adv_c.band("受付嬢様、昨日、B嬢をジロジロ舐めるように見てる、気色悪い男が\nカウンター裏で一人、いたぜ。あれ、絶対、指輪ついでに下心が出てた。")
 
 	adv_d.appear({
 		"side": "center", "appear_effect": "fade", "appear_duration": 0.4,
-		"portrait": ADV_D, "portrait_scale": 0.4, "position": [0, 100],
+		"portrait": ADV_D, "portrait_scale": 0.5, "position": [0, 100],
 	})
 	adv_d.band("あー、あいつか。...要監視対象Aの、あの。")
 
 	adv_e.appear({
 		"side": "center", "appear_effect": "fade", "appear_duration": 0.4,
-		"portrait": ADV_E, "portrait_scale": 0.4, "position": [200, 100],
+		"portrait": ADV_E, "portrait_scale": 0.5, "position": [200, 100],
 	})
 	adv_e.band("そうそう、あの「変態顔」のやつ。B嬢の胸元から引き出しまで、視線が\n舐めるように動いてた。")
 
@@ -123,7 +123,7 @@ func _build_stage2_pre(b):
 	staff_b.leave({"exit_effect": "fade", "exit_duration": 0.3})
 
 	# --- 場面1.5: 一次聴取 ---
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.45, "side": "right"})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right"})
 	receptionist.band("...サトシ様。過去の素行記録を確認いたします。")
 
 	receptionist.band("...王都広場で全裸、冒険者Aに戦闘挑発、盗賊団アジトで下着展示に\n異常鑑賞、教会覗き部屋三度の現行犯。\n...本件の状況証拠と、この素行を総合勘案いたしますと、有罪相当と\n判断されます。")
@@ -131,7 +131,7 @@ func _build_stage2_pre(b):
 	hero.set_portrait(HERO_AWKWARD, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("（...過去の記録、重すぎる...！）")
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.45, "side": "right"})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right"})
 	receptionist.band("...ご本人のご意向を確認する必要もなく、既に暗部に回しました。")
 
 	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -161,7 +161,7 @@ func _build_stage2_meet(b):
 	layla.appear({
 		"side": "right", "appear_effect": "fade_slide", "appear_from": "right",
 		"appear_duration": 0.8, "appear_distance": 200,
-		"portrait": LAYLA, "portrait_scale": 0.45, "position": [0, 10],
+		"portrait": LAYLA, "portrait_scale": 0.5, "position": [0, 10],
 	})
 	layla.band("サトシ様。...ようこそ、おいでくださいました。\n暗部調査部門のレイラ、でございます。")
 
@@ -291,7 +291,7 @@ func _build_stage2_post(b):
 
 	layla.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": LAYLA, "portrait_scale": 0.45, "position": [0, 10],
+		"portrait": LAYLA, "portrait_scale": 0.5, "position": [0, 10],
 	})
 	layla.band("...完敗、です。")
 
@@ -331,7 +331,7 @@ func _build_stage2_close(b):
 	b.background(BG_GUILD, 0.5)
 	b.show_band()
 
-	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.45, "side": "right"})
+	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right"})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
 		"portrait": HERO_TIRED, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
@@ -342,13 +342,13 @@ func _build_stage2_close(b):
 	hero.set_portrait(HERO_HOPE, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("はい、勝ちました。これで嫌疑、晴れましたよね！？")
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.45, "side": "right"})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right"})
 	receptionist.band("...朗報がございます。B嬢の指輪、昨日、ギルド裏の廃品置き場で\n発見されました。")
 
 	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("え、見つかったんですか！？ じゃあ、事件解決じゃ...！")
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.45, "side": "right"})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right"})
 	receptionist.band("...いいえ。発見されたのは「指輪」のみ。「誰が盗んだか」は依然、\n不明でございます。")
 
 	hero.set_portrait(HERO_DAZED, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})

@@ -58,13 +58,13 @@ func _win_rate(default_rate: float) -> float:
 # --- エントリーポイント ---
 
 func setup_scene(bt):
-	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.55, "position": [0, 180]})
+	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.5, "position": [0, 180]})
 	var layla = bt.character("layla")
-	layla.set_portrait(LAYLA_PORTRAIT, {"scale": 0.45, "side": "center", "position": [0, -260]})
+	layla.set_portrait(LAYLA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 
 func outfit_3(bt):
 	var layla = bt.character("layla")
-	layla.set_portrait(LAYLA_PORTRAIT, {"scale": 0.45, "side": "center", "position": [0, -260]})
+	layla.set_portrait(LAYLA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 	if _is_first_battle():
 		layla.band("...では、検証、開始でございます。")
 	else:
@@ -85,7 +85,7 @@ func outfit_3(bt):
 
 func outfit_2(bt):
 	var layla = bt.character("layla")
-	layla.set_portrait(LAYLA_PORTRAIT, {"scale": 0.45, "side": "center", "position": [0, -260]})
+	layla.set_portrait(LAYLA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 	if _is_first_battle():
 		layla.band("...では、続けます。")
 	else:
@@ -103,7 +103,7 @@ func outfit_2(bt):
 
 func outfit_1(bt):
 	var layla = bt.character("layla")
-	layla.set_portrait(LAYLA_PORTRAIT, {"scale": 0.45, "side": "center", "position": [0, -260]})
+	layla.set_portrait(LAYLA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 	if _is_first_battle():
 		layla.band("...最後の一本、参ります。")
 	else:

@@ -43,13 +43,13 @@ func get_gold_reward() -> Dictionary:
 	return {"min": 100, "max": 150}
 
 func setup_scene(bt):
-	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.55, "position": [0, 180]})
+	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.5, "position": [0, 180]})
 	var fiona = bt.character("fiona")
-	fiona.set_portrait(FIONA_PORTRAIT, {"scale": 0.45, "side": "center", "position": [0, -260]})
+	fiona.set_portrait(FIONA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 
 func outfit_3(bt):
 	var fiona = bt.character("fiona")
-	fiona.set_portrait(FIONA_PORTRAIT, {"scale": 0.45, "side": "center", "position": [0, -260]})
+	fiona.set_portrait(FIONA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 	fiona.band("...は、はい...お、お願い、します...。")
 
 	var selection = await bt.select_hand()
@@ -64,7 +64,7 @@ func outfit_3(bt):
 
 func outfit_2(bt):
 	var fiona = bt.character("fiona")
-	fiona.set_portrait(FIONA_PORTRAIT, {"scale": 0.45, "side": "center", "position": [0, -260]})
+	fiona.set_portrait(FIONA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 	fiona.band("...呪い、まだ、効いて...！")
 
 	var selection = await bt.select_hand()
@@ -79,7 +79,7 @@ func outfit_2(bt):
 
 func outfit_1(bt):
 	var fiona = bt.character("fiona")
-	fiona.set_portrait(FIONA_PORTRAIT, {"scale": 0.45, "side": "center", "position": [0, -260]})
+	fiona.set_portrait(FIONA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 	fiona.band("...ぁ...こ、これで、最後...！")
 
 	var selection = await bt.select_hand()

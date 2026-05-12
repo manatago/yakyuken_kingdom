@@ -55,7 +55,7 @@ func _build_stage6_pre(b):
 	b.background(BG_GUILD, 0.5)
 	b.show_band()
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.45, "side": "right"})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right"})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
 		"portrait": HERO_NORMAL, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
@@ -66,13 +66,13 @@ func _build_stage6_pre(b):
 	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("はあ！？ 王女、本人から！？\n...俺、殿下に何か、ご無礼でも...！？")
 
-	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.45, "side": "right"})
+	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right"})
 	receptionist.band("...名目は「王都四傑連破の功労を労う、宮中晩餐会ご招待」。\n...非公式の行事として記載がございますが、ご出席は実質義務化されて\nおります。")
 
 	hero.set_portrait(HERO_PANIC, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("晩餐会！？ 俺、そんな高貴な場、行ったこと、ないですよ！\nマナーとか、全然分からないですし...！")
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.45, "side": "right"})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right"})
 	receptionist.band("...ご健闘を、とは、申し上げません。\n...ただ、不敬罪だけは、避けていただきますよう。")
 
 	hero.band("そんなのに、行くの俺、絶対嫌なんですけど...！")
@@ -103,7 +103,7 @@ func _build_stage6_banquet(b):
 
 	princess.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": PRINCESS, "portrait_scale": 0.45, "position": [0, 0],
+		"portrait": PRINCESS, "portrait_scale": 0.5, "position": [0, 0],
 	})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
@@ -129,7 +129,7 @@ func _build_stage6_banquet(b):
 	# 場面2.5: マナー詰め
 	layla.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
-		"portrait": LAYLA, "portrait_scale": 0.4, "position": [200, 100],
+		"portrait": LAYLA, "portrait_scale": 0.5, "position": [200, 100],
 	})
 	layla.band("...サトシ様。冷製のスープでございます。\n...また、お会いいたしましたね。\n...前回の屈辱、忘れては、おりません。")
 
@@ -138,7 +138,7 @@ func _build_stage6_banquet(b):
 
 	noble.appear({
 		"side": "center", "appear_effect": "fade", "appear_duration": 0.4,
-		"portrait": NOBLE, "portrait_scale": 0.4, "position": [-200, 100],
+		"portrait": NOBLE, "portrait_scale": 0.5, "position": [-200, 100],
 	})
 	noble.band("おや、サトシ殿。そのスプーンの動かし方は、異邦の流儀ですかな？\n王宮では、もう少し、音を立てないのが作法でございますが。")
 
@@ -147,7 +147,7 @@ func _build_stage6_banquet(b):
 
 	seles.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
-		"portrait": SELES, "portrait_scale": 0.4, "position": [200, -100],
+		"portrait": SELES, "portrait_scale": 0.5, "position": [200, -100],
 	})
 	seles.band("...お口の動き、実に、研究対象として興味深い所作でございますね。\n咀嚼の回数、通常比で1.4倍。音の発生頻度、通常比で2.8倍。\n...論文に、残させていただきます。")
 
@@ -156,7 +156,7 @@ func _build_stage6_banquet(b):
 
 	magdalena.appear({
 		"side": "center", "appear_effect": "fade", "appear_duration": 0.4,
-		"portrait": MAGDALENA, "portrait_scale": 0.4, "position": [0, -100],
+		"portrait": MAGDALENA, "portrait_scale": 0.5, "position": [0, -100],
 	})
 	magdalena.band("神は、全ての所作を、ご覧でございます。\n...異邦の方の、素朴なお食事も、きっと、お慈悲深く、御覧に\nなっておられるでしょう。")
 
@@ -175,7 +175,7 @@ func _build_stage6_banquet(b):
 
 	feria.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
-		"portrait": FERIA, "portrait_scale": 0.4, "position": [200, 0],
+		"portrait": FERIA, "portrait_scale": 0.5, "position": [200, 0],
 	})
 	feria.band("...殿下。本件、騎士団としても、何らかの正式な処分を、必要と\n認めます。")
 
@@ -200,7 +200,7 @@ func _build_stage6_banquet(b):
 
 	chamberlain.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
-		"portrait": CHAMBERLAIN, "portrait_scale": 0.4, "position": [200, 100],
+		"portrait": CHAMBERLAIN, "portrait_scale": 0.5, "position": [200, 100],
 	})
 	chamberlain.band("（慌てて古文書を確認）\n...確かに、ございます。第一項・第二項、ともに。\n...ただし、数百年前の、事実上、死文化した条項でございますが。")
 
@@ -272,7 +272,7 @@ func _build_stage6_recover(b):
 
 	chamberlain.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
-		"portrait": CHAMBERLAIN, "portrait_scale": 0.4, "position": [0, 0],
+		"portrait": CHAMBERLAIN, "portrait_scale": 0.5, "position": [0, 0],
 	})
 	chamberlain.band("...古法の定めにより、次戦まで、短き休憩を取らせていただきます。")
 	chamberlain.leave({"exit_effect": "fade", "exit_duration": 0.3})
@@ -314,7 +314,7 @@ func _build_stage6_recover(b):
 	b.background(BG_HALL, 0.5)
 	princess.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": PRINCESS, "portrait_scale": 0.45, "position": [0, 0],
+		"portrait": PRINCESS, "portrait_scale": 0.5, "position": [0, 0],
 	})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
@@ -335,7 +335,7 @@ func _build_stage6_recover(b):
 
 	feria.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.3,
-		"portrait": FERIA, "portrait_scale": 0.4, "position": [200, 100],
+		"portrait": FERIA, "portrait_scale": 0.5, "position": [200, 100],
 	})
 	feria.band("！ な、何をする、サトシぃ！")
 
@@ -388,7 +388,7 @@ func _build_stage6_post(b):
 
 	princess.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": PRINCESS, "portrait_scale": 0.45, "position": [0, 0],
+		"portrait": PRINCESS, "portrait_scale": 0.5, "position": [0, 0],
 	})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
@@ -409,7 +409,7 @@ func _build_stage6_post(b):
 	b.show_band()
 	chamberlain.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
-		"portrait": CHAMBERLAIN, "portrait_scale": 0.4, "position": [200, 100],
+		"portrait": CHAMBERLAIN, "portrait_scale": 0.5, "position": [200, 100],
 	})
 	chamberlain.band("（震える声で）\n...勝者、冒険者サトシ殿。\n古法に則り、本試合の勝利者でございます。")
 

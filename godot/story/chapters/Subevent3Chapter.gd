@@ -57,7 +57,7 @@ func _build_subevent3_pre(b):
 	b.background(BG_GUILD, 0.5)
 	b.show_band()
 
-	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.45, "side": "right"})
+	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right"})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
 		"portrait": HERO_NORMAL, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
@@ -67,11 +67,11 @@ func _build_subevent3_pre(b):
 
 	fiona.appear({
 		"side": "center", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": FIONA, "portrait_scale": 0.4, "position": [0, 50],
+		"portrait": FIONA, "portrait_scale": 0.5, "position": [0, 50],
 	})
 	sebas.appear({
 		"side": "center", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": SEBAS, "portrait_scale": 0.4, "position": [180, 100],
+		"portrait": SEBAS, "portrait_scale": 0.5, "position": [180, 100],
 	})
 
 	sebas.band("...失礼いたします。\n当家のお嬢様の呪いを解いてくださる方を。報酬は金貨百枚。")
@@ -79,7 +79,7 @@ func _build_subevent3_pre(b):
 	hero.set_portrait(HERO_PUZZLE, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...なんで、みんな逃げるんですか？")
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.45, "side": "right"})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right"})
 	receptionist.band("...エドモンド家ご令嬢フィオナ様でございます。\n一月前、呪いの鎧「ヴァニティ・チェイン」に閉じ込められて以来、\n抜け出せずにおられます。\nすでに魔術師二十人・冒険者三十人が野球拳で挑戦しましたが、\n...全員、逆に脱がされて帰っております。")
 
 	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -91,7 +91,7 @@ func _build_subevent3_pre(b):
 
 	pisuke.band("...で、羞恥を与えるための道具に心当たりがある。\n鍛冶師ゴルンってじじいの工房に「真言の水晶球」って魔具が眠ってるはずだ。\n装着者の心を丸裸にできる代物だ。あのじじいを頼れ。", {"side": "left"})
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.45, "side": "right"})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right"})
 	receptionist.band("...ところで、サトシ様。")
 
 	hero.set_portrait(HERO_DREAD, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -102,7 +102,7 @@ func _build_subevent3_pre(b):
 	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("え！？ いやいや、魔術師二十人が無理だったんですよ！？")
 
-	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.45, "side": "right"})
+	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right"})
 	receptionist.band("サトシ様の監視ファイル、現在三件目を記入したばかりでございます。\nここで社会貢献いただいた方が、よろしいかと。")
 
 	hero.set_portrait(HERO_PANIC, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -124,7 +124,7 @@ func _build_subevent3_pre(b):
 
 	sebas.band("（深々と一礼）\n...ありがたき幸せ。詳細は屋敷にてお伝えいたします。")
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.45, "side": "right"})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right"})
 	receptionist.band("...ただ今のお声、記録済みでございます。\n行動記録は例によってギルド長と貴族院へ提出いたします。")
 
 	hero.set_portrait(HERO_IRRITATE, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -153,7 +153,7 @@ func _build_subevent3_blacksmith(b):
 
 	goren.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": GOREN, "portrait_scale": 0.45, "position": [0, 20],
+		"portrait": GOREN, "portrait_scale": 0.5, "position": [0, 20],
 	})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
@@ -206,11 +206,11 @@ func _build_subevent3_visit(b):
 	})
 	sebas.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": SEBAS, "portrait_scale": 0.45, "position": [200, 0],
+		"portrait": SEBAS, "portrait_scale": 0.5, "position": [200, 0],
 	})
 	fiona.appear({
 		"side": "center", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": FIONA, "portrait_scale": 0.45, "position": [0, 30],
+		"portrait": FIONA, "portrait_scale": 0.5, "position": [0, 30],
 	})
 
 	b.narrator_band("エドモンド邸の奥、来客の通らぬ一室。\nエドモンド卿本人は領地出張中で、セバスが立ち会う。")
@@ -380,7 +380,7 @@ func _build_subevent3_post(b):
 	b.background(BG_GUILD, 0.5)
 	b.show_band()
 
-	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.45, "side": "right"})
+	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right"})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
 		"portrait": HERO_DISTANT, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
@@ -401,7 +401,7 @@ func _build_subevent3_post(b):
 	hero.set_portrait(HERO_IRRITATE, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("お前のせいだろ！！")
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.45, "side": "right"})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right"})
 	receptionist.band("...監視区分を『最重要監視対象SS』へ昇格いたします。\nサトシ様専用に本日新設いたしました。")
 
 	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -442,7 +442,7 @@ func _build_subevent3_minigame_lose(b):
 		"appear_effect": "fade",
 		"appear_duration": 0.4,
 		"portrait": HERO_WEAK,
-		"portrait_scale": 0.6,
+		"portrait_scale": 0.5,
 		"flip": 1,
 		"position": [0, 70],
 	})

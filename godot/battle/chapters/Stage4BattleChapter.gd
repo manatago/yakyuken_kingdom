@@ -52,13 +52,13 @@ func _win_rate(default_rate: float) -> float:
 	return 0.0 if _is_first_battle() else default_rate
 
 func setup_scene(bt):
-	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.55, "position": [0, 180]})
+	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.5, "position": [0, 180]})
 	var seles = bt.character("seles")
-	seles.set_portrait(SELES_PORTRAIT, {"scale": 0.45, "side": "center", "position": [0, -260]})
+	seles.set_portrait(SELES_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 
 func outfit_3(bt):
 	var seles = bt.character("seles")
-	seles.set_portrait(SELES_PORTRAIT, {"scale": 0.45, "side": "center", "position": [0, -260]})
+	seles.set_portrait(SELES_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 	if _is_first_battle():
 		seles.band("縛鎖、発動。")
 	else:
@@ -79,7 +79,7 @@ func outfit_3(bt):
 
 func outfit_2(bt):
 	var seles = bt.character("seles")
-	seles.set_portrait(SELES_PORTRAIT, {"scale": 0.45, "side": "center", "position": [0, -260]})
+	seles.set_portrait(SELES_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 	if _is_first_battle():
 		seles.band("縛鎖、発動。")
 	else:
@@ -97,7 +97,7 @@ func outfit_2(bt):
 
 func outfit_1(bt):
 	var seles = bt.character("seles")
-	seles.set_portrait(SELES_PORTRAIT, {"scale": 0.45, "side": "center", "position": [0, -260]})
+	seles.set_portrait(SELES_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 	if _is_first_battle():
 		seles.band("縛鎖、発動。")
 	else:
