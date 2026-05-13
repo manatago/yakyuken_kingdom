@@ -395,9 +395,16 @@ func wait(duration: float):
 		await get_tree().create_timer(duration).timeout
 
 func narrator_band(text: String, speaker: String = "", icon_path: String = ""):
-	# speaker: 空文字 = アイコン無し / "satoshi" "pisuke" "fiona" "sebas" = 話者プリセット
-	# icon_path: 指定時はプリセットよりこちらが優先（セリフごとの表情差替用）
-	_pending_commands.append({"_battle_bubble": true, "text": text, "speaker": speaker, "icon_path": icon_path})
+	# 旧仕様（右上バブル）は廃止し、StoryScene の中央ナレーター枠で表示
+	# speaker / icon_path は今は無視（必要なら話者バンドにルーティング可能）
+	var _unused1 = speaker
+	var _unused2 = icon_path
+	var cmd := Cmd.Band.new()
+	cmd.speaker_id = "narrator"
+	cmd.text = text
+	cmd.visible = true
+	cmd.wait_for_input = true
+	_pending_commands.append(cmd)
 
 # ミニゲーム向け: StoryScene の DialogueBand（VN風テキスト枠）で表示
 # speaker_id が "narrator" or 空 → 中央ナレーター枠
@@ -469,10 +476,7 @@ func _setup_deck(path: String, extra: Dictionary = {}):
 func _add_command(command):
 	if command == null:
 		return
-	# Intercept band commands → convert to battle speech bubble
-	if command is Cmd.Band and not command.text.is_empty():
-		_pending_commands.append({"_battle_bubble": true, "text": command.text, "append": command.append})
-		return
+	# Band commands flow through to StoryScene → VN風 DialogueBand 表示（右上のバブルは廃止）
 	_pending_commands.append(command)
 
 # --- Card & Item selection ---
