@@ -131,16 +131,18 @@ func _build_stage6_banquet(b):
 
 	layla.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
-		"portrait": LAYLA, "portrait_scale": 0.5, "position": [200, 100],
+		"portrait": LAYLA, "portrait_scale": 0.5, "position": [0, 100],
 	})
 	layla.band("...サトシ様。冷製のスープでございます。\n...また、お会いいたしましたね。\n...前回の屈辱、忘れては、おりません。")
 
 	hero.set_portrait(HERO_AWKWARD, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("（レイラさん、地獄の挨拶...！）")
+	layla.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+
 
 	noble.appear({
-		"side": "center", "appear_effect": "fade", "appear_duration": 0.4,
-		"portrait": NOBLE, "portrait_scale": 0.5, "position": [-200, 100],
+		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
+		"portrait": NOBLE, "portrait_scale": 0.5, "position": [0, 100],
 	})
 	noble.band("おや、サトシ殿。そのスプーンの動かし方は、異邦の流儀ですかな？\n王宮では、もう少し、音を立てないのが作法でございますが。")
 
@@ -148,11 +150,13 @@ func _build_stage6_banquet(b):
 	hero.band("あ、す、すみません、気をつけます...。")
 
 	layla.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+	noble.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+
 
 
 	seles.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
-		"portrait": SELES, "portrait_scale": 0.5, "position": [200, -100],
+		"portrait": SELES, "portrait_scale": 0.5, "position": [0, -100],
 	})
 	seles.band("...お口の動き、実に、研究対象として興味深い所作でございますね。\n咀嚼の回数、通常比で1.4倍。音の発生頻度、通常比で2.8倍。\n...論文に、残させていただきます。")
 
@@ -160,10 +164,12 @@ func _build_stage6_banquet(b):
 	hero.band("（論文に！？ 今、俺の食事、研究対象にされてる！？）")
 
 	noble.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+	seles.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+
 
 
 	magdalena.appear({
-		"side": "center", "appear_effect": "fade", "appear_duration": 0.4,
+		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
 		"portrait": MAGDALENA, "portrait_scale": 0.5, "position": [0, -100],
 	})
 	magdalena.band("神は、全ての所作を、ご覧でございます。\n...異邦の方の、素朴なお食事も、きっと、お慈悲深く、御覧に\nなっておられるでしょう。")
@@ -182,11 +188,13 @@ func _build_stage6_banquet(b):
 	noble.band("...殿下。お集まりの皆様。\n...本日の晩餐、私、深く、感じ入る所がございました。\n...異邦の冒険者サトシ殿の所作、口の動き、フォークの持ち方、視線、\n...いずれも、王宮の品格に、まったくそぐわぬ水準でございました。")
 
 	seles.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+	magdalena.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+
 
 
 	feria.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
-		"portrait": FERIA, "portrait_scale": 0.5, "position": [200, 0],
+		"portrait": FERIA, "portrait_scale": 0.5, "position": [0, 0],
 	})
 	feria.band("...殿下。本件、騎士団としても、何らかの正式な処分を、必要と\n認めます。")
 
@@ -214,7 +222,7 @@ func _build_stage6_banquet(b):
 
 	chamberlain.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
-		"portrait": CHAMBERLAIN, "portrait_scale": 0.5, "position": [200, 100],
+		"portrait": CHAMBERLAIN, "portrait_scale": 0.5, "position": [0, 100],
 	})
 	chamberlain.band("（慌てて古文書を確認）\n...確かに、ございます。第一項・第二項、ともに。\n...ただし、数百年前の、事実上、死文化した条項でございますが。")
 

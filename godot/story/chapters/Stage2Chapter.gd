@@ -72,8 +72,8 @@ func _build_stage2_pre(b):
 	staff_b.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.5,
 		"portrait": STAFF_B, "portrait_scale": 0.5, "position": [0, 50],
+		"flip": 0,
 	})
-	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right", "position": [0, 0], "flip": 0})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
 		"portrait": HERO_WEAK, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
@@ -81,36 +81,46 @@ func _build_stage2_pre(b):
 
 	staff_b.band("...私の指輪が、ないんです！ 昨日、カウンター裏の引き出しに、\n確かに入れていたのに...！ 祖母の形見の、銀の指輪で...！")
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right", "flip": 0})
+	# B嬢を下げて受付嬢に切り替え
+	staff_b.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+	receptionist.appear({
+		"side": "right", "appear_effect": "fade", "appear_duration": 0.3,
+		"portrait": RECEP_JIT, "portrait_scale": 0.5, "flip": 0,
+	})
 	receptionist.band("...B嬢。カウンター裏への出入りは、職員と、許可を得た冒険者のみ。\n昨日の出入り者を、確認いたします。")
 
+	# 受付嬢を一旦下げて、冒険者たちを右側で順に映す
+	receptionist.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+
 	adv_c.appear({
-		"side": "center", "appear_effect": "fade", "appear_duration": 0.4,
-		"portrait": ADV_C, "portrait_scale": 0.5, "position": [-200, 100],
+		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
+		"portrait": ADV_C, "portrait_scale": 0.5, "position": [0, 100], "flip": 0,
 	})
 	adv_c.band("受付嬢様、昨日、B嬢をジロジロ舐めるように見てる、気色悪い男が\nカウンター裏で一人、いたぜ。あれ、絶対、指輪ついでに下心が出てた。")
 
 	adv_c.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
-
-
 	adv_d.appear({
-		"side": "center", "appear_effect": "fade", "appear_duration": 0.4,
-		"portrait": ADV_D, "portrait_scale": 0.5, "position": [0, 100],
+		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
+		"portrait": ADV_D, "portrait_scale": 0.5, "position": [0, 100], "flip": 0,
 	})
 	adv_d.band("あー、あいつか。...要監視対象Aの、あの。")
 
 	adv_d.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
-
-
 	adv_e.appear({
-		"side": "center", "appear_effect": "fade", "appear_duration": 0.4,
-		"portrait": ADV_E, "portrait_scale": 0.5, "position": [200, 100],
+		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
+		"portrait": ADV_E, "portrait_scale": 0.5, "position": [0, 100], "flip": 0,
 	})
 	adv_e.band("そうそう、あの「変態顔」のやつ。B嬢の胸元から引き出しまで、視線が\n舐めるように動いてた。")
 
 	hero.set_portrait(HERO_PUZZLE, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("（俺、昨日、書類届けに行っただけだぞ...！\n...いや、B嬢、綺麗だなとは思ったけど、ジロジロは...\n...あれ、数秒、視線、止まったか？ いや、普通の範囲、だよな...？）")
 
+	# B嬢に戻す
+	adv_e.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+	staff_b.appear({
+		"side": "right", "appear_effect": "fade", "appear_duration": 0.3,
+		"portrait": STAFF_B, "portrait_scale": 0.5, "position": [0, 50], "flip": 0,
+	})
 	staff_b.band("...サトシ様、昨日、確かに、カウンター裏に、いらしてましたけど...。\nジロジロ見られてたって言われると、ちょっと、怖いです...。")
 
 	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -123,9 +133,6 @@ func _build_stage2_pre(b):
 
 	b.narrator_band("冒険者たちがざわつく。サトシを犯人と決めつけ、勝ち誇った笑み。")
 
-	adv_c.leave({"exit_effect": "fade", "exit_duration": 0.3})
-	adv_d.leave({"exit_effect": "fade", "exit_duration": 0.3})
-	adv_e.leave({"exit_effect": "fade", "exit_duration": 0.3})
 	staff_b.leave({"exit_effect": "fade", "exit_duration": 0.3})
 
 	# --- 場面1.5: 一次聴取 ---
