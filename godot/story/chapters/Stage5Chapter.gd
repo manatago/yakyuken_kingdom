@@ -255,6 +255,7 @@ func _build_stage5_interrogation(b):
 	b.label("stage5_battle1_start")
 	# 初戦（固定敗北・プラチナ加護）
 	b.battle("res://battle/chapters/Stage5BattleChapter.gd")
+	b.label("stage5_battle1_done")
 
 # =========================================================
 # 場面5+6+7+8+9: 罪上乗せ→再戦権獲得→潜入→ミニゲーム→再戦勝利
@@ -403,6 +404,7 @@ func _build_stage5_recover(b):
 	b.show_band()
 	b.label("stage5_battle2_start")
 	b.battle("res://battle/chapters/Stage5BattleChapter.gd")
+	b.label("stage5_battle2_done")
 
 # =========================================================
 # 場面9+9.5: 決着後・卑怯者のノゾキ魔

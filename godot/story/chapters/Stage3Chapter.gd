@@ -230,6 +230,7 @@ func _build_stage3_challenge(b):
 	b.label("stage3_battle1_start")
 	# 初戦（固定敗北）
 	b.battle("res://battle/chapters/Stage3BattleChapter.gd")
+	b.label("stage3_battle1_done")
 
 # =========================================================
 # 場面5+6+7: 作戦会議 → 深夜侵入 → 懺悔室ミニゲーム → 再戦
@@ -353,6 +354,7 @@ func _build_stage3_recover(b):
 	b.show_band()
 	b.label("stage3_battle2_start")
 	b.battle("res://battle/chapters/Stage3BattleChapter.gd")
+	b.label("stage3_battle2_done")
 
 # =========================================================
 # 場面8+9: 決着後の恨み・ギルド帰還

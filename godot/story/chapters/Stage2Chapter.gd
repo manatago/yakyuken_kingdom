@@ -208,6 +208,7 @@ func _build_stage2_meet(b):
 	b.label("stage2_battle1_start")
 	# 初戦（固定敗北）
 	b.battle("res://battle/chapters/Stage2BattleChapter.gd")
+	b.label("stage2_battle1_done")
 
 # =========================================================
 # 場面4: 作戦会議・事後解析
@@ -274,6 +275,7 @@ func _build_stage2_recover(b):
 	b.show_band()
 	b.label("stage2_battle2_start")
 	b.battle("res://battle/chapters/Stage2BattleChapter.gd")
+	b.label("stage2_battle2_done")
 
 # =========================================================
 # 場面7: 決着後・レイラの恨み

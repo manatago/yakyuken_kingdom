@@ -46,7 +46,7 @@ func _build_subevent4_pre(b):
 	b.background(BG_GUILD, 0.5)
 	b.show_band()
 
-	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right", "flip": 0})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
 		"portrait": HERO_NORMAL, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
@@ -93,7 +93,7 @@ func _build_subevent4_pre(b):
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
 		"portrait": HERO_NORMAL, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
 	})
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right", "flip": 0})
 
 	b.narrator_band("翌朝。サトシがギルドに顔を出すと、\n受付嬢がカウンターの前で直立不動で待っていた。")
 
@@ -107,7 +107,7 @@ func _build_subevent4_pre(b):
 	hero.set_portrait(HERO_DREAD, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("な、なんですか...。")
 
-	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("サトシ様の監視ファイルが、規定の四件に到達いたしました。\nギルド規約第二十七条に基づき、正式な処罰審査を行います。")
 
 	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -133,13 +133,13 @@ func _build_subevent4_pre(b):
 	hero.set_portrait(HERO_PROTEST, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("ちょ、ちょっと待って！ 全部俺じゃないんです！\n下着は見ただけだし、覗き穴は調査だし、全国中継はピー助が──！")
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...ピー助？")
 
 	hero.set_portrait(HERO_AWKWARD, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...なんでもないです。")
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...弁明の機会は規約上ございません。\n処罰は本日中に執行されます。")
 
 	hero.set_portrait(HERO_DESPAIR, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -164,12 +164,12 @@ func _build_subevent4_pre(b):
 	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("言ってない！！ 今のは──！")
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...今、なんと仰いましたか。")
 
 	hero.band("いや、だから俺じゃ──")
 
-	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...「審査官との野球拳を申請する」と、\nただ今、サトシ様ご本人のお声でお聞きしました。")
 
 	hero.set_portrait(HERO_DESPAIR, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -177,7 +177,7 @@ func _build_subevent4_pre(b):
 
 	receptionist.band("...記録済みでございます。")
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...第二十七条但し書き。\n...確かに、そのような規定がございます。\n\n...よろしいでしょう。受けます。")
 
 	receptionist.band("...ただし、条件がございます。\n...サトシ様が負けた場合。\n永久追放に加え、監視ランクを「SSS」に昇格いたします。")
@@ -206,7 +206,7 @@ func _build_subevent4_post(b):
 	b.background(BG_GUILD, 0.5)
 	b.show_band()
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right", "flip": 0})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
 		"portrait": HERO_SERIOUS, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
@@ -249,7 +249,7 @@ func _build_subevent4_post(b):
 
 	# 場面4: 決着後
 	b.show_band()
-	receptionist.set_portrait(RECEP_TOPLESS, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_TOPLESS, {"scale": 0.5, "side": "right", "flip": 0})
 
 	receptionist.band("...負けました。")
 
@@ -262,7 +262,7 @@ func _build_subevent4_post(b):
 	hero.set_portrait(HERO_DESPAIR, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("言ってない！！ 一言も言ってない！！")
 
-	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("......。")
 
 	receptionist.band("...サトシ様。")
@@ -275,7 +275,7 @@ func _build_subevent4_post(b):
 	hero.set_portrait(HERO_RELIEF, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...よ、よかった...。")
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...ですが。")
 
 	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -286,7 +286,7 @@ func _build_subevent4_post(b):
 	hero.set_portrait(HERO_PROTEST, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("件名が長い！！ しかも俺じゃない！！")
 
-	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...SSランクは据え置きでございます。")
 
 	hero.band("勝ったのに下がらないんですか！？")
@@ -297,12 +297,12 @@ func _build_subevent4_post(b):
 	hero.set_portrait(HERO_SERIOUS, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...リーゼさん。ひとつ、聞いてもいいですか。")
 
-	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...なんですか。")
 
 	hero.band("...なんで、プロテクトをかけていたんですか？")
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...強すぎたのです。誰と勝負しても勝ってしまう。\nそのうち、誰も私に挑まなくなった。\n...だからプロテクトをかけて、最初から挑まれないようにした。\n...それだけです。")
 
 	hero.band("...。")
@@ -318,7 +318,7 @@ func _build_subevent4_post(b):
 
 	receptionist.band("......。")
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...サトシ様。")
 
 	hero.band("はい。")
@@ -333,7 +333,7 @@ func _build_subevent4_post(b):
 	hero.set_portrait(HERO_PROTEST, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("違う！！ そういう意味じゃない！！")
 
-	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...ふふ。\n...冗談でございます。\n...記録はいたしません。...今回だけは。")
 
 	hero.set_portrait(HERO_AWKWARD, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -349,7 +349,7 @@ func _build_subevent4_post(b):
 	hero.set_portrait(HERO_HOPE, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...ありがとうございます。")
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...もちろん、行動記録は全て提出させていただきますが。")
 
 	hero.set_portrait(HERO_PROTEST, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})

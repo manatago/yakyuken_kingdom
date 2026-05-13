@@ -253,6 +253,7 @@ func _build_stage6_banquet(b):
 	b.label("stage6_battle1_start")
 	# 第一勝負（固定敗北）
 	b.battle("res://battle/chapters/Stage6BattleChapter.gd")
+	b.label("stage6_battle1_done")
 
 # =========================================================
 # 場面4.5+5+6: 控えの間→覚悟→最悪マナー発動→秘技封じ
@@ -404,6 +405,7 @@ func _build_stage6_post(b):
 	b.label("stage6_battle2_start")
 	# 通常バトル（再戦勝利）
 	b.battle("res://battle/chapters/Stage6BattleChapter.gd")
+	b.label("stage6_battle2_done")
 
 	# 勝利演出
 	b.show_band()

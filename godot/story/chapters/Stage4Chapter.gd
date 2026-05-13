@@ -292,6 +292,7 @@ func _build_stage4_meet(b):
 	b.label("stage4_battle1_start")
 	# 初戦（固定敗北・縛鎖魔法で完敗）
 	b.battle("res://battle/chapters/Stage4BattleChapter.gd")
+	b.label("stage4_battle1_done")
 
 # =========================================================
 # 場面4.5+4.6: 契約執行→ピー助解析・解除
@@ -450,6 +451,7 @@ func _build_stage4_recover(b):
 	b.show_band()
 	b.label("stage4_battle2_start")
 	b.battle("res://battle/chapters/Stage4BattleChapter.gd")
+	b.label("stage4_battle2_done")
 
 # =========================================================
 # 場面8: 決着後・セレスの倒錯的執着

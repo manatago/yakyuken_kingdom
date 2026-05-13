@@ -198,7 +198,9 @@ func _build_subevent1_pre(b):
 	# 戦闘前に「初遭遇済み」フラグを立てる：再受注時、上の jin.band_retry が retry_text を選ぶ
 	b.set_flag("encounter_jin_seen", true)
 	# --- ランダムバトル：盗賊ジン戦 ---
+	b.label("subevent1_jin_battle")
 	b.battle("res://battle/chapters/ThiefJinBattleChapter.gd")
+	b.label("subevent1_jin_battle_done")
 
 	b.show_band()
 
@@ -259,7 +261,9 @@ func _build_subevent1_pre(b):
 	# フラグだけは整合のため立てておく。
 	b.set_flag("encounter_marco_seen", true)
 	# --- ランダムバトル：盗賊マルコ戦 ---
+	b.label("subevent1_marco_battle")
 	b.battle("res://battle/chapters/ThiefMarcoBattleChapter.gd")
+	b.label("subevent1_marco_battle_done")
 
 	b.show_band()
 
@@ -352,7 +356,9 @@ func _build_subevent1_pre(b):
 
 	b.set_flag("encounter_gald_seen", true)
 	# --- ランダムバトル：ガルド戦 ---
+	b.label("subevent1_gald_battle")
 	b.battle("res://battle/chapters/ThiefGaldBattleChapter.gd")
+	b.label("subevent1_gald_battle_done")
 
 	b.show_band()
 
@@ -480,6 +486,7 @@ func _build_subevent1_pre(b):
 	b.label("subevent1_boss_battle")
 	b.set_flag("encounter_belka_seen", true)
 	b.battle("res://battle/chapters/BelkaBattleChapter.gd")
+	b.label("subevent1_belka_battle_done")
 
 # =============================================
 # サブイベント1（後半）: ベルカ戦決着後〜ギルド帰還

@@ -458,6 +458,7 @@ func _build_subevent2_pre2(b):
 	b.label("subevent2_boss_battle")
 	b.set_flag("encounter_sister_long_seen", true)
 	b.battle("res://battle/chapters/SisterBattleChapter.gd")
+	b.label("subevent2_boss_battle_done")
 
 # =============================================
 # サブイベント2（後半）: シスター長戦決着後〜ギルド帰還
@@ -751,4 +752,6 @@ func _build_subevent2_rematch(b):
 	b.hide_band()
 
 	b.set_flag("encounter_sister_long_seen", true)
+	b.label("subevent2_rematch_battle")
 	b.battle("res://battle/chapters/SisterBattleChapter.gd")
+	b.label("subevent2_rematch_battle_done")
