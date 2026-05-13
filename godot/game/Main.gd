@@ -79,6 +79,22 @@ var _jump_points: Array = [
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true, "guild_registered": true, "subevent1_complete": true}, "money": 200}},
 	{"label": "_subevent_post:subevent2", "name": "サブイベント2 後半（シスター長決着後）",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true, "guild_registered": true, "subevent1_complete": true}, "money": 200}},
+	{"label": "_subevent_pre:subevent3", "name": "--- Subevent3 (フィオナ) ---",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
+	{"label": "_subevent_pre:subevent3", "name": "場面1 依頼受注",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
+	{"label": "_subevent_pre2:subevent3", "name": "場面2 鍛冶屋ゴルン",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
+	{"label": "_subevent_pre3:subevent3", "name": "場面3-7 エドモンド邸",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
+	{"label": "_subevent_post:subevent3", "name": "場面8 決着・後日談",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
+	{"label": "_subevent_pre:subevent4", "name": "--- Subevent4 (受付嬢) ---",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
+	{"label": "_subevent_pre:subevent4", "name": "前半",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
+	{"label": "_subevent_post:subevent4", "name": "後半",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
 	{"label": "stage2_pre", "name": "--- Stage2 (レイラ) ---", "sequence": "stage2_pre",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "subevent1_complete": true, "subevent2_complete": true}, "money": 200}},
 	{"label": "stage2_pre", "name": "場面1 盗難濡れ衣", "sequence": "stage2_pre",
@@ -145,22 +161,6 @@ var _jump_points: Array = [
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage6_complete": true}, "money": 800}},
 	{"label": "stage7_epilogue", "name": "場面2 エピローグ", "sequence": "stage7_epilogue",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage6_complete": true}, "money": 800}},
-	{"label": "_subevent_pre:subevent3", "name": "--- Subevent3 (フィオナ) ---",
-		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
-	{"label": "_subevent_pre:subevent3", "name": "場面1 依頼受注",
-		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
-	{"label": "_subevent_pre2:subevent3", "name": "場面2 鍛冶屋ゴルン",
-		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
-	{"label": "_subevent_pre3:subevent3", "name": "場面3-7 エドモンド邸",
-		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
-	{"label": "_subevent_post:subevent3", "name": "場面8 決着・後日談",
-		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
-	{"label": "_subevent_pre:subevent4", "name": "--- Subevent4 (受付嬢) ---",
-		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
-	{"label": "_subevent_pre:subevent4", "name": "前半",
-		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
-	{"label": "_subevent_post:subevent4", "name": "後半",
-		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
 	{"label": "_minigame:minigame_smoke", "name": "--- ミニゲーム ---",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {}, "money": 0}},
 	{"label": "_minigame:minigame_smoke", "name": "＜ミニゲーム＞スモークテスト",
@@ -1134,7 +1134,12 @@ func scenario_from(sequence_id: String, label_name: String = ""):
 		if _scenario_order[i].id == sequence_id:
 			await _run_scenario_from(i, label_name)
 			return
-	await _run_scenario_from(0, "")
+	# Sequence is not in the main scenario_order (e.g., stage2-7 standalone parts).
+	# Play it as a single scene rather than restarting from prologue.
+	if not label_name.is_empty() and label_name != sequence_id:
+		await _play_scene_from(sequence_id, label_name)
+	else:
+		await _play_scene(sequence_id)
 
 func _run_scenario_from(start_index: int, label_name: String):
 	for i in range(start_index, _scenario_order.size()):
