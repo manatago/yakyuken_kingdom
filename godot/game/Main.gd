@@ -145,21 +145,21 @@ var _jump_points: Array = [
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage6_complete": true}, "money": 800}},
 	{"label": "stage7_epilogue", "name": "場面2 エピローグ", "sequence": "stage7_epilogue",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true, "stage6_complete": true}, "money": 800}},
-	{"label": "subevent3_pre", "name": "--- Subevent3 (フィオナ) ---", "sequence": "subevent3_pre",
+	{"label": "_subevent_pre:subevent3", "name": "--- Subevent3 (フィオナ) ---",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
-	{"label": "subevent3_pre", "name": "場面1 依頼受注", "sequence": "subevent3_pre",
+	{"label": "_subevent_pre:subevent3", "name": "場面1 依頼受注",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
-	{"label": "subevent3_blacksmith", "name": "場面2 鍛冶屋ゴルン", "sequence": "subevent3_blacksmith",
+	{"label": "_subevent_pre2:subevent3", "name": "場面2 鍛冶屋ゴルン",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
-	{"label": "subevent3_visit", "name": "場面3-7 エドモンド邸", "sequence": "subevent3_visit",
+	{"label": "_subevent_pre3:subevent3", "name": "場面3-7 エドモンド邸",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
-	{"label": "subevent3_post", "name": "場面8 決着・後日談", "sequence": "subevent3_post",
+	{"label": "_subevent_post:subevent3", "name": "場面8 決着・後日談",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
-	{"label": "subevent4_pre", "name": "--- Subevent4 (受付嬢) ---", "sequence": "subevent4_pre",
+	{"label": "_subevent_pre:subevent4", "name": "--- Subevent4 (受付嬢) ---",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
-	{"label": "subevent4_pre", "name": "前半", "sequence": "subevent4_pre",
+	{"label": "_subevent_pre:subevent4", "name": "前半",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
-	{"label": "subevent4_post", "name": "後半", "sequence": "subevent4_post",
+	{"label": "_subevent_post:subevent4", "name": "後半",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
 	{"label": "_minigame:minigame_smoke", "name": "--- ミニゲーム ---",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {}, "money": 0}},
@@ -279,6 +279,13 @@ func _on_jump_selected(point: Dictionary):
 	if label_name.begins_with("_subevent_pre1:"):
 		var quest_id := label_name.substr(15)
 		await _run_subevent_part_standalone(quest_id, "pre1")
+		title_menu.visible = true
+		return
+	if label_name.begins_with("_subevent_pre3:"):
+		var quest_id := label_name.substr(15)
+		await _run_subevent_part_standalone(quest_id, "pre3")
+		if GameState.last_battle_result == "lose":
+			await _show_guild_home()
 		title_menu.visible = true
 		return
 	if label_name.begins_with("_subevent_pre2:"):
@@ -1839,6 +1846,8 @@ func _run_subevent_part_standalone(quest_id: String, part: String):
 		seq_id = quest_data.get("pre_sequence_id", "")
 	elif part == "pre2":
 		seq_id = quest_data.get("pre2_sequence_id", "")
+	elif part == "pre3":
+		seq_id = quest_data.get("pre3_sequence_id", "")
 	elif part == "post":
 		seq_id = quest_data.get("post_sequence_id", "")
 	if seq_id.is_empty():
@@ -1896,6 +1905,19 @@ func _run_subevent_standalone(quest_id: String):
 		var pre2_seq = story_script.get_sequence(pre2_id)
 		if pre2_seq:
 			await story_scene_instance.play_sequence(pre2_seq, {"id": pre2_id})
+			if GameState.last_battle_result == "lose":
+				_subevent_in_progress = false
+				if story_scene_instance:
+					story_scene_instance.queue_free()
+					story_scene_instance = null
+				return
+
+	# 前半3（4分割の場合のみ：subevent3 用）
+	var pre3_id: String = quest_data.get("pre3_sequence_id", "")
+	if not pre3_id.is_empty():
+		var pre3_seq = story_script.get_sequence(pre3_id)
+		if pre3_seq:
+			await story_scene_instance.play_sequence(pre3_seq, {"id": pre3_id})
 			if GameState.last_battle_result == "lose":
 				_subevent_in_progress = false
 				if story_scene_instance:
