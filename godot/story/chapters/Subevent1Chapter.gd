@@ -360,6 +360,8 @@ func _build_subevent1_pre(b):
 	gald.set_portrait("res://assets/characters/mob/gald/clothed/gald_clothed_003.png", {"scale": 0.92, "side": "right", "flip": 0})
 	gald.band("バカな...俺の手が全部読まれてる...。\nお、お頭ぉぉぉ！ 助けてくだせえ！")
 
+	gald.leave({"exit_effect": "fade", "exit_duration": 0.4, "wait_for_exit": true})
+
 	# ============================================================
 	# 場面5：アジト内部・突入
 	# ============================================================
@@ -517,6 +519,9 @@ func _build_subevent1_post(b):
 
 	pisuke.band("よし、依頼は達成だ。", {"side": "left"})
 
+	# ベルカは番兵到着前にいったん退場（右側を空ける）
+	belka.leave({"exit_effect": "fade", "exit_duration": 0.3, "wait_for_exit": false})
+
 	b.narrator_band("しばらくして、番兵が駆けつけてくる。")
 
 	# 番兵登場
@@ -547,17 +552,37 @@ func _build_subevent1_post(b):
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_010.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("ち、違います！ 俺は討伐依頼を受けて...！")
 
-	# ベルカが番兵に話しかける
-	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_012.png", {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 68]})
+	# ベルカが番兵に話しかける（右側で番兵と交互に登場）
+	guard.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+	belka.appear({
+		"side": "right", "appear_effect": "fade", "appear_duration": 0.3,
+		"portrait": "res://assets/characters/main/belka/clothed/belka_clothed_012.png",
+		"portrait_scale": 0.5, "flip": 0, "position": [0, 68],
+	})
 	belka.band("なあ、おっさん。ちょっといいかい？")
 
-	guard.set_portrait("res://assets/characters/mob/guard/default/guard_default_025.png", {"scale": 0.43, "side": "right", "flip": 0, "position": [0, 62]})
+	belka.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+	guard.appear({
+		"side": "right", "appear_effect": "fade", "appear_duration": 0.3,
+		"portrait": "res://assets/characters/mob/guard/default/guard_default_025.png",
+		"portrait_scale": 0.43, "flip": 0, "position": [0, 62],
+	})
 	guard.band("...なんだ、女盗賊。")
 
-	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_012.png", {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 68]})
+	guard.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+	belka.appear({
+		"side": "right", "appear_effect": "fade", "appear_duration": 0.3,
+		"portrait": "res://assets/characters/main/belka/clothed/belka_clothed_012.png",
+		"portrait_scale": 0.5, "flip": 0, "position": [0, 68],
+	})
 	belka.band("ボクを倒したあいつ、すげえ奴だぜ。\nボクのコレクション見て、「プロの仕事だ」「湿度管理が完璧だ」って\n保存状態を絶賛してたよ。\n...捕まえるなら、ボクじゃなくてあいつの方かもな？")
 
-	guard.set_portrait("res://assets/characters/mob/guard/default/guard_default_028.png", {"scale": 0.43, "side": "right", "flip": 0, "position": [0, 62]})
+	belka.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+	guard.appear({
+		"side": "right", "appear_effect": "fade", "appear_duration": 0.3,
+		"portrait": "res://assets/characters/mob/guard/default/guard_default_028.png",
+		"portrait_scale": 0.43, "flip": 0, "position": [0, 62],
+	})
 	guard.band("...ほう、ほう。興味深い証言だな。")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_010.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})

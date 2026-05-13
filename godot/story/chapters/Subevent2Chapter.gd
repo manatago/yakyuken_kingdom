@@ -361,6 +361,9 @@ func _build_subevent2_pre2(b):
 
 	b.narrator_band("バタン！と扉が勢いよく開き、見覚えのある番兵たちが踏み込んできた。\n先頭の番兵がサトシを見た瞬間、その動きが止まった。")
 
+	# シスター長は右側を空けて番兵に譲る
+	sister_head.leave({"exit_effect": "fade", "exit_duration": 0.3, "wait_for_exit": false})
+
 	guard.appear({
 		"side": "right",
 		"appear_effect": "fade_slide",
@@ -370,7 +373,6 @@ func _build_subevent2_pre2(b):
 		"portrait": GUARD_NORMAL,
 		"portrait_scale": 0.5,
 		"flip": 0,
-		"position": [-180, 62],
 	})
 
 	guard.band("通報を受けて駆けつけました！\n...「教会の特別礼拝室に不審な男が侵入した」と...\n......…は？\n...また、お前か！！")
@@ -378,13 +380,18 @@ func _build_subevent2_pre2(b):
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_014.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 9]})
 	hero.band("げっ...あ、あんた、あの時の...！")
 
-	guard.set_portrait(GUARD_ANGRY, {"scale": 0.5, "side": "right", "flip": 0, "position": [-180, 62]})
+	guard.set_portrait(GUARD_ANGRY, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 62]})
 	guard.band("...お前なぁ...。\nこっちは、お前の顔を見るのが今日で三回目だぞ。\n...街の真ん中ですっ裸で発見された「全裸転入者」。\nそんで先週は、盗賊団のアジトで女物の下着の前で硬直してた「変態冒険者」。\n...今回は教会の覗き部屋か。\n...お前、人生のどの瞬間を切り取っても通報案件だな？")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_010.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("違います！ 今回は調査で...！")
 
-	sister_head.set_portrait(SISTER_HEAD_SAD, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 60]})
+	# シスター長に切り替え（右側）
+	guard.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+	sister_head.appear({
+		"side": "right", "appear_effect": "fade", "appear_duration": 0.3,
+		"portrait": SISTER_HEAD_SAD, "portrait_scale": 0.5, "flip": 0, "position": [0, 60],
+	})
 	sister_head.band("...あら、お知り合い？ ...ますます好都合ね。\n番兵の方々、この方、覗き穴の前で...ああ、口に出すのも恐ろしい。")
 
 	hero.band("ちょ、違っ...俺は帳簿を──！")
@@ -392,7 +399,12 @@ func _build_subevent2_pre2(b):
 	sister_head.set_portrait(SISTER_HEAD_NORMAL, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 60]})
 	sister_head.band("「帳簿」？ ...何のことかしら。")
 
-	guard.set_portrait(GUARD_TIRED, {"scale": 0.5, "side": "right", "flip": 0, "position": [-180, 62]})
+	# 番兵に切り替え
+	sister_head.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+	guard.appear({
+		"side": "right", "appear_effect": "fade", "appear_duration": 0.3,
+		"portrait": GUARD_TIRED, "portrait_scale": 0.5, "flip": 0, "position": [0, 62],
+	})
 	guard.band("...はぁ。三度目の現行犯、か。ほら、来い。")
 
 	hero.band("ま、待って！ 違うんです、話を聞いて──！")
@@ -405,9 +417,20 @@ func _build_subevent2_pre2(b):
 
 	pisuke.band("黙ってろ。ここは賭けに出るしかねえ。", {"side": "left"})
 
-	sister_head.set_portrait(SISTER_HEAD_COMPOSED, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 60]})
+	# シスター長に戻す
+	guard.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+	sister_head.appear({
+		"side": "right", "appear_effect": "fade", "appear_duration": 0.3,
+		"portrait": SISTER_HEAD_COMPOSED, "portrait_scale": 0.5, "flip": 0, "position": [0, 60],
+	})
 	sister_head.band("...ふふ。いいでしょう。神はきっと、真実を見ていらっしゃるわ。\n番兵の方々、席を外していただけるかしら。\n神聖な裁きに、余人は無用ですもの。")
 
+	# 番兵がワンライン応答（声のみ：portrait は出さず band だけ）
+	sister_head.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+	guard.appear({
+		"side": "right", "appear_effect": "fade", "appear_duration": 0.3,
+		"portrait": GUARD_TIRED, "portrait_scale": 0.5, "flip": 0, "position": [0, 62],
+	})
 	guard.band("...はぁ。まあ、お望みなら。")
 
 	guard.leave({
@@ -415,6 +438,12 @@ func _build_subevent2_pre2(b):
 		"exit_to": "right",
 		"exit_duration": 0.6,
 		"wait_for_exit": true,
+	})
+
+	# 番兵退場後、シスター長を再登場させてバトルへ
+	sister_head.appear({
+		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
+		"portrait": SISTER_HEAD_COMPOSED, "portrait_scale": 0.5, "flip": 0, "position": [0, 60],
 	})
 
 	pisuke.band("...ここで勝てば全部ひっくり返せる。やるぞ、サトシ。", {"side": "left"})
