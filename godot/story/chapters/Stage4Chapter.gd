@@ -61,7 +61,7 @@ func _build_stage4_pre(b):
 	b.background(BG_GUILD, 0.5)
 	b.show_band()
 
-	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right", "flip": 0})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
 		"portrait": HERO_NORMAL, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
@@ -72,24 +72,24 @@ func _build_stage4_pre(b):
 	hero.set_portrait(HERO_DREAD, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...嫌な予感しかしない。")
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...魔法師団長セレス・ソルヴェイグ様より、正式なご指名勝負の\n挑戦状でございます。")
 
 	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("魔法師団長！ って、戦争の時に最前線に立つ人でしょう！？")
 
-	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...はい。現役の王都四傑の一角でございます。")
 
 	hero.set_portrait(HERO_PROTEST, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("俺、冒険者だぞ！ 格が違いすぎる！")
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...挑戦状の名目は「王都四傑の一角として、連勝中の異邦冒険者の\n実力を直接見極めたい」とのことでございます。")
 
 	pisuke.band("...無害な文面だな。公式には「親善的な実力検証」って体裁だ。", {"side": "left"})
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...なお、挑戦状には、追記がございます。")
 
 	receptionist.band("「師団本部・第三演習場にて、観客入場不可の条件で実施。\n魔道器具による記録を行う。\n使用する魔術・技能の事前申告は不要。不意打ち・隠し技、\n双方自由とする」")
@@ -99,10 +99,10 @@ func _build_stage4_pre(b):
 
 	pisuke.band("普通の決闘なら、使う魔術や技能は前もって相手に伝え合う慣習だ。\nそれを「不要」と指定してきた。何を仕掛けてくるか、こっちは\n全く分からねえぞ。", {"side": "left"})
 
-	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...なお、挑戦状は既に受理済みでございます。当方に拒否権は\nございません。\n...お心づもりを、ご自身で、お立てください。")
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...ご健闘を、とは、申し上げません。\n...いずれ、敗れる相手だろうと、私は、思っております。")
 
 	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -533,6 +533,9 @@ func _build_stage4_post(b):
 	hero.set_portrait(HERO_DESPAIR, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("勝ったのに、捕獲予告が出た...！")
 
+	seles.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+
+
 	mage.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
 		"portrait": MAGE_STAFF, "portrait_scale": 0.5, "position": [200, 100],
@@ -559,7 +562,7 @@ func _build_stage4_close(b):
 	b.background(BG_GUILD, 0.5)
 	b.show_band()
 
-	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right", "flip": 0})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
 		"portrait": HERO_TIRED, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
@@ -569,7 +572,7 @@ func _build_stage4_close(b):
 
 	hero.band("あ、はい。勝ちました。")
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...なお、師団長から、サトシ様宛ての個人書簡が、同封されて\nございます。")
 
 	hero.set_portrait(HERO_AWKWARD, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -582,7 +585,7 @@ func _build_stage4_close(b):
 
 	pisuke.band("ゲコッ。二人目の終生執着者が誕生、だな。\nお前、生涯、つけ狙われる女が、また一人増えたぞ。", {"side": "left"})
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...ギルドの「要監視対象A」摘要欄に、追記いたします。\n「対象、王国高官二名より個人的追跡対象として認定。暗部調査部門の\nアサシン、および、魔法師団長。以後、王都滞在時の、生命の危機、\n増加の可能性あり」。")
 
 	hero.set_portrait(HERO_DESPAIR, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})

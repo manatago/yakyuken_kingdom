@@ -86,7 +86,7 @@ func _build_stage5_summon(b):
 
 	# 場面2: ギルド
 	b.background(BG_GUILD, 0.5)
-	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right", "flip": 0})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
 		"portrait": HERO_PANIC, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
@@ -94,7 +94,7 @@ func _build_stage5_summon(b):
 
 	hero.band("受付嬢さん！ お願い、お願いします、助けてください！\n俺、騎士団に呼び出されて、何にも分からなくて！\n何でもいいです、何か、何かアドバイスだけでも！")
 
-	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...サトシ様。当ギルドに、王都騎士団の案件への庇護権は、ございません。")
 
 	hero.set_portrait(HERO_DESPAIR, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -104,13 +104,13 @@ func _build_stage5_summon(b):
 
 	hero.band("土下座でも、なんでも、します！")
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("（長い沈黙）\n...お立ちください。他のお客様のご迷惑です。")
 
 	hero.set_portrait(HERO_HOPE, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("立つから、教えてください！")
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("（深いため息）\n...あくまで、ギルドの一般業務の範囲内で、一つだけ、申し上げます。")
 
 	receptionist.band("取り調べでは、何を聞かれても、「分かりません」「覚えていません」\nで通すのが、最も安全でございます。\n下手に弁解すると、その言葉自体が、新たな容疑の材料になります。")
@@ -127,7 +127,7 @@ func _build_stage5_summon(b):
 
 	pisuke.band("...サトシ、この助言、珍しく、マジで有益だぞ。\n心鏡の珠か...扱える人間が限られるってことは、何か抜け道がありそうだな。\n...俺様の方で、ちょっと調べておく。", {"side": "left"})
 
-	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...以上です。ご健闘を、とは申し上げません。\n...生還を、お祈り申し上げます。")
 
 	hero.set_portrait(HERO_PANIC, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -489,7 +489,7 @@ func _build_stage5_close(b):
 	b.background(BG_GUILD, 0.5)
 	b.show_band()
 
-	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right", "flip": 0})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
 		"portrait": HERO_TIRED, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
@@ -500,13 +500,13 @@ func _build_stage5_close(b):
 	hero.set_portrait(HERO_HOPE, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("あ、はい、ありがとうございます。")
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...なお、騎士団本部からの通達：「相手方の戦術は、騎士道精神に照らし、\n卑怯の極みと評する。しかし、勝敗の規則は曲げられぬ。規則通り履行」。")
 
 	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("「卑怯の極み」、記録に残るんですか！？")
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...ギルドとしても、摘要欄に追記いたします。\n「サトシ、戦闘前に王宮騎士団本部最上階への潜入あり。通称\n『卑怯者のノゾキ魔』」。")
 
 	hero.set_portrait(HERO_DESPAIR, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -517,13 +517,13 @@ func _build_stage5_close(b):
 	hero.set_portrait(HERO_PANIC, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("そっ、それも、もう、ギルドに、届いてるの！？")
 
-	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...騎士団本部の正式記録、極めて、迅速でございます。\n...サトシ様、王都最強の戦士の罵倒を、真正面から受け止めて、\n逆に煽り返す胆力。\n...普通の冒険者には、まず、できません。")
 
 	hero.set_portrait(HERO_PROTEST, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("俺じゃない！ 俺じゃないんですって、それ！ 言ったの、俺じゃ...！")
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...「俺じゃない」というご主張、これも、記録に残しておきます。\n「容疑者、自身の発言を、別人の所業と主張」。")
 
 	hero.set_portrait(HERO_DESPAIR, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -534,7 +534,7 @@ func _build_stage5_close(b):
 	hero.set_portrait(HERO_AWKWARD, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("どれも、嬉しくない！")
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...あと一件。王宮より、「サトシ様を宮中晩餐会にご招待する」旨、\n正式な召喚状が届いております。王都高官四名連破の労いを、王女殿下\n直々に、との仰せでございます。")
 
 	hero.set_portrait(HERO_DAZED, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})

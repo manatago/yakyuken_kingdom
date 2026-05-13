@@ -55,7 +55,7 @@ func _build_stage6_pre(b):
 	b.background(BG_GUILD, 0.5)
 	b.show_band()
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right", "flip": 0})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
 		"portrait": HERO_NORMAL, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
@@ -66,13 +66,13 @@ func _build_stage6_pre(b):
 	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("はあ！？ 王女、本人から！？\n...俺、殿下に何か、ご無礼でも...！？")
 
-	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...名目は「王都四傑連破の功労を労う、宮中晩餐会ご招待」。\n...非公式の行事として記載がございますが、ご出席は実質義務化されて\nおります。")
 
 	hero.set_portrait(HERO_PANIC, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("晩餐会！？ 俺、そんな高貴な場、行ったこと、ないですよ！\nマナーとか、全然分からないですし...！")
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right"})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...ご健闘を、とは、申し上げません。\n...ただ、不敬罪だけは、避けていただきますよう。")
 
 	hero.band("そんなのに、行くの俺、絶対嫌なんですけど...！")
@@ -127,6 +127,8 @@ func _build_stage6_banquet(b):
 	hero.band("あ、は、はい、失礼、いたします...。")
 
 	# 場面2.5: マナー詰め
+	princess.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+
 	layla.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
 		"portrait": LAYLA, "portrait_scale": 0.5, "position": [200, 100],
@@ -145,6 +147,9 @@ func _build_stage6_banquet(b):
 	hero.set_portrait(HERO_AWKWARD, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("あ、す、すみません、気をつけます...。")
 
+	layla.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+
+
 	seles.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
 		"portrait": SELES, "portrait_scale": 0.5, "position": [200, -100],
@@ -153,6 +158,9 @@ func _build_stage6_banquet(b):
 
 	hero.set_portrait(HERO_DESPAIR, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("（論文に！？ 今、俺の食事、研究対象にされてる！？）")
+
+	noble.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+
 
 	magdalena.appear({
 		"side": "center", "appear_effect": "fade", "appear_duration": 0.4,
@@ -172,6 +180,9 @@ func _build_stage6_banquet(b):
 
 	# 場面3: デザート後・追い込み→挑戦
 	noble.band("...殿下。お集まりの皆様。\n...本日の晩餐、私、深く、感じ入る所がございました。\n...異邦の冒険者サトシ殿の所作、口の動き、フォークの持ち方、視線、\n...いずれも、王宮の品格に、まったくそぐわぬ水準でございました。")
+
+	seles.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+
 
 	feria.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
@@ -197,6 +208,9 @@ func _build_stage6_banquet(b):
 	hero.band("...お待ちください、殿下。")
 
 	hero.band("...王国古法、第二百四十七条、『王女と異邦人との野球拳による決着\nにおいては、王位継承権もまた、賭けの対象に含みうる』という、\n条項がございます。\n\n...加えまして、同条第二項。\n「王位継承権を賭けた戦いは、四回勝負とし、挑戦者が一度でも\n勝利した場合、これを挑戦者の勝者とみなす」。\n...古の、王族の慈悲を示す規定でございます。")
+
+	feria.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+
 
 	chamberlain.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
@@ -334,6 +348,9 @@ func _build_stage6_recover(b):
 
 	b.narrator_band("サトシ、自らの礼装の裾に手をかけ、ゆっくりと持ち上げる。")
 
+	princess.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+
+
 	feria.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.3,
 		"portrait": FERIA, "portrait_scale": 0.5, "position": [200, 100],
@@ -409,6 +426,8 @@ func _build_stage6_post(b):
 
 	# 勝利演出
 	b.show_band()
+	princess.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
+
 	chamberlain.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
 		"portrait": CHAMBERLAIN, "portrait_scale": 0.5, "position": [200, 100],
