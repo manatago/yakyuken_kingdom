@@ -20,6 +20,9 @@ playwright-report/
 *.swp
 *.swo
 
+# Claude Code internal data
+.claude/
+
 # OS
 .DS_Store
 Thumbs.db

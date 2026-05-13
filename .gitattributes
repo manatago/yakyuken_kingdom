@@ -17,3 +17,5 @@
 *.webm  filter=lfs diff=lfs merge=lfs -text
 *.mkv   filter=lfs diff=lfs merge=lfs -text
 *.m4v   filter=lfs diff=lfs merge=lfs -text
+*.ogv   filter=lfs diff=lfs merge=lfs -text
+*.ogg   filter=lfs diff=lfs merge=lfs -text
