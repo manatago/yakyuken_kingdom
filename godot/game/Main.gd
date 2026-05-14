@@ -580,6 +580,8 @@ func _run_char_edit_test(encounter_data: Dictionary):
 		if lost_gold > 0:
 			GameState.money = max(GameState.money - lost_gold, 0)
 	_battle_edit_active = false
+	_battle_edit_target_rect = null
+	_battle_edit_auto_mode = false
 	edit_battle.queue_free()
 	battle_edit_panel.queue_free()
 
@@ -900,13 +902,14 @@ func _create_edit_overlay(encounter_data: Dictionary) -> PanelContainer:
 	style.content_margin_right = 12
 	style.content_margin_bottom = 8
 	panel.add_theme_stylebox_override("panel", style)
-	panel.anchor_left = 0.78
+	panel.anchor_left = 0.70
 	panel.anchor_right = 0.99
 	panel.anchor_top = 0.02
-	panel.anchor_bottom = 0.45
+	panel.anchor_bottom = 0.55
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 
 	var vbox := VBoxContainer.new()
+	vbox.name = "VBox"
 	vbox.add_theme_constant_override("separation", 4)
 	panel.add_child(vbox)
 
@@ -915,6 +918,42 @@ func _create_edit_overlay(encounter_data: Dictionary) -> PanelContainer:
 	title.add_theme_font_size_override("font_size", 16)
 	title.add_theme_color_override("font_color", Color(0.3, 1.0, 0.5))
 	vbox.add_child(title)
+
+	# ナビゲーション行（ストーリー編集パネルと同じボタン構成）
+	var nav_row := HBoxContainer.new()
+	nav_row.name = "NavRow"
+	nav_row.add_theme_constant_override("separation", 4)
+	nav_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_child(nav_row)
+
+	var prev_btn := Button.new()
+	prev_btn.name = "PrevBtn"
+	prev_btn.text = "◀"
+	prev_btn.tooltip_text = "前のキャラへ"
+	prev_btn.add_theme_font_size_override("font_size", 14)
+	nav_row.add_child(prev_btn)
+
+	var next_btn := Button.new()
+	next_btn.name = "NextBtn"
+	next_btn.text = "▶"
+	next_btn.tooltip_text = "次のキャラへ"
+	next_btn.add_theme_font_size_override("font_size", 14)
+	nav_row.add_child(next_btn)
+
+	var auto_btn := Button.new()
+	auto_btn.name = "AutoBtn"
+	auto_btn.text = "自動"
+	auto_btn.tooltip_text = "キャラを順番に切替"
+	auto_btn.add_theme_font_size_override("font_size", 14)
+	nav_row.add_child(auto_btn)
+
+	var side_btn := Button.new()
+	side_btn.name = "SideBtn"
+	side_btn.text = "L/R"
+	side_btn.tooltip_text = "対象キャラの side をトグル"
+	side_btn.add_theme_font_size_override("font_size", 14)
+	side_btn.add_theme_color_override("font_color", Color(1.0, 1.0, 0.5))
+	nav_row.add_child(side_btn)
 
 	# スケール
 	var scale_row := _create_slider_row("スケール", "ScaleSlider", 0.1, 1.5, 0.01, 0.4, "%.2f")
@@ -939,10 +978,19 @@ func _create_edit_overlay(encounter_data: Dictionary) -> PanelContainer:
 	info.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
 	vbox.add_child(info)
 
+	# アクション行（コピー / 保存 / 戻る）
+	var action_row := HBoxContainer.new()
+	action_row.name = "ActionRow"
+	action_row.add_theme_constant_override("separation", 4)
+	action_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_child(action_row)
+
 	# コピーボタン
 	var copy_btn := Button.new()
-	copy_btn.text = "設定値をコピー"
+	copy_btn.name = "CopyBtn"
+	copy_btn.text = "コピー"
 	copy_btn.add_theme_font_size_override("font_size", 14)
+	copy_btn.add_theme_color_override("font_color", Color(0.6, 0.9, 1.0))
 	copy_btn.pressed.connect(func():
 		var s: float = scale_slider.value
 		var x: int = int(x_slider.value)
@@ -951,25 +999,26 @@ func _create_edit_overlay(encounter_data: Dictionary) -> PanelContainer:
 		DisplayServer.clipboard_set(text)
 		info.text = "コピーしました！"
 	)
-	vbox.add_child(copy_btn)
+	action_row.add_child(copy_btn)
 
 	# 保存ボタン（バトル編集モード用。chapter_path meta が設定されている時のみ動作）
 	var save_btn := Button.new()
 	save_btn.name = "EditSaveButton"
-	save_btn.text = "保存（同じ画像の全箇所）"
+	save_btn.text = "保存"
 	save_btn.add_theme_font_size_override("font_size", 14)
-	save_btn.add_theme_color_override("font_color", Color(0.5, 1.0, 0.5))
+	save_btn.add_theme_color_override("font_color", Color(0.3, 1.0, 0.3))
+	save_btn.tooltip_text = "同じ画像の全箇所に保存"
 	save_btn.pressed.connect(func():
 		_save_battle_edit(panel, info))
-	vbox.add_child(save_btn)
+	action_row.add_child(save_btn)
 
 	# 戻るボタン（編集メニューに戻る）
 	var back_btn := Button.new()
 	back_btn.name = "EditBackButton"
 	back_btn.text = "← 戻る"
-	back_btn.add_theme_font_size_override("font_size", 16)
+	back_btn.add_theme_font_size_override("font_size", 14)
 	back_btn.add_theme_color_override("font_color", Color(1.0, 0.4, 0.4))
-	vbox.add_child(back_btn)
+	action_row.add_child(back_btn)
 
 	return panel
 
@@ -1087,6 +1136,33 @@ var _battle_edit_sl: Dictionary = {}
 var _battle_edit_ref = null
 var _battle_edit_last_tex: Texture2D = null
 var _battle_edit_active := false
+var _battle_edit_target_rect: TextureRect = null
+var _battle_edit_auto_mode := false
+var _battle_edit_auto_timer := 0.0
+
+func _battle_edit_cycle_target(battle_ref, dir: int):
+	if not is_instance_valid(battle_ref):
+		return
+	var story_sc = battle_ref._story_scene
+	if not story_sc:
+		return
+	var rects: Array = []
+	for r in [story_sc.left_char, story_sc.center_char, story_sc.right_char]:
+		if r and r.visible and r.texture:
+			rects.append(r)
+	if rects.is_empty():
+		return
+	var current_idx := rects.find(_battle_edit_target_rect)
+	if current_idx < 0:
+		current_idx = 0
+	var next_idx := (current_idx + dir + rects.size()) % rects.size()
+	_battle_edit_target_rect = rects[next_idx]
+	_battle_edit_last_tex = null  # スライダ再同期を強制
+
+func _battle_edit_toggle_auto(auto_btn: Button):
+	_battle_edit_auto_mode = not _battle_edit_auto_mode
+	auto_btn.text = "停止" if _battle_edit_auto_mode else "自動"
+	_battle_edit_auto_timer = 0.0
 
 func _connect_edit_to_battle(edit_panel: PanelContainer, battle_ref, encounter_data: Dictionary = {}):
 	var sl := _get_edit_sliders(edit_panel)
@@ -1106,13 +1182,34 @@ func _connect_edit_to_battle(edit_panel: PanelContainer, battle_ref, encounter_d
 	_battle_edit_ref = battle_ref
 	_battle_edit_last_tex = null
 	_battle_edit_active = true
+	# ナビゲーションボタン: 表示中のキャラ枠 (center/left/right) を切替
+	var prev_btn: Button = edit_panel.find_child("PrevBtn", true, false)
+	var next_btn: Button = edit_panel.find_child("NextBtn", true, false)
+	var auto_btn: Button = edit_panel.find_child("AutoBtn", true, false)
+	var side_btn: Button = edit_panel.find_child("SideBtn", true, false)
+	if prev_btn:
+		prev_btn.pressed.connect(_battle_edit_cycle_target.bind(battle_ref, -1))
+	if next_btn:
+		next_btn.pressed.connect(_battle_edit_cycle_target.bind(battle_ref, 1))
+	if auto_btn:
+		auto_btn.pressed.connect(_battle_edit_toggle_auto.bind(auto_btn))
+	if side_btn:
+		side_btn.pressed.connect(_battle_edit_cycle_target.bind(battle_ref, 1))
 
 func _process(_delta: float):
 	if not _battle_edit_active:
 		return
 	if not is_instance_valid(_battle_edit_ref):
 		_battle_edit_active = false
+		_battle_edit_target_rect = null
+		_battle_edit_auto_mode = false
 		return
+	# 自動モード: 一定間隔で次のキャラへ
+	if _battle_edit_auto_mode:
+		_battle_edit_auto_timer += _delta
+		if _battle_edit_auto_timer >= 2.0:
+			_battle_edit_auto_timer = 0.0
+			_battle_edit_cycle_target(_battle_edit_ref, 1)
 	var story_sc = _battle_edit_ref._story_scene
 	if not story_sc:
 		return
@@ -1148,6 +1245,9 @@ func _process(_delta: float):
 		if _battle_edit_sl.y_spin: _battle_edit_sl.y_spin.set_block_signals(false)
 
 func _find_visible_char_rect(story_sc) -> TextureRect:
+	# 編集モードでナビゲーションで選択中の rect を優先
+	if _battle_edit_target_rect and is_instance_valid(_battle_edit_target_rect) and _battle_edit_target_rect.visible and _battle_edit_target_rect.texture:
+		return _battle_edit_target_rect
 	for rect in [story_sc.center_char, story_sc.left_char, story_sc.right_char]:
 		if rect and rect.visible and rect.texture:
 			return rect
@@ -2925,6 +3025,8 @@ func _run_event_battle_edit(ch_info: Dictionary):
 
 	var _result: String = await event_battle.battle_finished
 	_battle_edit_active = false
+	_battle_edit_target_rect = null
+	_battle_edit_auto_mode = false
 	event_battle.queue_free()
 	edit_panel.queue_free()
 
