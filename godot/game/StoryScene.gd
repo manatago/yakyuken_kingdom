@@ -57,6 +57,16 @@ func _process(_delta):
 			if not rect.position.is_equal_approx(locked_pos):
 				rect.position = locked_pos
 
+func _is_in_edit_panel(control) -> bool:
+	if control == null:
+		return false
+	var node = control
+	while node:
+		if node is PanelContainer:
+			return true
+		node = node.get_parent()
+	return false
+
 func _ready():
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
@@ -78,7 +88,10 @@ func _input(event):
 		is_advance = true
 	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		var hovered = get_viewport().gui_get_hovered_control()
-		if hovered is BaseButton:
+		# 編集UIなど、独自に入力を扱うコントロール上ではストーリー進行を抑制
+		if hovered is BaseButton or hovered is Slider or hovered is SpinBox or hovered is LineEdit or hovered is TextEdit:
+			return
+		if _is_in_edit_panel(hovered):
 			return
 		is_advance = true
 	if not is_advance:

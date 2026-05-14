@@ -2455,6 +2455,8 @@ func _create_story_edit_panel() -> PanelContainer:
 	panel.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
 	panel.offset_top = -200
 	panel.offset_bottom = 0
+	# 編集UIのクリックがStoryScene/BattleSceneの「進める」入力に流れないよう遮断
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 
 	var vbox := VBoxContainer.new()
 	vbox.name = "VBox"
@@ -2770,11 +2772,21 @@ func _story_edit_save_current(entries: Array, idx: int, edit_panel: PanelContain
 # --- イベントバトル編集モード ---
 
 const EVENT_BATTLE_CHAPTERS := [
-	{"id": "prologue", "name": "プロローグ（マチルダ戦）", "path": "res://battle/chapters/PrologueBattleChapter.gd", "bg": "res://assets/backgrounds/prologue/bg05_prison_cell.png"},
-	{"id": "stage1", "name": "ステージ1（冒険者A戦）", "path": "res://battle/chapters/Stage1BattleChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png"},
-	{"id": "stage2", "name": "ステージ2（受付嬢戦）", "path": "res://battle/chapters/ReceptionistBattleChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png"},
-	{"id": "subevent1_boss", "name": "サブイベント1（ベルカ戦）", "path": "res://battle/chapters/BelkaBattleChapter.gd", "bg": "res://assets/backgrounds/prologue/bg06_prison_arena.png"},
-	{"id": "subevent2_boss", "name": "サブイベント2（シスター長戦）", "path": "res://battle/chapters/SisterBattleChapter.gd", "bg": "res://assets/backgrounds/subevent2/bg05_church_peep_room.png"},
+	# --- チュートリアル ---
+	{"id": "prologue_tutorial", "name": "プロローグ チュートリアル", "path": "res://battle/chapters/PrologueBattleChapter.gd", "bg": "res://assets/backgrounds/prologue/bg05_prison_cell.png", "mode": "tutorial"},
+	# --- イベントバトル ---
+	{"id": "prologue", "name": "プロローグ（マチルダ戦）", "path": "res://battle/chapters/PrologueBattleChapter.gd", "bg": "res://assets/backgrounds/prologue/bg05_prison_cell.png", "mode": "battle"},
+	{"id": "stage1", "name": "ステージ1（冒険者A戦）", "path": "res://battle/chapters/Stage1BattleChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png", "mode": "battle"},
+	{"id": "stage2", "name": "ステージ2（レイラ戦）", "path": "res://battle/chapters/Stage2BattleChapter.gd", "bg": "res://assets/backgrounds/stage2/bg_inn_meeting.png", "mode": "battle"},
+	{"id": "stage3", "name": "ステージ3（マグダレナ戦）", "path": "res://battle/chapters/Stage3BattleChapter.gd", "bg": "res://assets/backgrounds/subevent2/bg02_church_interior.png", "mode": "battle"},
+	{"id": "stage4", "name": "ステージ4（セレス戦）", "path": "res://battle/chapters/Stage4BattleChapter.gd", "bg": "res://assets/backgrounds/stage4/bg_dojo_third.png", "mode": "battle"},
+	{"id": "stage5", "name": "ステージ5（フェリア戦）", "path": "res://battle/chapters/Stage5BattleChapter.gd", "bg": "res://assets/backgrounds/stage5/bg_training_ground.png", "mode": "battle"},
+	{"id": "stage6", "name": "ステージ6（王女戦）", "path": "res://battle/chapters/Stage6BattleChapter.gd", "bg": "res://assets/backgrounds/stage6/bg_royal_hall.png", "mode": "battle"},
+	{"id": "subevent1_boss", "name": "サブイベント1（ベルカ戦）", "path": "res://battle/chapters/BelkaBattleChapter.gd", "bg": "res://assets/backgrounds/prologue/bg06_prison_arena.png", "mode": "battle"},
+	{"id": "subevent2_boss", "name": "サブイベント2（シスター長戦）", "path": "res://battle/chapters/SisterBattleChapter.gd", "bg": "res://assets/backgrounds/subevent2/bg05_church_peep_room.png", "mode": "battle"},
+	{"id": "subevent3_fiona", "name": "サブイベント3（フィオナ戦）", "path": "res://battle/chapters/FionaBattleChapter.gd", "bg": "res://assets/backgrounds/subevent3/bg_noble_room.png", "mode": "battle"},
+	{"id": "subevent4_recep", "name": "サブイベント4（受付嬢戦）", "path": "res://battle/chapters/ReceptionistBattleChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png", "mode": "battle"},
+	# --- ミニゲーム ---
 	{"id": "minigame_smoke", "name": "＜ミニゲーム＞スモークテスト", "path": "res://battle/chapters/MinigameSmokeChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png", "mode": "minigame"},
 	{"id": "minigame_subevent3", "name": "＜ミニゲーム＞サブイベント3（羞恥の儀）", "path": "res://battle/chapters/Subevent3MinigameChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png", "mode": "minigame"},
 	{"id": "minigame_stage2", "name": "＜ミニゲーム＞ST2（レイラ・相手の動揺を指摘せよ）", "path": "res://battle/chapters/Stage2MinigameChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png", "mode": "minigame"},
@@ -2860,13 +2872,13 @@ func _run_event_battle_edit(ch_info: Dictionary):
 		story_script = DefaultStoryScript.new()
 	event_battle.setup(story_script.get_cast(), bg_tex, GameState.inventory)
 	event_battle.force_result_mode = true
-	# 編集モードのモード判定:
-	#   mode == "minigame" or chapter.minigame 実装 → ミニゲームモード
-	#   mode == "tutorial" or chapter.tutorial 実装 → チュートリアルモード
-	#   それ以外 → 通常バトル
-	var entry_mode: String = ch_info.get("mode", "")
-	var use_minigame: bool = entry_mode == "minigame" or (entry_mode.is_empty() and chapter.has_method("minigame"))
-	var use_tutorial: bool = not use_minigame and (entry_mode == "tutorial" or chapter.has_method("tutorial"))
+	# 編集モードのモード判定: ch_info の "mode" を厳密に参照（自動判定は廃止）
+	#   "minigame"  → ミニゲーム
+	#   "tutorial"  → チュートリアル
+	#   "battle" 等 → 通常バトル
+	var entry_mode: String = ch_info.get("mode", "battle")
+	var use_minigame: bool = entry_mode == "minigame"
+	var use_tutorial: bool = entry_mode == "tutorial"
 	event_battle.start_battle(chapter, use_tutorial, use_minigame)
 	move_child(edit_panel, get_child_count() - 1)
 	edit_panel.set_meta("chapter_path", ch_info.path)
