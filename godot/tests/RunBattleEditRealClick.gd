@@ -60,17 +60,26 @@ func _initialize():
 	await process_frame
 	await process_frame
 
-	# 3) ステージ1 を実クリック
-	var stage1_btn: Button = null
+	# 3) 環境変数 CHAPTER で章を選択（デフォルトはステージ1）
+	var target_name: String = "ステージ1"
+	var args := OS.get_cmdline_user_args()
+	for a in args:
+		if a.begins_with("chapter="):
+			target_name = a.substr(8)
+	printerr("[REAL] target_name=%s" % target_name)
+	var stage_btn: Button = null
 	for c in main_inst.jump_list.get_children():
-		if c is Button and "ステージ1" in c.text:
-			stage1_btn = c
+		if c is Button and target_name in c.text:
+			stage_btn = c
 			break
-	if stage1_btn == null:
-		printerr("[REAL] FAIL: ステージ1 not found")
+	if stage_btn == null:
+		printerr("[REAL] FAIL: '%s' not found in list" % target_name)
+		for c in main_inst.jump_list.get_children():
+			if c is Button:
+				printerr("[REAL]   available: '%s'" % c.text)
 		quit(1); return
-	printerr("[REAL] click '%s'" % stage1_btn.text)
-	await _click(_center_of(stage1_btn))
+	printerr("[REAL] click '%s'" % stage_btn.text)
+	await _click(_center_of(stage_btn))
 
 	# 4) バトル立ち上げ待ち
 	for i in 30:

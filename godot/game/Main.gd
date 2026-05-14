@@ -1172,7 +1172,9 @@ func _battle_edit_update_target_label():
 	lbl.text = "対象: %s" % name
 
 func _battle_edit_cycle_target(dir: int):
+	print("[BATTLE_EDIT] cycle dir=%d ref=%s panel=%s" % [dir, _battle_edit_ref, _battle_edit_panel])
 	var rects := _battle_edit_visible_rects(_battle_edit_ref)
+	print("[BATTLE_EDIT] visible_rects.size=%d current_target=%s" % [rects.size(), _battle_edit_target_rect])
 	if rects.is_empty():
 		var lbl: Label = _battle_edit_panel.find_child("TargetLabel", true, false) if _battle_edit_panel else null
 		if lbl:
@@ -1219,10 +1221,13 @@ func _connect_edit_to_battle(edit_panel: PanelContainer, battle_ref, encounter_d
 	# ナビゲーション: ◀ / ▶ で対象キャラ枠を切替
 	var prev_btn: Button = edit_panel.find_child("PrevBtn", true, false)
 	var next_btn: Button = edit_panel.find_child("NextBtn", true, false)
+	print("[BATTLE_EDIT] _connect_edit_to_battle: prev_btn=%s next_btn=%s" % [prev_btn, next_btn])
 	if prev_btn:
 		prev_btn.pressed.connect(_battle_edit_cycle_target.bind(-1))
+		print("[BATTLE_EDIT]   prev_btn.pressed connected")
 	if next_btn:
 		next_btn.pressed.connect(_battle_edit_cycle_target.bind(1))
+		print("[BATTLE_EDIT]   next_btn.pressed connected")
 	_battle_edit_update_target_label()
 
 func _process(_delta: float):
