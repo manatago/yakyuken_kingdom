@@ -79,7 +79,10 @@ func _ready():
 	_menu_bar.get_node("ItemButton").pressed.connect(_on_item_pressed)
 	_menu_bar.get_node("EquipButton").pressed.connect(_on_equip_pressed)
 
-func _input(event):
+func _unhandled_input(event):
+	# 重要: _input ではなく _unhandled_input を使う。
+	# こうすると Control._gui_input が先に処理する機会を得て、ボタン/スライダ/SpinBox 等の
+	# クリックが「進める」入力に誤って消費されない。
 	# Reject key echo
 	if event is InputEventKey and event.echo:
 		return
@@ -87,8 +90,9 @@ func _input(event):
 	if event.is_action_pressed("ui_accept"):
 		is_advance = true
 	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		# _unhandled_input まで来た時点で誰も処理していないため、進める扱いで OK。
+		# ただし保険として gui_get_hovered_control も見ておく。
 		var hovered = get_viewport().gui_get_hovered_control()
-		# 編集UIなど、独自に入力を扱うコントロール上ではストーリー進行を抑制
 		if hovered is BaseButton or hovered is Slider or hovered is SpinBox or hovered is LineEdit or hovered is TextEdit:
 			return
 		if _is_in_edit_panel(hovered):

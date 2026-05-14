@@ -930,23 +930,26 @@ func _create_edit_overlay(encounter_data: Dictionary) -> PanelContainer:
 	prev_btn.name = "PrevBtn"
 	prev_btn.text = "◀"
 	prev_btn.tooltip_text = "前のキャラ枠へ"
-	prev_btn.add_theme_font_size_override("font_size", 14)
+	prev_btn.add_theme_font_size_override("font_size", 20)
+	prev_btn.custom_minimum_size = Vector2(40, 36)
 	nav_row.add_child(prev_btn)
 
 	var target_label := Label.new()
 	target_label.name = "TargetLabel"
 	target_label.text = "(対象未選択)"
-	target_label.add_theme_font_size_override("font_size", 12)
+	target_label.add_theme_font_size_override("font_size", 13)
 	target_label.add_theme_color_override("font_color", Color(0.9, 0.9, 0.5))
-	target_label.custom_minimum_size = Vector2(120, 0)
+	target_label.custom_minimum_size = Vector2(160, 0)
 	target_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	target_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	nav_row.add_child(target_label)
 
 	var next_btn := Button.new()
 	next_btn.name = "NextBtn"
 	next_btn.text = "▶"
 	next_btn.tooltip_text = "次のキャラ枠へ"
-	next_btn.add_theme_font_size_override("font_size", 14)
+	next_btn.add_theme_font_size_override("font_size", 20)
+	next_btn.custom_minimum_size = Vector2(40, 36)
 	nav_row.add_child(next_btn)
 
 	# スケール
