@@ -1135,6 +1135,7 @@ var _battle_edit_last_tex: Texture2D = null
 var _battle_edit_active := false
 var _battle_edit_target_rect: TextureRect = null
 var _battle_edit_panel: PanelContainer = null
+var _battle_edit_click_count: int = 0
 
 func _battle_edit_visible_rects(battle_ref) -> Array:
 	if not is_instance_valid(battle_ref):
@@ -1173,21 +1174,23 @@ func _battle_edit_update_target_label():
 
 func _battle_edit_cycle_target(dir: int):
 	print("[BATTLE_EDIT] cycle dir=%d ref=%s panel=%s" % [dir, _battle_edit_ref, _battle_edit_panel])
+	_battle_edit_click_count += 1
 	var rects := _battle_edit_visible_rects(_battle_edit_ref)
 	print("[BATTLE_EDIT] visible_rects.size=%d current_target=%s" % [rects.size(), _battle_edit_target_rect])
+	var lbl: Label = _battle_edit_panel.find_child("TargetLabel", true, false) if _battle_edit_panel else null
 	if rects.is_empty():
-		var lbl: Label = _battle_edit_panel.find_child("TargetLabel", true, false) if _battle_edit_panel else null
 		if lbl:
-			lbl.text = "対象なし"
+			lbl.text = "対象なし (#%d)" % _battle_edit_click_count
+			_battle_edit_flash_label(lbl)
 		return
 	# 1 つしかない場合は cycle 不可。それでも押下フィードバックは出す。
 	if rects.size() == 1:
 		_battle_edit_target_rect = rects[0]
 		_battle_edit_last_tex = null
-		var lbl_one: Label = _battle_edit_panel.find_child("TargetLabel", true, false) if _battle_edit_panel else null
-		if lbl_one:
+		if lbl:
 			var side_name := _battle_edit_rect_label(_battle_edit_ref, _battle_edit_target_rect)
-			lbl_one.text = "対象: %s (他なし)" % side_name
+			lbl.text = "対象: %s (他なし) #%d" % [side_name, _battle_edit_click_count]
+			_battle_edit_flash_label(lbl)
 		return
 	var current_idx := rects.find(_battle_edit_target_rect)
 	if current_idx < 0:
@@ -1197,6 +1200,16 @@ func _battle_edit_cycle_target(dir: int):
 	_battle_edit_target_rect = rects[current_idx]
 	_battle_edit_last_tex = null
 	_battle_edit_update_target_label()
+	if lbl:
+		_battle_edit_flash_label(lbl)
+
+# クリック時の視認性向上: ラベルを一瞬黄→緑→白で色変化させる
+func _battle_edit_flash_label(lbl: Label):
+	if not is_instance_valid(lbl):
+		return
+	lbl.modulate = Color(1.0, 1.0, 0.3)
+	var tween := create_tween()
+	tween.tween_property(lbl, "modulate", Color.WHITE, 0.4)
 
 func _connect_edit_to_battle(edit_panel: PanelContainer, battle_ref, encounter_data: Dictionary = {}):
 	var sl := _get_edit_sliders(edit_panel)
@@ -1218,6 +1231,7 @@ func _connect_edit_to_battle(edit_panel: PanelContainer, battle_ref, encounter_d
 	_battle_edit_active = true
 	_battle_edit_target_rect = null
 	_battle_edit_panel = edit_panel
+	_battle_edit_click_count = 0
 	# ナビゲーション: ◀ / ▶ で対象キャラ枠を切替
 	var prev_btn: Button = edit_panel.find_child("PrevBtn", true, false)
 	var next_btn: Button = edit_panel.find_child("NextBtn", true, false)

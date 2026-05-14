@@ -104,14 +104,16 @@ func _initialize():
 	# 6) ◀ 実クリック
 	for i in 10:
 		await process_frame
-	printerr("[REAL] before click: target=%s label='%s'" % [main_inst._battle_edit_target_rect, target_label.text])
+	var label_before: String = target_label.text
+	printerr("[REAL] before click: target=%s label='%s'" % [main_inst._battle_edit_target_rect, label_before])
 	printerr("[REAL] click PrevBtn at %s (rect=%s)" % [_center_of(prev_btn), prev_btn.get_global_rect()])
 	await _click(_center_of(prev_btn))
-	printerr("[REAL] after click: target=%s label='%s'" % [main_inst._battle_edit_target_rect, target_label.text])
+	var label_after: String = target_label.text
+	printerr("[REAL] after click: target=%s label='%s'" % [main_inst._battle_edit_target_rect, label_after])
 
-	if target_label.text.contains("CENTER"):
-		printerr("[REAL] OK — ◀ updated TargetLabel")
-		quit(0)
-	else:
-		printerr("[REAL] FAIL — TargetLabel未更新")
+	# 厳密に変化を確認する
+	if label_after == label_before:
+		printerr("[REAL] FAIL — ◀ クリックで TargetLabel が変化しなかった (before='%s' after='%s')" % [label_before, label_after])
 		quit(1)
+	printerr("[REAL] OK — TargetLabel が '%s' -> '%s' に変化" % [label_before, label_after])
+	quit(0)
