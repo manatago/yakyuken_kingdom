@@ -963,12 +963,12 @@ func _create_edit_overlay(encounter_data: Dictionary) -> PanelContainer:
 		_save_battle_edit(panel, info))
 	vbox.add_child(save_btn)
 
-	# 戻るボタン（編集モード選択に戻る）
+	# 戻るボタン（編集メニューに戻る）
 	var back_btn := Button.new()
 	back_btn.name = "EditBackButton"
-	back_btn.text = "← 編集メニューに戻る"
-	back_btn.add_theme_font_size_override("font_size", 14)
-	back_btn.add_theme_color_override("font_color", Color(1.0, 0.7, 0.7))
+	back_btn.text = "← 戻る"
+	back_btn.add_theme_font_size_override("font_size", 16)
+	back_btn.add_theme_color_override("font_color", Color(1.0, 0.4, 0.4))
 	vbox.add_child(back_btn)
 
 	return panel
@@ -2104,45 +2104,47 @@ signal _story_edit_selected(index: int)
 
 func _on_story_edit_mode():
 	jump_menu.visible = false
-	# Show sequence selection
-	for child in jump_list.get_children():
-		child.queue_free()
-	var title_label := Label.new()
-	title_label.text = "ストーリー編集 — シーケンス選択"
-	title_label.add_theme_font_size_override("font_size", 22)
-	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	jump_list.add_child(title_label)
-	for i in STORY_EDIT_SEQUENCES.size():
-		var seq_entry = STORY_EDIT_SEQUENCES[i]
-		if seq_entry.get("separator", false):
-			var sep_label := Label.new()
-			sep_label.text = seq_entry.name
-			sep_label.add_theme_font_size_override("font_size", 16)
-			sep_label.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7))
-			sep_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			jump_list.add_child(sep_label)
-			continue
-		var btn := Button.new()
-		btn.text = seq_entry.name
-		btn.add_theme_font_size_override("font_size", 20)
-		btn.pressed.connect(_story_edit_emit_selected.bind(i))
-		jump_list.add_child(btn)
-	var back_btn := Button.new()
-	back_btn.text = "戻る"
-	back_btn.add_theme_font_size_override("font_size", 18)
-	back_btn.pressed.connect(_story_edit_emit_selected.bind(-1))
-	jump_list.add_child(back_btn)
-	jump_menu.visible = true
+	while true:
+		# Show sequence selection
+		for child in jump_list.get_children():
+			child.queue_free()
+		var title_label := Label.new()
+		title_label.text = "ストーリー編集 — シーケンス選択"
+		title_label.add_theme_font_size_override("font_size", 22)
+		title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		jump_list.add_child(title_label)
+		for i in STORY_EDIT_SEQUENCES.size():
+			var seq_entry = STORY_EDIT_SEQUENCES[i]
+			if seq_entry.get("separator", false):
+				var sep_label := Label.new()
+				sep_label.text = seq_entry.name
+				sep_label.add_theme_font_size_override("font_size", 16)
+				sep_label.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7))
+				sep_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+				jump_list.add_child(sep_label)
+				continue
+			var btn := Button.new()
+			btn.text = seq_entry.name
+			btn.add_theme_font_size_override("font_size", 20)
+			btn.pressed.connect(_story_edit_emit_selected.bind(i))
+			jump_list.add_child(btn)
+		var back_btn := Button.new()
+		back_btn.text = "← 戻る"
+		back_btn.add_theme_font_size_override("font_size", 18)
+		back_btn.add_theme_color_override("font_color", Color(1.0, 0.4, 0.4))
+		back_btn.pressed.connect(_story_edit_emit_selected.bind(-1))
+		jump_list.add_child(back_btn)
+		jump_menu.visible = true
 
-	var selected: int = await _story_edit_selected
-	jump_menu.visible = false
-	if selected < 0:
-		_show_edit_menu()
-		return
+		var selected: int = await _story_edit_selected
+		jump_menu.visible = false
+		if selected < 0:
+			_show_edit_menu()
+			return
 
-	var entry = STORY_EDIT_SEQUENCES[selected]
-	await _run_story_edit(entry)
-	_show_edit_menu()
+		var entry = STORY_EDIT_SEQUENCES[selected]
+		await _run_story_edit(entry)
+		# シーケンス選択に戻る（バトル編集の章選択ループと同じ挙動）
 
 func _run_story_edit(entry: Dictionary):
 	var sequence_id: String = entry.id
@@ -2193,6 +2195,9 @@ func _run_story_edit(entry: Dictionary):
 	side_btn.pressed.connect(_story_edit_toggle_side.bind(edit_panel))
 	save_btn.pressed.connect(_story_edit_set_nav.bind("save"))
 	exit_btn.pressed.connect(_story_edit_set_nav.bind("exit"))
+	var copy_btn: Button = edit_panel.find_child("CopyBtn", true, false)
+	if copy_btn:
+		copy_btn.pressed.connect(_story_edit_copy_values.bind(edit_panel))
 
 	# Track source file for saving
 	var source_file: String = ""
@@ -2313,6 +2318,26 @@ func _story_edit_toggle_side(edit_panel: PanelContainer):
 
 func _story_edit_set_nav(action: String):
 	_story_edit_nav_action = action
+
+func _story_edit_copy_values(edit_panel: PanelContainer):
+	var sl := _get_edit_sliders(edit_panel)
+	if sl.is_empty():
+		return
+	var s: float = sl.scale.value
+	var x: int = int(sl.x.value)
+	var y: int = int(sl.y.value)
+	var char_label_node: Label = edit_panel.find_child("CharLabel", true, false)
+	var side: String = "center"
+	if char_label_node:
+		match char_label_node.text:
+			"LEFT": side = "left"
+			"RIGHT": side = "right"
+			_: side = "center"
+	var text: String = '"scale": %.2f, "side": "%s", "position": [%d, %d],' % [s, side, x, y]
+	DisplayServer.clipboard_set(text)
+	var cmd_label: Label = edit_panel.find_child("CmdLabel", true, false)
+	if cmd_label:
+		cmd_label.text = "コピーしました: " + text
 
 func _story_edit_toggle_auto(auto_btn: Button):
 	_story_edit_auto_mode = not _story_edit_auto_mode
@@ -2495,16 +2520,23 @@ func _create_story_edit_panel() -> PanelContainer:
 	side_btn.add_theme_color_override("font_color", Color(1.0, 1.0, 0.5))
 	nav_row.add_child(side_btn)
 
+	var copy_btn := Button.new()
+	copy_btn.name = "CopyBtn"
+	copy_btn.text = "コピー"
+	copy_btn.add_theme_font_size_override("font_size", 16)
+	copy_btn.add_theme_color_override("font_color", Color(0.6, 0.9, 1.0))
+	nav_row.add_child(copy_btn)
+
 	var save_btn := Button.new()
 	save_btn.name = "SaveBtn"
-	save_btn.text = "決定"
+	save_btn.text = "保存"
 	save_btn.add_theme_font_size_override("font_size", 16)
 	save_btn.add_theme_color_override("font_color", Color(0.3, 1.0, 0.3))
 	nav_row.add_child(save_btn)
 
 	var exit_btn := Button.new()
 	exit_btn.name = "ExitBtn"
-	exit_btn.text = "終了"
+	exit_btn.text = "← 戻る"
 	exit_btn.add_theme_font_size_override("font_size", 16)
 	exit_btn.add_theme_color_override("font_color", Color(1.0, 0.4, 0.4))
 	nav_row.add_child(exit_btn)
