@@ -14,7 +14,8 @@ func get_tests() -> Array:
 		{"name": "story_edit_panel_no_auto_btn", "callable": Callable(self, "_test_story_panel_no_auto")},
 		{"name": "story_edit_buttons_connected", "callable": Callable(self, "_test_story_buttons_connected")},
 		{"name": "battle_overlay_has_action_buttons", "callable": Callable(self, "_test_battle_overlay_action_buttons")},
-		{"name": "battle_overlay_no_nav_buttons", "callable": Callable(self, "_test_battle_overlay_no_nav")},
+		{"name": "battle_overlay_nav_connected", "callable": Callable(self, "_test_battle_overlay_nav_connected")},
+		{"name": "battle_overlay_no_removed_nav", "callable": Callable(self, "_test_battle_overlay_no_removed_nav")},
 		{"name": "no_orphan_auto_references", "callable": Callable(self, "_test_no_orphan_auto_refs")},
 	]
 
@@ -87,20 +88,32 @@ func _test_battle_overlay_action_buttons() -> bool:
 	if func_body.is_empty():
 		return fail("_create_edit_overlay not found")
 	var all_ok := true
-	# 表示テキストで確認（CopyBtn は内部名で、ボタンテキストが「コピー」）
-	for needle in ['"EditSaveButton"', '"EditBackButton"', 'text = "コピー"']:
+	# 表示テキストで確認
+	for needle in ['"EditSaveButton"', '"EditBackButton"', 'text = "コピー"', '"PrevBtn"', '"NextBtn"', '"TargetLabel"']:
 		if not func_body.contains(needle):
 			all_ok = fail("_create_edit_overlay missing: %s" % needle) and false
 	return all_ok
 
-func _test_battle_overlay_no_nav() -> bool:
-	# プロローグ/▶/自動/L/R は battle 編集では機能未実装で混乱を招くので削除済み
+func _test_battle_overlay_nav_connected() -> bool:
+	# _connect_edit_to_battle で ◀ / ▶ が pressed.connect されているか
+	var src := _read_main_source()
+	var func_body := _slice_function(src, "_connect_edit_to_battle")
+	if func_body.is_empty():
+		return fail("_connect_edit_to_battle not found")
+	var all_ok := true
+	for needle in ['prev_btn.pressed.connect', 'next_btn.pressed.connect', '_battle_edit_cycle_target']:
+		if not func_body.contains(needle):
+			all_ok = fail("_connect_edit_to_battle missing wire: %s" % needle) and false
+	return all_ok
+
+func _test_battle_overlay_no_removed_nav() -> bool:
+	# 自動 / L/R は battle 側では使わないので無いことを確認
 	var src := _read_main_source()
 	var func_body := _slice_function(src, "_create_edit_overlay")
 	if func_body.is_empty():
 		return fail("_create_edit_overlay not found")
 	var all_ok := true
-	for needle in ['"PrevBtn"', '"NextBtn"', '"AutoBtn"', '"SideBtn"']:
+	for needle in ['"AutoBtn"', '"SideBtn"']:
 		if func_body.contains(needle):
 			all_ok = fail("_create_edit_overlay should NOT contain: %s" % needle) and false
 	return all_ok

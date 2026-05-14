@@ -580,6 +580,8 @@ func _run_char_edit_test(encounter_data: Dictionary):
 		if lost_gold > 0:
 			GameState.money = max(GameState.money - lost_gold, 0)
 	_battle_edit_active = false
+	_battle_edit_target_rect = null
+	_battle_edit_panel = null
 	edit_battle.queue_free()
 	battle_edit_panel.queue_free()
 
@@ -917,6 +919,36 @@ func _create_edit_overlay(encounter_data: Dictionary) -> PanelContainer:
 	title.add_theme_color_override("font_color", Color(0.3, 1.0, 0.5))
 	vbox.add_child(title)
 
+	# ナビゲーション行: 表示中のキャラ枠 (left/center/right) を切替
+	var nav_row := HBoxContainer.new()
+	nav_row.name = "NavRow"
+	nav_row.add_theme_constant_override("separation", 4)
+	nav_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_child(nav_row)
+
+	var prev_btn := Button.new()
+	prev_btn.name = "PrevBtn"
+	prev_btn.text = "◀"
+	prev_btn.tooltip_text = "前のキャラ枠へ"
+	prev_btn.add_theme_font_size_override("font_size", 14)
+	nav_row.add_child(prev_btn)
+
+	var target_label := Label.new()
+	target_label.name = "TargetLabel"
+	target_label.text = "(対象未選択)"
+	target_label.add_theme_font_size_override("font_size", 12)
+	target_label.add_theme_color_override("font_color", Color(0.9, 0.9, 0.5))
+	target_label.custom_minimum_size = Vector2(120, 0)
+	target_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	nav_row.add_child(target_label)
+
+	var next_btn := Button.new()
+	next_btn.name = "NextBtn"
+	next_btn.text = "▶"
+	next_btn.tooltip_text = "次のキャラ枠へ"
+	next_btn.add_theme_font_size_override("font_size", 14)
+	nav_row.add_child(next_btn)
+
 	# スケール
 	var scale_row := _create_slider_row("スケール", "ScaleSlider", 0.1, 1.5, 0.01, 0.4, "%.2f")
 	vbox.add_child(scale_row)
@@ -1098,6 +1130,60 @@ var _battle_edit_sl: Dictionary = {}
 var _battle_edit_ref = null
 var _battle_edit_last_tex: Texture2D = null
 var _battle_edit_active := false
+var _battle_edit_target_rect: TextureRect = null
+var _battle_edit_panel: PanelContainer = null
+
+func _battle_edit_visible_rects(battle_ref) -> Array:
+	if not is_instance_valid(battle_ref):
+		return []
+	var story_sc = battle_ref._story_scene
+	if not story_sc:
+		return []
+	var rects: Array = []
+	for r in [story_sc.left_char, story_sc.center_char, story_sc.right_char]:
+		if r and r.visible and r.texture:
+			rects.append(r)
+	return rects
+
+func _battle_edit_rect_label(battle_ref, rect: TextureRect) -> String:
+	if rect == null or not is_instance_valid(battle_ref):
+		return "(none)"
+	var story_sc = battle_ref._story_scene
+	if not story_sc:
+		return "(none)"
+	if rect == story_sc.left_char: return "LEFT"
+	if rect == story_sc.center_char: return "CENTER"
+	if rect == story_sc.right_char: return "RIGHT"
+	return "(?)"
+
+func _battle_edit_update_target_label():
+	if _battle_edit_panel == null or not is_instance_valid(_battle_edit_panel):
+		return
+	var lbl: Label = _battle_edit_panel.find_child("TargetLabel", true, false)
+	if lbl == null:
+		return
+	if _battle_edit_target_rect == null or not is_instance_valid(_battle_edit_target_rect):
+		lbl.text = "(対象未選択)"
+		return
+	var name := _battle_edit_rect_label(_battle_edit_ref, _battle_edit_target_rect)
+	lbl.text = "対象: %s" % name
+
+func _battle_edit_cycle_target(dir: int):
+	var rects := _battle_edit_visible_rects(_battle_edit_ref)
+	if rects.is_empty():
+		# 対象なしでもユーザーにフィードバック
+		var lbl: Label = _battle_edit_panel.find_child("TargetLabel", true, false) if _battle_edit_panel else null
+		if lbl:
+			lbl.text = "対象なし"
+		return
+	var current_idx := rects.find(_battle_edit_target_rect)
+	if current_idx < 0:
+		current_idx = 0 if dir >= 0 else rects.size() - 1
+	else:
+		current_idx = (current_idx + dir + rects.size()) % rects.size()
+	_battle_edit_target_rect = rects[current_idx]
+	_battle_edit_last_tex = null  # スライダ再同期
+	_battle_edit_update_target_label()
 
 func _connect_edit_to_battle(edit_panel: PanelContainer, battle_ref, encounter_data: Dictionary = {}):
 	var sl := _get_edit_sliders(edit_panel)
@@ -1117,13 +1203,31 @@ func _connect_edit_to_battle(edit_panel: PanelContainer, battle_ref, encounter_d
 	_battle_edit_ref = battle_ref
 	_battle_edit_last_tex = null
 	_battle_edit_active = true
+	_battle_edit_target_rect = null
+	_battle_edit_panel = edit_panel
+	# ナビゲーション: ◀ / ▶ で対象キャラ枠を切替
+	var prev_btn: Button = edit_panel.find_child("PrevBtn", true, false)
+	var next_btn: Button = edit_panel.find_child("NextBtn", true, false)
+	if prev_btn:
+		prev_btn.pressed.connect(_battle_edit_cycle_target.bind(-1))
+	if next_btn:
+		next_btn.pressed.connect(_battle_edit_cycle_target.bind(1))
+	_battle_edit_update_target_label()
 
 func _process(_delta: float):
 	if not _battle_edit_active:
 		return
 	if not is_instance_valid(_battle_edit_ref):
 		_battle_edit_active = false
+		_battle_edit_target_rect = null
+		_battle_edit_panel = null
 		return
+	# 対象未選択かつ表示中の rect があれば自動セット
+	if _battle_edit_target_rect == null or not is_instance_valid(_battle_edit_target_rect) or not _battle_edit_target_rect.visible:
+		var rects := _battle_edit_visible_rects(_battle_edit_ref)
+		if not rects.is_empty():
+			_battle_edit_target_rect = rects[0]
+			_battle_edit_update_target_label()
 	var story_sc = _battle_edit_ref._story_scene
 	if not story_sc:
 		return
@@ -1159,6 +1263,12 @@ func _process(_delta: float):
 		if _battle_edit_sl.y_spin: _battle_edit_sl.y_spin.set_block_signals(false)
 
 func _find_visible_char_rect(story_sc) -> TextureRect:
+	# 編集モードでナビゲーションで選択中の rect を優先
+	if _battle_edit_target_rect and is_instance_valid(_battle_edit_target_rect) and _battle_edit_target_rect.visible and _battle_edit_target_rect.texture:
+		# 同じ story_sc 配下か確認
+		var owner_sc = _battle_edit_target_rect.get_parent()
+		if owner_sc == story_sc:
+			return _battle_edit_target_rect
 	for rect in [story_sc.center_char, story_sc.left_char, story_sc.right_char]:
 		if rect and rect.visible and rect.texture:
 			return rect
@@ -2910,6 +3020,8 @@ func _run_event_battle_edit(ch_info: Dictionary):
 
 	var _result: String = await event_battle.battle_finished
 	_battle_edit_active = false
+	_battle_edit_target_rect = null
+	_battle_edit_panel = null
 	event_battle.queue_free()
 	edit_panel.queue_free()
 
