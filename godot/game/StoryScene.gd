@@ -67,6 +67,36 @@ func _is_in_edit_panel(control) -> bool:
 		node = node.get_parent()
 	return false
 
+# StoryScene の祖先（Main 等）配下にある PanelContainer / BaseButton / Slider / SpinBox / LineEdit
+# の global_rect にクリック位置が含まれているかを再帰チェックする。
+# 編集パネルや UI ボタンは StoryScene の外（兄弟）にも置かれるため、ツリーのルートから探索する。
+func _is_point_in_interactive_overlay(pos: Vector2) -> bool:
+	var root = get_tree().root if get_tree() else null
+	if root == null:
+		return false
+	return _scan_for_interactive(root, pos)
+
+func _scan_for_interactive(node: Node, pos: Vector2) -> bool:
+	if node is Control and node.visible:
+		var ctrl: Control = node
+		# Button / Slider / SpinBox / LineEdit / TextEdit はデフォルト mouse_filter=STOP のため
+		# 常に「クリックを消費するインタラクティブ要素」として扱う。
+		# PanelContainer は HPバー等の表示専用にも使われるため、mouse_filter=STOP のものだけ
+		# 「編集オーバーレイ」と判定する。
+		var is_interactive := false
+		if ctrl is BaseButton or ctrl is Slider or ctrl is SpinBox or ctrl is LineEdit or ctrl is TextEdit:
+			is_interactive = ctrl.mouse_filter != Control.MOUSE_FILTER_IGNORE
+		elif ctrl is PanelContainer:
+			is_interactive = ctrl.mouse_filter == Control.MOUSE_FILTER_STOP
+		if is_interactive:
+			var r: Rect2 = ctrl.get_global_rect()
+			if r.has_point(pos):
+				return true
+	for child in node.get_children():
+		if _scan_for_interactive(child, pos):
+			return true
+	return false
+
 func _ready():
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
@@ -79,10 +109,7 @@ func _ready():
 	_menu_bar.get_node("ItemButton").pressed.connect(_on_item_pressed)
 	_menu_bar.get_node("EquipButton").pressed.connect(_on_equip_pressed)
 
-func _unhandled_input(event):
-	# 重要: _input ではなく _unhandled_input を使う。
-	# こうすると Control._gui_input が先に処理する機会を得て、ボタン/スライダ/SpinBox 等の
-	# クリックが「進める」入力に誤って消費されない。
+func _input(event):
 	# Reject key echo
 	if event is InputEventKey and event.echo:
 		return
@@ -90,12 +117,10 @@ func _unhandled_input(event):
 	if event.is_action_pressed("ui_accept"):
 		is_advance = true
 	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		# _unhandled_input まで来た時点で誰も処理していないため、進める扱いで OK。
-		# ただし保険として gui_get_hovered_control も見ておく。
-		var hovered = get_viewport().gui_get_hovered_control()
-		if hovered is BaseButton or hovered is Slider or hovered is SpinBox or hovered is LineEdit or hovered is TextEdit:
-			return
-		if _is_in_edit_panel(hovered):
+		# クリック位置で「インタラクティブ UI（パネル/ボタン/スライダ等）」と当たり判定。
+		# gui_get_hovered_control はクリックイベント中に null になり得るため信用しない。
+		var pos: Vector2 = event.global_position
+		if _is_point_in_interactive_overlay(pos):
 			return
 		is_advance = true
 	if not is_advance:
