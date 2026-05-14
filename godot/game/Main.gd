@@ -1171,10 +1171,18 @@ func _battle_edit_update_target_label():
 func _battle_edit_cycle_target(dir: int):
 	var rects := _battle_edit_visible_rects(_battle_edit_ref)
 	if rects.is_empty():
-		# 対象なしでもユーザーにフィードバック
 		var lbl: Label = _battle_edit_panel.find_child("TargetLabel", true, false) if _battle_edit_panel else null
 		if lbl:
 			lbl.text = "対象なし"
+		return
+	# 1 つしかない場合は cycle 不可。それでも押下フィードバックは出す。
+	if rects.size() == 1:
+		_battle_edit_target_rect = rects[0]
+		_battle_edit_last_tex = null
+		var lbl_one: Label = _battle_edit_panel.find_child("TargetLabel", true, false) if _battle_edit_panel else null
+		if lbl_one:
+			var side_name := _battle_edit_rect_label(_battle_edit_ref, _battle_edit_target_rect)
+			lbl_one.text = "対象: %s (他なし)" % side_name
 		return
 	var current_idx := rects.find(_battle_edit_target_rect)
 	if current_idx < 0:
@@ -1182,7 +1190,7 @@ func _battle_edit_cycle_target(dir: int):
 	else:
 		current_idx = (current_idx + dir + rects.size()) % rects.size()
 	_battle_edit_target_rect = rects[current_idx]
-	_battle_edit_last_tex = null  # スライダ再同期
+	_battle_edit_last_tex = null
 	_battle_edit_update_target_label()
 
 func _connect_edit_to_battle(edit_panel: PanelContainer, battle_ref, encounter_data: Dictionary = {}):
