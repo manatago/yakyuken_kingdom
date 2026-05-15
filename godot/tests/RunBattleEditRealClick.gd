@@ -101,19 +101,47 @@ func _initialize():
 		quit(1); return
 	printerr("[REAL] initial label='%s'" % target_label.text)
 
-	# 6) ◀ 実クリック
+	# 6) ▶ 1回 → step が 0 -> 1 になることを確認（force_select_hand は合計 1.8s）
+	var next_btn: Button = panel.find_child("NextBtn", true, false)
 	for i in 10:
 		await process_frame
-	var label_before: String = target_label.text
-	printerr("[REAL] before click: target=%s label='%s'" % [main_inst._battle_edit_target_rect, label_before])
-	printerr("[REAL] click PrevBtn at %s (rect=%s)" % [_center_of(prev_btn), prev_btn.get_global_rect()])
-	await _click(_center_of(prev_btn))
-	var label_after: String = target_label.text
-	printerr("[REAL] after click: target=%s label='%s'" % [main_inst._battle_edit_target_rect, label_after])
+	var step_before: int = main_inst._battle_edit_step
+	printerr("[REAL] before ▶: step=%d label='%s'" % [step_before, target_label.text])
+	await _click(_center_of(next_btn))
+	# mutex 解放を 300 frame まで待つ
+	var waited := 0
+	for _w in range(300):
+		await process_frame
+		waited += 1
+		if not main_inst._battle_edit_advancing:
+			break
+	var step_after: int = main_inst._battle_edit_step
+	printerr("[REAL] after ▶: step=%d (waited=%d frames) label='%s' advancing=%s" % [step_after, waited, target_label.text, main_inst._battle_edit_advancing])
 
-	# 厳密に変化を確認する
-	if label_after == label_before:
-		printerr("[REAL] FAIL — ◀ クリックで TargetLabel が変化しなかった (before='%s' after='%s')" % [label_before, label_after])
-		quit(1)
-	printerr("[REAL] OK — TargetLabel が '%s' -> '%s' に変化" % [label_before, label_after])
+	if step_after <= step_before:
+		printerr("[REAL] FAIL — ▶ で step が増えなかった (mutex がまだ %s)" % main_inst._battle_edit_advancing)
+		quit(1); return
+	printerr("[REAL] OK — step %d -> %d" % [step_before, step_after])
+
+	# 7) ◀ 1回 → step 減 + battle 再生成
+	var prev_step: int = step_after
+	var battle_before = main_inst._battle_edit_ref
+	await _click(_center_of(prev_btn))
+	waited = 0
+	for _w in range(300):
+		await process_frame
+		waited += 1
+		if not main_inst._battle_edit_advancing:
+			break
+	var step_back: int = main_inst._battle_edit_step
+	var battle_after = main_inst._battle_edit_ref
+	printerr("[REAL] after ◀: step=%d (waited=%d) battle_changed=%s" % [step_back, waited, battle_before != battle_after])
+
+	if step_back >= prev_step:
+		printerr("[REAL] FAIL — ◀ で step が減らなかった (%d -> %d)" % [prev_step, step_back])
+		quit(1); return
+	if battle_before == battle_after:
+		printerr("[REAL] FAIL — ◀ で BattleScene が再生成されていない")
+		quit(1); return
+	printerr("[REAL] OK — ▶ step++, ◀ step-- + battle 再生成")
 	quit(0)
