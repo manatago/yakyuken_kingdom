@@ -77,12 +77,13 @@ func _is_point_in_interactive_overlay(pos: Vector2) -> bool:
 	return _scan_for_interactive(root, pos)
 
 func _scan_for_interactive(node: Node, pos: Vector2) -> bool:
-	if node is Control and node.visible:
+	if node is Control:
 		var ctrl: Control = node
-		# Button / Slider / SpinBox / LineEdit / TextEdit はデフォルト mouse_filter=STOP のため
-		# 常に「クリックを消費するインタラクティブ要素」として扱う。
-		# PanelContainer は HPバー等の表示専用にも使われるため、mouse_filter=STOP のものだけ
-		# 「編集オーバーレイ」と判定する。
+		# 重要: is_visible_in_tree() で親も含めた実際の可視性をチェック。
+		# TitleMenu のボタン等は親が visible=false でも node.visible は true のままなので、
+		# 単純な node.visible だと隠れている UI までヒット判定に拾ってしまう。
+		if not ctrl.is_visible_in_tree():
+			return false  # 非表示なら子も走査しない（描画されないので干渉しない）
 		var is_interactive := false
 		if ctrl is BaseButton or ctrl is Slider or ctrl is SpinBox or ctrl is LineEdit or ctrl is TextEdit:
 			is_interactive = ctrl.mouse_filter != Control.MOUSE_FILTER_IGNORE
