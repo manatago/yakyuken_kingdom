@@ -931,28 +931,28 @@ func _create_edit_overlay(encounter_data: Dictionary) -> PanelContainer:
 
 	var prev_btn := Button.new()
 	prev_btn.name = "PrevBtn"
-	prev_btn.text = "◀"
-	prev_btn.tooltip_text = "前のキャラ枠へ"
-	prev_btn.add_theme_font_size_override("font_size", 20)
-	prev_btn.custom_minimum_size = Vector2(40, 36)
+	prev_btn.text = "◀ 戻る"
+	prev_btn.tooltip_text = "前の画面へ（履歴未対応・現状クリックフィードバックのみ）"
+	prev_btn.add_theme_font_size_override("font_size", 16)
+	prev_btn.custom_minimum_size = Vector2(64, 36)
 	nav_row.add_child(prev_btn)
 
 	var target_label := Label.new()
 	target_label.name = "TargetLabel"
-	target_label.text = "(対象未選択)"
+	target_label.text = "(待機中)"
 	target_label.add_theme_font_size_override("font_size", 13)
 	target_label.add_theme_color_override("font_color", Color(0.9, 0.9, 0.5))
-	target_label.custom_minimum_size = Vector2(160, 0)
+	target_label.custom_minimum_size = Vector2(140, 0)
 	target_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	target_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	nav_row.add_child(target_label)
 
 	var next_btn := Button.new()
 	next_btn.name = "NextBtn"
-	next_btn.text = "▶"
-	next_btn.tooltip_text = "次のキャラ枠へ"
-	next_btn.add_theme_font_size_override("font_size", 20)
-	next_btn.custom_minimum_size = Vector2(40, 36)
+	next_btn.text = "次へ ▶"
+	next_btn.tooltip_text = "次の画面へ（ダイアログ進行 / カード選択は自動勝利）"
+	next_btn.add_theme_font_size_override("font_size", 16)
+	next_btn.custom_minimum_size = Vector2(64, 36)
 	nav_row.add_child(next_btn)
 
 	# スケール
@@ -1222,41 +1222,55 @@ func _battle_edit_update_target_label():
 	lbl.text = "対象: %s" % name
 
 func _battle_edit_cycle_target(dir: int):
-	print("[BATTLE_EDIT] cycle dir=%d ref=%s panel=%s" % [dir, _battle_edit_ref, _battle_edit_panel])
+	# ユーザ要望により、◀/▶ は「次の画面に進む / 前の画面に戻る」へ役割変更。
+	# 進む: ui_accept を流して BattleScene 配下の StoryScene 等のダイアログを進行させる。
+	#       カード選択待ちなら force_select_hand(rock) + 自動確定で1ラウンド進める。
+	# 戻る: 履歴を保持していないため、現状未対応であることをラベルに表示する。
+	print("[BATTLE_EDIT] nav dir=%d ref=%s" % [dir, _battle_edit_ref])
 	_battle_edit_click_count += 1
-	var rects := _battle_edit_visible_rects(_battle_edit_ref)
-	print("[BATTLE_EDIT] visible_rects.size=%d current_target=%s" % [rects.size(), _battle_edit_target_rect])
 	var lbl: Label = _battle_edit_panel.find_child("TargetLabel", true, false) if _battle_edit_panel else null
-	if rects.is_empty():
+	if dir > 0:
+		# 進む
+		_battle_edit_advance_state()
 		if lbl:
-			lbl.text = "対象なし (#%d)" % _battle_edit_click_count
+			lbl.text = "▶ 次へ #%d" % _battle_edit_click_count
 			_battle_edit_flash_label(lbl)
-		if _battle_edit_outline and is_instance_valid(_battle_edit_outline):
-			_battle_edit_outline.visible = false
-		return
-	# 1 つしかない場合は cycle 不可。それでも押下フィードバックは出す。
-	if rects.size() == 1:
+	else:
+		# 戻る（未対応）
+		if lbl:
+			lbl.text = "◀ 戻る (未対応) #%d" % _battle_edit_click_count
+			_battle_edit_flash_label(lbl)
+	# 表示中キャラの位置にアウトラインを追従
+	var rects := _battle_edit_visible_rects(_battle_edit_ref)
+	if not rects.is_empty():
 		_battle_edit_target_rect = rects[0]
 		_battle_edit_last_tex = null
-		if lbl:
-			var side_name := _battle_edit_rect_label(_battle_edit_ref, _battle_edit_target_rect)
-			lbl.text = "対象: %s (他なし) #%d" % [side_name, _battle_edit_click_count]
-			_battle_edit_flash_label(lbl)
 		_battle_edit_update_outline()
 		_battle_edit_flash_outline()
+
+func _battle_edit_advance_state():
+	if not is_instance_valid(_battle_edit_ref):
 		return
-	var current_idx := rects.find(_battle_edit_target_rect)
-	if current_idx < 0:
-		current_idx = 0 if dir >= 0 else rects.size() - 1
-	else:
-		current_idx = (current_idx + dir + rects.size()) % rects.size()
-	_battle_edit_target_rect = rects[current_idx]
-	_battle_edit_last_tex = null
-	_battle_edit_update_target_label()
-	if lbl:
-		_battle_edit_flash_label(lbl)
-	_battle_edit_update_outline()
-	_battle_edit_flash_outline()
+	var battle = _battle_edit_ref
+	# ダイアログ進行中なら band を進める
+	var sc = battle._story_scene if "_story_scene" in battle else null
+	if sc and "_waiting_for_input" in sc and sc._waiting_for_input:
+		print("[BATTLE_EDIT] advance: dialogue band")
+		if sc.has_method("_trigger_advance"):
+			sc._trigger_advance()
+		return
+	# カード選択待ちなら自動でロックを選び、強制勝利で進める
+	if "action_prompt" in battle and battle.action_prompt and battle.action_prompt.visible:
+		print("[BATTLE_EDIT] advance: auto-pick rock + force win")
+		battle._forced_result = "win"
+		battle.force_select_hand(0)  # 0 = ROCK
+		return
+	# それ以外は ui_accept を擬似発火
+	print("[BATTLE_EDIT] advance: send ui_accept")
+	var ev := InputEventAction.new()
+	ev.action = "ui_accept"
+	ev.pressed = true
+	Input.parse_input_event(ev)
 
 # クリック時の視認性向上: ラベルを一瞬黄→緑→白で色変化させる
 func _battle_edit_flash_label(lbl: Label):
