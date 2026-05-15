@@ -1266,64 +1266,51 @@ func _battle_edit_handle_nav(dir: int):
 		_battle_edit_update_outline()
 		_battle_edit_flash_outline()
 
-# battle を queue_free して再生成し、step 回 advance を呼んで状態を復元する
-# 復元中は新 battle を不可視にして、中間状態のちらつきを抑止する
+# 旧 battle を表示したまま、新 battle を裏で組み立てて早送りし、完成後に切替える。
+# これにより黒い暗幕や中間状態のちらつきが出ない。
 func _battle_edit_restart_and_fast_forward(target_step: int):
 	if _battle_edit_chapter_info.is_empty():
 		print("[BATTLE_EDIT] rewind FAIL: no chapter_info")
 		return
 	var info: Dictionary = _battle_edit_chapter_info
-	# 復元中の暗幕（黒い ColorRect）を出す
-	var curtain := ColorRect.new()
-	curtain.name = "BattleEditCurtain"
-	curtain.color = Color(0, 0, 0, 1)
-	curtain.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	curtain.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(curtain)
-	move_child(curtain, get_child_count() - 1)
-	# 既存 battle を破棄
-	if is_instance_valid(_battle_edit_ref):
-		_battle_edit_ref.queue_free()
-		_battle_edit_ref = null
-	await get_tree().process_frame
-	# 再インスタンス化
+	var old_battle = _battle_edit_ref
+	# 新インスタンスを完全に不可視で生成
 	var script_res = ResourceLoader.load(info.path, "", ResourceLoader.CACHE_MODE_REPLACE)
 	if not script_res:
 		print("[BATTLE_EDIT] rewind FAIL: cannot load chapter")
-		curtain.queue_free()
 		return
 	var chapter = script_res.new()
 	var bg_tex = load(info.bg) if not String(info.get("bg", "")).is_empty() else null
-	var event_battle = battle_scene_scene.instantiate()
-	add_child(event_battle)
-	event_battle.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	# 復元中は不可視にしてちらつきを防ぐ（modulate.a=0 で子も含めて透明）
-	event_battle.modulate = Color(1, 1, 1, 0)
+	var new_battle = battle_scene_scene.instantiate()
+	new_battle.modulate = Color(1, 1, 1, 0)  # 子も透明
+	new_battle.visible = false
+	add_child(new_battle)
+	new_battle.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	if not story_script:
 		story_script = DefaultStoryScript.new()
-	event_battle.setup(story_script.get_cast(), bg_tex, GameState.inventory)
-	event_battle.force_result_mode = true
+	new_battle.setup(story_script.get_cast(), bg_tex, GameState.inventory)
+	new_battle.force_result_mode = true
 	var entry_mode: String = info.get("mode", "battle")
 	var use_minigame: bool = entry_mode == "minigame"
 	var use_tutorial: bool = entry_mode == "tutorial"
-	event_battle.start_battle(chapter, use_tutorial, use_minigame)
-	# パネルと暗幕を最前面へ（panel を最前面に、curtain は panel の直下）
-	if _battle_edit_panel and is_instance_valid(_battle_edit_panel):
-		move_child(curtain, get_child_count() - 1)
-		move_child(_battle_edit_panel, get_child_count() - 1)
-	# refs 更新 + 接続再配線
-	_battle_edit_ref = event_battle
+	new_battle.start_battle(chapter, use_tutorial, use_minigame)
+	# 旧 battle は表示したまま、参照だけ新へ切替えて advance を走らせる
+	_battle_edit_ref = new_battle
 	_battle_edit_target_rect = null
 	_battle_edit_last_tex = null
-	# 早送り
+	# 早送り（旧 battle がまだ画面に出ているので中間状態は見えない）
 	for i in range(target_step):
-		# battle が next 待ちになるまで待つ
 		for _wait in range(8):
 			await get_tree().process_frame
 		await _battle_edit_advance_state()
-	# 復元完了 → 暗幕除去 + battle 表示
-	event_battle.modulate = Color(1, 1, 1, 1)
-	curtain.queue_free()
+	# 完成 → 切替: 新を表示 → 旧を破棄
+	new_battle.visible = true
+	new_battle.modulate = Color(1, 1, 1, 1)
+	# パネルを最前面へ
+	if _battle_edit_panel and is_instance_valid(_battle_edit_panel):
+		move_child(_battle_edit_panel, get_child_count() - 1)
+	if is_instance_valid(old_battle):
+		old_battle.queue_free()
 
 func _battle_edit_advance_state():
 	if not is_instance_valid(_battle_edit_ref):
