@@ -582,6 +582,9 @@ func _run_char_edit_test(encounter_data: Dictionary):
 	_battle_edit_active = false
 	_battle_edit_target_rect = null
 	_battle_edit_panel = null
+	if _battle_edit_outline and is_instance_valid(_battle_edit_outline):
+		_battle_edit_outline.queue_free()
+		_battle_edit_outline = null
 	edit_battle.queue_free()
 	battle_edit_panel.queue_free()
 
@@ -1136,6 +1139,52 @@ var _battle_edit_active := false
 var _battle_edit_target_rect: TextureRect = null
 var _battle_edit_panel: PanelContainer = null
 var _battle_edit_click_count: int = 0
+var _battle_edit_outline: Panel = null
+var _battle_edit_outline_tween: Tween = null
+
+func _ensure_outline() -> Panel:
+	if _battle_edit_outline and is_instance_valid(_battle_edit_outline):
+		return _battle_edit_outline
+	_battle_edit_outline = Panel.new()
+	_battle_edit_outline.name = "BattleEditOutline"
+	_battle_edit_outline.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0, 0, 0, 0)
+	style.border_color = Color(1.0, 0.85, 0.2, 1.0)
+	style.border_width_left = 4
+	style.border_width_right = 4
+	style.border_width_top = 4
+	style.border_width_bottom = 4
+	_battle_edit_outline.add_theme_stylebox_override("panel", style)
+	add_child(_battle_edit_outline)
+	return _battle_edit_outline
+
+func _battle_edit_update_outline():
+	if _battle_edit_target_rect == null or not is_instance_valid(_battle_edit_target_rect):
+		if _battle_edit_outline and is_instance_valid(_battle_edit_outline):
+			_battle_edit_outline.visible = false
+		return
+	var outline := _ensure_outline()
+	outline.visible = true
+	# rect の bbox を計算（scale 適用後の global rect）
+	var r: Rect2 = _battle_edit_target_rect.get_global_rect()
+	# Control の get_global_rect は scale を反映するので、そのまま使う
+	outline.position = r.position
+	outline.size = r.size
+	# 上から描画
+	move_child(outline, get_child_count() - 1)
+	# パネルが上に来るよう panel を最前面に戻す
+	if _battle_edit_panel and is_instance_valid(_battle_edit_panel):
+		move_child(_battle_edit_panel, get_child_count() - 1)
+
+func _battle_edit_flash_outline():
+	if _battle_edit_outline == null or not is_instance_valid(_battle_edit_outline):
+		return
+	_battle_edit_outline.modulate = Color(1.5, 1.5, 0.5)
+	if _battle_edit_outline_tween and _battle_edit_outline_tween.is_valid():
+		_battle_edit_outline_tween.kill()
+	_battle_edit_outline_tween = create_tween()
+	_battle_edit_outline_tween.tween_property(_battle_edit_outline, "modulate", Color.WHITE, 0.4)
 
 func _battle_edit_visible_rects(battle_ref) -> Array:
 	if not is_instance_valid(battle_ref):
@@ -1182,6 +1231,8 @@ func _battle_edit_cycle_target(dir: int):
 		if lbl:
 			lbl.text = "対象なし (#%d)" % _battle_edit_click_count
 			_battle_edit_flash_label(lbl)
+		if _battle_edit_outline and is_instance_valid(_battle_edit_outline):
+			_battle_edit_outline.visible = false
 		return
 	# 1 つしかない場合は cycle 不可。それでも押下フィードバックは出す。
 	if rects.size() == 1:
@@ -1191,6 +1242,8 @@ func _battle_edit_cycle_target(dir: int):
 			var side_name := _battle_edit_rect_label(_battle_edit_ref, _battle_edit_target_rect)
 			lbl.text = "対象: %s (他なし) #%d" % [side_name, _battle_edit_click_count]
 			_battle_edit_flash_label(lbl)
+		_battle_edit_update_outline()
+		_battle_edit_flash_outline()
 		return
 	var current_idx := rects.find(_battle_edit_target_rect)
 	if current_idx < 0:
@@ -1202,6 +1255,8 @@ func _battle_edit_cycle_target(dir: int):
 	_battle_edit_update_target_label()
 	if lbl:
 		_battle_edit_flash_label(lbl)
+	_battle_edit_update_outline()
+	_battle_edit_flash_outline()
 
 # クリック時の視認性向上: ラベルを一瞬黄→緑→白で色変化させる
 func _battle_edit_flash_label(lbl: Label):
@@ -1258,6 +1313,13 @@ func _process(_delta: float):
 		if not rects.is_empty():
 			_battle_edit_target_rect = rects[0]
 			_battle_edit_update_target_label()
+			_battle_edit_update_outline()
+	# アウトラインを毎フレーム追従させる（スライダで rect が動いた時も）
+	if _battle_edit_outline and is_instance_valid(_battle_edit_outline) and _battle_edit_outline.visible:
+		if _battle_edit_target_rect and is_instance_valid(_battle_edit_target_rect):
+			var r: Rect2 = _battle_edit_target_rect.get_global_rect()
+			_battle_edit_outline.position = r.position
+			_battle_edit_outline.size = r.size
 	var story_sc = _battle_edit_ref._story_scene
 	if not story_sc:
 		return
@@ -3052,6 +3114,9 @@ func _run_event_battle_edit(ch_info: Dictionary):
 	_battle_edit_active = false
 	_battle_edit_target_rect = null
 	_battle_edit_panel = null
+	if _battle_edit_outline and is_instance_valid(_battle_edit_outline):
+		_battle_edit_outline.queue_free()
+		_battle_edit_outline = null
 	event_battle.queue_free()
 	edit_panel.queue_free()
 
