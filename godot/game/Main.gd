@@ -1266,14 +1266,17 @@ func _battle_edit_handle_nav(dir: int):
 		_battle_edit_update_outline()
 		_battle_edit_flash_outline()
 
-# 旧 battle を表示したまま、新 battle を裏で組み立てて早送りし、完成後に切替える。
-# これにより黒い暗幕や中間状態のちらつきが出ない。
+# 旧 battle を表示したまま、新 battle を裏で組み立てて早送りし、完成後にアトミックに差し替える。
 func _battle_edit_restart_and_fast_forward(target_step: int):
 	if _battle_edit_chapter_info.is_empty():
 		print("[BATTLE_EDIT] rewind FAIL: no chapter_info")
 		return
 	var info: Dictionary = _battle_edit_chapter_info
 	var old_battle = _battle_edit_ref
+	# 旧 battle の処理を即時停止して、復元中に裏で状態が変わらないようにする。
+	# 表示はそのまま残るので、ユーザは旧画像を見続ける。
+	if is_instance_valid(old_battle):
+		old_battle.process_mode = Node.PROCESS_MODE_DISABLED
 	# 新インスタンスを完全に不可視で生成
 	var script_res = ResourceLoader.load(info.path, "", ResourceLoader.CACHE_MODE_REPLACE)
 	if not script_res:
@@ -1282,10 +1285,17 @@ func _battle_edit_restart_and_fast_forward(target_step: int):
 	var chapter = script_res.new()
 	var bg_tex = load(info.bg) if not String(info.get("bg", "")).is_empty() else null
 	var new_battle = battle_scene_scene.instantiate()
-	new_battle.modulate = Color(1, 1, 1, 0)  # 子も透明
+	# add_child より前に visible=false にして、tree 入った瞬間の描画を完全に防ぐ。
 	new_battle.visible = false
+	new_battle.modulate = Color(1, 1, 1, 0)
 	add_child(new_battle)
 	new_battle.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	# 新 battle を旧 battle のすぐ後ろに置く（旧が手前で描画されるよう）。
+	var old_idx: int = -1
+	if is_instance_valid(old_battle):
+		old_idx = old_battle.get_index()
+	if old_idx >= 0:
+		move_child(new_battle, old_idx)
 	if not story_script:
 		story_script = DefaultStoryScript.new()
 	new_battle.setup(story_script.get_cast(), bg_tex, GameState.inventory)
@@ -1294,23 +1304,24 @@ func _battle_edit_restart_and_fast_forward(target_step: int):
 	var use_minigame: bool = entry_mode == "minigame"
 	var use_tutorial: bool = entry_mode == "tutorial"
 	new_battle.start_battle(chapter, use_tutorial, use_minigame)
-	# 旧 battle は表示したまま、参照だけ新へ切替えて advance を走らせる
+	# 参照だけ新へ切替えて advance を走らせる（旧 battle は表示・凍結状態）
 	_battle_edit_ref = new_battle
 	_battle_edit_target_rect = null
 	_battle_edit_last_tex = null
-	# 早送り（旧 battle がまだ画面に出ているので中間状態は見えない）
+	# 早送り
 	for i in range(target_step):
 		for _wait in range(8):
 			await get_tree().process_frame
 		await _battle_edit_advance_state()
-	# 完成 → 切替: 新を表示 → 旧を破棄
-	new_battle.visible = true
+	# アトミック切替: 同一フレームで「新を表示」「旧を非表示」を行う
 	new_battle.modulate = Color(1, 1, 1, 1)
+	new_battle.visible = true
+	if is_instance_valid(old_battle):
+		old_battle.visible = false
+		old_battle.queue_free()
 	# パネルを最前面へ
 	if _battle_edit_panel and is_instance_valid(_battle_edit_panel):
 		move_child(_battle_edit_panel, get_child_count() - 1)
-	if is_instance_valid(old_battle):
-		old_battle.queue_free()
 
 func _battle_edit_advance_state():
 	if not is_instance_valid(_battle_edit_ref):
