@@ -582,6 +582,9 @@ func _run_char_edit_test(encounter_data: Dictionary):
 	_battle_edit_active = false
 	_battle_edit_target_rect = null
 	_battle_edit_panel = null
+	_battle_edit_chapter_info = {}
+	_battle_edit_step = 0
+	_battle_edit_advancing = false
 	if _battle_edit_outline and is_instance_valid(_battle_edit_outline):
 		_battle_edit_outline.queue_free()
 		_battle_edit_outline = null
@@ -1139,6 +1142,9 @@ var _battle_edit_active := false
 var _battle_edit_target_rect: TextureRect = null
 var _battle_edit_panel: PanelContainer = null
 var _battle_edit_click_count: int = 0
+var _battle_edit_step: int = 0
+var _battle_edit_chapter_info: Dictionary = {}
+var _battle_edit_advancing: bool = false
 var _battle_edit_outline: Panel = null
 var _battle_edit_outline_tween: Tween = null
 
@@ -1222,31 +1228,86 @@ func _battle_edit_update_target_label():
 	lbl.text = "対象: %s" % name
 
 func _battle_edit_cycle_target(dir: int):
-	# ユーザ要望により、◀/▶ は「次の画面に進む / 前の画面に戻る」へ役割変更。
-	# 進む: ui_accept を流して BattleScene 配下の StoryScene 等のダイアログを進行させる。
-	#       カード選択待ちなら force_select_hand(rock) + 自動確定で1ラウンド進める。
-	# 戻る: 履歴を保持していないため、現状未対応であることをラベルに表示する。
-	print("[BATTLE_EDIT] nav dir=%d ref=%s" % [dir, _battle_edit_ref])
+	# ストーリ編集と同じパターン:
+	#   ▶: step++; advance once
+	#   ◀: step--; battle を再生成して step 回早送り
+	if _battle_edit_advancing:
+		return
+	_battle_edit_advancing = true
+	await _battle_edit_handle_nav(dir)
+	_battle_edit_advancing = false
+
+func _battle_edit_handle_nav(dir: int):
+	print("[BATTLE_EDIT] nav dir=%d step_before=%d" % [dir, _battle_edit_step])
 	_battle_edit_click_count += 1
 	var lbl: Label = _battle_edit_panel.find_child("TargetLabel", true, false) if _battle_edit_panel else null
 	if dir > 0:
-		# 進む
-		_battle_edit_advance_state()
+		await _battle_edit_advance_state()
+		_battle_edit_step += 1
 		if lbl:
-			lbl.text = "▶ 次へ #%d" % _battle_edit_click_count
+			lbl.text = "▶ step=%d" % _battle_edit_step
 			_battle_edit_flash_label(lbl)
 	else:
-		# 戻る（未対応）
+		if _battle_edit_step <= 0:
+			if lbl:
+				lbl.text = "◀ 開始位置 #%d" % _battle_edit_click_count
+				_battle_edit_flash_label(lbl)
+			return
+		_battle_edit_step -= 1
+		await _battle_edit_restart_and_fast_forward(_battle_edit_step)
 		if lbl:
-			lbl.text = "◀ 戻る (未対応) #%d" % _battle_edit_click_count
+			lbl.text = "◀ step=%d" % _battle_edit_step
 			_battle_edit_flash_label(lbl)
-	# 表示中キャラの位置にアウトラインを追従
+	# アウトライン追従
 	var rects := _battle_edit_visible_rects(_battle_edit_ref)
 	if not rects.is_empty():
 		_battle_edit_target_rect = rects[0]
 		_battle_edit_last_tex = null
 		_battle_edit_update_outline()
 		_battle_edit_flash_outline()
+
+# battle を queue_free して再生成し、step 回 advance を呼んで状態を復元する
+func _battle_edit_restart_and_fast_forward(target_step: int):
+	if _battle_edit_chapter_info.is_empty():
+		print("[BATTLE_EDIT] rewind FAIL: no chapter_info")
+		return
+	var info: Dictionary = _battle_edit_chapter_info
+	# 既存 battle を破棄
+	if is_instance_valid(_battle_edit_ref):
+		_battle_edit_ref.queue_free()
+		_battle_edit_ref = null
+	await get_tree().process_frame
+	# 再インスタンス化
+	var script_res = ResourceLoader.load(info.path, "", ResourceLoader.CACHE_MODE_REPLACE)
+	if not script_res:
+		print("[BATTLE_EDIT] rewind FAIL: cannot load chapter")
+		return
+	var chapter = script_res.new()
+	var bg_tex = load(info.bg) if not String(info.get("bg", "")).is_empty() else null
+	var event_battle = battle_scene_scene.instantiate()
+	add_child(event_battle)
+	event_battle.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	if not story_script:
+		story_script = DefaultStoryScript.new()
+	event_battle.setup(story_script.get_cast(), bg_tex, GameState.inventory)
+	event_battle.force_result_mode = true
+	var entry_mode: String = info.get("mode", "battle")
+	var use_minigame: bool = entry_mode == "minigame"
+	var use_tutorial: bool = entry_mode == "tutorial"
+	event_battle.start_battle(chapter, use_tutorial, use_minigame)
+	# 最前面にパネルを戻す
+	if _battle_edit_panel and is_instance_valid(_battle_edit_panel):
+		move_child(_battle_edit_panel, get_child_count() - 1)
+	# refs 更新 + 接続再配線
+	_battle_edit_ref = event_battle
+	_battle_edit_target_rect = null
+	_battle_edit_last_tex = null
+	# 早送り
+	for i in range(target_step):
+		# battle が next 待ちになるまで待つ
+		for _wait in range(8):
+			await get_tree().process_frame
+		await _battle_edit_advance_state()
 
 func _battle_edit_advance_state():
 	if not is_instance_valid(_battle_edit_ref):
@@ -1258,12 +1319,13 @@ func _battle_edit_advance_state():
 		print("[BATTLE_EDIT] advance: dialogue band")
 		if sc.has_method("_trigger_advance"):
 			sc._trigger_advance()
+		await get_tree().process_frame
 		return
 	# カード選択待ちなら自動でロックを選び、強制勝利で進める
 	if "action_prompt" in battle and battle.action_prompt and battle.action_prompt.visible:
 		print("[BATTLE_EDIT] advance: auto-pick rock + force win")
 		battle._forced_result = "win"
-		battle.force_select_hand(0)  # 0 = ROCK
+		await battle.force_select_hand(0)  # 0 = ROCK
 		return
 	# それ以外は ui_accept を擬似発火
 	print("[BATTLE_EDIT] advance: send ui_accept")
@@ -1271,6 +1333,7 @@ func _battle_edit_advance_state():
 	ev.action = "ui_accept"
 	ev.pressed = true
 	Input.parse_input_event(ev)
+	await get_tree().process_frame
 
 # クリック時の視認性向上: ラベルを一瞬黄→緑→白で色変化させる
 func _battle_edit_flash_label(lbl: Label):
@@ -3115,6 +3178,9 @@ func _run_event_battle_edit(ch_info: Dictionary):
 	event_battle.start_battle(chapter, use_tutorial, use_minigame)
 	move_child(edit_panel, get_child_count() - 1)
 	edit_panel.set_meta("chapter_path", ch_info.path)
+	# ◀ 戻る で再生成するために ch_info を保存
+	_battle_edit_chapter_info = ch_info
+	_battle_edit_step = 0
 	_connect_edit_to_battle(edit_panel, event_battle, {})
 
 	# 戻るボタンで battle_finished をエミットして終了
@@ -3128,6 +3194,9 @@ func _run_event_battle_edit(ch_info: Dictionary):
 	_battle_edit_active = false
 	_battle_edit_target_rect = null
 	_battle_edit_panel = null
+	_battle_edit_chapter_info = {}
+	_battle_edit_step = 0
+	_battle_edit_advancing = false
 	if _battle_edit_outline and is_instance_valid(_battle_edit_outline):
 		_battle_edit_outline.queue_free()
 		_battle_edit_outline = null
