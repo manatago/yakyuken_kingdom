@@ -112,13 +112,13 @@ func tutorial(bt):
 func setup_scene(bt):
 	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.55, "position": [0, 180]})
 	var adv = bt.character("adventurer_a")
-	adv.set_portrait("res://assets/characters/mob/adventurer_a/nude/adventurer_a_nude_001.png", {"scale": 0.74, "side": "center", "position": [0, -199]})
+	adv.set_portrait("res://assets/characters/mob/adventurer_a/nude/adventurer_a_nude_001.png", {"scale": 0.74, "side": "center", "position": [0, -65]})
 
 # --- Outfit 3: フル装備 ---
 
 func outfit_3(bt):
 	var adv = bt.character("adventurer_a")
-	adv.set_portrait("res://assets/characters/mob/adventurer_a/nude/adventurer_a_nude_001.png", {"scale": 0.74, "side": "center", "position": [0, -199]})
+	adv.set_portrait("res://assets/characters/mob/adventurer_a/nude/adventurer_a_nude_001.png", {"scale": 0.74, "side": "center", "position": [0, -65]})
 	adv.band("ヘッ、ビビってんのか？ さっさとカードを出しな！")
 
 	var selection = await bt.select_hand()
@@ -135,7 +135,7 @@ func outfit_3(bt):
 
 func outfit_2(bt):
 	var adv = bt.character("adventurer_a")
-	adv.set_portrait("res://assets/characters/mob/adventurer_a/nude/adventurer_a_nude_001.png", {"scale": 0.74, "side": "center", "position": [0, -199]})
+	adv.set_portrait("res://assets/characters/mob/adventurer_a/nude/adventurer_a_nude_001.png", {"scale": 0.74, "side": "center", "position": [0, -65]})
 	adv.band("テメェ...調子に乗りやがって...！")
 
 	var selection = await bt.select_hand()
@@ -152,7 +152,7 @@ func outfit_2(bt):
 
 func outfit_1(bt):
 	var adv = bt.character("adventurer_a")
-	adv.set_portrait("res://assets/characters/mob/adventurer_a/nude/adventurer_a_nude_001.png", {"scale": 0.74, "side": "center", "position": [0, -199]})
+	adv.set_portrait("res://assets/characters/mob/adventurer_a/nude/adventurer_a_nude_001.png", {"scale": 0.74, "side": "center", "position": [0, -65]})
 	adv.band("くそっ...こっからが本気だ！")
 
 	var selection = await bt.select_hand()

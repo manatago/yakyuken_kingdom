@@ -183,6 +183,9 @@ func start_battle(chapter: BattleChapterBase, is_tutorial := false, is_minigame 
 	story_layer.add_child(_story_scene)
 	_story_scene.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_story_scene.set_cast(_cast)
+	# 編集モード（force_result_mode）では setup_scene より前に立ち絵履歴を有効化
+	if force_result_mode and "portrait_log_enabled" in _story_scene:
+		_story_scene.portrait_log_enabled = true
 	if _initial_bg_texture:
 		_story_scene.background_rect.texture = _initial_bg_texture
 	_apply_bg_blur(_story_scene.background_rect, 15.0)

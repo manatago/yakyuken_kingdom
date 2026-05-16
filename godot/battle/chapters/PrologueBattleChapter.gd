@@ -88,7 +88,7 @@ func tutorial(bt):
 	matilda.band("「カードを選択してください」って表示されたら、", {"append": true})
 	matilda.band("出したいカードをクリックするとカードが選択される。", {"append": true})
 	matilda.band("「勝負！」を押すと、じゃんけんが始まる。", {"append": true})
-	matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_011.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+	matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_011.png", {"scale": 0.40, "side": "center", "position": [0, -348]})
 	matilda.band("最初は特別にグーを出してやるから、お前はパーを出しな。", {"append": true})
 	bt.unhighlight()
 	matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_005.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
@@ -172,7 +172,7 @@ func outfit_3(bt):
 	var result = await bt.janken(selection, ai_opts)
 
 	if result == "win":
-		matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_014.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+		matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_014.png", {"scale": 0.40, "side": "center", "position": [0, -250]})
 		matilda.band("くっ、変態の癖に。")
 		await bt.play_video("res://assets/videos/prologue_win_1.ogv")
 
@@ -189,7 +189,7 @@ func outfit_3(bt):
 func outfit_2(bt):
 	var matilda = bt.character("matilda")
 
-	matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_016.png", {"scale": 0.8, "side": "center", "position": [0, -203]})
+	matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_016.png", {"scale": 0.80, "side": "center", "position": [0, -260]})
 	matilda.band("あんまり、じろじろ見るんじゃないぞ")
 
 	var selection = await bt.select_hand()

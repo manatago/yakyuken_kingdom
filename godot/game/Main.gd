@@ -553,6 +553,8 @@ func _run_char_edit_test(encounter_data: Dictionary):
 	add_child(edit_battle)
 	edit_battle.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	edit_battle.setup(story_script.get_cast() if story_script else {}, bg_tex, GameState.inventory)
+	# 編集モード: イベントバトル編集と同様、立ち絵履歴の早期有効化と ▶ の強制勝利進行を有効にする
+	edit_battle.force_result_mode = true
 	edit_battle.start_battle(chapter)
 	move_child(battle_edit_panel, get_child_count() - 1)
 	_connect_edit_to_battle(battle_edit_panel, edit_battle, encounter_data)
@@ -582,12 +584,8 @@ func _run_char_edit_test(encounter_data: Dictionary):
 	_battle_edit_active = false
 	_battle_edit_target_rect = null
 	_battle_edit_panel = null
-	_battle_edit_chapter_info = {}
-	_battle_edit_step = 0
 	_battle_edit_advancing = false
-	if _battle_edit_outline and is_instance_valid(_battle_edit_outline):
-		_battle_edit_outline.queue_free()
-		_battle_edit_outline = null
+	_battle_edit_history_idx = -1
 	edit_battle.queue_free()
 	battle_edit_panel.queue_free()
 
@@ -935,7 +933,7 @@ func _create_edit_overlay(encounter_data: Dictionary) -> PanelContainer:
 	var prev_btn := Button.new()
 	prev_btn.name = "PrevBtn"
 	prev_btn.text = "◀ 戻る"
-	prev_btn.tooltip_text = "前の画面へ（履歴未対応・現状クリックフィードバックのみ）"
+	prev_btn.tooltip_text = "前の画像へ（set_portrait 履歴を1つ戻る）"
 	prev_btn.add_theme_font_size_override("font_size", 16)
 	prev_btn.custom_minimum_size = Vector2(64, 36)
 	nav_row.add_child(prev_btn)
@@ -953,7 +951,7 @@ func _create_edit_overlay(encounter_data: Dictionary) -> PanelContainer:
 	var next_btn := Button.new()
 	next_btn.name = "NextBtn"
 	next_btn.text = "次へ ▶"
-	next_btn.tooltip_text = "次の画面へ（ダイアログ進行 / カード選択は自動勝利）"
+	next_btn.tooltip_text = "次の画像へ（履歴の先頭ならバトルを1手進めて新規生成）"
 	next_btn.add_theme_font_size_override("font_size", 16)
 	next_btn.custom_minimum_size = Vector2(64, 36)
 	nav_row.add_child(next_btn)
@@ -1142,55 +1140,94 @@ var _battle_edit_active := false
 var _battle_edit_target_rect: TextureRect = null
 var _battle_edit_panel: PanelContainer = null
 var _battle_edit_click_count: int = 0
-var _battle_edit_step: int = 0
-var _battle_edit_chapter_info: Dictionary = {}
 var _battle_edit_advancing: bool = false
-var _battle_edit_outline: Panel = null
-var _battle_edit_outline_tween: Tween = null
+# 画像履歴は StoryScene.portrait_log（set_portrait / appear 呼び出しごとに記録）を参照。
+# _battle_edit_history_idx はその log への現在位置。
+var _battle_edit_history_idx: int = -1
 
-func _ensure_outline() -> Panel:
-	if _battle_edit_outline and is_instance_valid(_battle_edit_outline):
-		return _battle_edit_outline
-	_battle_edit_outline = Panel.new()
-	_battle_edit_outline.name = "BattleEditOutline"
-	_battle_edit_outline.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0, 0, 0, 0)
-	style.border_color = Color(1.0, 0.85, 0.2, 1.0)
-	style.border_width_left = 4
-	style.border_width_right = 4
-	style.border_width_top = 4
-	style.border_width_bottom = 4
-	_battle_edit_outline.add_theme_stylebox_override("panel", style)
-	add_child(_battle_edit_outline)
-	return _battle_edit_outline
+# battle の StoryScene.portrait_log を返す
+func _battle_edit_get_log() -> Array:
+	if not is_instance_valid(_battle_edit_ref):
+		return []
+	var sc = _battle_edit_ref._story_scene if "_story_scene" in _battle_edit_ref else null
+	if sc == null or not ("portrait_log" in sc):
+		return []
+	return sc.portrait_log
 
-func _battle_edit_update_outline():
-	if _battle_edit_target_rect == null or not is_instance_valid(_battle_edit_target_rect):
-		if _battle_edit_outline and is_instance_valid(_battle_edit_outline):
-			_battle_edit_outline.visible = false
+func _battle_edit_restore_portrait(snap: Dictionary):
+	var rect: TextureRect = snap.get("rect")
+	if rect == null or not is_instance_valid(rect):
 		return
-	var outline := _ensure_outline()
-	outline.visible = true
-	# rect の bbox を計算（scale 適用後の global rect）
-	var r: Rect2 = _battle_edit_target_rect.get_global_rect()
-	# Control の get_global_rect は scale を反映するので、そのまま使う
-	outline.position = r.position
-	outline.size = r.size
-	# 上から描画
-	move_child(outline, get_child_count() - 1)
-	# パネルが上に来るよう panel を最前面に戻す
-	if _battle_edit_panel and is_instance_valid(_battle_edit_panel):
-		move_child(_battle_edit_panel, get_child_count() - 1)
+	var tex: Texture2D = snap.get("texture")
+	rect.texture = tex
+	# _show_character / _reset_rect_with_scale と同じく size・pivot を作り直す
+	rect.pivot_offset = Vector2.ZERO
+	if tex:
+		rect.size = tex.get_size()
+	rect.flip_h = snap.get("flip_h", false)
+	var s: float = snap.get("scale", 1.0)
+	rect.scale = Vector2(s, s)
+	rect.position = snap.get("position", Vector2.ZERO)
+	rect.visible = true
+	rect.modulate = Color.WHITE
+	# その立ち絵が表示された時点の背景・セリフ帯へ戻す
+	var sc = _battle_edit_ref._story_scene if is_instance_valid(_battle_edit_ref) and "_story_scene" in _battle_edit_ref else null
+	if sc:
+		# StoryScene._process が毎フレーム _char_locked_positions へ位置を戻すため、
+		# ロック位置も更新しないと復元位置が次フレームで巻き戻る（横ずれの原因）
+		if "_char_locked_positions" in sc:
+			sc._char_locked_positions[rect] = rect.position
+		if sc.has_method("restore_background"):
+			sc.restore_background(snap.get("background"))
+		if sc.has_method("restore_dialogue"):
+			sc.restore_dialogue(snap.get("dialogue"))
+	print("[BATTLE_EDIT] restore: tex=%s size=%s scale=%.3f pos=%s flip=%s" % [
+		(tex.resource_path if tex else "null"), rect.size, s, rect.position, rect.flip_h])
+	_battle_edit_last_tex = rect.texture
+	_battle_edit_target_rect = rect
+	_battle_edit_sync_sliders(rect)
 
-func _battle_edit_flash_outline():
-	if _battle_edit_outline == null or not is_instance_valid(_battle_edit_outline):
+# ▶ でバトルを進めた直後用: バトルが実際に表示している立ち絵に対象を合わせ、
+# スライダーを同期する（テクスチャ等はバトル側が正しく描画済みなので触らない）。
+func _battle_edit_sync_to_live():
+	if not is_instance_valid(_battle_edit_ref):
 		return
-	_battle_edit_outline.modulate = Color(1.5, 1.5, 0.5)
-	if _battle_edit_outline_tween and _battle_edit_outline_tween.is_valid():
-		_battle_edit_outline_tween.kill()
-	_battle_edit_outline_tween = create_tween()
-	_battle_edit_outline_tween.tween_property(_battle_edit_outline, "modulate", Color.WHITE, 0.4)
+	var sc = _battle_edit_ref._story_scene if "_story_scene" in _battle_edit_ref else null
+	if sc == null:
+		return
+	var rect: TextureRect = _find_visible_char_rect(sc)
+	if rect == null:
+		return
+	_battle_edit_last_tex = rect.texture
+	_battle_edit_target_rect = rect
+	_battle_edit_sync_sliders(rect)
+
+# rect の現在値をスライダー/SpinBox に反映（_process の検知部から抽出）
+func _battle_edit_sync_sliders(rect: TextureRect):
+	if _battle_edit_sl.is_empty() or rect == null or rect.texture == null:
+		return
+	var vp_size: Vector2 = get_viewport_rect().size
+	var tex_size: Vector2 = rect.texture.get_size()
+	var s: float = rect.scale.x
+	var visual_w: float = tex_size.x * s
+	var visual_h: float = tex_size.y * s
+	var offset_x: float = rect.position.x - (vp_size.x - visual_w) / 2.0
+	var offset_y: float = rect.position.y - (vp_size.y - visual_h)
+	for key in ["scale", "x", "y"]:
+		if _battle_edit_sl.has(key) and _battle_edit_sl[key]:
+			_battle_edit_sl[key].set_block_signals(true)
+	if _battle_edit_sl.get("scale_spin"): _battle_edit_sl.scale_spin.set_block_signals(true)
+	if _battle_edit_sl.get("x_spin"): _battle_edit_sl.x_spin.set_block_signals(true)
+	if _battle_edit_sl.get("y_spin"): _battle_edit_sl.y_spin.set_block_signals(true)
+	_set_slider_range(_battle_edit_sl.scale, _battle_edit_sl.get("scale_spin"), 0.1, 1.5, 0.01, s)
+	_set_slider_range(_battle_edit_sl.x, _battle_edit_sl.get("x_spin"), -500, 500, 1, offset_x)
+	_set_slider_range(_battle_edit_sl.y, _battle_edit_sl.get("y_spin"), -600, 300, 1, offset_y)
+	for key in ["scale", "x", "y"]:
+		if _battle_edit_sl.has(key) and _battle_edit_sl[key]:
+			_battle_edit_sl[key].set_block_signals(false)
+	if _battle_edit_sl.get("scale_spin"): _battle_edit_sl.scale_spin.set_block_signals(false)
+	if _battle_edit_sl.get("x_spin"): _battle_edit_sl.x_spin.set_block_signals(false)
+	if _battle_edit_sl.get("y_spin"): _battle_edit_sl.y_spin.set_block_signals(false)
 
 func _battle_edit_visible_rects(battle_ref) -> Array:
 	if not is_instance_valid(battle_ref):
@@ -1228,9 +1265,9 @@ func _battle_edit_update_target_label():
 	lbl.text = "対象: %s" % name
 
 func _battle_edit_cycle_target(dir: int):
-	# ストーリ編集と同じパターン:
-	#   ▶: step++; advance once
-	#   ◀: step--; battle を再生成して step 回早送り
+	# 画像履歴ナビゲーション:
+	#   ◀: 履歴を1つ前の画像へ
+	#   ▶: 履歴を1つ次の画像へ。末尾にいる場合はバトルを1手進めて新しい画像を生成
 	if _battle_edit_advancing:
 		return
 	_battle_edit_advancing = true
@@ -1238,95 +1275,90 @@ func _battle_edit_cycle_target(dir: int):
 	_battle_edit_advancing = false
 
 func _battle_edit_handle_nav(dir: int):
-	print("[BATTLE_EDIT] nav dir=%d step_before=%d" % [dir, _battle_edit_step])
 	_battle_edit_click_count += 1
 	var lbl: Label = _battle_edit_panel.find_child("TargetLabel", true, false) if _battle_edit_panel else null
-	if dir > 0:
-		await _battle_edit_advance_state()
-		_battle_edit_step += 1
+	var log := _battle_edit_get_log()
+	var total := log.size()
+	# idx == -1 はライブ状態（=末尾 total-1 を表示中）とみなす
+	var cur := _battle_edit_history_idx
+	if cur < 0:
+		cur = total - 1
+	print("[BATTLE_EDIT] nav dir=%d idx=%d(cur=%d)/%d" % [dir, _battle_edit_history_idx, cur, total])
+	if total == 0:
 		if lbl:
-			lbl.text = "▶ step=%d" % _battle_edit_step
+			lbl.text = "（画像履歴なし）"
 			_battle_edit_flash_label(lbl)
-	else:
-		if _battle_edit_step <= 0:
+		return
+	if dir < 0:
+		# ◀ 前の画像へ
+		if cur > 0:
+			_battle_edit_history_idx = cur - 1
+			_battle_edit_restore_portrait(log[_battle_edit_history_idx])
 			if lbl:
-				lbl.text = "◀ 開始位置 #%d" % _battle_edit_click_count
+				lbl.text = "◀ 画像 %d/%d" % [_battle_edit_history_idx + 1, total]
 				_battle_edit_flash_label(lbl)
-			return
-		_battle_edit_step -= 1
-		await _battle_edit_restart_and_fast_forward(_battle_edit_step)
-		if lbl:
-			lbl.text = "◀ step=%d" % _battle_edit_step
-			_battle_edit_flash_label(lbl)
-	# アウトライン追従
-	var rects := _battle_edit_visible_rects(_battle_edit_ref)
-	if not rects.is_empty():
-		_battle_edit_target_rect = rects[0]
-		_battle_edit_last_tex = null
-		_battle_edit_update_outline()
-		_battle_edit_flash_outline()
+		else:
+			_battle_edit_history_idx = 0
+			if lbl:
+				lbl.text = "◀ 先頭です (1/%d)" % total
+				_battle_edit_flash_label(lbl)
+	else:
+		# ▶ 次の画像へ
+		if cur < total - 1:
+			_battle_edit_history_idx = cur + 1
+			_battle_edit_restore_portrait(log[_battle_edit_history_idx])
+			if lbl:
+				lbl.text = "▶ 画像 %d/%d" % [_battle_edit_history_idx + 1, total]
+				_battle_edit_flash_label(lbl)
+		else:
+			# 末尾 → 新しい画像が出るまでバトルを進める。
+			# 進行後はバトル側が立ち絵・背景・セリフを正しく描画済みなので復元はしない。
+			var advanced := false
+			var blocked := false
+			for _step in range(60):
+				var status := await _battle_edit_advance_state()
+				if not is_instance_valid(_battle_edit_ref):
+					break
+				if status == "blocked_match":
+					blocked = true
+					break
+				if _battle_edit_get_log().size() > total:
+					advanced = true
+					break
+			var new_log := _battle_edit_get_log()
+			if advanced:
+				_battle_edit_history_idx = new_log.size() - 1
+				_battle_edit_sync_to_live()
+				if lbl:
+					lbl.text = "▶ 画像 %d/%d" % [_battle_edit_history_idx + 1, new_log.size()]
+					_battle_edit_flash_label(lbl)
+			elif blocked:
+				if lbl:
+					lbl.text = "勝負してください（左の結果強制ボタンで勝敗を選び、カードを出す）"
+					_battle_edit_flash_label(lbl)
+			else:
+				if lbl:
+					lbl.text = "▶ 末尾です (%d枚)" % new_log.size()
+					_battle_edit_flash_label(lbl)
 
-# 旧 battle を表示したまま、新 battle を裏で組み立てて早送りし、完成後にアトミックに差し替える。
-func _battle_edit_restart_and_fast_forward(target_step: int):
-	if _battle_edit_chapter_info.is_empty():
-		print("[BATTLE_EDIT] rewind FAIL: no chapter_info")
-		return
-	var info: Dictionary = _battle_edit_chapter_info
-	var old_battle = _battle_edit_ref
-	# 旧 battle の処理を即時停止して、復元中に裏で状態が変わらないようにする。
-	# 表示はそのまま残るので、ユーザは旧画像を見続ける。
-	if is_instance_valid(old_battle):
-		old_battle.process_mode = Node.PROCESS_MODE_DISABLED
-	# 新インスタンスを完全に不可視で生成
-	var script_res = ResourceLoader.load(info.path, "", ResourceLoader.CACHE_MODE_REPLACE)
-	if not script_res:
-		print("[BATTLE_EDIT] rewind FAIL: cannot load chapter")
-		return
-	var chapter = script_res.new()
-	var bg_tex = load(info.bg) if not String(info.get("bg", "")).is_empty() else null
-	var new_battle = battle_scene_scene.instantiate()
-	# add_child より前に visible=false にして、tree 入った瞬間の描画を完全に防ぐ。
-	new_battle.visible = false
-	new_battle.modulate = Color(1, 1, 1, 0)
-	add_child(new_battle)
-	new_battle.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	# 新 battle を旧 battle のすぐ後ろに置く（旧が手前で描画されるよう）。
-	var old_idx: int = -1
-	if is_instance_valid(old_battle):
-		old_idx = old_battle.get_index()
-	if old_idx >= 0:
-		move_child(new_battle, old_idx)
-	if not story_script:
-		story_script = DefaultStoryScript.new()
-	new_battle.setup(story_script.get_cast(), bg_tex, GameState.inventory)
-	new_battle.force_result_mode = true
-	var entry_mode: String = info.get("mode", "battle")
-	var use_minigame: bool = entry_mode == "minigame"
-	var use_tutorial: bool = entry_mode == "tutorial"
-	new_battle.start_battle(chapter, use_tutorial, use_minigame)
-	# 参照だけ新へ切替えて advance を走らせる（旧 battle は表示・凍結状態）
-	_battle_edit_ref = new_battle
-	_battle_edit_target_rect = null
-	_battle_edit_last_tex = null
-	# 早送り
-	for i in range(target_step):
-		for _wait in range(8):
-			await get_tree().process_frame
-		await _battle_edit_advance_state()
-	# アトミック切替: 同一フレームで「新を表示」「旧を非表示」を行う
-	new_battle.modulate = Color(1, 1, 1, 1)
-	new_battle.visible = true
-	if is_instance_valid(old_battle):
-		old_battle.visible = false
-		old_battle.queue_free()
-	# パネルを最前面へ
-	if _battle_edit_panel and is_instance_valid(_battle_edit_panel):
-		move_child(_battle_edit_panel, get_child_count() - 1)
-
-func _battle_edit_advance_state():
+# バトルを1手進める。戻り値:
+#   "advanced"      … 進行した
+#   "blocked_match" … カード選択待ち。ユーザーが結果強制ボタン＋カードで勝負する必要あり
+#   "done"          … バトル参照が無効
+func _battle_edit_advance_state() -> String:
 	if not is_instance_valid(_battle_edit_ref):
-		return
+		return "done"
 	var battle = _battle_edit_ref
+	# デッキ構築中ならおまかせ編成して確定
+	if "_deck_building" in battle and battle._deck_building:
+		print("[BATTLE_EDIT] advance: auto-build deck + confirm")
+		if battle.has_method("_on_auto_pressed"):
+			battle._on_auto_pressed()
+		await get_tree().process_frame
+		if battle.has_method("_on_confirm_pressed"):
+			battle._on_confirm_pressed()
+		await get_tree().process_frame
+		return "advanced"
 	# ダイアログ進行中なら band を進める
 	var sc = battle._story_scene if "_story_scene" in battle else null
 	if sc and "_waiting_for_input" in sc and sc._waiting_for_input:
@@ -1334,13 +1366,21 @@ func _battle_edit_advance_state():
 		if sc.has_method("_trigger_advance"):
 			sc._trigger_advance()
 		await get_tree().process_frame
-		return
-	# カード選択待ちなら自動でロックを選び、強制勝利で進める
+		return "advanced"
+	# カード選択待ち
 	if "action_prompt" in battle and battle.action_prompt and battle.action_prompt.visible:
-		print("[BATTLE_EDIT] advance: auto-pick rock + force win")
-		battle._forced_result = "win"
-		await battle.force_select_hand(0)  # 0 = ROCK
-		return
+		# select_hand 中（結果強制ボタンが出ている）はユーザーに勝負させる。
+		# 自動解決すると select_hand の await を満たせずバトルが停止するため進めない。
+		var has_force_btns: bool = "_force_result_container" in battle \
+			and battle._force_result_container != null \
+			and is_instance_valid(battle._force_result_container)
+		if has_force_btns:
+			print("[BATTLE_EDIT] advance: blocked — 勝負待ち")
+			return "blocked_match"
+		# force_select_hand（チュートリアル等の自動選択）は自動完了するので待つだけ
+		print("[BATTLE_EDIT] advance: wait auto card-select")
+		await get_tree().process_frame
+		return "advanced"
 	# それ以外は ui_accept を擬似発火
 	print("[BATTLE_EDIT] advance: send ui_accept")
 	var ev := InputEventAction.new()
@@ -1348,6 +1388,7 @@ func _battle_edit_advance_state():
 	ev.pressed = true
 	Input.parse_input_event(ev)
 	await get_tree().process_frame
+	return "advanced"
 
 # クリック時の視認性向上: ラベルを一瞬黄→緑→白で色変化させる
 func _battle_edit_flash_label(lbl: Label):
@@ -1378,7 +1419,15 @@ func _connect_edit_to_battle(edit_panel: PanelContainer, battle_ref, encounter_d
 	_battle_edit_target_rect = null
 	_battle_edit_panel = edit_panel
 	_battle_edit_click_count = 0
-	# ナビゲーション: ◀ / ▶ で対象キャラ枠を切替
+	_battle_edit_history_idx = -1
+	# battle 内 StoryScene の立ち絵履歴を有効化（set_portrait/appear ごとに記録される）
+	var bsc = battle_ref._story_scene if "_story_scene" in battle_ref else null
+	if bsc and "portrait_log_enabled" in bsc:
+		bsc.portrait_log_enabled = true
+		print("[BATTLE_EDIT] portrait_log enabled (size=%d)" % bsc.portrait_log.size())
+	else:
+		print("[BATTLE_EDIT] WARN: could not enable portrait_log (bsc=%s)" % bsc)
+	# ナビゲーション: ◀ / ▶ で画像履歴を行き来
 	var prev_btn: Button = edit_panel.find_child("PrevBtn", true, false)
 	var next_btn: Button = edit_panel.find_child("NextBtn", true, false)
 	print("[BATTLE_EDIT] _connect_edit_to_battle: prev_btn=%s next_btn=%s" % [prev_btn, next_btn])
@@ -1404,46 +1453,16 @@ func _process(_delta: float):
 		if not rects.is_empty():
 			_battle_edit_target_rect = rects[0]
 			_battle_edit_update_target_label()
-			_battle_edit_update_outline()
-	# アウトラインを毎フレーム追従させる（スライダで rect が動いた時も）
-	if _battle_edit_outline and is_instance_valid(_battle_edit_outline) and _battle_edit_outline.visible:
-		if _battle_edit_target_rect and is_instance_valid(_battle_edit_target_rect):
-			var r: Rect2 = _battle_edit_target_rect.get_global_rect()
-			_battle_edit_outline.position = r.position
-			_battle_edit_outline.size = r.size
 	var story_sc = _battle_edit_ref._story_scene
 	if not story_sc:
 		return
 	var char_rect: TextureRect = _find_visible_char_rect(story_sc)
 	if not char_rect:
 		return
-	# 画像が変わったらスライダーを実際の値に更新（シグナル抑止して一括反映）
+	# 画像が変わったらスライダー更新（履歴は StoryScene.portrait_log が担当）
 	if char_rect.texture != _battle_edit_last_tex:
 		_battle_edit_last_tex = char_rect.texture
-		var vp_size: Vector2 = get_viewport_rect().size
-		var tex_size: Vector2 = char_rect.texture.get_size()
-		var s: float = char_rect.scale.x
-		var visual_w: float = tex_size.x * s
-		var visual_h: float = tex_size.y * s
-		var base_x: float = (vp_size.x - visual_w) / 2.0
-		var base_y: float = vp_size.y - visual_h
-		var offset_x: float = char_rect.position.x - base_x
-		var offset_y: float = char_rect.position.y - base_y
-		_battle_edit_sl.scale.set_block_signals(true)
-		_battle_edit_sl.x.set_block_signals(true)
-		_battle_edit_sl.y.set_block_signals(true)
-		if _battle_edit_sl.scale_spin: _battle_edit_sl.scale_spin.set_block_signals(true)
-		if _battle_edit_sl.x_spin: _battle_edit_sl.x_spin.set_block_signals(true)
-		if _battle_edit_sl.y_spin: _battle_edit_sl.y_spin.set_block_signals(true)
-		_set_slider_range(_battle_edit_sl.scale, _battle_edit_sl.scale_spin, 0.1, 1.5, 0.01, s)
-		_set_slider_range(_battle_edit_sl.x, _battle_edit_sl.x_spin, -500, 500, 1, offset_x)
-		_set_slider_range(_battle_edit_sl.y, _battle_edit_sl.y_spin, -600, 300, 1, offset_y)
-		_battle_edit_sl.scale.set_block_signals(false)
-		_battle_edit_sl.x.set_block_signals(false)
-		_battle_edit_sl.y.set_block_signals(false)
-		if _battle_edit_sl.scale_spin: _battle_edit_sl.scale_spin.set_block_signals(false)
-		if _battle_edit_sl.x_spin: _battle_edit_sl.x_spin.set_block_signals(false)
-		if _battle_edit_sl.y_spin: _battle_edit_sl.y_spin.set_block_signals(false)
+		_battle_edit_sync_sliders(char_rect)
 
 func _find_visible_char_rect(story_sc) -> TextureRect:
 	# 編集モードでナビゲーションで選択中の rect を優先
@@ -1480,6 +1499,14 @@ func _on_battle_slider(_value: float, sl: Dictionary, battle_ref):
 	char_rect.position = new_pos
 	if story_sc._char_locked_positions.has(char_rect):
 		story_sc._char_locked_positions[char_rect] = new_pos
+	# スライダー編集を立ち絵履歴へ反映（◀/▶ で戻っても編集が保持されるように）
+	var elog := _battle_edit_get_log()
+	var ei := _battle_edit_history_idx
+	if ei < 0:
+		ei = elog.size() - 1
+	if ei >= 0 and ei < elog.size() and elog[ei].get("rect") == char_rect:
+		elog[ei]["scale"] = s
+		elog[ei]["position"] = new_pos
 	var row_parent2 = sl.scale.get_parent().get_parent()
 	var info: Label = row_parent2.find_child("InfoLabel", true, false)
 	if info:
@@ -3192,9 +3219,6 @@ func _run_event_battle_edit(ch_info: Dictionary):
 	event_battle.start_battle(chapter, use_tutorial, use_minigame)
 	move_child(edit_panel, get_child_count() - 1)
 	edit_panel.set_meta("chapter_path", ch_info.path)
-	# ◀ 戻る で再生成するために ch_info を保存
-	_battle_edit_chapter_info = ch_info
-	_battle_edit_step = 0
 	_connect_edit_to_battle(edit_panel, event_battle, {})
 
 	# 戻るボタンで battle_finished をエミットして終了
@@ -3208,12 +3232,8 @@ func _run_event_battle_edit(ch_info: Dictionary):
 	_battle_edit_active = false
 	_battle_edit_target_rect = null
 	_battle_edit_panel = null
-	_battle_edit_chapter_info = {}
-	_battle_edit_step = 0
 	_battle_edit_advancing = false
-	if _battle_edit_outline and is_instance_valid(_battle_edit_outline):
-		_battle_edit_outline.queue_free()
-		_battle_edit_outline = null
+	_battle_edit_history_idx = -1
 	event_battle.queue_free()
 	edit_panel.queue_free()
 

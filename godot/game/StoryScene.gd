@@ -57,6 +57,11 @@ func _process(_delta):
 			if not rect.position.is_equal_approx(locked_pos):
 				rect.position = locked_pos
 
+# 編集モード用: 立ち絵表示履歴。_show_character が呼ばれるたびに1要素追加される。
+# 各要素 = {rect, side, texture, texture_path, character_id, scale, position}
+var portrait_log: Array = []
+var portrait_log_enabled: bool = false
+
 func _is_in_edit_panel(control) -> bool:
 	if control == null:
 		return false
@@ -322,7 +327,10 @@ func _cleanup_for_skip():
 
 # --- Character display ---
 
-func _show_character(character_data: StoryCharacter, portrait_name: String, side: String, position_mode: String = "", position_value: Vector2 = Vector2.ZERO, portrait_scale: float = 0.0):
+# log_this: true のときだけ portrait_log に記録する。
+# set_portrait / appear / show（show_character_command 経由）のみ true。
+# アニメーションフレームや band の立ち絵再表示は記録しない。
+func _show_character(character_data: StoryCharacter, portrait_name: String, side: String, position_mode: String = "", position_value: Vector2 = Vector2.ZERO, portrait_scale: float = 0.0, log_this: bool = false):
 	var resolved_portrait := portrait_name
 	if resolved_portrait.is_empty():
 		if not character_data.id.is_empty() and _character_portrait_cache.has(character_data.id):
@@ -394,7 +402,91 @@ func _show_character(character_data: StoryCharacter, portrait_name: String, side
 			"scale": char_scale,
 		}
 	_char_locked_positions[target_rect] = target_rect.position
+	# 編集モード用: set_portrait / appear で立ち絵を表示するたびに履歴へ記録
+	if portrait_log_enabled and log_this:
+		portrait_log.append({
+			"rect": target_rect,
+			"side": side,
+			"texture": tex,
+			"texture_path": texture_path,
+			"character_id": character_id,
+			"scale": char_scale,
+			"position": target_rect.position,
+			"flip_h": target_rect.flip_h,
+			"background": _effective_background_texture(),
+			"dialogue": capture_dialogue(),
+		})
+		print("[PLOG] append #%d tex=%s size=%s scale=%.3f pos=%s flip=%s" % [
+			portrait_log.size() - 1, texture_path, target_rect.size, char_scale,
+			target_rect.position, target_rect.flip_h])
 	return target_rect
+
+# 現在「実効的に」表示されている背景テクスチャを返す。
+# クロスフェード中は遷移先 (background_next_rect) を採用する。
+func _effective_background_texture() -> Texture2D:
+	if background_next_rect and background_next_rect.visible and background_next_rect.texture:
+		return background_next_rect.texture
+	if background_rect:
+		return background_rect.texture
+	return null
+
+# 編集モードのナビゲーション復元用: 背景を即時に差し替え、フェード中レイヤを畳む。
+func restore_background(tex: Texture2D) -> void:
+	if tex == null or not background_rect:
+		return
+	background_rect.texture = tex
+	background_rect.visible = true
+	background_rect.modulate = Color.WHITE
+	if background_next_rect:
+		background_next_rect.visible = false
+		background_next_rect.modulate = Color(1, 1, 1, 0)
+
+# 編集モードのナビゲーション用: 現在のセリフ帯の表示状態をまるごと記録する。
+func capture_dialogue() -> Dictionary:
+	if not dialogue_band:
+		return {}
+	return {
+		"band_visible": dialogue_band.visible,
+		"n_body": dialogue_band_body.text,
+		"n_body_vis": dialogue_band_body.visible,
+		"n_speaker": dialogue_band_speaker.text,
+		"n_speaker_vis": dialogue_band_speaker.visible,
+		"l_visible": dialogue_band_left.visible,
+		"l_body": dialogue_band_left_body.text,
+		"l_speaker": dialogue_band_left_speaker.text,
+		"l_speaker_vis": dialogue_band_left_speaker.visible,
+		"r_visible": dialogue_band_right.visible,
+		"r_body": dialogue_band_right_body.text,
+		"r_speaker": dialogue_band_right_speaker.text,
+		"r_speaker_vis": dialogue_band_right_speaker.visible,
+	}
+
+# 編集モードのナビゲーション用: capture_dialogue で取った状態へ戻す。
+# タイプライター演出は止め、テキストは全文表示する。
+func restore_dialogue(d: Dictionary) -> void:
+	if not dialogue_band:
+		return
+	_skip_typing()
+	if d == null or d.is_empty():
+		dialogue_band.visible = false
+		_hide_inner_bands()
+		return
+	dialogue_band.visible = d.get("band_visible", false)
+	dialogue_band_body.text = d.get("n_body", "")
+	dialogue_band_body.visible_characters = -1
+	dialogue_band_body.visible = d.get("n_body_vis", false)
+	dialogue_band_speaker.text = d.get("n_speaker", "")
+	dialogue_band_speaker.visible = d.get("n_speaker_vis", false)
+	dialogue_band_left.visible = d.get("l_visible", false)
+	dialogue_band_left_body.text = d.get("l_body", "")
+	dialogue_band_left_body.visible_characters = -1
+	dialogue_band_left_speaker.text = d.get("l_speaker", "")
+	dialogue_band_left_speaker.visible = d.get("l_speaker_vis", false)
+	dialogue_band_right.visible = d.get("r_visible", false)
+	dialogue_band_right_body.text = d.get("r_body", "")
+	dialogue_band_right_body.visible_characters = -1
+	dialogue_band_right_speaker.text = d.get("r_speaker", "")
+	dialogue_band_right_speaker.visible = d.get("r_speaker_vis", false)
 
 func hide_character_entry(entry: Cmd.HideCharacter):
 	if not entry.character_id.is_empty():
@@ -911,7 +1003,7 @@ func show_character_command(entry: Cmd.ShowCharacter):
 	var old_snapshot: TextureRect = null
 	if do_cross_fade:
 		old_snapshot = _create_cross_fade_snapshot(target_rect)
-	var result_rect: TextureRect = _show_character(char_data, entry.portrait_id, side, entry.position_mode, entry.position, entry.portrait_scale)
+	var result_rect: TextureRect = _show_character(char_data, entry.portrait_id, side, entry.position_mode, entry.position, entry.portrait_scale, true)
 	if result_rect == null:
 		if old_snapshot:
 			old_snapshot.queue_free()
@@ -922,6 +1014,9 @@ func show_character_command(entry: Cmd.ShowCharacter):
 		result_rect.flip_h = true
 	else:
 		result_rect.flip_h = false
+	# flip_h は _show_character 内のログ記録後に確定するため、最新エントリを補正
+	if portrait_log_enabled and not portrait_log.is_empty():
+		portrait_log[-1]["flip_h"] = result_rect.flip_h
 	if do_cross_fade and old_snapshot:
 		_run_cross_fade(old_snapshot, result_rect, entry.transition_duration)
 	else:
