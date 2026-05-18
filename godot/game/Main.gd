@@ -586,6 +586,7 @@ func _run_char_edit_test(encounter_data: Dictionary):
 	_battle_edit_panel = null
 	_battle_edit_advancing = false
 	_battle_edit_history_idx = -1
+	_battle_edit_last_log_size = 0
 	edit_battle.queue_free()
 	battle_edit_panel.queue_free()
 
@@ -1144,6 +1145,9 @@ var _battle_edit_advancing: bool = false
 # 画像履歴は StoryScene.portrait_log（set_portrait / appear 呼び出しごとに記録）を参照。
 # _battle_edit_history_idx はその log への現在位置。
 var _battle_edit_history_idx: int = -1
+# 直近に観測した portrait_log のサイズ。ライブのバトルが自走して
+# 立ち絵を追加したことを _process で検知し、history_idx を追従させるために使う。
+var _battle_edit_last_log_size: int = 0
 
 # battle の StoryScene.portrait_log を返す
 func _battle_edit_get_log() -> Array:
@@ -1311,35 +1315,14 @@ func _battle_edit_handle_nav(dir: int):
 				lbl.text = "▶ 画像 %d/%d" % [_battle_edit_history_idx + 1, total]
 				_battle_edit_flash_label(lbl)
 		else:
-			# 末尾 → 新しい画像が出るまでバトルを進める。
-			# 進行後はバトル側が立ち絵・背景・セリフを正しく描画済みなので復元はしない。
-			var advanced := false
-			var blocked := false
-			for _step in range(60):
-				var status := await _battle_edit_advance_state()
-				if not is_instance_valid(_battle_edit_ref):
-					break
-				if status == "blocked_match":
-					blocked = true
-					break
-				if _battle_edit_get_log().size() > total:
-					advanced = true
-					break
-			var new_log := _battle_edit_get_log()
-			if advanced:
-				_battle_edit_history_idx = new_log.size() - 1
-				_battle_edit_sync_to_live()
-				if lbl:
-					lbl.text = "▶ 画像 %d/%d" % [_battle_edit_history_idx + 1, new_log.size()]
-					_battle_edit_flash_label(lbl)
-			elif blocked:
-				if lbl:
-					lbl.text = "勝負してください（左の結果強制ボタンで勝敗を選び、カードを出す）"
-					_battle_edit_flash_label(lbl)
-			else:
-				if lbl:
-					lbl.text = "▶ 末尾です (%d枚)" % new_log.size()
-					_battle_edit_flash_label(lbl)
+			# 末尾。立ち絵は編集モード開始時に全てキャプチャ済みのため、
+			# バトルを進める処理は行わず即座に末尾である旨を表示する。
+			if lbl:
+				if total <= 1:
+					lbl.text = "この章の立ち絵は1枚です"
+				else:
+					lbl.text = "▶ 末尾です (%d枚)" % total
+				_battle_edit_flash_label(lbl)
 
 # バトルを1手進める。戻り値:
 #   "advanced"      … 進行した
@@ -1420,10 +1403,12 @@ func _connect_edit_to_battle(edit_panel: PanelContainer, battle_ref, encounter_d
 	_battle_edit_panel = edit_panel
 	_battle_edit_click_count = 0
 	_battle_edit_history_idx = -1
+	_battle_edit_last_log_size = 0
 	# battle 内 StoryScene の立ち絵履歴を有効化（set_portrait/appear ごとに記録される）
 	var bsc = battle_ref._story_scene if "_story_scene" in battle_ref else null
 	if bsc and "portrait_log_enabled" in bsc:
 		bsc.portrait_log_enabled = true
+		_battle_edit_last_log_size = bsc.portrait_log.size()
 		print("[BATTLE_EDIT] portrait_log enabled (size=%d)" % bsc.portrait_log.size())
 	else:
 		print("[BATTLE_EDIT] WARN: could not enable portrait_log (bsc=%s)" % bsc)
@@ -1438,6 +1423,12 @@ func _connect_edit_to_battle(edit_panel: PanelContainer, battle_ref, encounter_d
 		next_btn.pressed.connect(_battle_edit_cycle_target.bind(1))
 		print("[BATTLE_EDIT]   next_btn.pressed connected")
 	_battle_edit_update_target_label()
+	# 立ち絵キャプチャ直後の center_char は最後の立ち絵を映しているため、
+	# 編集開始時は履歴の先頭（最初の立ち絵 = 勝負前）へ戻して表示する。
+	if bsc and "portrait_log" in bsc and not bsc.portrait_log.is_empty():
+		_battle_edit_history_idx = 0
+		_battle_edit_restore_portrait(bsc.portrait_log[0])
+		print("[BATTLE_EDIT] reset to first portrait (#0 of %d)" % bsc.portrait_log.size())
 
 func _process(_delta: float):
 	if not _battle_edit_active:
@@ -1456,6 +1447,14 @@ func _process(_delta: float):
 	var story_sc = _battle_edit_ref._story_scene
 	if not story_sc:
 		return
+	# ライブのバトルが自走して新しい立ち絵を表示した場合（勝利動画の終了後に
+	# 次の outfit の set_portrait が走る等）、portrait_log は ◀/▶ を介さず増える。
+	# このとき history_idx を最新エントリへ追従させないと、スライダー編集が
+	# 古いエントリへ書き込まれ、別画像のスケール/位置が破壊される。
+	var log_size: int = story_sc.portrait_log.size() if "portrait_log" in story_sc else 0
+	if log_size > _battle_edit_last_log_size:
+		_battle_edit_history_idx = log_size - 1
+	_battle_edit_last_log_size = log_size
 	var char_rect: TextureRect = _find_visible_char_rect(story_sc)
 	if not char_rect:
 		return
@@ -1504,6 +1503,15 @@ func _on_battle_slider(_value: float, sl: Dictionary, battle_ref):
 	var ei := _battle_edit_history_idx
 	if ei < 0:
 		ei = elog.size() - 1
+	# history_idx が表示中の画像と食い違っている場合（ライブ自走等で同期が
+	# ズレた場合）、別画像のエントリへ誤って書き込まないよう、表示中の
+	# テクスチャと一致するエントリ（最新の出現位置）へ書き込み先を補正する。
+	if ei >= 0 and ei < elog.size() and elog[ei].get("texture") != char_rect.texture:
+		ei = -1
+		for i in range(elog.size() - 1, -1, -1):
+			if elog[i].get("texture") == char_rect.texture:
+				ei = i
+				break
 	if ei >= 0 and ei < elog.size() and elog[ei].get("rect") == char_rect:
 		elog[ei]["scale"] = s
 		elog[ei]["position"] = new_pos
@@ -3111,9 +3119,12 @@ func _story_edit_save_current(entries: Array, idx: int, edit_panel: PanelContain
 const EVENT_BATTLE_CHAPTERS := [
 	# --- チュートリアル ---
 	{"id": "prologue_tutorial", "name": "プロローグ チュートリアル", "path": "res://battle/chapters/PrologueBattleChapter.gd", "bg": "res://assets/backgrounds/prologue/bg05_prison_cell.png", "mode": "tutorial"},
+	# 冒険者A戦は本編で b.tutorial(Stage1BattleChapter.gd) として起動される固定スクリプト戦
+	# （Stage1Chapter.gd 参照）。通常バトル（b.battle）は存在しないため、編集モードも
+	# 実ゲームと揃えて tutorial モードで開く。
+	{"id": "stage1", "name": "ステージ1 チュートリアル（冒険者A戦）", "path": "res://battle/chapters/Stage1BattleChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png", "mode": "tutorial"},
 	# --- イベントバトル ---
 	{"id": "prologue", "name": "プロローグ（マチルダ戦）", "path": "res://battle/chapters/PrologueBattleChapter.gd", "bg": "res://assets/backgrounds/prologue/bg05_prison_cell.png", "mode": "battle"},
-	{"id": "stage1", "name": "ステージ1（冒険者A戦）", "path": "res://battle/chapters/Stage1BattleChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png", "mode": "battle"},
 	{"id": "stage2", "name": "ステージ2（レイラ戦）", "path": "res://battle/chapters/Stage2BattleChapter.gd", "bg": "res://assets/backgrounds/stage2/bg_inn_meeting.png", "mode": "battle"},
 	{"id": "stage3", "name": "ステージ3（マグダレナ戦）", "path": "res://battle/chapters/Stage3BattleChapter.gd", "bg": "res://assets/backgrounds/subevent2/bg02_church_interior.png", "mode": "battle"},
 	{"id": "stage4", "name": "ステージ4（セレス戦）", "path": "res://battle/chapters/Stage4BattleChapter.gd", "bg": "res://assets/backgrounds/stage4/bg_dojo_third.png", "mode": "battle"},
@@ -3234,6 +3245,7 @@ func _run_event_battle_edit(ch_info: Dictionary):
 	_battle_edit_panel = null
 	_battle_edit_advancing = false
 	_battle_edit_history_idx = -1
+	_battle_edit_last_log_size = 0
 	event_battle.queue_free()
 	edit_panel.queue_free()
 

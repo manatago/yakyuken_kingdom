@@ -172,7 +172,7 @@ func outfit_3(bt):
 	var result = await bt.janken(selection, ai_opts)
 
 	if result == "win":
-		matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_014.png", {"scale": 0.40, "side": "center", "position": [0, -250]})
+		matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_014.png", {"scale": 0.40, "side": "center", "position": [0, -255]})
 		matilda.band("くっ、変態の癖に。")
 		await bt.play_video("res://assets/videos/prologue_win_1.ogv")
 

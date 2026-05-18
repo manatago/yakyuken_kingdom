@@ -183,7 +183,9 @@ func start_battle(chapter: BattleChapterBase, is_tutorial := false, is_minigame 
 	story_layer.add_child(_story_scene)
 	_story_scene.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_story_scene.set_cast(_cast)
-	# 編集モード（force_result_mode）では setup_scene より前に立ち絵履歴を有効化
+	# 編集モード（force_result_mode）では setup_scene より前に立ち絵履歴を有効化。
+	# editor_capture を立て、set_portrait 等の呼び出し位置を記録させる。
+	StoryCommands.editor_capture = force_result_mode
 	if force_result_mode and "portrait_log_enabled" in _story_scene:
 		_story_scene.portrait_log_enabled = true
 	if _initial_bg_texture:
@@ -229,6 +231,18 @@ func _deck_building_phase():
 	_deck_building = true
 	_deck_ready = false
 	_player_deck.clear()
+
+	# 編集モード（force_result_mode）: デッキ構築UIを出さず、おまかせ編成で即確定。
+	# 立ち絵のスケール/位置調整が目的なので、カードバトルの手順は省略する。
+	if force_result_mode:
+		_on_auto_pressed()
+		confirm_button.visible = false
+		auto_button.visible = false
+		action_prompt.visible = false
+		hand_panel.visible = false
+		_deck_building = false
+		_clear_hand_display()
+		return
 
 	# Show hand cards panel for deck building
 	hand_panel.visible = true
@@ -394,6 +408,9 @@ func pause(duration: float):
 # ミニゲーム向け: 溜まっているコマンドを全て反映してから指定秒数待つ
 func wait(duration: float):
 	await _flush_pending()
+	# 編集モード: 時間待ちはスキップ（立ち絵キャプチャを一気に走らせる）
+	if force_result_mode:
+		return
 	if duration > 0.0:
 		await get_tree().create_timer(duration).timeout
 
@@ -487,6 +504,18 @@ func _add_command(command):
 func force_select_hand(hand: Hand) -> Dictionary:
 	# ピー助がカードを強制選択する演出
 	await _flush_pending()
+	# 編集モード: 演出タイマーを挟まず、指定カードを即座に選択・消費する
+	if force_result_mode:
+		for entry in _deck_buttons:
+			if entry.hand == hand and not entry.used:
+				_selected_hand = hand
+				_selected_grade = entry.grade
+				_selected_button = entry.button
+				_hand_selected = true
+				_consume_selected_card()
+				_update_score()
+				return {"hand": _selected_hand, "grade": _selected_grade, "item": null}
+		return {"hand": hand, "grade": 1, "item": null}
 	_set_cards_enabled(false)
 	action_prompt.visible = true
 	card_label.text = "カードを選択してください"
@@ -525,9 +554,26 @@ func force_select_hand(hand: Hand) -> Dictionary:
 	_update_score()
 	return {"hand": _selected_hand, "grade": _selected_grade, "item": null}
 
+# 編集モード用: デッキ先頭の未使用カードを自動選択・消費して返す。
+# デッキ切れ時はダミーを返す（_run_battle のデッキ枚数チェックで停止する）。
+func _edit_auto_pick_card() -> Dictionary:
+	for entry in _deck_buttons:
+		if not entry.used:
+			_selected_hand = entry.hand
+			_selected_grade = entry.grade
+			_selected_button = entry.button
+			_hand_selected = true
+			_consume_selected_card()
+			_update_score()
+			return {"hand": _selected_hand, "grade": _selected_grade, "item": ""}
+	return {"hand": Hand.ROCK, "grade": 1, "item": ""}
+
 func select_hand() -> Dictionary:
 	await _flush_pending()
 	_round_item_effect = ""
+	# 編集モード: カード選択UIを出さず、デッキのカードを自動消費して即返す
+	if force_result_mode:
+		return _edit_auto_pick_card()
 	_set_cards_enabled(true)
 	_hand_selected = false
 	_hand_confirmed = false
@@ -567,10 +613,10 @@ func janken(selection: Dictionary, ai_opts: Dictionary = {}) -> String:
 	var opponent_grade: int = opp_pick.grade
 	var result := _judge_with_grade(player_hand, player_grade, opponent_hand, opponent_grade)
 	# 結果強制モード: 結果に合わせて相手の手も変更
+	# 編集モードでは _forced_result をクリアせず、結果セレクタの選択を次ラウンド以降も維持する
 	if force_result_mode and not _forced_result.is_empty():
 		print("[FORCE] original=%s forced=%s" % [result, _forced_result])
 		result = _forced_result
-		_forced_result = ""
 		match result:
 			"win":
 				# プレイヤーが勝つ手を相手に出させる
@@ -587,7 +633,9 @@ func janken(selection: Dictionary, ai_opts: Dictionary = {}) -> String:
 			"draw":
 				opponent_hand = player_hand
 
-	await _play_janken_overlay(player_hand, opponent_hand, result)
+	# 編集モードではじゃんけん演出（約十数秒のアニメーション）をスキップする
+	if not force_result_mode:
+		await _play_janken_overlay(player_hand, opponent_hand, result)
 
 	if result == "win":
 		_opponent_outfit -= 1
@@ -600,9 +648,11 @@ func janken(selection: Dictionary, ai_opts: Dictionary = {}) -> String:
 		if _round_item_effect != "protect_card":
 			_captured_by_opponent.append({"hand": HAND_KEYS[player_hand], "grade": player_grade})
 	elif result == "draw":
-		# True draw (same hand, same grade) — refund both
-		_refund_card(player_hand, player_grade)
-		_refund_opponent_card(opponent_hand, opponent_grade)
+		# True draw (same hand, same grade) — refund both。
+		# 編集モードでは refund せずデッキを消費させ、あいこ固定でも確実にループを終わらせる。
+		if not force_result_mode:
+			_refund_card(player_hand, player_grade)
+			_refund_opponent_card(opponent_hand, opponent_grade)
 	_update_score()
 	return result
 
@@ -610,7 +660,16 @@ func janken(selection: Dictionary, ai_opts: Dictionary = {}) -> String:
 # Internal battle flow
 # ============================================================
 
+## 編集モード: 立ち絵キャプチャが最後まで完了したか（ハング検知・テスト用）
+var portrait_capture_done := false
+
 func _run_battle():
+	# 編集モード: カードバトルを流さず、各 outfit の全分岐立ち絵をまとめて記録する
+	if force_result_mode:
+		await _run_portrait_capture()
+		portrait_capture_done = true
+		return
+
 	# Minigame mode: single function, no card UI, no reward message
 	if _is_minigame and _chapter.has_method("minigame"):
 		var mg_result = await _chapter.call("minigame", self)
@@ -670,6 +729,35 @@ func _run_battle():
 
 	_cleanup()
 	battle_finished.emit(final_result)
+
+# 編集モード用: カードバトルの手順を踏まず、各 outfit（またはチュートリアル）の
+# 立ち絵を「勝負前 → 勝ち → 負け → 引き分け」の順で portrait_log へ記録する。
+# 各 outfit 関数を結果 win/lose/draw で 3 回呼び、勝負前など重複する立ち絵は
+# StoryScene 側の重複排除で 1 つにまとめられる。
+# バトルは終了させず残し、編集パネルの ◀/▶ で全立ち絵を行き来できる
+# （編集の終了は編集パネルの「戻る」ボタンが担当）。
+func _run_portrait_capture():
+	if _is_minigame:
+		# ミニゲームの minigame() はプレイヤー操作（カード/物証クリック等）の
+		# await で停止し、編集モードでは進行できずハングする。実行せず、
+		# setup_scene で表示した立ち絵（start_battle で記録済み）のみ編集対象とする。
+		return
+	if _is_tutorial and _chapter.has_method("tutorial"):
+		for r in ["win", "lose", "draw"]:
+			_forced_result = r
+			await _chapter.call("tutorial", self)
+			await _flush_pending()
+		return
+	var outfit_count: int = _chapter.get_opponent_outfit_count() if _chapter else 0
+	for i in range(outfit_count, 0, -1):
+		var func_name := "outfit_%d" % i
+		if not _chapter.has_method(func_name):
+			continue
+		# 勝負前 → 勝ち → 負け → 引き分け の順で各分岐の立ち絵を記録
+		for r in ["win", "lose", "draw"]:
+			_forced_result = r
+			await _chapter.call(func_name, self)
+			await _flush_pending()
 
 # --- アイテム使用UI ---
 
@@ -860,6 +948,9 @@ func get_lost_gold() -> int:
 signal _video_finished
 
 func play_video(path: String):
+	# 編集モード: 動画再生はスキップ（立ち絵調整に不要）
+	if force_result_mode:
+		return
 	var stream = load(path)
 	if not stream:
 		push_warning("Video not found: %s" % path)

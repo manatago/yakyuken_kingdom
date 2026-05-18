@@ -74,13 +74,16 @@ func outfit_3(bt):
 	var result = await bt.janken(selection, {"win_rate": _win_rate(0.55)})
 
 	if result == "win":
+		layla.set_portrait(LAYLA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		layla.band("...っ。お見事です。")
 	elif result == "lose":
+		layla.set_portrait(LAYLA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		if _is_first_battle():
 			layla.band("...一本、いただきました。")
 		else:
 			layla.band("...サトシ様、お見事です。")
 	else:
+		layla.set_portrait(LAYLA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		layla.band("...引き分けでございますか。")
 
 func outfit_2(bt):
@@ -95,10 +98,13 @@ func outfit_2(bt):
 	var result = await bt.janken(selection, {"win_rate": _win_rate(0.5)})
 
 	if result == "win":
+		layla.set_portrait(LAYLA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		layla.band("...読み、お深いですね。")
 	elif result == "lose":
+		layla.set_portrait(LAYLA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		layla.band("...二本目、いただきます。")
 	else:
+		layla.set_portrait(LAYLA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		layla.band("...またですか。")
 
 func outfit_1(bt):
@@ -113,16 +119,19 @@ func outfit_1(bt):
 	var result = await bt.janken(selection, {"win_rate": _win_rate(0.45)})
 
 	if result == "win":
+		layla.set_portrait(LAYLA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		if _is_first_battle():
 			layla.band("...一本だけ、お返ししました。")
 		else:
 			layla.band("...完敗、です。")
 	elif result == "lose":
+		layla.set_portrait(LAYLA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		if _is_first_battle():
 			layla.band("...検証、終了でございます。\n再検証の権利は三日以内、一度のみ。")
 		else:
 			layla.band("...ふぅ、危なかった。")
 	else:
+		layla.set_portrait(LAYLA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		layla.band("...引き分け。")
 
 func get_lose_behavior() -> String:

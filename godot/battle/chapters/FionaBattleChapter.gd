@@ -56,10 +56,13 @@ func outfit_3(bt):
 	var result = await bt.janken(selection, {"win_rate": 0.55})
 
 	if result == "win":
+		fiona.set_portrait(FIONA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		fiona.band("...あ...！")
 	elif result == "lose":
+		fiona.set_portrait(FIONA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		fiona.band("...あの、ご、ごめんなさい...。")
 	else:
+		fiona.set_portrait(FIONA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		fiona.band("...あ、あいこ、です...。")
 
 func outfit_2(bt):
@@ -71,10 +74,13 @@ func outfit_2(bt):
 	var result = await bt.janken(selection, {"win_rate": 0.5})
 
 	if result == "win":
+		fiona.set_portrait(FIONA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		fiona.band("...や、やった...？")
 	elif result == "lose":
+		fiona.set_portrait(FIONA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		fiona.band("...ご、ごめん、なさい...！")
 	else:
+		fiona.set_portrait(FIONA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		fiona.band("...！")
 
 func outfit_1(bt):
@@ -86,10 +92,13 @@ func outfit_1(bt):
 	var result = await bt.janken(selection, {"win_rate": 0.45})
 
 	if result == "win":
+		fiona.set_portrait(FIONA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		fiona.band("...！ や、やった、です...呪いが、解けます...！")
 	elif result == "lose":
+		fiona.set_portrait(FIONA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		fiona.band("...ぁ...そんな...呪いが、まだ...！")
 	else:
+		fiona.set_portrait(FIONA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		fiona.band("...！")
 
 func get_lose_behavior() -> String:

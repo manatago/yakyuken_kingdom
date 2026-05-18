@@ -68,10 +68,13 @@ func outfit_3(bt):
 	var result = await bt.janken(selection, {"win_rate": _win_rate(0.5)})
 
 	if result == "win":
+		princess.set_portrait(PRINCESS_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		princess.band("...！")
 	elif result == "lose":
+		princess.set_portrait(PRINCESS_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		princess.band("...一本。")
 	else:
+		princess.set_portrait(PRINCESS_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		princess.band("...引き分け。")
 
 func outfit_2(bt):
@@ -86,10 +89,13 @@ func outfit_2(bt):
 	var result = await bt.janken(selection, {"win_rate": _win_rate(0.5)})
 
 	if result == "win":
+		princess.set_portrait(PRINCESS_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		princess.band("...。")
 	elif result == "lose":
+		princess.set_portrait(PRINCESS_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		princess.band("...二本目。")
 	else:
+		princess.set_portrait(PRINCESS_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		princess.band("...またあいこ。")
 
 func outfit_1(bt):
@@ -104,16 +110,19 @@ func outfit_1(bt):
 	var result = await bt.janken(selection, {"win_rate": _win_rate(0.4)})
 
 	if result == "win":
+		princess.set_portrait(PRINCESS_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		if _is_first_battle():
 			princess.band("...奇跡を、見ました。")
 		else:
 			princess.band("...敗北を、認めます。")
 	elif result == "lose":
+		princess.set_portrait(PRINCESS_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		if _is_first_battle():
 			princess.band("...第一勝負、予告通り、私の勝利でございます。")
 		else:
 			princess.band("...粘りました。")
 	else:
+		princess.set_portrait(PRINCESS_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		princess.band("...粘り強い、お方ですね。")
 
 func get_lose_behavior() -> String:

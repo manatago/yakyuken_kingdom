@@ -1,6 +1,11 @@
 extends RefCounted
 class_name StoryCommands
 
+# 編集モード（立ち絵キャプチャ）中だけ true。CharacterHandle が
+# set_portrait / show / appear の呼び出し位置（チャプターのソース行）を
+# get_stack() で記録するかどうかの判定に使う。通常プレイ時は false。
+static var editor_capture := false
+
 # --- Command classes (data) ---
 
 class Base extends Resource:
@@ -61,6 +66,9 @@ class ShowCharacter extends Base:
 	var transition: String = ""
 	var transition_duration: float = 0.3
 	var flip: int = -1
+	# 編集モード用: この立ち絵を表示した set_portrait/show/appear の
+	# 呼び出し位置（"ファイル:行"）。立ち絵履歴の重複排除キーに使う。
+	var edit_source_id: String = ""
 	func execute(scene):
 		scene.show_character_command(self)
 
@@ -444,6 +452,24 @@ class CharacterHandle:
 			_on_command.call(command)
 		return command
 
+	# 編集モード用: set_portrait / show / appear を呼び出したチャプター側の
+	# ソース位置を "ファイル:行" で返す。立ち絵履歴の重複排除キー（beat の識別子）。
+	# get_stack() はデバッグ実行時のみ有効だが、編集モードはエディタ上で使うため問題ない。
+	func _capture_source_id() -> String:
+		if not StoryCommands.editor_capture:
+			return ""
+		for frame in get_stack():
+			var src: String = frame.get("source", "")
+			if "/chapters/" in src:
+				return "%s:%d" % [src, frame.get("line", 0)]
+		return ""
+
+	# show_character コマンドへ呼び出し位置を埋め込んで記録する
+	func _record_show(command):
+		if command and command is StoryCommands.ShowCharacter:
+			command.edit_source_id = _capture_source_id()
+		return _record(command)
+
 	func say(text: String, extra: Dictionary = {}):
 		return _record(_dsl.line(_character_id, text, extra))
 
@@ -457,7 +483,7 @@ class CharacterHandle:
 		var options := extra.duplicate()
 		if options.has("position") and not options.has("position_mode"):
 			options["position_mode"] = "offset"
-		return _record(_dsl.show_character(_character_id, options))
+		return _record_show(_dsl.show_character(_character_id, options))
 
 	func appear(extra: Dictionary = {}):
 		var options := extra.duplicate()
@@ -467,13 +493,13 @@ class CharacterHandle:
 			options["appear_duration"] = 0.35
 		if options.has("position") and not options.has("position_mode"):
 			options["position_mode"] = "offset"
-		return _record(_dsl.show_character(_character_id, options))
+		return _record_show(_dsl.show_character(_character_id, options))
 
 	func stay_left():
-		return _record(_dsl.show_character(_character_id, {"side": "left"}))
+		return _record_show(_dsl.show_character(_character_id, {"side": "left"}))
 
 	func stay_right():
-		return _record(_dsl.show_character(_character_id, {"side": "right"}))
+		return _record_show(_dsl.show_character(_character_id, {"side": "right"}))
 
 	func set_portrait(portrait_id: String, extra: Dictionary = {}):
 		var opts := {"portrait": portrait_id}
@@ -495,7 +521,7 @@ class CharacterHandle:
 			opts["transition_duration"] = duration
 		if extra.has("flip"):
 			opts["flip"] = extra["flip"]
-		return _record(_dsl.show_character(_character_id, opts))
+		return _record_show(_dsl.show_character(_character_id, opts))
 
 	func animate_portrait(portrait_ids: Array, frame_duration: float = 0.15, loop_count: int = 0):
 		return _record(_dsl.animate_portrait(_character_id, portrait_ids, frame_duration, loop_count))
