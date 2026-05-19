@@ -68,10 +68,13 @@ func outfit_3(bt):
 	var result = await bt.janken(selection, {"win_rate": _win_rate(0.5)})
 
 	if result == "win":
+		feria.set_portrait(FERIA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		feria.band("...！")
 	elif result == "lose":
+		feria.set_portrait(FERIA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		feria.band("...一本。")
 	else:
+		feria.set_portrait(FERIA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		feria.band("...引き分け。")
 
 func outfit_2(bt):
@@ -86,10 +89,13 @@ func outfit_2(bt):
 	var result = await bt.janken(selection, {"win_rate": _win_rate(0.5)})
 
 	if result == "win":
+		feria.set_portrait(FERIA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		feria.band("...貴様...！")
 	elif result == "lose":
+		feria.set_portrait(FERIA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		feria.band("...二本目。")
 	else:
+		feria.set_portrait(FERIA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		feria.band("...粘るな。")
 
 func outfit_1(bt):
@@ -104,16 +110,19 @@ func outfit_1(bt):
 	var result = await bt.janken(selection, {"win_rate": _win_rate(0.4)})
 
 	if result == "win":
+		feria.set_portrait(FERIA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		if _is_first_battle():
 			feria.band("...惜しい。")
 		else:
 			feria.band("...完敗だ。")
 	elif result == "lose":
+		feria.set_portrait(FERIA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		if _is_first_battle():
 			feria.band("勝負、あり。")
 		else:
 			feria.band("...助かった。")
 	else:
+		feria.set_portrait(FERIA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		feria.band("...決着を、急げ。")
 
 func get_lose_behavior() -> String:

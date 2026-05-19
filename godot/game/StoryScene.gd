@@ -61,6 +61,10 @@ func _process(_delta):
 # 各要素 = {rect, side, texture, texture_path, character_id, scale, position}
 var portrait_log: Array = []
 var portrait_log_enabled: bool = false
+# 直近に set_portrait / appear で表示した立ち絵に対応する portrait_log のインデックス
+# （重複排除でスキップされた場合は一致した既存エントリを指す）。
+# band 適用時に「今表示中の立ち絵」のエントリへセリフを紐づけるために使う。
+var _portrait_log_current_idx: int = -1
 
 func _is_in_edit_panel(control) -> bool:
 	if control == null:
@@ -239,6 +243,11 @@ func _start_typewriter(label: Label):
 	var total_chars: int = label.text.length()
 	if total_chars <= 0:
 		return
+	# 編集モード（立ち絵履歴を記録中）ではタイプライター演出を省き、テキストを即時全表示する
+	if portrait_log_enabled:
+		label.visible_characters = -1
+		_typing_in_progress = false
+		return
 	label.visible_characters = 0
 	_typing_in_progress = true
 	_typing_tween = create_tween()
@@ -330,7 +339,7 @@ func _cleanup_for_skip():
 # log_this: true のときだけ portrait_log に記録する。
 # set_portrait / appear / show（show_character_command 経由）のみ true。
 # アニメーションフレームや band の立ち絵再表示は記録しない。
-func _show_character(character_data: StoryCharacter, portrait_name: String, side: String, position_mode: String = "", position_value: Vector2 = Vector2.ZERO, portrait_scale: float = 0.0, log_this: bool = false):
+func _show_character(character_data: StoryCharacter, portrait_name: String, side: String, position_mode: String = "", position_value: Vector2 = Vector2.ZERO, portrait_scale: float = 0.0, log_this: bool = false, edit_source_id: String = ""):
 	var resolved_portrait := portrait_name
 	if resolved_portrait.is_empty():
 		if not character_data.id.is_empty() and _character_portrait_cache.has(character_data.id):
@@ -402,23 +411,48 @@ func _show_character(character_data: StoryCharacter, portrait_name: String, side
 			"scale": char_scale,
 		}
 	_char_locked_positions[target_rect] = target_rect.position
-	# 編集モード用: set_portrait / appear で立ち絵を表示するたびに履歴へ記録
+	# 編集モード用: set_portrait / appear で立ち絵を表示するたびに履歴へ記録。
+	# 重複排除は「呼び出し位置（edit_source_id = チャプターのソース行）」で行う。
+	# outfit を勝ち/負け/引き分けで3回流したとき、同じ set_portrait 行（勝負前など）は
+	# 1エントリにまとめ、別の行（各分岐の立ち絵）は別エントリとして残す。
+	# これにより同じ画像を使う章でも、各 set_portrait 箇所を個別に編集できる。
 	if portrait_log_enabled and log_this:
-		portrait_log.append({
-			"rect": target_rect,
-			"side": side,
-			"texture": tex,
-			"texture_path": texture_path,
-			"character_id": character_id,
-			"scale": char_scale,
-			"position": target_rect.position,
-			"flip_h": target_rect.flip_h,
-			"background": _effective_background_texture(),
-			"dialogue": capture_dialogue(),
-		})
-		print("[PLOG] append #%d tex=%s size=%s scale=%.3f pos=%s flip=%s" % [
-			portrait_log.size() - 1, texture_path, target_rect.size, char_scale,
-			target_rect.position, target_rect.flip_h])
+		var new_pos: Vector2 = target_rect.position
+		var dup_idx := -1
+		for i in range(portrait_log.size()):
+			var e: Dictionary = portrait_log[i]
+			if edit_source_id != "":
+				if e.get("edit_source_id", "") == edit_source_id:
+					dup_idx = i
+					break
+			else:
+				# get_stack 不可時のフォールバック: 内容（テクスチャ・side・スケール・位置）で判定
+				if e.get("texture_path", "") == texture_path \
+						and e.get("side", "") == side \
+						and is_equal_approx(e.get("scale", -1.0), char_scale) \
+						and (e.get("position", Vector2.ZERO) as Vector2).is_equal_approx(new_pos):
+					dup_idx = i
+					break
+		if dup_idx >= 0:
+			# 同じ呼び出し位置の再実行（重複登録しない）
+			_portrait_log_current_idx = dup_idx
+		else:
+			portrait_log.append({
+				"rect": target_rect,
+				"side": side,
+				"texture": tex,
+				"texture_path": texture_path,
+				"character_id": character_id,
+				"scale": char_scale,
+				"position": new_pos,
+				"flip_h": target_rect.flip_h,
+				"background": _effective_background_texture(),
+				"dialogue": capture_dialogue(),
+				"edit_source_id": edit_source_id,
+			})
+			_portrait_log_current_idx = portrait_log.size() - 1
+			print("[PLOG] append #%d tex=%s scale=%.3f pos=%s src=%s" % [
+				portrait_log.size() - 1, texture_path, char_scale, new_pos, edit_source_id])
 	return target_rect
 
 # 現在「実効的に」表示されている背景テクスチャを返す。
@@ -1003,7 +1037,7 @@ func show_character_command(entry: Cmd.ShowCharacter):
 	var old_snapshot: TextureRect = null
 	if do_cross_fade:
 		old_snapshot = _create_cross_fade_snapshot(target_rect)
-	var result_rect: TextureRect = _show_character(char_data, entry.portrait_id, side, entry.position_mode, entry.position, entry.portrait_scale, true)
+	var result_rect: TextureRect = _show_character(char_data, entry.portrait_id, side, entry.position_mode, entry.position, entry.portrait_scale, true, entry.edit_source_id)
 	if result_rect == null:
 		if old_snapshot:
 			old_snapshot.queue_free()
@@ -1014,9 +1048,11 @@ func show_character_command(entry: Cmd.ShowCharacter):
 		result_rect.flip_h = true
 	else:
 		result_rect.flip_h = false
-	# flip_h は _show_character 内のログ記録後に確定するため、最新エントリを補正
-	if portrait_log_enabled and not portrait_log.is_empty():
-		portrait_log[-1]["flip_h"] = result_rect.flip_h
+	# flip_h は _show_character 内のログ記録後に確定するため、今回表示した立ち絵の
+	# エントリ（重複排除時は一致した既存エントリ）を補正する。
+	if portrait_log_enabled and _portrait_log_current_idx >= 0 \
+			and _portrait_log_current_idx < portrait_log.size():
+		portrait_log[_portrait_log_current_idx]["flip_h"] = result_rect.flip_h
 	if do_cross_fade and old_snapshot:
 		_run_cross_fade(old_snapshot, result_rect, entry.transition_duration)
 	else:
@@ -1180,7 +1216,15 @@ func apply_band_command(entry: Cmd.Band):
 			band_speaker.visible = false
 	else:
 		band_speaker.visible = false
-	if entry.wait_for_input:
+	# 編集モード: 「今表示中の立ち絵」のエントリのセリフをこの band の内容へ更新する。
+	# 立ち絵キャプチャでは set_portrait が band より先に処理・記録されるため、
+	# 補正しないと各立ち絵に「1つ前のセリフ」が紐づき、テキストと画像がずれる。
+	if portrait_log_enabled and _portrait_log_current_idx >= 0 \
+			and _portrait_log_current_idx < portrait_log.size():
+		portrait_log[_portrait_log_current_idx]["dialogue"] = capture_dialogue()
+	# 編集モード（立ち絵キャプチャ中）は入力待ちせず、章を一気に流して
+	# 全 outfit の立ち絵を portrait_log へ記録する。
+	if entry.wait_for_input and not portrait_log_enabled:
 		return _prepare_wait_for_advance(entry.min_duration)
 	return null
 

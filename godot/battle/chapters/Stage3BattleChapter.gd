@@ -68,10 +68,13 @@ func outfit_3(bt):
 	var result = await bt.janken(selection, {"win_rate": _win_rate(0.55)})
 
 	if result == "win":
+		mag.set_portrait(MAG_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		mag.band("...神は、今日は別のお考えのようでございます。")
 	elif result == "lose":
+		mag.set_portrait(MAG_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		mag.band("...神の御加護、ここに。")
 	else:
+		mag.set_portrait(MAG_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		mag.band("...引き分け、ですか。")
 
 func outfit_2(bt):
@@ -86,10 +89,13 @@ func outfit_2(bt):
 	var result = await bt.janken(selection, {"win_rate": _win_rate(0.5)})
 
 	if result == "win":
+		mag.set_portrait(MAG_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		mag.band("...わたくしの読み、外れた...？")
 	elif result == "lose":
+		mag.set_portrait(MAG_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		mag.band("...神は、まだ私に勝利を授けてくださる。")
 	else:
+		mag.set_portrait(MAG_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		mag.band("...またあいこ。困ったお方ですね。")
 
 func outfit_1(bt):
@@ -104,16 +110,19 @@ func outfit_1(bt):
 	var result = await bt.janken(selection, {"win_rate": _win_rate(0.45)})
 
 	if result == "win":
+		mag.set_portrait(MAG_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		if _is_first_battle():
 			mag.band("...神が、今、一瞬目を逸らされました。")
 		else:
 			mag.band("...完敗、です。本の返却、嫌がらせの停止、承諾いたします。")
 	elif result == "lose":
+		mag.set_portrait(MAG_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		if _is_first_battle():
 			mag.band("...勝負、ありました。神は、今日、私にお味方くださいました。")
 		else:
 			mag.band("...ふぅ、危なかった。")
 	else:
+		mag.set_portrait(MAG_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		mag.band("...粘り強い方ですわね。")
 
 func get_lose_behavior() -> String:

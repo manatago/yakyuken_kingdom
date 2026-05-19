@@ -68,13 +68,16 @@ func outfit_3(bt):
 	var result = await bt.janken(selection, {"win_rate": _win_rate(0.5)})
 
 	if result == "win":
+		seles.set_portrait(SELES_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		seles.band("...貴殿の、読み...！")
 	elif result == "lose":
+		seles.set_portrait(SELES_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		if _is_first_battle():
 			seles.band("一本。...貴殿の「読み」は、確かに冴えているようだ。\nだが、貴殿の手が封じられていれば、それも、意味をなさぬ。")
 		else:
 			seles.band("...一本、いただきます。")
 	else:
+		seles.set_portrait(SELES_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		seles.band("...引き分け。")
 
 func outfit_2(bt):
@@ -89,10 +92,13 @@ func outfit_2(bt):
 	var result = await bt.janken(selection, {"win_rate": _win_rate(0.5)})
 
 	if result == "win":
+		seles.set_portrait(SELES_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		seles.band("...信じ難い。")
 	elif result == "lose":
+		seles.set_portrait(SELES_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		seles.band("...二本目、いただきます。")
 	else:
+		seles.set_portrait(SELES_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		seles.band("...またですか。")
 
 func outfit_1(bt):
@@ -107,16 +113,19 @@ func outfit_1(bt):
 	var result = await bt.janken(selection, {"win_rate": _win_rate(0.45)})
 
 	if result == "win":
+		seles.set_portrait(SELES_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		if _is_first_battle():
 			seles.band("...惜しい。")
 		else:
 			seles.band("...完敗、だ。検証は、完了した。")
 	elif result == "lose":
+		seles.set_portrait(SELES_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		if _is_first_battle():
 			seles.band("...予想通りだ。貴殿の『読み』は、出せる手が封じられていれば、\nただの無駄知識に過ぎぬ。")
 		else:
 			seles.band("...助かった。")
 	else:
+		seles.set_portrait(SELES_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 		seles.band("...粘りますね。")
 
 func get_lose_behavior() -> String:
