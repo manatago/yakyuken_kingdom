@@ -50,7 +50,7 @@ func tutorial(bt):
 	matilda.band("周りの風景が変わっただろう。これがこの世界のバトルシステム「じゃんけん」だ。")
 	# アイテムボックスの説明
 	bt.highlight("item_panel")
-	matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_007.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+	matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_007.png", {"scale": 0.914, "side": "center", "position": [0, -199]})
 	matilda.band("左にあるのがアイテムボックスだ。")
 	matilda.band("バトル中に使えるアイテムがここに表示される。", {"append": true})
 	matilda.band("今は何もないけど、運が良ければ勝率をあげるアイテムなんかを手に入れることができる", {"append": true})
@@ -60,7 +60,7 @@ func tutorial(bt):
 
 	# カードの説明
 	bt.highlight("hand_panel", {"offset_x": 50})
-	matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_008.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+	matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_008.png", {"scale": 0.914, "side": "center", "position": [0, -199]})
 	matilda.band("右にあるのが手持ちカードだ。")
 	matilda.band("グー、チョキ、パーの3種類がある。", {"append": true})
 	matilda.band("カード自体にはグレードがある。", {"append": true})
@@ -69,21 +69,21 @@ func tutorial(bt):
 
 	# デッキ構築の説明
 	bt.highlight("card_bar")
-	matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_009.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+	matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_009.png", {"scale": 0.914, "side": "center", "position": [0, -199]})
 	matilda.band("下のデッキに9枚セットしな。手持ちからカードを選んでデッキに入れるんだ。")
 	matilda.band("カードボックスのカードをクリックするとデッキに登録される。", {"append": true})
 	matilda.band("デッキのカードをクリックするとアイテムボックスに戻るんだ。", {"append": true})
 	matilda.band("面倒なら「自動」ボタンで一発だ。")
 	matilda.band("「準備完了」をクリックすると、デッキが完成する。", {"append": true})
 	bt.unhighlight()
-	matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_005.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+	matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_005.png", {"scale": 0.40, "side": "center", "position": [0, -199]})
 
 	# デッキ構築を実行させる
 	await bt.build_deck()
 
 	# カード選択の説明
 	bt.highlight("card_bar")
-	matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_009.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+	matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_009.png", {"scale": 0.914, "side": "center", "position": [0, -199]})
 	matilda.band("よし、デッキができたな。次はカードの選択だ。")
 	matilda.band("「カードを選択してください」って表示されたら、", {"append": true})
 	matilda.band("出したいカードをクリックするとカードが選択される。", {"append": true})
@@ -91,7 +91,7 @@ func tutorial(bt):
 	matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_011.png", {"scale": 0.40, "side": "center", "position": [0, -348]})
 	matilda.band("最初は特別にグーを出してやるから、お前はパーを出しな。", {"append": true})
 	bt.unhighlight()
-	matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_005.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+	matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_005.png", {"scale": 0.40, "side": "center", "position": [0, -199]})
 	var selection = await bt.select_hand()
 
 
@@ -119,7 +119,7 @@ func tutorial(bt):
 
 	# HPの説明
 	bt.highlight("opponent_hp", {"offset_y": 20})
-	matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_010.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+	matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_010.png", {"scale": 0.914, "side": "center", "position": [0, -199]})
 
 	matilda.band("カードで勝負がつくと、どちらかのHPが減る。")
 	matilda.band("上が相手のHPだ。", {"append": true})
@@ -146,7 +146,7 @@ func tutorial(bt):
 		matilda.band("見た目通り弱いな。")
 
 	# 締め
-	matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_010.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+	matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_010.png", {"scale": 0.914, "side": "center", "position": [0, -199]})
 	matilda.band("これがじゃんけんバトルの基本だ。", {"append": true})
 	matilda.band("カードの使い方、グレードの活かし方...", {"append": true})
 	matilda.band("勝つための戦略を考えるのが醍醐味さ。", {"append": true})
@@ -174,6 +174,7 @@ func outfit_3(bt):
 	if result == "win":
 		matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_014.png", {"scale": 0.40, "side": "center", "position": [0, -250]})
 		matilda.band("くっ、変態の癖に。")
+		#todo:5枚の紙芝居を入れる
 		await bt.play_video("res://assets/videos/prologue_win_1.ogv")
 
 	elif result == "lose":
@@ -198,6 +199,7 @@ func outfit_2(bt):
 	if result == "win":
 		matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_017.png", {"scale": 0.80, "side": "center", "position": [0, -215]})
 		matilda.band("...っ、負けた...")
+		#todo:5枚の紙芝居を入れる
 		await bt.play_video("res://assets/videos/prologue_win_2.ogv")
 	elif result == "lose":
 		matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_018.png", {"scale": 0.8, "side": "center", "position": [0, -199]})
@@ -220,6 +222,7 @@ func outfit_1(bt):
 	if result == "win":
 		matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_021.png", {"scale": 0.80, "side": "center", "position": [0, -204]})
 		matilda.band("...変態に見られる...。")
+		#todo:5枚の紙芝居を入れる
 		await bt.play_video("res://assets/videos/prologue_win_3.ogv")
 	elif result == "lose":
 		matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_022.png", {"scale": 0.80, "side": "center", "position": [0, -204]})
