@@ -255,6 +255,10 @@ var story_script: DefaultStory
 var is_dialogue_active = false
 
 func _ready():
+	# 編集モードで ShowCharacter の呼び出し位置を記録するため、章登録より前に有効化。
+	# これによりストーリー章の set_portrait/appear も edit_source_id を持ち、
+	# バトル編集と同じ堅牢な保存（ファイル＋行番号特定）が使えるようになる。
+	StoryCommands.editor_capture = true
 	GameState.reset()
 	GameState.init_default_inventory()
 	new_game_button.pressed.connect(_on_new_game)
@@ -496,6 +500,19 @@ func _show_char_select(chars: Dictionary):
 signal _edit_setup_done
 
 func _run_char_edit_test(encounter_data: Dictionary):
+	# 編集モードは保存→開き直しで即反映させたい。
+	# EncounterDatabase.gd を強制再パースし、選択中エンカウントだけ最新値で差し替える。
+	# （chars 一覧自体はピッカー再表示時にも再構築されるが、ここでも保険として実施）
+	var enc_id_for_refresh: String = encounter_data.get("id", "")
+	if not enc_id_for_refresh.is_empty():
+		var db_script: GDScript = _load_script_fresh("res://encounter/EncounterDatabase.gd")
+		if db_script:
+			var fresh_db = db_script.new()
+			if fresh_db and fresh_db.has_method("get_char"):
+				var fresh: Dictionary = fresh_db.get_char(enc_id_for_refresh)
+				if not fresh.is_empty():
+					encounter_data = fresh
+
 	GameState.reset()
 	GameState.init_default_inventory()
 	# 編集モード: 全アイテム・装備品・ゴールドを付与
@@ -511,76 +528,154 @@ func _run_char_edit_test(encounter_data: Dictionary):
 	# 装備選択画面
 	await _show_edit_equip_screen()
 
-	# GuildHome を表示してエンカウントを強制発生
+	# GuildHome を表示
 	var home: GuildHome = guild_home_scene.instantiate()
 	add_child(home)
 	home.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	var bg_tex = load(bg_path) if not bg_path.is_empty() else null
 	home.setup(bg_tex, _current_town_map)
-
-	# エンカウント用の編集パネルを作成
-	var edit_panel := _create_edit_overlay(encounter_data)
-	add_child(edit_panel)
-	move_child(edit_panel, get_child_count() - 1)
-	_connect_edit_to_portrait(edit_panel, home.encounter_portrait, encounter_data)
-
-	# エンカウント表示を強制実行
-	print("[EDIT] showing encounter for: %s" % encounter_data.get("name", ""))
 	home.narration_band.visible = true
 	home.narration_label.text = "【ランダムバトル編集モード】"
 
-	var accepted: bool = await home._show_encounter(encounter_data)
-	print("[EDIT] encounter result: accepted=%s" % str(accepted))
-	# エンカウント用パネルを破棄
-	edit_panel.queue_free()
-	if not accepted:
-		home.queue_free()
-		return
+	# フェーズ遷移ループ: encounter(0) → battle(1) → farewell_win(2) → farewell_lose(3)
+	# 各フェーズで ◀(prev) / ▶(next) / 戻る(exit) を受ける状態機械にする。
+	# これでイベントバトル編集と同じ感覚でフェーズ間を ◀/▶ で行き来できる
+	# （ランダムバトルは1フェーズあたり立ち絵1枚なので、◀/▶ はフェーズ移動に使う）。
+	var phase_idx: int = 0
+	while phase_idx >= 0 and phase_idx <= 3:
+		# 直前のフェーズで保存があったかもしれない。EncounterDatabase.gd を
+		# 強制再パースして encounter_data を最新化することで、◀ で戻ったときに
+		# 直前に保存したスケール/位置がそのまま再表示される。
+		var enc_id_refresh: String = encounter_data.get("id", "")
+		if not enc_id_refresh.is_empty():
+			var db_script_iter: GDScript = _load_script_fresh("res://encounter/EncounterDatabase.gd")
+			if db_script_iter:
+				var fresh_db_iter = db_script_iter.new()
+				if fresh_db_iter and fresh_db_iter.has_method("get_char"):
+					var fresh_iter: Dictionary = fresh_db_iter.get_char(enc_id_refresh)
+					if not fresh_iter.is_empty():
+						# battle_bg を保持（_random_phase_battle で setup に使う）
+						var keep_bg: String = encounter_data.get("battle_bg", "")
+						encounter_data = fresh_iter
+						if not keep_bg.is_empty():
+							encounter_data["battle_bg"] = keep_bg
 
-	# バトル実行
+		var action: String = ""
+		match phase_idx:
+			0: action = await _random_phase_portrait(home, encounter_data, "encounter")
+			1: action = await _random_phase_battle(home, encounter_data, bg_tex, bg_path)
+			2: action = await _random_phase_portrait(home, encounter_data, "farewell_win")
+			3: action = await _random_phase_portrait(home, encounter_data, "farewell_lose")
+		match action:
+			"next":
+				phase_idx += 1
+				if phase_idx > 3:
+					break
+			"prev":
+				if phase_idx == 0:
+					break
+				phase_idx -= 1
+			_:
+				break  # "exit" もしくはイレギュラー
+
+	home._hide_encounter()
+	# アイテム・装備品確認画面
+	await _show_edit_result_screen(home)
+	home.queue_free()
+
+# ランダムバトル編集: encounter / farewell_win / farewell_lose で共通の
+# 「home の立ち絵 + 編集パネル」フェーズ。◀/▶/戻る でフェーズ間を遷移する。
+func _random_phase_portrait(home: GuildHome, encounter_data: Dictionary, portrait_key: String) -> String:
+	var portrait_data: Dictionary = EncounterDatabase.get_portrait(encounter_data, portrait_key)
+	var path: String = portrait_data.get("path", "")
+	if path.is_empty():
+		return "next"  # 立ち絵未設定ならスキップ
+	var tex = load(path)
+	if not tex:
+		return "next"
+
+	# 台詞: encounter→greetings / farewell_win→farewells_win / farewell_lose→farewells_lose
+	var line_key: String = ""
+	match portrait_key:
+		"encounter": line_key = "greetings"
+		"farewell_win": line_key = "farewells_win"
+		"farewell_lose": line_key = "farewells_lose"
+	var line_text: String = ""
+	if not line_key.is_empty():
+		line_text = EncounterDatabase.pick_line(encounter_data, line_key)
+
+	home.visible = true
+	home.encounter_portrait.texture = tex
+	home._apply_encounter_portrait(tex, portrait_data)
+	home.encounter_portrait.visible = true
+	home.narration_label.visible = false
+	home.nav_row.visible = false
+	home.encounter_speaker.text = encounter_data.get("name", "")
+	home.encounter_speaker.visible = true
+	home.encounter_body.text = line_text if not line_text.is_empty() else "（台詞未設定）"
+	home.encounter_right.visible = true
+	# 「受ける/逃げる」は編集モードでは出さない（◀/▶/戻るで進む）
+	for child in home.encounter_buttons.get_children():
+		child.queue_free()
+	home.encounter_buttons.visible = false
+	home.narration_band.visible = true
+
+	# 編集パネル（保存対象は EncounterDatabase の <portrait_key> ブロック）
+	var edit_panel := _create_edit_overlay(encounter_data)
+	edit_panel.set_meta("chapter_path", "res://encounter/EncounterDatabase.gd")
+	edit_panel.set_meta("encounter_id", encounter_data.get("id", ""))
+	edit_panel.set_meta("portrait_key", portrait_key)
+	add_child(edit_panel)
+	move_child(edit_panel, get_child_count() - 1)
+
+	# _connect_edit_to_portrait は portraits.encounter からスケール/位置を読むため、
+	# 編集対象のブロックを encounter キーへ詰め直して渡す
+	var data_for_edit := encounter_data.duplicate()
+	data_for_edit["portraits"] = {"encounter": portrait_data}
+	_connect_edit_to_portrait(edit_panel, home.encounter_portrait, data_for_edit)
+
+	# ターゲットラベルにフェーズ名を出す（[1/4] encounter のように）
+	var phase_num: int = ({"encounter": 1, "farewell_win": 3, "farewell_lose": 4}).get(portrait_key, 0)
+	var target_label: Label = edit_panel.find_child("TargetLabel", true, false)
+	if target_label:
+		target_label.text = "[%d/4] %s" % [phase_num, portrait_key]
+
+	var action: String = await _random_wait_phase_action(edit_panel)
+	edit_panel.queue_free()
+	return action
+
+# ランダムバトル編集: バトルフェーズ。立ち絵キャプチャ後に ◀/▶/戻る でフェーズ遷移する。
+func _random_phase_battle(home: GuildHome, encounter_data: Dictionary, bg_tex, bg_path: String) -> String:
+	home.visible = false
+
 	var chapter := RandomBattleChapter.new()
 	encounter_data["battle_bg"] = bg_path
 	chapter.setup_from_encounter(encounter_data)
-	home.visible = false
 
-	# バトル用の編集パネルを新規作成
 	var battle_edit_panel := _create_edit_overlay(encounter_data)
 	battle_edit_panel.set_meta("chapter_path", "res://encounter/EncounterDatabase.gd")
 	battle_edit_panel.set_meta("encounter_id", encounter_data.get("id", ""))
+	battle_edit_panel.set_meta("portrait_key", "battle")
 	add_child(battle_edit_panel)
 
 	var edit_battle = battle_scene_scene.instantiate()
 	add_child(edit_battle)
 	edit_battle.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	edit_battle.setup(story_script.get_cast() if story_script else {}, bg_tex, GameState.inventory)
-	# 編集モード: イベントバトル編集と同様、立ち絵履歴の早期有効化と ▶ の強制勝利進行を有効にする
 	edit_battle.force_result_mode = true
 	edit_battle.start_battle(chapter)
 	move_child(battle_edit_panel, get_child_count() - 1)
 	_connect_edit_to_battle(battle_edit_panel, edit_battle, encounter_data)
 
-	var char_back_btn: Button = battle_edit_panel.find_child("EditBackButton", true, false)
-	if char_back_btn:
-		char_back_btn.pressed.connect(func():
-			if is_instance_valid(edit_battle):
-				edit_battle.battle_finished.emit("abort"))
+	# _connect_edit_to_battle が ◀/▶ を portrait_log 内のナビに繋いでいるが、
+	# ランダムバトルは log エントリ1つしかないため事実上 no-op。同じボタンに
+	# フェーズ nav も追加で connect する（log nav は何もせず、phase nav が発火）。
+	var target_label: Label = battle_edit_panel.find_child("TargetLabel", true, false)
+	if target_label:
+		target_label.text = "[2/4] battle"
 
-	var edit_result: String = await edit_battle.battle_finished
-	var edit_rewards = edit_battle.get_battle_rewards()
-	if edit_result == "win":
-		if chapter.can_gain_cards():
-			for card in edit_rewards.captured_by_player:
-				GameState.add_card(card)
-		var gold: int = edit_battle.get_rolled_gold()
-		if gold > 0:
-			GameState.money += gold
-	elif edit_result == "lose":
-		if chapter.can_lose_cards():
-			for card in edit_rewards.captured_by_opponent:
-				GameState.remove_card(card)
-		var lost_gold: int = edit_battle.get_lost_gold()
-		if lost_gold > 0:
-			GameState.money = max(GameState.money - lost_gold, 0)
+	var action: String = await _random_wait_phase_action(battle_edit_panel)
+
 	_battle_edit_active = false
 	_battle_edit_target_rect = null
 	_battle_edit_panel = null
@@ -589,50 +684,23 @@ func _run_char_edit_test(encounter_data: Dictionary):
 	_battle_edit_last_log_size = 0
 	edit_battle.queue_free()
 	battle_edit_panel.queue_free()
+	return action
 
-	# バトル後: ストーリーモードで去り際シーン表示
-	home.visible = true
-	var farewell_line: String = chapter.get_encounter_farewell(edit_result) if chapter.has_method("get_encounter_farewell") else ""
-	if not farewell_line.is_empty():
-		# 去り際用の編集パネル
-		var farewell_edit_panel := _create_edit_overlay(encounter_data)
-		add_child(farewell_edit_panel)
-		move_child(farewell_edit_panel, get_child_count() - 1)
-
-		# 去り際ポートレートを表示
-		var fw_scene_key: String = "farewell_win" if edit_result == "win" else "farewell_lose"
-		var farewell_portrait: Dictionary = EncounterDatabase.get_portrait(encounter_data, fw_scene_key)
-		var fw_path: String = farewell_portrait.get("path", "")
-		if not fw_path.is_empty():
-			var fw_tex = load(fw_path)
-			if fw_tex:
-				home.encounter_portrait.texture = fw_tex
-				home._apply_encounter_portrait(fw_tex, farewell_portrait)
-		home.encounter_portrait.visible = true
-		home.narration_label.visible = false
-		home.nav_row.visible = false
-		home.encounter_speaker.text = encounter_data.get("name", "")
-		home.encounter_speaker.visible = true
-		home.encounter_body.text = farewell_line
-		home.encounter_right.visible = true
-		home.narration_band.visible = true
-
-		# farewell ポートレートデータを直接渡して初期値をセット
-		var fw_data_for_edit := encounter_data.duplicate()
-		fw_data_for_edit["portraits"] = {"encounter": farewell_portrait}
-		_connect_edit_to_portrait(farewell_edit_panel, home.encounter_portrait, fw_data_for_edit)
-
-		# クリック待ち
-		home._waiting_for_click = true
-		await home._click_received
-		home._waiting_for_click = false
-
-		home._hide_encounter()
-		farewell_edit_panel.queue_free()
-
-	# アイテム・装備品確認画面
-	await _show_edit_result_screen(home)
-	home.queue_free()
+# 編集パネルの ◀(prev) / ▶(next) / 戻る(exit) の押下を待ち、押されたアクション名を返す。
+func _random_wait_phase_action(edit_panel: PanelContainer) -> String:
+	var action: Array = [""]
+	var prev_btn: Button = edit_panel.find_child("PrevBtn", true, false)
+	var next_btn: Button = edit_panel.find_child("NextBtn", true, false)
+	var back_btn: Button = edit_panel.find_child("EditBackButton", true, false)
+	if prev_btn:
+		prev_btn.pressed.connect(func(): action[0] = "prev")
+	if next_btn:
+		next_btn.pressed.connect(func(): action[0] = "next")
+	if back_btn:
+		back_btn.pressed.connect(func(): action[0] = "exit")
+	while action[0] == "":
+		await get_tree().process_frame
+	return action[0]
 
 signal _area_selected(bg_path: String)
 
@@ -1009,7 +1077,7 @@ func _create_edit_overlay(encounter_data: Dictionary) -> PanelContainer:
 	save_btn.text = "保存"
 	save_btn.add_theme_font_size_override("font_size", 14)
 	save_btn.add_theme_color_override("font_color", Color(0.3, 1.0, 0.3))
-	save_btn.tooltip_text = "同じ画像の全箇所に保存"
+	save_btn.tooltip_text = "編集中の立ち絵1箇所を保存（呼び出し位置を特定して更新）"
 	save_btn.pressed.connect(func():
 		_save_battle_edit(panel, info))
 	action_row.add_child(save_btn)
@@ -2490,13 +2558,19 @@ func _run_story_edit(entry: Dictionary):
 
 	_create_story_scene()
 
-	# Register subevent chapters
+	# 編集モード: 章スクリプトを強制再パースして再登録する（preload キャッシュをバイパス）。
+	# これがないと「保存 → 編集を閉じて開き直し」で古い値が再表示される。
+	_force_reload_story_chapters()
+
+	# Register subevent chapters (chapter フィールド指定時)
 	if entry.has("chapter") and entry.chapter == "Subevent1ChapterScript":
-		if not story_script.get_sequence("subevent1_pre"):
-			story_script._register_chapter(Subevent1ChapterScript.new())
+		var s1 = _load_script_fresh("res://story/chapters/Subevent1Chapter.gd")
+		if s1:
+			story_script._register_chapter(s1.new())
 	elif entry.has("chapter") and entry.chapter == "Subevent2ChapterScript":
-		if not story_script.get_sequence("subevent2_pre1"):
-			story_script._register_chapter(Subevent2ChapterScript.new())
+		var s2 = _load_script_fresh("res://story/chapters/Subevent2Chapter.gd")
+		if s2:
+			story_script._register_chapter(s2.new())
 
 	var seq = story_script.get_sequence(sequence_id)
 	if not seq:
@@ -2508,30 +2582,45 @@ func _run_story_edit(entry: Dictionary):
 		print("[STORY_EDIT] No entries in sequence")
 		return
 
-	# Build edit panel
-	var edit_panel := _create_story_edit_panel()
-	add_child(edit_panel)
-	move_child(edit_panel, get_child_count() - 1)
+	# Build edit layout (上部ナビ帯 + 左右カード)
+	var edit_root := _create_story_edit_layout()
+	add_child(edit_root)
+	move_child(edit_root, get_child_count() - 1)
 
 	var idx := 0
 	_story_edit_nav_action = ""
 
-	var prev_btn: Button = edit_panel.get_node("VBox/NavRow/PrevBtn")
-	var next_btn: Button = edit_panel.get_node("VBox/NavRow/NextBtn")
-	var side_btn: Button = edit_panel.get_node("VBox/NavRow/SideBtn")
-	var save_btn: Button = edit_panel.get_node("VBox/NavRow/SaveBtn")
-	var exit_btn: Button = edit_panel.get_node("VBox/NavRow/ExitBtn")
-	var idx_label: Label = edit_panel.get_node("VBox/InfoRow/IdxLabel")
-	var cmd_label: Label = edit_panel.get_node("VBox/InfoRow/CmdLabel")
+	var nav_bar: PanelContainer = edit_root.find_child("StoryEditNavBar", true, false)
+	var left_card: PanelContainer = edit_root.find_child("StoryEditCard_Left", true, false)
+	var right_card: PanelContainer = edit_root.find_child("StoryEditCard_Right", true, false)
+	var prev_btn: Button = nav_bar.find_child("PrevBtn", true, false)
+	var next_btn: Button = nav_bar.find_child("NextBtn", true, false)
+	var exit_btn: Button = nav_bar.find_child("ExitBtn", true, false)
+	var idx_label: Label = nav_bar.find_child("IdxLabel", true, false)
+	var cmd_label: Label = nav_bar.find_child("CmdLabel", true, false)
 
 	prev_btn.pressed.connect(_story_edit_set_nav.bind("prev"))
 	next_btn.pressed.connect(_story_edit_set_nav.bind("next"))
-	side_btn.pressed.connect(_story_edit_toggle_side.bind(edit_panel))
-	save_btn.pressed.connect(_story_edit_set_nav.bind("save"))
 	exit_btn.pressed.connect(_story_edit_set_nav.bind("exit"))
-	var copy_btn: Button = edit_panel.find_child("CopyBtn", true, false)
-	if copy_btn:
-		copy_btn.pressed.connect(_story_edit_copy_values.bind(edit_panel))
+
+	# 各カードのスライダー・保存・コピーを wire
+	for card in [left_card, right_card]:
+		if not card:
+			continue
+		var sl_c := _get_edit_sliders(card)
+		if not sl_c.is_empty():
+			sl_c.scale.value_changed.connect(_on_story_edit_card_slider.bind(card))
+			sl_c.x.value_changed.connect(_on_story_edit_card_slider.bind(card))
+			sl_c.y.value_changed.connect(_on_story_edit_card_slider.bind(card))
+		var save_btn_c: Button = card.find_child("SaveBtn", true, false)
+		if save_btn_c:
+			save_btn_c.pressed.connect(func():
+				# idx は閉包で参照（後段で更新される _current_idx に追従）
+				_save_story_edit_card(card, entries, _story_edit_current_idx))
+		var copy_btn_c: Button = card.find_child("CopyBtn", true, false)
+		if copy_btn_c:
+			copy_btn_c.pressed.connect(func():
+				_story_edit_copy_card(card))
 
 	# Track source file for saving
 	var source_file: String = ""
@@ -2547,6 +2636,11 @@ func _run_story_edit(entry: Dictionary):
 
 	# Disable StoryScene input handling in edit mode
 	story_scene_instance._waiting_for_input = false
+	# 編集モード: portrait_log を有効化（保存時に bound_rect から edit_source_id を引くために必要）
+	if "portrait_log_enabled" in story_scene_instance:
+		story_scene_instance.portrait_log_enabled = true
+		if "portrait_log" in story_scene_instance:
+			story_scene_instance.portrait_log.clear()
 
 	# 初期セットアップ: 指定labelがあればそのラベル直後の最初の発話まで進める。
 	# なければシーケンス先頭から最初の発話までの命令を実行。
@@ -2576,11 +2670,12 @@ func _run_story_edit(entry: Dictionary):
 			break
 	if setup_end > 0:
 		idx = setup_end
+	_story_edit_current_idx = idx
 	_story_edit_reset_scene(story_scene_instance)
 	# label指定時はラベル直後から実行（以前のシーンを再生しない）。指定なしは0から。
 	_story_edit_execute_to(entries, idx, story_scene_instance, scan_from)
 	_story_edit_update_info(idx_label, cmd_label, entries, idx)
-	_story_edit_update_sliders(edit_panel, story_scene_instance)
+	_refresh_story_edit_cards(edit_root, story_scene_instance)
 
 	# Main edit loop
 	while true:
@@ -2593,28 +2688,28 @@ func _run_story_edit(entry: Dictionary):
 
 		if _story_edit_nav_action == "exit":
 			break
-		elif _story_edit_nav_action == "save":
-			_story_edit_save_current(entries, idx, edit_panel)
 		elif _story_edit_nav_action == "prev":
 			if idx > 0:
 				idx -= 1
+				_story_edit_current_idx = idx
 				_story_edit_reset_scene(story_scene_instance)
 				_story_edit_execute_to(entries, idx, story_scene_instance)
 				_story_edit_update_info(idx_label, cmd_label, entries, idx)
-				_story_edit_update_sliders(edit_panel, story_scene_instance)
+				_refresh_story_edit_cards(edit_root, story_scene_instance)
 		elif _story_edit_nav_action == "next":
 			if idx < entries.size() - 1:
 				idx += 1
+				_story_edit_current_idx = idx
 				var e = entries[idx]
 				if e != null and not (e is StoryCommands.Battle) and not (e is StoryCommands.TerminalEffect):
 					_story_edit_execute_single(e, story_scene_instance)
 				_story_edit_update_info(idx_label, cmd_label, entries, idx)
-				_story_edit_update_sliders(edit_panel, story_scene_instance)
+				_refresh_story_edit_cards(edit_root, story_scene_instance)
 			else:
 				# 末尾到達 → 編集終了（次へを連打すると閉じる）
 				break
 
-	edit_panel.queue_free()
+	edit_root.queue_free()
 	if story_scene_instance:
 		story_scene_instance.queue_free()
 		story_scene_instance = null
@@ -2622,46 +2717,35 @@ func _run_story_edit(entry: Dictionary):
 func _story_edit_emit_selected(index: int):
 	_story_edit_selected.emit(index)
 
-func _story_edit_toggle_side(edit_panel: PanelContainer):
-	if not story_scene_instance:
-		return
-	# Collect visible character rects
-	var visible_rects: Array = []
-	for side in ["left", "right", "center"]:
-		var rect: TextureRect = story_scene_instance.get(side + "_char")
-		if rect and rect.visible and rect.texture:
-			visible_rects.append(rect)
-	if visible_rects.is_empty():
-		return
-	# Find current index and cycle to next
-	var current_idx := visible_rects.find(_story_edit_slider_target)
-	var next_idx := (current_idx + 1) % visible_rects.size()
-	_story_edit_slider_target = visible_rects[next_idx]
-	# Update sliders to match new target
-	_story_edit_update_sliders(edit_panel, story_scene_instance)
+func _story_edit_toggle_side(_edit_panel: PanelContainer):
+	# 旧 L/R トグル。新レイアウトでは廃止（左右カードが画面位置と1対1で対応する）。
+	pass
 
 func _story_edit_set_nav(action: String):
 	_story_edit_nav_action = action
 
 func _story_edit_copy_values(edit_panel: PanelContainer):
+	# 旧API互換: side 情報なしで scale/position だけクリップボードへ
 	var sl := _get_edit_sliders(edit_panel)
+	if sl.is_empty():
+		return
+	var text: String = '"scale": %.2f, "position": [%d, %d],' % [sl.scale.value, int(sl.x.value), int(sl.y.value)]
+	DisplayServer.clipboard_set(text)
+
+# カード単位のコピー: bound_side（left/right/center）を含めて整形しクリップボードへ
+func _story_edit_copy_card(card: PanelContainer):
+	var sl := _get_edit_sliders(card)
 	if sl.is_empty():
 		return
 	var s: float = sl.scale.value
 	var x: int = int(sl.x.value)
 	var y: int = int(sl.y.value)
-	var char_label_node: Label = edit_panel.find_child("CharLabel", true, false)
-	var side: String = "center"
-	if char_label_node:
-		match char_label_node.text:
-			"LEFT": side = "left"
-			"RIGHT": side = "right"
-			_: side = "center"
+	var side: String = card.get_meta("bound_side", "center")
 	var text: String = '"scale": %.2f, "side": "%s", "position": [%d, %d],' % [s, side, x, y]
 	DisplayServer.clipboard_set(text)
-	var cmd_label: Label = edit_panel.find_child("CmdLabel", true, false)
-	if cmd_label:
-		cmd_label.text = "コピーしました: " + text
+	var info: Label = card.find_child("InfoLabel", true, false)
+	if info:
+		info.text = "コピーしました"
 
 func _story_edit_execute_single(e, scene):
 	# Execute a single command with animations disabled
@@ -2743,63 +2827,193 @@ func _story_edit_update_info(idx_label: Label, cmd_label: Label, entries: Array,
 var _story_edit_slider_target: TextureRect = null
 var _story_edit_nav_action := ""
 var _story_edit_source_file := ""
+# 新レイアウト用: 現在表示中の entries[idx]。各カードの保存ボタン閉包がこれを参照する。
+var _story_edit_current_idx: int = 0
 
-func _story_edit_update_sliders(edit_panel: PanelContainer, scene):
-	var sl := _get_edit_sliders(edit_panel)
+# 各カード（左/右）の slider value_changed ハンドラ。card に bind 中の rect を動かす。
+func _on_story_edit_card_slider(_value: float, card: PanelContainer):
+	if not is_instance_valid(card):
+		return
+	var target: TextureRect = card.get_meta("bound_rect") if card.has_meta("bound_rect") else null
+	if not is_instance_valid(target) or not target.texture:
+		return
+	var sl := _get_edit_sliders(card)
 	if sl.is_empty():
 		return
+	var s: float = sl.scale.value
+	var tex_size: Vector2 = target.texture.get_size()
+	target.size = tex_size
+	target.scale = Vector2(s, s)
+	var base_pos: Vector2 = _story_edit_get_base_pos(target, s)
+	var new_pos := Vector2(base_pos.x + sl.x.value, base_pos.y + sl.y.value)
+	target.position = new_pos
+	# StoryScene._process が _char_locked_positions で位置を復元するため、ロックも更新
+	if story_scene_instance and "_char_locked_positions" in story_scene_instance:
+		if story_scene_instance._char_locked_positions.has(target):
+			story_scene_instance._char_locked_positions[target] = new_pos
+	var info: Label = card.find_child("InfoLabel", true, false)
+	if info:
+		var bound_side: String = card.get_meta("bound_side", "")
+		info.text = '"scale": %.2f, "side": "%s", "position": [%d, %d]' % [s, bound_side, int(sl.x.value), int(sl.y.value)]
 
-	# Keep current target if still visible, otherwise find a visible one
-	var target_rect: TextureRect = null
-	var char_label: Label = edit_panel.find_child("CharLabel", true, false)
-	if _story_edit_slider_target and is_instance_valid(_story_edit_slider_target) and _story_edit_slider_target.visible and _story_edit_slider_target.texture:
-		target_rect = _story_edit_slider_target
-	else:
-		for side in ["left", "right", "center"]:
-			var rect: TextureRect = scene.get(side + "_char")
-			if rect and rect.visible and rect.texture:
-				target_rect = rect
+# 各カードをシーンの現在の立ち絵状態に応じて bind し直す。
+# 左カード → left_char、右カード → center_char があれば center, なければ right_char。
+# それぞれ立ち絵がない場合は非表示。
+func _refresh_story_edit_cards(root: Control, scene):
+	var left_card: PanelContainer = root.find_child("StoryEditCard_Left", true, false)
+	var right_card: PanelContainer = root.find_child("StoryEditCard_Right", true, false)
+	if not left_card or not right_card:
+		return
+	_bind_story_edit_card(left_card, scene, "left", scene.left_char)
+	# right カードは center を優先（バトル/ミニゲームと位置を揃えるため）
+	var right_rect: TextureRect = null
+	var right_side: String = ""
+	if scene.center_char and scene.center_char.visible and scene.center_char.texture:
+		right_rect = scene.center_char
+		right_side = "center"
+	elif scene.right_char and scene.right_char.visible and scene.right_char.texture:
+		right_rect = scene.right_char
+		right_side = "right"
+	_bind_story_edit_card(right_card, scene, right_side, right_rect)
 
-	# Update target reference
-	_story_edit_slider_target = target_rect
+func _bind_story_edit_card(card: PanelContainer, _scene, side: String, rect: TextureRect):
+	if not is_instance_valid(rect) or not rect.visible or not rect.texture:
+		card.visible = false
+		card.set_meta("bound_rect", null)
+		card.set_meta("bound_side", "")
+		return
+	card.visible = true
+	card.set_meta("bound_rect", rect)
+	card.set_meta("bound_side", side)
+	var title: Label = card.find_child("Title", true, false)
+	if title:
+		var tex_name: String = rect.texture.resource_path.get_file() if rect.texture.resource_path else "(no texture)"
+		title.text = "[%s] %s" % [side, tex_name]
+	var sl := _get_edit_sliders(card)
+	if sl.is_empty():
+		return
+	var s: float = rect.scale.x
+	var base_pos: Vector2 = _story_edit_get_base_pos(rect, s)
+	var off_x: float = rect.position.x - base_pos.x
+	var off_y: float = rect.position.y - base_pos.y
+	# Range は他用途のままで OK。値だけ反映（slider 操作の循環を避ける）
+	sl.scale.set_block_signals(true); sl.scale.value = s; sl.scale.set_block_signals(false)
+	sl.x.set_block_signals(true); sl.x.value = off_x; sl.x.set_block_signals(false)
+	sl.y.set_block_signals(true); sl.y.value = off_y; sl.y.set_block_signals(false)
+	if sl.scale_spin: sl.scale_spin.set_block_signals(true); sl.scale_spin.value = s; sl.scale_spin.set_block_signals(false)
+	if sl.x_spin: sl.x_spin.set_block_signals(true); sl.x_spin.value = off_x; sl.x_spin.set_block_signals(false)
+	if sl.y_spin: sl.y_spin.set_block_signals(true); sl.y_spin.value = off_y; sl.y_spin.set_block_signals(false)
 
-	if target_rect and target_rect.texture:
-		var current_scale := target_rect.scale.x
-		var current_pos := target_rect.position
-		# Reverse-calculate offset from base position (side-aware)
-		var base_pos: Vector2 = _story_edit_get_base_pos(target_rect, current_scale)
-		var offset_x: float = current_pos.x - base_pos.x
-		var offset_y: float = current_pos.y - base_pos.y
-		# Update slider values
-		sl.scale.value = current_scale
-		if sl.scale_spin: sl.scale_spin.value = current_scale
-		sl.x.value = offset_x
-		if sl.x_spin: sl.x_spin.value = offset_x
-		sl.y.value = offset_y
-		if sl.y_spin: sl.y_spin.value = offset_y
-		if char_label:
-			if target_rect == scene.left_char:
-				char_label.text = "LEFT"
-			elif target_rect == scene.right_char:
-				char_label.text = "RIGHT"
-			elif target_rect == scene.center_char:
-				char_label.text = "CENTER"
-	elif char_label:
-		char_label.text = "(none)"
+# ストーリー編集レイアウト: 上部に細いナビ帯、左上に左キャラ用カード、
+# 右上に右キャラ用カード（中央キャラは右カードに割当）を配置する。
+# 各カードはバトル編集カードと同等のスケール/X/Y スライダー + 保存/コピーを持ち、
+# その瞬間に画面上に表示されている立ち絵にそれぞれ独立して binding される。
+# L/R 切り替えボタンは廃止（画面上の位置と UI 上のカード位置が対応するため不要）。
+func _create_story_edit_layout() -> Control:
+	var root := Control.new()
+	root.name = "StoryEditRoot"
+	root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	root.mouse_filter = Control.MOUSE_FILTER_IGNORE  # 子のパネルだけがクリックを受ける
 
-func _create_story_edit_panel() -> PanelContainer:
+	var nav_bar := _create_story_edit_nav_bar()
+	root.add_child(nav_bar)
+
+	var left_card := _create_story_edit_char_card("left")
+	root.add_child(left_card)
+
+	var right_card := _create_story_edit_char_card("right")
+	root.add_child(right_card)
+
+	return root
+
+# 画面上部の細いナビ帯（◀ idx/total cmd ▶ 戻る）
+func _create_story_edit_nav_bar() -> PanelContainer:
 	var panel := PanelContainer.new()
+	panel.name = "StoryEditNavBar"
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.0, 0.0, 0.0, 0.75)
+	style.content_margin_left = 12
+	style.content_margin_top = 6
+	style.content_margin_right = 12
+	style.content_margin_bottom = 6
+	panel.add_theme_stylebox_override("panel", style)
+	# 上部中央、左右カードの間にコンパクトに配置
+	panel.anchor_left = 0.32
+	panel.anchor_right = 0.68
+	panel.anchor_top = 0.01
+	panel.anchor_bottom = 0.01
+	panel.offset_bottom = 48
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+
+	var hbox := HBoxContainer.new()
+	hbox.name = "HBox"
+	hbox.add_theme_constant_override("separation", 6)
+	hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	panel.add_child(hbox)
+
+	var prev_btn := Button.new()
+	prev_btn.name = "PrevBtn"
+	prev_btn.text = "◀ 前へ"
+	prev_btn.add_theme_font_size_override("font_size", 14)
+	hbox.add_child(prev_btn)
+
+	var idx_label := Label.new()
+	idx_label.name = "IdxLabel"
+	idx_label.text = "0 / 0"
+	idx_label.add_theme_font_size_override("font_size", 13)
+	idx_label.custom_minimum_size = Vector2(70, 0)
+	idx_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hbox.add_child(idx_label)
+
+	var cmd_label := Label.new()
+	cmd_label.name = "CmdLabel"
+	cmd_label.text = ""
+	cmd_label.add_theme_font_size_override("font_size", 12)
+	cmd_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	cmd_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	hbox.add_child(cmd_label)
+
+	var next_btn := Button.new()
+	next_btn.name = "NextBtn"
+	next_btn.text = "次へ ▶"
+	next_btn.add_theme_font_size_override("font_size", 14)
+	hbox.add_child(next_btn)
+
+	var exit_btn := Button.new()
+	exit_btn.name = "ExitBtn"
+	exit_btn.text = "← 戻る"
+	exit_btn.add_theme_font_size_override("font_size", 13)
+	exit_btn.add_theme_color_override("font_color", Color(1.0, 0.4, 0.4))
+	hbox.add_child(exit_btn)
+
+	return panel
+
+# 左キャラ用 or 右キャラ用の編集カード。バトル編集カードと同等の作り
+# （スケール/X/Y スライダー + コピー/保存）。
+func _create_story_edit_char_card(side: String) -> PanelContainer:
+	var panel := PanelContainer.new()
+	panel.name = "StoryEditCard_" + side.capitalize()
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.0, 0.0, 0.0, 0.7)
+	style.corner_radius_top_left = 8
+	style.corner_radius_top_right = 8
+	style.corner_radius_bottom_left = 8
+	style.corner_radius_bottom_right = 8
 	style.content_margin_left = 12
 	style.content_margin_top = 8
 	style.content_margin_right = 12
 	style.content_margin_bottom = 8
 	panel.add_theme_stylebox_override("panel", style)
-	panel.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	panel.offset_top = -200
-	panel.offset_bottom = 0
-	# 編集UIのクリックがStoryScene/BattleSceneの「進める」入力に流れないよう遮断
+
+	# 左カード=左上、右カード=右上（バトル編集カードと同じ位置）
+	if side == "left":
+		panel.anchor_left = 0.01
+		panel.anchor_right = 0.30
+	else:
+		panel.anchor_left = 0.70
+		panel.anchor_right = 0.99
+	panel.anchor_top = 0.02
+	panel.anchor_bottom = 0.55
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 
 	var vbox := VBoxContainer.new()
@@ -2807,82 +3021,13 @@ func _create_story_edit_panel() -> PanelContainer:
 	vbox.add_theme_constant_override("separation", 4)
 	panel.add_child(vbox)
 
-	# Navigation row
-	var nav_row := HBoxContainer.new()
-	nav_row.name = "NavRow"
-	nav_row.add_theme_constant_override("separation", 8)
-	nav_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	vbox.add_child(nav_row)
+	var title := Label.new()
+	title.name = "Title"
+	title.text = "(空き)"
+	title.add_theme_font_size_override("font_size", 14)
+	title.add_theme_color_override("font_color", Color(0.5, 1.0, 0.5))
+	vbox.add_child(title)
 
-	var prev_btn := Button.new()
-	prev_btn.name = "PrevBtn"
-	prev_btn.text = "◀ 前へ"
-	prev_btn.add_theme_font_size_override("font_size", 16)
-	nav_row.add_child(prev_btn)
-
-	var next_btn := Button.new()
-	next_btn.name = "NextBtn"
-	next_btn.text = "次へ ▶"
-	next_btn.add_theme_font_size_override("font_size", 16)
-	nav_row.add_child(next_btn)
-
-	var side_btn := Button.new()
-	side_btn.name = "SideBtn"
-	side_btn.text = "L/R"
-	side_btn.add_theme_font_size_override("font_size", 16)
-	side_btn.add_theme_color_override("font_color", Color(1.0, 1.0, 0.5))
-	nav_row.add_child(side_btn)
-
-	var copy_btn := Button.new()
-	copy_btn.name = "CopyBtn"
-	copy_btn.text = "コピー"
-	copy_btn.add_theme_font_size_override("font_size", 16)
-	copy_btn.add_theme_color_override("font_color", Color(0.6, 0.9, 1.0))
-	nav_row.add_child(copy_btn)
-
-	var save_btn := Button.new()
-	save_btn.name = "SaveBtn"
-	save_btn.text = "保存"
-	save_btn.add_theme_font_size_override("font_size", 16)
-	save_btn.add_theme_color_override("font_color", Color(0.3, 1.0, 0.3))
-	nav_row.add_child(save_btn)
-
-	var exit_btn := Button.new()
-	exit_btn.name = "ExitBtn"
-	exit_btn.text = "← 戻る"
-	exit_btn.add_theme_font_size_override("font_size", 16)
-	exit_btn.add_theme_color_override("font_color", Color(1.0, 0.4, 0.4))
-	nav_row.add_child(exit_btn)
-
-	# Info row
-	var info_row := HBoxContainer.new()
-	info_row.name = "InfoRow"
-	info_row.add_theme_constant_override("separation", 12)
-	vbox.add_child(info_row)
-
-	var idx_label := Label.new()
-	idx_label.name = "IdxLabel"
-	idx_label.text = "0 / 0"
-	idx_label.add_theme_font_size_override("font_size", 14)
-	idx_label.custom_minimum_size = Vector2(80, 0)
-	info_row.add_child(idx_label)
-
-	var cmd_label := Label.new()
-	cmd_label.name = "CmdLabel"
-	cmd_label.text = ""
-	cmd_label.add_theme_font_size_override("font_size", 14)
-	cmd_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	cmd_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	info_row.add_child(cmd_label)
-
-	var char_label := Label.new()
-	char_label.name = "CharLabel"
-	char_label.text = ""
-	char_label.add_theme_font_size_override("font_size", 14)
-	char_label.add_theme_color_override("font_color", Color(0.5, 1.0, 0.5))
-	info_row.add_child(char_label)
-
-	# Sliders (reuse existing pattern)
 	var scale_row := _create_slider_row("スケール", "ScaleSlider", 0.1, 2.0, 0.01, 0.5, "%.2f")
 	vbox.add_child(scale_row)
 	var x_row := _create_slider_row("X", "XSlider", -500, 500, 1, 0, "%d")
@@ -2890,14 +3035,35 @@ func _create_story_edit_panel() -> PanelContainer:
 	var y_row := _create_slider_row("Y", "YSlider", -800, 400, 1, 0, "%d")
 	vbox.add_child(y_row)
 
-	# Connect sliders to story edit handler
-	var scale_slider: HSlider = scale_row.get_node("ScaleSlider")
-	var x_slider: HSlider = x_row.get_node("XSlider")
-	var y_slider: HSlider = y_row.get_node("YSlider")
-	scale_slider.value_changed.connect(_on_story_edit_slider.bind(panel))
-	x_slider.value_changed.connect(_on_story_edit_slider.bind(panel))
-	y_slider.value_changed.connect(_on_story_edit_slider.bind(panel))
+	var info := Label.new()
+	info.name = "InfoLabel"
+	info.text = ""
+	info.add_theme_font_size_override("font_size", 11)
+	info.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+	vbox.add_child(info)
 
+	var action_row := HBoxContainer.new()
+	action_row.name = "ActionRow"
+	action_row.add_theme_constant_override("separation", 4)
+	action_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_child(action_row)
+
+	var copy_btn := Button.new()
+	copy_btn.name = "CopyBtn"
+	copy_btn.text = "コピー"
+	copy_btn.add_theme_font_size_override("font_size", 13)
+	copy_btn.add_theme_color_override("font_color", Color(0.6, 0.9, 1.0))
+	action_row.add_child(copy_btn)
+
+	var save_btn := Button.new()
+	save_btn.name = "SaveBtn"
+	save_btn.text = "保存"
+	save_btn.add_theme_font_size_override("font_size", 13)
+	save_btn.add_theme_color_override("font_color", Color(0.3, 1.0, 0.3))
+	action_row.add_child(save_btn)
+
+	panel.set_meta("card_side", side)  # "left" or "right"
+	panel.visible = false  # 立ち絵が bind されるまでは非表示
 	return panel
 
 func _story_edit_get_base_pos(target: TextureRect, s: float) -> Vector2:
@@ -2917,53 +3083,119 @@ func _story_edit_get_base_pos(target: TextureRect, s: float) -> Vector2:
 		base_x = (vp_size.x - visual_w) / 2.0
 	return Vector2(base_x, vp_size.y - visual_h)
 
-func _on_story_edit_slider(_value: float, panel: PanelContainer):
-	if not _story_edit_slider_target or not is_instance_valid(_story_edit_slider_target):
-		return
-	if not _story_edit_slider_target.texture:
-		return
-	var sl := _get_edit_sliders(panel)
-	if sl.is_empty():
-		return
-	var s: float = sl.scale.value
-	var tex_size: Vector2 = _story_edit_slider_target.texture.get_size()
-	_story_edit_slider_target.size = tex_size
-	_story_edit_slider_target.scale = Vector2(s, s)
-	var base_pos: Vector2 = _story_edit_get_base_pos(_story_edit_slider_target, s)
-	var new_pos := Vector2(base_pos.x + sl.x.value, base_pos.y + sl.y.value)
-	_story_edit_slider_target.position = new_pos
-	# Update position lock so _process doesn't revert
-	if story_scene_instance and story_scene_instance._char_locked_positions.has(_story_edit_slider_target):
-		story_scene_instance._char_locked_positions[_story_edit_slider_target] = new_pos
-	var output := '"scale": %.2f, "position": [%d, %d]' % [s, int(sl.x.value), int(sl.y.value)]
-	print("[STORY_EDIT] %s" % output)
+# 旧: 単一パネル用の slider ハンドラ。新レイアウト導入後は未使用（card 側に置換）。
+# 互換のため残置（呼ばれても何もしない）。
+func _on_story_edit_slider(_value: float, _panel: PanelContainer):
+	pass
+
+# 編集モード用: GDScript を毎回ソースから再パースしてキャッシュを完全に回避する。
+# ResourceLoader.CACHE_MODE_REPLACE は GDScript の class table までは作り直さない
+# ため、編集モードで「保存 → 開き直し」しても古いコンパイル済みコードが動いてしまう。
+# 保存値を即反映するにはここで強制再コンパイルが必要。
+func _load_script_fresh(path: String) -> GDScript:
+	var abs_path: String = ProjectSettings.globalize_path(path)
+	var f := FileAccess.open(abs_path, FileAccess.READ)
+	if not f:
+		push_warning("[EDIT] fresh load failed (cannot open) %s; falling back to ResourceLoader" % path)
+		return ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_REPLACE) as GDScript
+	var src: String = f.get_as_text()
+	f.close()
+	var script := GDScript.new()
+	script.source_code = src
+	# resource_path をセットしないと extends による親クラス解決が現在地基準になる。
+	# 一旦未設定で reload() するとパースエラーになるケースがあるため設定する。
+	script.resource_path = path
+	var err: int = script.reload()
+	if err != OK:
+		push_warning("[EDIT] fresh reload err=%d for %s; falling back" % [err, path])
+		return ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_REPLACE) as GDScript
+	return script
+
+# 立ち絵スケール/位置の正規表現（保存用・共通）
+func _battle_edit_scale_regex() -> RegEx:
+	var r := RegEx.new()
+	r.compile('"scale":\\s*[\\d.]+')
+	return r
+
+func _battle_edit_pos_regex() -> RegEx:
+	var r := RegEx.new()
+	r.compile('"position":\\s*\\[[^\\]]*\\]')
+	return r
 
 func _save_battle_edit(edit_panel: PanelContainer, info: Label):
 	if not edit_panel.has_meta("chapter_path"):
 		info.text = "[保存NG] chapter_pathが未設定"
 		return
-	if not is_instance_valid(_battle_edit_ref):
-		info.text = "[保存NG] バトル参照なし"
-		return
-	var story_sc = _battle_edit_ref._story_scene
-	if not story_sc:
-		info.text = "[保存NG] story_sceneなし"
-		return
-	var char_rect: TextureRect = _find_visible_char_rect(story_sc)
-	if not char_rect or not char_rect.texture:
-		info.text = "[保存NG] 対象キャラなし"
-		return
-	var tex_path: String = char_rect.texture.resource_path
-	if tex_path.is_empty():
-		info.text = "[保存NG] テクスチャpath不明"
-		return
-	var portrait_filename: String = tex_path.get_file()
-
 	var sl := _get_edit_sliders(edit_panel)
 	var new_scale: float = sl.scale.value
 	var new_x: int = int(sl.x.value)
 	var new_y: int = int(sl.y.value)
+	var chapter_path: String = edit_panel.get_meta("chapter_path")
+	if "EncounterDatabase.gd" in chapter_path:
+		# ランダムバトル: EncounterDatabase の該当エンカウントの portrait_key 立ち絵を更新
+		# （portrait_key meta が "encounter"/"battle"/"farewell_win"/"farewell_lose"）
+		_save_encounter_portrait(edit_panel, info, new_scale, new_x, new_y)
+	else:
+		# バトルチャプター: 編集中シーンの set_portrait 呼び出し行を直接更新
+		_save_chapter_portrait(info, new_scale, new_x, new_y)
 
+# 編集中の立ち絵1シーンに対応する set_portrait 呼び出し行（edit_source_id =
+# "ファイル:行"）だけを更新する。定数参照（LAYLA_PORTRAIT 等）でも、同名画像が
+# 他所で使われていても、編集中の1箇所だけを正しく保存できる。
+func _save_chapter_portrait(info: Label, new_scale: float, new_x: int, new_y: int):
+	var elog := _battle_edit_get_log()
+	var idx := _battle_edit_history_idx
+	if idx < 0:
+		idx = elog.size() - 1
+	if idx < 0 or idx >= elog.size():
+		info.text = "[保存NG] 編集中の立ち絵が不明"
+		return
+	var src_id: String = elog[idx].get("edit_source_id", "")
+	if src_id.is_empty() or not (":" in src_id):
+		info.text = "[保存NG] 呼び出し位置が未記録（デバッグ実行が必要）"
+		return
+	var colon: int = src_id.rfind(":")
+	var src_file: String = src_id.substr(0, colon)
+	var line_no: int = int(src_id.substr(colon + 1))
+	var abs_path: String = ProjectSettings.globalize_path(src_file)
+	var file := FileAccess.open(abs_path, FileAccess.READ)
+	if not file:
+		info.text = "[保存NG] ファイルを開けない"
+		return
+	var lines: PackedStringArray = file.get_as_text().split("\n")
+	file.close()
+	var li: int = line_no - 1
+	if li < 0 or li >= lines.size():
+		info.text = "[保存NG] 行番号が範囲外"
+		return
+	var line: String = lines[li]
+	if not ("set_portrait" in line):
+		info.text = "[保存NG] %d行目が set_portrait でない" % line_no
+		return
+	if '"scale"' in line:
+		line = _battle_edit_scale_regex().sub(line, '"scale": %.2f' % new_scale)
+	if '"position"' in line:
+		line = _battle_edit_pos_regex().sub(line, '"position": [%d, %d]' % [new_x, new_y])
+	lines[li] = line
+	var wf := FileAccess.open(abs_path, FileAccess.WRITE)
+	if not wf:
+		info.text = "[保存NG] 書き込み不可"
+		return
+	wf.store_string("\n".join(lines))
+	wf.close()
+	info.text = "[保存] %s 行%d を更新" % [src_file.get_file(), line_no]
+	print("[BATTLE_EDIT] SAVED %s:%d scale=%.2f pos=[%d,%d]" % [src_file.get_file(), line_no, new_scale, new_x, new_y])
+
+# ランダムバトル: EncounterDatabase.gd の "<encounter_id>" → "<portrait_key>"
+# 立ち絵の scale/position を更新する（encounter_id と portrait_key でスコープ）。
+# portrait_key は "encounter" / "battle" / "farewell_win" / "farewell_lose" のいずれか。
+# panel の meta "portrait_key" を見て対象ブロックを切り替える（meta なしなら "battle"）。
+func _save_encounter_portrait(edit_panel: PanelContainer, info: Label, new_scale: float, new_x: int, new_y: int):
+	var enc_id: String = edit_panel.get_meta("encounter_id", "")
+	if enc_id.is_empty():
+		info.text = "[保存NG] encounter_id未設定"
+		return
+	var portrait_key: String = edit_panel.get_meta("portrait_key", "battle")
 	var chapter_path: String = edit_panel.get_meta("chapter_path")
 	var abs_path: String = ProjectSettings.globalize_path(chapter_path)
 	var file := FileAccess.open(abs_path, FileAccess.READ)
@@ -2972,53 +3204,359 @@ func _save_battle_edit(edit_panel: PanelContainer, info: Label):
 		return
 	var lines: PackedStringArray = file.get_as_text().split("\n")
 	file.close()
-
-	var regex_scale := RegEx.new()
-	regex_scale.compile('"scale":\\s*[\\d.]+')
-	var regex_pos := RegEx.new()
-	regex_pos.compile('"position":\\s*\\[[^\\]]*\\]')
-
-	var updated_count := 0
-	var is_encounter_db: bool = "EncounterDatabase.gd" in chapter_path
-	if is_encounter_db:
-		# EncounterDatabase.gd 形式: path 行を探し、近傍数行の scale/position を更新
-		for i in range(lines.size()):
-			if portrait_filename in lines[i] and '"path"' in lines[i]:
-				for j in range(i, min(i + 4, lines.size())):
-					var new_line: String = lines[j]
-					var changed := false
-					if '"scale"' in new_line:
-						new_line = regex_scale.sub(new_line, '"scale": %.2f' % new_scale)
-						changed = true
-					if '"position"' in new_line:
-						new_line = regex_pos.sub(new_line, '"position": [%d, %d]' % [new_x, new_y])
-						changed = true
-					if changed:
-						lines[j] = new_line
-						updated_count += 1
-	else:
-		# バトルチャプター形式: set_portrait 行を直接更新
-		for i in range(lines.size()):
-			if portrait_filename in lines[i] and "set_portrait" in lines[i] and '"scale"' in lines[i]:
-				var new_line: String = lines[i]
-				new_line = regex_scale.sub(new_line, '"scale": %.2f' % new_scale)
-				if '"position"' in new_line:
-					new_line = regex_pos.sub(new_line, '"position": [%d, %d]' % [new_x, new_y])
-				lines[i] = new_line
-				updated_count += 1
-
-	if updated_count == 0:
-		info.text = "[保存NG] 該当行なし: %s" % portrait_filename
+	# "<enc_id>": { の行を探す
+	var enc_line: int = -1
+	for i in range(lines.size()):
+		if ('"%s":' % enc_id) in lines[i] and "{" in lines[i]:
+			enc_line = i
+			break
+	if enc_line < 0:
+		info.text = "[保存NG] エンカウント %s が見つからない" % enc_id
 		return
-
-	var write_file := FileAccess.open(abs_path, FileAccess.WRITE)
-	if not write_file:
+	# その後の "<portrait_key>": { を探す（同エンカウント内の最初の出現＝portraits 内のキー）
+	var key_line: int = -1
+	for i in range(enc_line, min(enc_line + 100, lines.size())):
+		if ('"%s":' % portrait_key) in lines[i] and "{" in lines[i]:
+			key_line = i
+			break
+	if key_line < 0:
+		info.text = "[保存NG] %s の %s 立ち絵が見つからない" % [enc_id, portrait_key]
+		return
+	var updated := 0
+	for j in range(key_line, min(key_line + 5, lines.size())):
+		var line: String = lines[j]
+		var changed := false
+		if '"scale"' in line:
+			line = _battle_edit_scale_regex().sub(line, '"scale": %.2f' % new_scale)
+			changed = true
+		if '"position"' in line:
+			line = _battle_edit_pos_regex().sub(line, '"position": [%d, %d]' % [new_x, new_y])
+			changed = true
+		if changed:
+			lines[j] = line
+			updated += 1
+	if updated == 0:
+		info.text = "[保存NG] %s/%s に scale/position 行なし" % [enc_id, portrait_key]
+		return
+	var wf := FileAccess.open(abs_path, FileAccess.WRITE)
+	if not wf:
 		info.text = "[保存NG] 書き込み不可"
 		return
-	write_file.store_string("\n".join(lines))
-	write_file.close()
-	info.text = "[保存] %s を %d 箇所更新" % [portrait_filename, updated_count]
-	print("[BATTLE_EDIT] SAVED %s: scale=%.2f pos=[%d,%d] (%d lines)" % [portrait_filename, new_scale, new_x, new_y, updated_count])
+	wf.store_string("\n".join(lines))
+	wf.close()
+	info.text = "[保存] %s の %s 立ち絵を更新" % [enc_id, portrait_key]
+	print("[BATTLE_EDIT] SAVED encounter %s/%s: scale=%.2f pos=[%d,%d]" % [enc_id, portrait_key, new_scale, new_x, new_y])
+
+# 新レイアウト用: カード（左/右）の保存。
+# card に bind されている rect について、StoryScene.portrait_log から最も新しい
+# 同一 rect のエントリを探し、その edit_source_id（"ファイル:行"）を直接更新する。
+# これによりバトル編集と同じく呼び出し行ピンポイント保存ができ、源ファイルも
+# 各エントリが持つため _story_edit_source_file のハードコード章マッピングに
+# 依存しない（プロローグ以外の章でも動く）。edit_source_id が空のときだけ、
+# 旧 portrait_id + ファイル名出現回数マッチングへフォールバックする。
+func _save_story_edit_card(card: PanelContainer, entries: Array, _idx: int):
+	var info: Label = card.find_child("InfoLabel", true, false)
+	if not info:
+		return
+	var bound_side: String = card.get_meta("bound_side", "")
+	if bound_side.is_empty():
+		info.text = "[保存NG] このカードに立ち絵がない"
+		return
+	var bound_rect = card.get_meta("bound_rect", null)
+	if not is_instance_valid(bound_rect):
+		info.text = "[保存NG] 立ち絵の参照が無効"
+		return
+	if not story_scene_instance:
+		info.text = "[保存NG] story_scene なし"
+		return
+	var sl := _get_edit_sliders(card)
+	if sl.is_empty():
+		info.text = "[保存NG] スライダーなし"
+		return
+	var new_scale: float = sl.scale.value
+	var new_x: int = int(sl.x.value)
+	var new_y: int = int(sl.y.value)
+
+	# portrait_log から最後の bound_rect 向けエントリを取得
+	var plog: Array = story_scene_instance.portrait_log if "portrait_log" in story_scene_instance else []
+	var last_entry: Dictionary = {}
+	for i in range(plog.size() - 1, -1, -1):
+		var e = plog[i]
+		if e.get("rect") == bound_rect:
+			last_entry = e
+			break
+	if last_entry.is_empty():
+		info.text = "[保存NG] 立ち絵履歴に該当エントリなし"
+		return
+
+	var src_id: String = last_entry.get("edit_source_id", "")
+
+	# edit_source_id 経路: ファイル:行 を直接更新
+	if not src_id.is_empty() and (":" in src_id):
+		var colon: int = src_id.rfind(":")
+		var src_file: String = src_id.substr(0, colon)
+		var line_no: int = int(src_id.substr(colon + 1))
+		var abs_path0: String = ProjectSettings.globalize_path(src_file)
+		var f0 := FileAccess.open(abs_path0, FileAccess.READ)
+		if not f0:
+			info.text = "[保存NG] ファイルを開けない: %s" % src_file
+			return
+		var lines0: PackedStringArray = f0.get_as_text().split("\n")
+		f0.close()
+		var li: int = line_no - 1
+		if li < 0 or li >= lines0.size():
+			info.text = "[保存NG] 行番号が範囲外: %d" % line_no
+			return
+		# 呼び出しが複数行に渡る（hero.appear({\n ... \n})）ケースを扱うため、
+		# `(` から対応する `)` までを括弧バランスでブロック検出する。
+		var block_end: int = _story_edit_find_call_block_end(lines0, li)
+		# appear() なら "portrait_scale"、それ以外（set_portrait）は "scale" を使う
+		var scale_key: String = "portrait_scale" if "appear(" in lines0[li] else "scale"
+		var has_scale_key := false
+		var has_pos_key := false
+		for j0 in range(li, block_end + 1):
+			if ('"%s"' % scale_key) in lines0[j0]:
+				has_scale_key = true
+			if '"scale"' in lines0[j0] and scale_key == "portrait_scale":
+				# appear() なのに "scale" を持っているケース（手書き混在）。fallback で "scale" を使う
+				scale_key = "scale"
+				has_scale_key = true
+			if '"position"' in lines0[j0]:
+				has_pos_key = true
+		var changed_any := false
+		# 既存キーがあれば置換
+		if has_scale_key or has_pos_key:
+			for j in range(li, block_end + 1):
+				var line_j: String = lines0[j]
+				var orig: String = line_j
+				if ('"%s"' % scale_key) in line_j:
+					var r_ps := RegEx.new()
+					r_ps.compile('"%s":\\s*[\\d.]+' % scale_key)
+					line_j = r_ps.sub(line_j, '"%s": %.2f' % [scale_key, new_scale])
+				if '"position"' in line_j:
+					line_j = _battle_edit_pos_regex().sub(line_j, '"position": [%d, %d]' % [new_x, new_y])
+				if line_j != orig:
+					lines0[j] = line_j
+					changed_any = true
+		# 不足キーは追加する（dict があれば末尾へ、無ければ dict を新規引数として挿入）
+		if not has_scale_key or not has_pos_key:
+			var dict_loc: Dictionary = _story_edit_find_dict_close(lines0, li, block_end)
+			var dict_end_li: int = dict_loc.get("li", -1)
+			var dict_end_col: int = dict_loc.get("col", -1)
+			var insert_scale: bool = not has_scale_key
+			var insert_pos: bool = not has_pos_key
+			if dict_end_li >= 0:
+				if li == dict_end_li:
+					# Single-line dict: モジュール `... }` の `}` の直前に挿入
+					var ln: String = lines0[li]
+					var parts: String = ""
+					if insert_scale:
+						parts += '"%s": %.2f, ' % [scale_key, new_scale]
+					if insert_pos:
+						parts += '"position": [%d, %d], ' % [new_x, new_y]
+					lines0[li] = ln.substr(0, dict_end_col) + parts + ln.substr(dict_end_col)
+					changed_any = true
+				else:
+					# Multi-line dict: dict_end_li の直前に新しい行を挿入
+					var indent: String = "\t\t"
+					if dict_end_li > 0:
+						var ref: String = lines0[dict_end_li - 1]
+						var ws := 0
+						while ws < ref.length() and (ref[ws] == "\t" or ref[ws] == " "):
+							ws += 1
+						if ws > 0:
+							indent = ref.substr(0, ws)
+					var rebuilt: PackedStringArray = PackedStringArray()
+					for j in range(lines0.size()):
+						if j == dict_end_li:
+							if insert_scale:
+								rebuilt.append('%s"%s": %.2f,' % [indent, scale_key, new_scale])
+							if insert_pos:
+								rebuilt.append('%s"position": [%d, %d],' % [indent, new_x, new_y])
+						rebuilt.append(lines0[j])
+					lines0 = rebuilt
+					changed_any = true
+			else:
+				# dict が無い → 第2引数として新規 dict を挿入する
+				var ln2: String = lines0[block_end]
+				var paren_col: int = ln2.rfind(")")
+				if paren_col >= 0:
+					var dict_parts: String = ""
+					if insert_scale:
+						dict_parts += '"%s": %.2f' % [scale_key, new_scale]
+					if insert_pos:
+						if not dict_parts.is_empty(): dict_parts += ", "
+						dict_parts += '"position": [%d, %d]' % [new_x, new_y]
+					lines0[block_end] = ln2.substr(0, paren_col) + ', {' + dict_parts + '}' + ln2.substr(paren_col)
+					changed_any = true
+		if not changed_any:
+			info.text = "[保存NG] %s 行%d-%d を更新できない" % [src_file.get_file(), line_no, block_end + 1]
+			# 診断: 失敗したブロックの内容をコンソールへ出力
+			print("[STORY_EDIT][NG] block in %s:%d-%d:" % [src_file, line_no, block_end + 1])
+			for j_dbg in range(li, block_end + 1):
+				if j_dbg >= 0 and j_dbg < lines0.size():
+					print("[STORY_EDIT][NG]   %d| %s" % [j_dbg + 1, lines0[j_dbg]])
+			return
+		var wf0 := FileAccess.open(abs_path0, FileAccess.WRITE)
+		if not wf0:
+			info.text = "[保存NG] 書き込み不可"
+			return
+		wf0.store_string("\n".join(lines0))
+		wf0.close()
+		# in-memory にも反映:
+		# (a) 立ち絵履歴エントリを更新（再描画整合）
+		_apply_save_to_log_entry(last_entry, new_scale, new_x, new_y)
+		# (b) 対応する ShowCharacter コマンドの portrait_scale / position を上書き
+		#     これがないと ◀/▶ で再実行されたとき古い値で立ち絵が再表示される
+		for cmd in entries:
+			if cmd is StoryCommands.ShowCharacter and ("edit_source_id" in cmd) and cmd.edit_source_id == src_id:
+				cmd.portrait_scale = new_scale
+				cmd.position = Vector2(new_x, new_y)
+				cmd.position_mode = "offset"
+				break
+		info.text = "[保存] %s 行%d" % [src_file.get_file(), line_no]
+		print("[STORY_EDIT] SAVED %s:%d-%d (%s) scale=%.2f pos=[%d,%d]" % [src_file.get_file(), line_no, block_end + 1, bound_side, new_scale, new_x, new_y])
+		return
+
+	# フォールバック: 章マッピングが設定されていれば portrait_id ベースで保存
+	if _story_edit_source_file.is_empty():
+		info.text = "[保存NG] edit_source_id 不在 + 章マッピング未登録"
+		return
+	var portrait_id_filename: String = last_entry.get("texture_path", "").get_file()
+	if portrait_id_filename.is_empty():
+		info.text = "[保存NG] texture_path 未取得"
+		return
+	var abs_path: String = ProjectSettings.globalize_path(_story_edit_source_file)
+	var file := FileAccess.open(abs_path, FileAccess.READ)
+	if not file:
+		info.text = "[保存NG] ファイルを開けない: %s" % _story_edit_source_file
+		return
+	var lines: PackedStringArray = file.get_as_text().split("\n")
+	file.close()
+	var matches: Array = []
+	for i in range(lines.size()):
+		if portrait_id_filename in lines[i] and '"scale"' in lines[i]:
+			matches.append(i)
+	if matches.is_empty():
+		info.text = "[保存NG] %s を含む行なし" % portrait_id_filename
+		return
+	# ヒューリスティックに最初のヒットを更新（fallback の精度は低い）
+	var found_line: int = matches[0]
+	var line: String = lines[found_line]
+	line = _battle_edit_scale_regex().sub(line, '"scale": %.2f' % new_scale)
+	if '"position"' in line:
+		line = _battle_edit_pos_regex().sub(line, '"position": [%d, %d]' % [new_x, new_y])
+	lines[found_line] = line
+	var wf := FileAccess.open(abs_path, FileAccess.WRITE)
+	if not wf:
+		info.text = "[保存NG] 書き込み不可"
+		return
+	wf.store_string("\n".join(lines))
+	wf.close()
+	_apply_save_to_log_entry(last_entry, new_scale, new_x, new_y)
+	info.text = "[保存] %s 行%d（fb）" % [_story_edit_source_file.get_file(), found_line + 1]
+	print("[STORY_EDIT] SAVED (fallback) %s:%d (%s)" % [_story_edit_source_file.get_file(), found_line + 1, bound_side])
+
+# 編集モード用: ストーリー章スクリプトを全て強制再パースし、story_script の
+# シーケンスを最新ソースで上書き再登録する。これで「保存→閉じて開き直し」しても
+# preload キャッシュのまま古いコードが動くことを防ぐ。
+const _STORY_CHAPTER_PATHS := [
+	"res://story/chapters/PrologueChapter.gd",
+	"res://story/chapters/Stage1Chapter.gd",
+	"res://story/chapters/Stage2Chapter.gd",
+	"res://story/chapters/Stage3Chapter.gd",
+	"res://story/chapters/Stage4Chapter.gd",
+	"res://story/chapters/Stage5Chapter.gd",
+	"res://story/chapters/Stage6Chapter.gd",
+	"res://story/chapters/Stage7Chapter.gd",
+	"res://story/chapters/Subevent3Chapter.gd",
+	"res://story/chapters/Subevent4Chapter.gd",
+]
+
+func _force_reload_story_chapters() -> void:
+	if not story_script:
+		return
+	for path in _STORY_CHAPTER_PATHS:
+		var fresh: GDScript = _load_script_fresh(path)
+		if not fresh:
+			continue
+		var instance = fresh.new()
+		if instance and story_script.has_method("_register_chapter"):
+			story_script._register_chapter(instance)
+
+# portrait_log のエントリのスケール/位置を保存値で更新（in-memory 整合用）
+func _apply_save_to_log_entry(entry: Dictionary, new_scale: float, _new_x: int, _new_y: int):
+	entry["scale"] = new_scale
+	# position は画面座標なので、entry["position"] は再計算が必要だが、
+	# 編集中の rect はスライダー操作で既に正しい位置にあるためそこから取り直す。
+	var rect: TextureRect = entry.get("rect")
+	if is_instance_valid(rect):
+		entry["position"] = rect.position
+
+# 呼び出しブロック内の dict の閉じ `}` の位置を返す。{"li": int, "col": int}
+# dict が見つからない場合は {"li": -1, "col": -1} を返す。
+func _story_edit_find_dict_close(file_lines: PackedStringArray, start_li: int, end_li: int) -> Dictionary:
+	var depth: int = 0
+	var started: bool = false
+	var in_str := false
+	var str_ch := ""
+	for j in range(start_li, end_li + 1):
+		var s: String = file_lines[j]
+		var k := 0
+		while k < s.length():
+			var c: String = s[k]
+			if in_str:
+				if c == "\\" and k + 1 < s.length():
+					k += 2
+					continue
+				if c == str_ch:
+					in_str = false
+			else:
+				if c == '"' or c == "'":
+					in_str = true
+					str_ch = c
+				elif c == "{":
+					depth += 1
+					started = true
+				elif c == "}":
+					depth -= 1
+					if started and depth == 0:
+						return {"li": j, "col": k}
+			k += 1
+	return {"li": -1, "col": -1}
+
+# 呼び出しの開始行（start_li）から、括弧バランスを取りつつ対応する `)` を含む
+# 終了行までを返す。文字列リテラル中の括弧は無視する。複数行 dict 引数の
+# 範囲特定に使う（hero.appear({\n ... \n}) の終端行を返す）。
+func _story_edit_find_call_block_end(file_lines: PackedStringArray, start_li: int) -> int:
+	var depth: int = 0
+	var started: bool = false
+	for j in range(start_li, file_lines.size()):
+		var s: String = file_lines[j]
+		var in_str := false
+		var str_ch := ""
+		var k := 0
+		while k < s.length():
+			var c: String = s[k]
+			if in_str:
+				if c == "\\" and k + 1 < s.length():
+					k += 2
+					continue
+				if c == str_ch:
+					in_str = false
+			else:
+				if c == '"' or c == "'":
+					in_str = true
+					str_ch = c
+				elif c == "(":
+					depth += 1
+					started = true
+				elif c == ")":
+					depth -= 1
+					if started and depth == 0:
+						return j
+			k += 1
+	return file_lines.size() - 1
 
 func _story_edit_save_current(entries: Array, idx: int, edit_panel: PanelContainer):
 	var e = entries[idx]
@@ -3201,8 +3739,9 @@ func _run_event_battle_edit(ch_info: Dictionary):
 	GameState.init_default_inventory()
 	GameState.money = 1000
 
-	# 編集中のファイルを反映するためキャッシュを無視して再読込
-	var script_res = ResourceLoader.load(ch_info.path, "", ResourceLoader.CACHE_MODE_REPLACE)
+	# 編集中のファイルを反映するためソースから強制再パース（GDScript キャッシュは
+	# ResourceLoader.CACHE_MODE_REPLACE だけでは無効化されないため）
+	var script_res = _load_script_fresh(ch_info.path)
 	if not script_res:
 		return
 	var chapter = script_res.new()
@@ -3260,7 +3799,7 @@ func _run_minigame_standalone(minigame_id: String):
 		push_error("Minigame not found: %s" % minigame_id)
 		return
 
-	var script_res = ResourceLoader.load(entry.path, "", ResourceLoader.CACHE_MODE_REPLACE)
+	var script_res = _load_script_fresh(entry.path)
 	if not script_res:
 		push_error("Failed to load minigame chapter: %s" % entry.path)
 		return

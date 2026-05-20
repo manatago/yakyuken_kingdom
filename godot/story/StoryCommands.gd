@@ -521,6 +521,10 @@ class CharacterHandle:
 			opts["transition_duration"] = duration
 		if extra.has("flip"):
 			opts["flip"] = extra["flip"]
+		# 登場演出（フェードイン/スライドイン等）。指定時のみ転送する。
+		for k in ["appear_effect", "appear_from", "appear_duration", "appear_distance"]:
+			if extra.has(k):
+				opts[k] = extra[k]
 		return _record_show(_dsl.show_character(_character_id, opts))
 
 	func animate_portrait(portrait_ids: Array, frame_duration: float = 0.15, loop_count: int = 0):

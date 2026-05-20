@@ -40,15 +40,15 @@ func get_gold_reward() -> Dictionary:
 # --- 初期表示 ---
 
 func setup_scene(bt):
+	# デッキ構築フェーズ用: カード台座のみ。対戦相手は最初の outfit で登場させる。
 	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.5, "position": [0, 180]})
-	var rec = bt.character("receptionist")
-	rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_001.png", {"scale": 0.5, "side": "center", "position": [0, -275]})
 
 # --- Outfit 3: フル装備 ---
 
 func outfit_3(bt):
 	var rec = bt.character("receptionist")
-	rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_001.png", {"scale": 0.5, "side": "center", "position": [0, -275]})
+	# 最初の outfit: 対戦相手が右からフェードインで登場
+	rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_001.png", {"scale": 0.50, "side": "center", "position": [0, 0], "appear_effect": "fade_slide", "appear_from": "right", "appear_duration": 0.4})
 	rec.band("ギルドの受付嬢を甘く見ないでね。")
 
 	var selection = await bt.select_hand()
@@ -68,7 +68,7 @@ func outfit_3(bt):
 
 func outfit_2(bt):
 	var rec = bt.character("receptionist")
-	rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_005.png", {"scale": 0.5, "side": "center", "position": [0, -275]})
+	rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_005.png", {"scale": 0.45, "side": "center", "position": [0, -114]})
 	rec.band("...ちょっと、見ないでよ。")
 
 	var selection = await bt.select_hand()

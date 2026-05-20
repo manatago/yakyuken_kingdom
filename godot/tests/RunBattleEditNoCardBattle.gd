@@ -78,15 +78,15 @@ func _initialize():
 
 	# 呼び出し位置ごとに1エントリ。prologue は setup + outfit_3/2/1 各4箇所
 	# （勝負前/勝ち/負け/引き分け）で計13箇所。outfit を3回流しても各箇所1回ずつ。
-	_check(names.size() == 13,
-		"portrait_log has one entry per set_portrait call-site (expect 13, got %d)" % names.size())
-	# guard_024 は setup_scene と outfit_3 冒頭の2箇所で使用 → 2エントリ
+	_check(names.size() == 12,
+		"portrait_log has one entry per set_portrait call-site (expect 12 = 3 outfit x 4, got %d)" % names.size())
+	# setup_scene は台座のみで対戦相手を出さないため、guard_024 は outfit_3 冒頭の1箇所のみ
 	# （3回流しで3倍に増えていない＝呼び出し位置での重複排除が効いている）
 	var c024 := 0
 	for n in names:
 		if n == "guard_default_024.png":
 			c024 += 1
-	_check(c024 == 2, "guard_024 = one entry per call-site, not tripled by 3x runs (count=%d)" % c024)
+	_check(c024 == 1, "guard_024 = one entry per call-site, not tripled by 3x runs (count=%d)" % c024)
 
 	# テキストと画像の対応: outfit_3 の各分岐立ち絵に、その分岐のセリフが紐づいている
 	var expect := {

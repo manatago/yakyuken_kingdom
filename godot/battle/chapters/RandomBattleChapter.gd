@@ -78,27 +78,22 @@ func _get_battle_portrait() -> Dictionary:
 	return EncounterDatabase.get_portrait(_data, "battle")
 
 func setup_scene(bt):
+	# デッキ構築フェーズ用: カード台座のみ。対戦相手は outfit_1 で登場させる。
 	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.55, "position": [0, 180]})
-	var portrait: Dictionary = _get_battle_portrait()
-	var p_path: String = portrait.get("path", "")
-	if p_path.is_empty():
-		return
-	var char_handle = bt.character(_opponent_id)
-	char_handle.set_portrait(p_path, {
-		"scale": portrait.get("scale", 0.4),
-		"side": portrait.get("side", "center"),
-		"position": portrait.get("position", [0, -199]),
-	})
 
 func outfit_1(bt):
 	var portrait: Dictionary = _get_battle_portrait()
 	var char_handle = bt.character(_opponent_id)
 	var p_path: String = portrait.get("path", "")
 	if not p_path.is_empty():
+		# 最初の outfit: 対戦相手が右からフェードインで登場
 		char_handle.set_portrait(p_path, {
 			"scale": portrait.get("scale", 0.4),
 			"side": portrait.get("side", "center"),
 			"position": portrait.get("position", [0, -199]),
+			"appear_effect": "fade_slide",
+			"appear_from": "right",
+			"appear_duration": 0.4,
 		})
 	# バトル開始セリフ
 	var start_line: String = EncounterDatabase.pick_line(_data, "battle_start")

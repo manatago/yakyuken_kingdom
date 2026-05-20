@@ -162,7 +162,7 @@ func _init():
 				},
 				"battle": {
 					"path": "res://assets/characters/random_battle/char001/clothed/char001_clothed_001.png",
-					"scale": 0.70, "side": "center", "position": [0, -180],
+					"scale": 0.55, "side": "center", "position": [0, 100],
 				},
 				"farewell_win": {
 					"path": "res://assets/characters/random_battle/char001/clothed/char001_clothed_003.png",
@@ -209,7 +209,7 @@ func _init():
 				},
 				"battle": {
 					"path": "res://assets/characters/random_battle/char002/clothed/char002_clothed_001.png",
-					"scale": 0.42, "side": "center", "position": [0, -248],
+					"scale": 0.45, "side": "center", "position": [0, -110],
 				},
 				"farewell_win": {
 					"path": "res://assets/characters/random_battle/char002/clothed/char002_clothed_003.png",
@@ -260,7 +260,7 @@ func _init():
 				},
 				"farewell_win": {
 					"path": "res://assets/characters/random_battle/char003/clothed/char003_clothed_003.png",
-					"scale": 0.60, "side": "center", "position": [0, 100],
+					"scale": 0.60, "side": "center", "position": [0, 297],
 				},
 				"farewell_lose": {
 					"path": "res://assets/characters/random_battle/char003/clothed/char003_clothed_004.png",

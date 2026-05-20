@@ -52,13 +52,13 @@ func _win_rate(default_rate: float) -> float:
 	return 0.0 if _is_first_battle() else default_rate
 
 func setup_scene(bt):
+	# デッキ構築フェーズ用: カード台座のみ。対戦相手は最初の outfit で登場させる。
 	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.5, "position": [0, 180]})
-	var feria = bt.character("feria")
-	feria.set_portrait(FERIA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 
 func outfit_3(bt):
 	var feria = bt.character("feria")
-	feria.set_portrait(FERIA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
+	# 最初の outfit: 対戦相手が右からフェードインで登場
+	feria.set_portrait(FERIA_PORTRAIT, {"scale": 0.40, "side": "center", "position": [0, -215], "appear_effect": "fade_slide", "appear_from": "right", "appear_duration": 0.4})
 	if _is_first_battle():
 		feria.band("プラチナのグー。")
 	else:
@@ -68,10 +68,10 @@ func outfit_3(bt):
 	var result = await bt.janken(selection, {"win_rate": _win_rate(0.5)})
 
 	if result == "win":
-		feria.set_portrait(FERIA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
+		feria.set_portrait(FERIA_PORTRAIT, {"scale": 0.40, "side": "center", "position": [0, -215]})
 		feria.band("...！")
 	elif result == "lose":
-		feria.set_portrait(FERIA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
+		feria.set_portrait(FERIA_PORTRAIT, {"scale": 0.50, "side": "center", "position": [0, -260]})
 		feria.band("...一本。")
 	else:
 		feria.set_portrait(FERIA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})

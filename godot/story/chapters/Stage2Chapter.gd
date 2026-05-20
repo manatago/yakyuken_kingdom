@@ -71,12 +71,12 @@ func _build_stage2_pre(b):
 
 	staff_b.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": STAFF_B, "portrait_scale": 0.5, "position": [0, 50],
+		"portrait": STAFF_B, "portrait_scale": 0.62, "position": [0, 285],
 		"flip": 0,
 	})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": HERO_WEAK, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
+		"portrait": HERO_WEAK, "portrait_scale": 0.53, "flip": 1, "position": [0, 209],
 	})
 
 	staff_b.band("...私の指輪が、ないんです！ 昨日、カウンター裏の引き出しに、\n確かに入れていたのに...！ 祖母の形見の、銀の指輪で...！")
@@ -85,7 +85,8 @@ func _build_stage2_pre(b):
 	staff_b.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
 	receptionist.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.3,
-		"portrait": RECEP_JIT, "portrait_scale": 0.5, "flip": 0,
+		"portrait": RECEP_JIT, "portrait_scale": 0.56, "flip": 0,
+		"position": [0, 275],
 	})
 	receptionist.band("...B嬢。カウンター裏への出入りは、職員と、許可を得た冒険者のみ。\n昨日の出入り者を、確認いたします。")
 
@@ -94,7 +95,7 @@ func _build_stage2_pre(b):
 
 	adv_c.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
-		"portrait": ADV_C, "portrait_scale": 0.5, "position": [0, 100], "flip": 0,
+		"portrait": ADV_C, "portrait_scale": 0.65, "position": [0, 270], "flip": 0,
 	})
 	adv_c.band("受付嬢様、昨日、B嬢をジロジロ舐めるように見てる、気色悪い男が\nカウンター裏で一人、いたぜ。あれ、絶対、指輪ついでに下心が出てた。")
 
@@ -174,7 +175,7 @@ func _build_stage2_meet(b):
 	layla.appear({
 		"side": "right", "appear_effect": "fade_slide", "appear_from": "right",
 		"appear_duration": 0.8, "appear_distance": 200,
-		"portrait": LAYLA, "portrait_scale": 0.5, "position": [0, 10],
+		"portrait": LAYLA, "portrait_scale": 0.61, "position": [0, 122],
 	})
 	layla.band("サトシ様。...ようこそ、おいでくださいました。\n暗部調査部門のレイラ、でございます。")
 

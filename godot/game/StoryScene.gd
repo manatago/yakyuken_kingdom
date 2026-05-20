@@ -1062,6 +1062,10 @@ func show_character_command(entry: Cmd.ShowCharacter):
 func _apply_character_entry_effect(target_rect: TextureRect, entry: Cmd.ShowCharacter, target_pos: Vector2, side: String):
 	if target_rect == null:
 		return
+	# 編集モード（立ち絵キャプチャ中）は登場演出を再生せず、目標位置に即時配置する。
+	# 演出のtweenが ◀/▶ の位置復元と競合するのを防ぐ。
+	if portrait_log_enabled:
+		return
 	var effect := entry.appear_effect.strip_edges().to_lower()
 	if effect.is_empty():
 		return

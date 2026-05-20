@@ -68,15 +68,15 @@ const SISTER_BATTLE_SHOUT := "res://assets/characters/main/sister_head/clothed/s
 const SISTER_BATTLE_LAUGH := "res://assets/characters/main/sister_head/clothed/sister_head_clothed_008.png"
 
 func sister_setup_scene(bt):
+	# デッキ構築フェーズ用: カード台座のみ。対戦相手は最初の outfit で登場させる。
 	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.5, "position": [0, 180]})
-	var sister = bt.character("sister_head")
-	sister.set_portrait(SISTER_BATTLE_NORMAL, {"scale": 0.5, "side": "center", "position": [0, -260]})
 
 # --- シスター長 Outfit 3: フル装備 ---
 
 func sister_outfit_3(bt):
 	var sister = bt.character("sister_head")
-	sister.set_portrait(SISTER_BATTLE_COMPOSED, {"scale": 0.5, "side": "center", "position": [0, -260]})
+	# 最初の outfit: 対戦相手が右からフェードインで登場
+	sister.set_portrait(SISTER_BATTLE_COMPOSED, {"scale": 0.5, "side": "center", "position": [0, -260], "appear_effect": "fade_slide", "appear_from": "right", "appear_duration": 0.4})
 	sister.band("...神の御前で、正直になりましょうか。\n迷いは、私にはお見通しよ。")
 
 	var selection = await bt.select_hand()
