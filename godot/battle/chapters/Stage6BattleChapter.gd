@@ -52,13 +52,13 @@ func _win_rate(default_rate: float) -> float:
 	return 0.0 if _is_first_battle() else default_rate
 
 func setup_scene(bt):
+	# デッキ構築フェーズ用: カード台座のみ。対戦相手は最初の outfit で登場させる。
 	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.5, "position": [0, 180]})
-	var princess = bt.character("princess")
-	princess.set_portrait(PRINCESS_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 
 func outfit_3(bt):
 	var princess = bt.character("princess")
-	princess.set_portrait(PRINCESS_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
+	# 最初の outfit: 対戦相手が右からフェードインで登場
+	princess.set_portrait(PRINCESS_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260], "appear_effect": "fade_slide", "appear_from": "right", "appear_duration": 0.4})
 	if _is_first_battle():
 		princess.band("第一勝負。...勅令、発動。")
 	else:

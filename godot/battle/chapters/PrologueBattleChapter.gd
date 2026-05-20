@@ -155,15 +155,15 @@ func tutorial(bt):
 # --- 初期表示（デッキ構築時） ---
 
 func setup_scene(bt):
+	# デッキ構築フェーズ用: カード台座のみ。対戦相手は最初の outfit で登場させる。
 	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.55, "position": [0, 180]})
-	var matilda = bt.character("matilda")
-	matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_024.png", {"scale": 0.80, "side": "center", "position": [0, -160]})
 
 # --- Outfit 3: フル装備 ---
 
 func outfit_3(bt):
 	var matilda = bt.character("matilda")
-	matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_024.png", {"scale": 0.80, "side": "center", "position": [0, -160]})
+	# 最初の outfit: 対戦相手が右からフェードインで登場
+	matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_024.png", {"scale": 0.80, "side": "center", "position": [0, -160], "appear_effect": "fade_slide", "appear_from": "right", "appear_duration": 0.4})
 	matilda.band("さあ、始めようか。手加減はしないよ。")
 
 	var selection = await bt.select_hand()
@@ -178,11 +178,11 @@ func outfit_3(bt):
 		await bt.play_video("res://assets/videos/prologue_win_1.ogv")
 
 	elif result == "lose":
-		matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_015.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+		matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_015.png", {"scale": 0.40, "side": "center", "position": [0, -255]})
 		matilda.band("やっぱり、真剣勝負も弱いわね。ふっ。")
 
 	else:
-		matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_012.png", {"scale": 0.4, "side": "center", "position": [0, -199]})
+		matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_012.png", {"scale": 0.40, "side": "center", "position": [0, -255]})
 		matilda.band("あいこか。首がつながったな。")
 
 # --- Outfit 2: 1枚脱いだ状態 ---

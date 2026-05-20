@@ -58,15 +58,15 @@ func outfit_1(bt):
 # =============================================
 
 func belka_setup_scene(bt):
+	# デッキ構築フェーズ用: カード台座のみ。対戦相手は最初の outfit で登場させる。
 	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.55, "position": [0, 180]})
-	var belka = bt.character("belka")
-	belka.set_portrait("res://assets/characters/main/belka/nude/belka_nude_001.png", {"scale": 0.64, "side": "center", "position": [0, -275]})
 
 # --- ベルカ Outfit 3: フル装備 ---
 
 func belka_outfit_3(bt):
 	var belka = bt.character("belka")
-	belka.set_portrait("res://assets/characters/main/belka/nude/belka_nude_001.png", {"scale": 0.64, "side": "center", "position": [0, -275]})
+	# 最初の outfit: 対戦相手が右からフェードインで登場
+	belka.set_portrait("res://assets/characters/main/belka/nude/belka_nude_001.png", {"scale": 0.64, "side": "center", "position": [0, -275], "appear_effect": "fade_slide", "appear_from": "right", "appear_duration": 0.4})
 	belka.band("へっ、ボクに勝てると思ってんの？")
 
 	var selection = await bt.select_hand()

@@ -51,35 +51,55 @@ func _slice_function(src: String, func_name: String) -> String:
 # ---------- tests ----------
 
 func _test_story_panel_buttons() -> bool:
+	# 新レイアウト: ナビ帯（PrevBtn/NextBtn/ExitBtn）＋ 左右カード（SaveBtn/CopyBtn を持つ）
 	var src := _read_main_source()
 	if src.is_empty():
 		return fail("could not read Main.gd")
-	var func_body := _slice_function(src, "_create_story_edit_panel")
-	if func_body.is_empty():
-		return fail("_create_story_edit_panel not found")
+	var nav_body := _slice_function(src, "_create_story_edit_nav_bar")
+	if nav_body.is_empty():
+		return fail("_create_story_edit_nav_bar not found")
+	var card_body := _slice_function(src, "_create_story_edit_char_card")
+	if card_body.is_empty():
+		return fail("_create_story_edit_char_card not found")
 	var all_ok := true
-	for needle in ['"PrevBtn"', '"NextBtn"', '"SideBtn"', '"SaveBtn"', '"ExitBtn"', '"CopyBtn"']:
-		if not func_body.contains(needle):
-			all_ok = fail("_create_story_edit_panel missing button name: %s" % needle) and false
+	for needle in ['"PrevBtn"', '"NextBtn"', '"ExitBtn"']:
+		if not nav_body.contains(needle):
+			all_ok = fail("nav bar missing button name: %s" % needle) and false
+	for needle in ['"SaveBtn"', '"CopyBtn"']:
+		if not card_body.contains(needle):
+			all_ok = fail("char card missing button name: %s" % needle) and false
 	return all_ok
 
 func _test_story_panel_no_auto() -> bool:
+	# 旧 L/R トグルや自動進行ボタンが新レイアウトで残っていないこと
 	var src := _read_main_source()
-	var func_body := _slice_function(src, "_create_story_edit_panel")
-	if func_body.is_empty():
-		return fail("_create_story_edit_panel not found")
-	return expect_true(not func_body.contains('"AutoBtn"'), "AutoBtn should be removed from story edit panel")
+	var nav_body := _slice_function(src, "_create_story_edit_nav_bar")
+	var card_body := _slice_function(src, "_create_story_edit_char_card")
+	if nav_body.is_empty() or card_body.is_empty():
+		return fail("story edit layout helpers not found")
+	var all_ok := true
+	for needle in ['"AutoBtn"', '"SideBtn"']:
+		if nav_body.contains(needle):
+			all_ok = fail("nav bar should NOT contain: %s" % needle) and false
+		if card_body.contains(needle):
+			all_ok = fail("char card should NOT contain: %s" % needle) and false
+	return all_ok
 
 func _test_story_buttons_connected() -> bool:
 	var src := _read_main_source()
-	# _run_story_edit 内で各ボタンが `pressed.connect(...)` されているか
 	var func_body := _slice_function(src, "_run_story_edit")
 	if func_body.is_empty():
 		return fail("_run_story_edit not found")
 	var all_ok := true
-	for btn in ["prev_btn", "next_btn", "side_btn", "save_btn", "exit_btn", "copy_btn"]:
+	# ナビ帯のボタン connect
+	for btn in ["prev_btn", "next_btn", "exit_btn"]:
 		if not func_body.contains("%s.pressed.connect" % btn):
 			all_ok = fail("_run_story_edit: %s.pressed.connect missing" % btn) and false
+	# カード側の保存/コピーが connect されている（変数名は card 側）
+	if not func_body.contains("save_btn_c.pressed.connect"):
+		all_ok = fail("_run_story_edit: per-card save not connected") and false
+	if not func_body.contains("copy_btn_c.pressed.connect"):
+		all_ok = fail("_run_story_edit: per-card copy not connected") and false
 	return all_ok
 
 func _test_battle_overlay_action_buttons() -> bool:

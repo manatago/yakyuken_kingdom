@@ -43,13 +43,13 @@ func get_gold_reward() -> Dictionary:
 	return {"min": 100, "max": 150}
 
 func setup_scene(bt):
+	# デッキ構築フェーズ用: カード台座のみ。対戦相手は最初の outfit で登場させる。
 	bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.5, "position": [0, 180]})
-	var fiona = bt.character("fiona")
-	fiona.set_portrait(FIONA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
 
 func outfit_3(bt):
 	var fiona = bt.character("fiona")
-	fiona.set_portrait(FIONA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260]})
+	# 最初の outfit: 対戦相手が右からフェードインで登場
+	fiona.set_portrait(FIONA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260], "appear_effect": "fade_slide", "appear_from": "right", "appear_duration": 0.4})
 	fiona.band("...は、はい...お、お願い、します...。")
 
 	var selection = await bt.select_hand()
