@@ -154,7 +154,7 @@ func get_lose_behavior() -> String:
 
 func setup_scene(bt):
 	var layla = bt.character(LAYLA_ID)
-	layla.set_portrait(LAYLA_PORTRAIT, {"scale": 0.55, "side": "center", "position": [0, -200]})
+	layla.set_portrait(LAYLA_PORTRAIT, {"scale": 0.55, "side": "center", "position": [0, 130]})
 
 # --- 状態 ---
 var _gauge: int = GAUGE_START

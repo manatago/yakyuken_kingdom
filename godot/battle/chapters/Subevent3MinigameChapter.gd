@@ -267,7 +267,7 @@ signal _choice_emitted(idx: int)
 
 func setup_scene(bt):
 	var fiona = bt.character(FIONA_ID)
-	fiona.set_portrait(ARMOR_PORTRAIT, {"scale": 0.55, "side": "center", "position": [0, -200]})
+	fiona.set_portrait(ARMOR_PORTRAIT, {"scale": 0.55, "side": "center", "position": [0, 37]})
 
 func minigame(bt):
 	_gauge = GAUGE_START

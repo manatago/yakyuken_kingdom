@@ -609,6 +609,12 @@ var _strong_used: Array = []
 # 現ターンのアクティブ質問（_pick_current_choices で決定、_apply_choice で参照）
 var _active_question: Dictionary = {}
 
+func setup_scene(bt):
+	# 編集モードで個別保存するため、基底の継承ではなくここで明示的に set_portrait を呼ぶ
+	# （edit_source_id を本ファイルの行へ向けるため）
+	var feria = bt.character("feria")
+	feria.set_portrait(FERIA_PORTRAIT, {"scale": 0.55, "side": "center", "position": [0, -200]})
+
 func _get_choice_pool() -> Array:
 	# 基底フォールバック用
 	return []
