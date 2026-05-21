@@ -48,20 +48,20 @@ func setup_scene(bt):
 func outfit_3(bt):
 	var rec = bt.character("receptionist")
 	# 最初の outfit: 対戦相手が右からフェードインで登場
-	rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_001.png", {"scale": 0.50, "side": "center", "position": [0, 0], "appear_effect": "fade_slide", "appear_from": "right", "appear_duration": 0.4})
+	rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_001.png", {"scale": 0.55, "side": "center", "position": [0, 120], "appear_effect": "fade_slide", "appear_from": "right", "appear_duration": 0.4})
 	rec.band("ギルドの受付嬢を甘く見ないでね。")
 
 	var selection = await bt.select_hand()
 	var result = await bt.janken(selection)
 
 	if result == "win":
-		rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_002.png", {"scale": 0.5, "side": "center", "position": [0, -275]})
+		rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_002.png", {"scale": 0.50, "side": "center", "position": [0, 0]})
 		rec.band("え...うそ...。")
 	elif result == "lose":
-		rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_003.png", {"scale": 0.5, "side": "center", "position": [0, -275]})
+		rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_003.png", {"scale": 0.50, "side": "center", "position": [0, 0]})
 		rec.band("ふふ、まだまだね。")
 	else:
-		rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_004.png", {"scale": 0.5, "side": "center", "position": [0, -275]})
+		rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_004.png", {"scale": 0.50, "side": "center", "position": [0, 0]})
 		rec.band("あら、引き分け？")
 
 # --- Outfit 2: 1枚脱いだ ---
@@ -75,31 +75,31 @@ func outfit_2(bt):
 	var result = await bt.janken(selection, {"win_rate": 0.5})
 
 	if result == "win":
-		rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_006.png", {"scale": 0.5, "side": "center", "position": [0, -275]})
+		rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_006.png", {"scale": 0.50, "side": "center", "position": [0, 0]})
 		rec.band("...っ、また負けた...。")
 	elif result == "lose":
-		rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_007.png", {"scale": 0.5, "side": "center", "position": [0, -275]})
+		rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_007.png", {"scale": 0.40, "side": "center", "position": [0, -195]})
 		rec.band("ほら、油断するからよ。")
 	else:
-		rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_008.png", {"scale": 0.5, "side": "center", "position": [0, -275]})
+		rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_008.png", {"scale": 0.45, "side": "center", "position": [0, -100]})
 		rec.band("また引き分け...集中しなさい。")
 
 # --- Outfit 1: あと1枚 ---
 
 func outfit_1(bt):
 	var rec = bt.character("receptionist")
-	rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_009.png", {"scale": 0.5, "side": "center", "position": [0, -275]})
+	rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_009.png", {"scale": 0.45, "side": "center", "position": [0, -105]})
 	rec.band("...こ、これ以上は絶対にダメ！")
 
 	var selection = await bt.select_hand()
 	var result = await bt.janken(selection, {"win_rate": 0.4})
 
 	if result == "win":
-		rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_010.png", {"scale": 0.5, "side": "center", "position": [0, -275]})
+		rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_010.png", {"scale": 0.45, "side": "center", "position": [0, -120]})
 		rec.band("いやぁぁぁ！！")
 	elif result == "lose":
-		rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_011.png", {"scale": 0.5, "side": "center", "position": [0, -275]})
+		rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_011.png", {"scale": 0.45, "side": "center", "position": [0, -100]})
 		rec.band("ふぅ...助かった...。")
 	else:
-		rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_012.png", {"scale": 0.5, "side": "center", "position": [0, -275]})
+		rec.set_portrait("res://assets/characters/main/receptionist/topless/receptionist_topless_012.png", {"scale": 0.45, "side": "center", "position": [0, -100]})
 		rec.band("...まだ終わらないの？")

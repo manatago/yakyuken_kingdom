@@ -76,7 +76,7 @@ func sister_setup_scene(bt):
 func sister_outfit_3(bt):
 	var sister = bt.character("sister_head")
 	# 最初の outfit: 対戦相手が右からフェードインで登場
-	sister.set_portrait(SISTER_BATTLE_COMPOSED, {"scale": 0.5, "side": "center", "position": [0, -260], "appear_effect": "fade_slide", "appear_from": "right", "appear_duration": 0.4})
+	sister.set_portrait(SISTER_BATTLE_COMPOSED, {"scale": 0.50, "side": "center", "position": [0, 0], "appear_effect": "fade_slide", "appear_from": "right", "appear_duration": 0.4})
 	sister.band("...神の御前で、正直になりましょうか。\n迷いは、私にはお見通しよ。")
 
 	var selection = await bt.select_hand()

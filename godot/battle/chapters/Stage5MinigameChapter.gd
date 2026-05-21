@@ -613,7 +613,7 @@ func setup_scene(bt):
 	# 編集モードで個別保存するため、基底の継承ではなくここで明示的に set_portrait を呼ぶ
 	# （edit_source_id を本ファイルの行へ向けるため）
 	var feria = bt.character("feria")
-	feria.set_portrait(FERIA_PORTRAIT, {"scale": 0.55, "side": "center", "position": [0, -200]})
+	feria.set_portrait(FERIA_PORTRAIT, {"scale": 0.55, "side": "center", "position": [0, 0]})
 
 func _get_choice_pool() -> Array:
 	# 基底フォールバック用

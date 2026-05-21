@@ -49,7 +49,7 @@ func setup_scene(bt):
 func outfit_3(bt):
 	var fiona = bt.character("fiona")
 	# 最初の outfit: 対戦相手が右からフェードインで登場
-	fiona.set_portrait(FIONA_PORTRAIT, {"scale": 0.5, "side": "center", "position": [0, -260], "appear_effect": "fade_slide", "appear_from": "right", "appear_duration": 0.4})
+	fiona.set_portrait(FIONA_PORTRAIT, {"scale": 0.45, "side": "center", "position": [0, -80], "appear_effect": "fade_slide", "appear_from": "right", "appear_duration": 0.4})
 	fiona.band("...は、はい...お、お願い、します...。")
 
 	var selection = await bt.select_hand()

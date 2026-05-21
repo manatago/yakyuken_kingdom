@@ -9,26 +9,26 @@ const BG_INN := "res://assets/backgrounds/stage2/bg_inn_meeting.png"
 const BG_RESTING := "res://assets/backgrounds/stage2/bg_guild_resting.png"
 
 # サトシ立ち絵
-const HERO_WEAK := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png"   # 身を縮めた弱気顔
-const HERO_PUZZLE := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png" # 間の抜けた困惑
-const HERO_IRRITATE := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png" # 苛立ち腕組み
-const HERO_SHOCK := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png"  # 驚愕、ぎょっと目を見開く
+const HERO_WEAK := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_004.png"   # 身を縮めた弱気顔
+const HERO_PUZZLE := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_006.png" # 間の抜けた困惑
+const HERO_IRRITATE := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_007.png" # 苛立ち腕組み
+const HERO_SHOCK := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_010.png"  # 驚愕、ぎょっと目を見開く
 const HERO_AWKWARD := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png" # バツの悪い顔
 const HERO_ENCHANTED := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png" # 見惚れて呆然
 const HERO_HAPPY := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png"  # 幸福顔
 const HERO_EXALT := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png"  # 陶酔
 const HERO_DOWN := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png"   # 机に突っ伏す
 const HERO_FORWARD := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png" # 身を乗り出す
-const HERO_RESIGN := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png"  # 観念して伏し目
+const HERO_RESIGN := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_011.png"  # 観念して伏し目
 const HERO_DAZED := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png"   # 呆然
 const HERO_DREAD := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png"   # 嫌な予感
 const HERO_SERIOUS := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png" # 真剣
-const HERO_COLD := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png"    # 冷静な断罪
-const HERO_GUILTY := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png"  # 気まずさと罪悪感
-const HERO_TIRED := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png"   # 疲労
-const HERO_HOPE := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png"    # 縋るような期待
+const HERO_COLD := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_012.png"    # 冷静な断罪
+const HERO_GUILTY := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_013.png"  # 気まずさと罪悪感
+const HERO_TIRED := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_014.png"   # 疲労
+const HERO_HOPE := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_015.png"    # 縋るような期待
 const HERO_DESPAIR := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png" # 愕然
-const HERO_PROTEST := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png" # 抗議顔
+const HERO_PROTEST := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_016.png" # 抗議顔
 const HERO_DISTANT := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png" # 遠い目
 const HERO_DUSK := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png"    # 夕暮れ俯く
 
@@ -71,12 +71,12 @@ func _build_stage2_pre(b):
 
 	staff_b.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": STAFF_B, "portrait_scale": 0.62, "position": [0, 285],
+		"portrait": STAFF_B, "portrait_scale": 0.5, "position": [0, 50],
 		"flip": 0,
 	})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": HERO_WEAK, "portrait_scale": 0.53, "flip": 1, "position": [0, 209],
+		"portrait": HERO_WEAK, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
 	})
 
 	staff_b.band("...私の指輪が、ないんです！ 昨日、カウンター裏の引き出しに、\n確かに入れていたのに...！ 祖母の形見の、銀の指輪で...！")
@@ -85,8 +85,7 @@ func _build_stage2_pre(b):
 	staff_b.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
 	receptionist.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.3,
-		"portrait": RECEP_JIT, "portrait_scale": 0.56, "flip": 0,
-		"position": [0, 275],
+		"portrait": RECEP_JIT, "portrait_scale": 0.5, "flip": 0,
 	})
 	receptionist.band("...B嬢。カウンター裏への出入りは、職員と、許可を得た冒険者のみ。\n昨日の出入り者を、確認いたします。")
 
@@ -95,7 +94,7 @@ func _build_stage2_pre(b):
 
 	adv_c.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
-		"portrait": ADV_C, "portrait_scale": 0.65, "position": [0, 270], "flip": 0,
+		"portrait": ADV_C, "portrait_scale": 0.5, "position": [0, 100], "flip": 0,
 	})
 	adv_c.band("受付嬢様、昨日、B嬢をジロジロ舐めるように見てる、気色悪い男が\nカウンター裏で一人、いたぜ。あれ、絶対、指輪ついでに下心が出てた。")
 
@@ -175,7 +174,7 @@ func _build_stage2_meet(b):
 	layla.appear({
 		"side": "right", "appear_effect": "fade_slide", "appear_from": "right",
 		"appear_duration": 0.8, "appear_distance": 200,
-		"portrait": LAYLA, "portrait_scale": 0.61, "position": [0, 122],
+		"portrait": LAYLA, "portrait_scale": 0.5, "position": [0, 10],
 	})
 	layla.band("サトシ様。...ようこそ、おいでくださいました。\n暗部調査部門のレイラ、でございます。")
 
