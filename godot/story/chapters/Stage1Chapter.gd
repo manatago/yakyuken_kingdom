@@ -71,12 +71,35 @@ func _build_stage1(b):
 	pisuke.band("普通の人間なら、この世界のチップを埋め込まれたら精神が同化しちまうんだ。だがお前は、脳の使い方が偏りすぎてて、チップと脳の間に「隙間」ができてる。")
 	pisuke.band("いわば、システムが正常に認識できない「バグ」みたいな存在なんだよ。")
 
+	# バグ呼ばわりへのリアクション（出会いの締め）
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_026.png", {"scale": 0.53, "side": "left", "flip": 0, "position": [0, 70]})
+	hero.band("バ、バグ！？ さっきから言いたい放題だな、お前...！")
+
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_017.png", {"scale": 0.53, "side": "left", "flip": 0, "position": [0, 70]})
+	hero.band("（...いや、待てよ。「システムが認識できない」ってことは、\n裏を返せば、この世界のルールに縛られないってことか...？）")
+
+	pisuke.set_portrait("res://assets/characters/main/pisuke/default/pisuke_default_002.png", {"scale": 0.2, "side": "right", "flip": 1, "position": [0, -400]})
+	pisuke.band("おい、勝手にニヤけてんじゃねえ。\nその辺の話は歩きながらだ。まずはギルドで冒険者登録しろ。")
+
 	# ============================================================
 	# 場面11：ギルドへの道中・解析
 	# ============================================================
 	b.label("scene_analysis")
 
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_044.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	# --- 道中の時間経過をナレーションで挟んで相談へ ---
+	hero.leave({"exit_effect": "fade", "exit_duration": 0.4})
+	pisuke.leave({"exit_effect": "fade", "exit_duration": 0.4})
+	b.narrator_band("こうしてサトシは、ピー助に急かされるままギルドへの道を歩き出した。\n見慣れぬ街並みを横目に歩くうち、ふと先刻のログ表示が頭をよぎる。")
+
+	hero.appear({
+		"side": "left",
+		"appear_effect": "fade",
+		"appear_duration": 0.5,
+		"portrait": "res://assets/characters/main/satoshi/isekai/satoshi_isekai_044.png",
+		"portrait_scale": 0.53,
+		"flip": 1,
+		"position": [0, 70],
+	})
 	hero.band("...なあ、ピー助。さっきから気になってたんだが。\nこの「チップ」ってやつ、マチルダさんは「身分証」とか「戦闘インターフェース」って言ってたけど...。")
 
 	pisuke.set_portrait("res://assets/characters/main/pisuke/default/pisuke_default_003.png", {"scale": 0.2, "side": "right", "flip": 1, "position": [0, -200]})
@@ -122,9 +145,22 @@ func _build_stage1(b):
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_034.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("できた...。新スキル「確率の観測者（ベイズ・アイ）」！\nこれで、相手の手札の統計から、次に出す手の「確率」が可視化されるはずだ。")
 
+	# --- ベイズ・アイ完成へのピー助のリアクション（褒めず、手柄は自分のものに）---
+	pisuke.set_portrait("res://assets/characters/main/pisuke/default/pisuke_default_006.png", {"scale": 0.2, "side": "right", "flip": 1, "position": [0, -200]})
+	pisuke.band("ゲコォッ！？ マジで通しやがった...！\n神が作ったシステムに、人間が後付けでパッチを当てるなんざ前代未聞だぜ。")
+
+	pisuke.set_portrait("res://assets/characters/main/pisuke/default/pisuke_default_002.png", {"scale": 0.2, "side": "right", "flip": 1, "position": [0, -200]})
+	pisuke.band("...フン。だが勘違いするなよ。\nポートをこじ開けてやったのは俺様だ。お前はただ数式を流し込んだだけだろ。")
+
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_026.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.band("いや、その数式が本体なんだけど...！")
+
+	# --- 間：浮かれた空気から、真面目な忠告へ切り替わる ---
+	b.pause(0.8)
+
 	# ピー助の透明化
 	pisuke.set_portrait("res://assets/characters/main/pisuke/default/pisuke_default_004.png", {"scale": 0.2, "side": "right", "flip": 1, "position": [0, -200]})
-	pisuke.band("おい、サトシ。ギルドに入る前に一つ言っておく。\n俺様の姿は、人前じゃ見せない方がいい。")
+	pisuke.band("...まあいい。それより、サトシ。\nギルドに入る前に、一つ言っておく。\n俺様の姿は、人前じゃ見せない方がいい。")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_032.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("え？ なんで？")
@@ -218,7 +254,7 @@ func _build_stage1(b):
 	# ピー助がサトシの声色を真似て挑発
 	hero.band("はぁ！？ 通過儀礼だぁ？ そんなもん、こっちから望むところだ！\nてめえみたいな三下のカードを全部剥いで、\nギルドの入り口に「敗北者の記念碑」として飾ってやるよ！")
 
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_069.png", {"scale": 0.53, "side": "left", "flip": 0, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_069.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("！？ ちょ、俺そんなこと一言も...！")
 
 	adventurer_a.set_portrait("res://assets/characters/mob/adventurer_a/clothed/adventurer_a_clothed_003.png", {"scale": 0.53, "side": "right", "flip": 0, "position": [0, 70]})
@@ -229,13 +265,13 @@ func _build_stage1(b):
 
 	b.narrator_band("ギルドの入り口に人だかりができ始めた。\n冒険者Aの怒号に、他の冒険者たちが野次馬のように集まってくる。")
 
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_071.png", {"scale": 0.53, "side": "left", "flip": 0, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_071.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("（ピー助このやろう...！ 俺の声で勝手に啖呵切りやがって...！\n周りの目もあるし...もう逃げられない...。）")
 
 	# ピー助（小声でスキャン結果）
 	pisuke.band("ゲコッ。こいつのデッキ、スキャンしたぞ。ノーマルカードばっかりだ。\nベイズ・アイを使えば余裕で勝てる。\n...ほら、覚悟を決めろ。", {"side": "left"})
 
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_016.png", {"scale": 0.53, "side": "left", "flip": 0, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_016.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...はぁ。（もうどうにでもなれ。）\n...わかりましたよ。その勝負、受けます。")
 
 	b.hide_band()
