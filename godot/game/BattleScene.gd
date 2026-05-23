@@ -195,6 +195,9 @@ func start_battle(chapter: BattleChapterBase, is_tutorial := false, is_minigame 
 	# Show battle UI elements
 	card_bar.visible = _is_minigame == false
 	item_panel.visible = _is_minigame == false
+	# カードバー(下部150px・常時表示)とセリフ帯(下部220px)の重なり対策:
+	# バトルではセリフ帯をカードバーの上へ持ち上げる（カード選択中はさらに上へ）。
+	_position_battle_dialogue_band(false)
 	# ミニゲームモードでは HP / アクションプロンプト / 手札も非表示
 	if _is_minigame:
 		$PlayerHPPanel.visible = false
@@ -567,6 +570,22 @@ func _edit_auto_pick_card() -> Dictionary:
 			_update_score()
 			return {"hand": _selected_hand, "grade": _selected_grade, "item": ""}
 	return {"hand": Hand.ROCK, "grade": 1, "item": ""}
+
+# セリフ帯を、カードバー/アクションプロンプトと重ならない高さに配置する。
+#   raise_for_selection = false : 通常のバトルセリフ（カードバー150pxの上）
+#   raise_for_selection = true  : カード選択中（ActionPrompt の上）
+func _position_battle_dialogue_band(raise_for_selection: bool):
+	if _is_minigame:
+		return
+	if not _story_scene or not is_instance_valid(_story_scene.dialogue_band):
+		return
+	var band: Control = _story_scene.dialogue_band
+	var band_h := 220.0  # DialogueBand の高さ（StoryScene.tscn 既定）
+	if raise_for_selection:
+		band.offset_bottom = -330.0  # ActionPrompt(anchor_top=0.7)の上端より上
+	else:
+		band.offset_bottom = -150.0  # カードバー(150px)の上
+	band.offset_top = band.offset_bottom - band_h
 
 func select_hand() -> Dictionary:
 	await _flush_pending()

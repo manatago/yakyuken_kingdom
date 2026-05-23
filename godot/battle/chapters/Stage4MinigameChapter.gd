@@ -150,6 +150,12 @@ var _light_used: Array = []
 var _strong_used: Array = []
 var _miss_used: Array = []
 
+func setup_scene(bt):
+	# 編集モードで個別保存するため、基底の継承ではなくここで明示的に set_portrait を呼ぶ
+	# （edit_source_id を本ファイルの行へ向けるため）
+	var seles = bt.character("seles")
+	seles.set_portrait(SELES_PORTRAIT, {"scale": 0.55, "side": "center", "position": [0, 0]})
+
 func _get_choice_pool() -> Array:
 	return LIGHT_POOL + STRONG_POOL + MISS_POOL
 

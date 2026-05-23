@@ -551,27 +551,27 @@ func _build_prologue(b):
 
 	matilda.band("領土争いから税率の決定、犯罪者の刑期まで、全部「じゃんけん」だ。")
 
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_068.png", {"scale": 0.5, "side": "left", "flip": 1})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_037.png", {"scale": 0.5, "side": "left", "flip": 1})
 	hero.band("（カードを使ったじゃんけんか...）それって、確率と読みあいのゲーム....ですか？")
 
 	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_009.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
 	matilda.band("そういうこと。強い奴が出世し、弱い奴は這いつくばる。\n実力主義のわかりやすい世界だろ？")
 
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_084.png", {"scale": 0.5, "side": "left", "flip": 1})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_050.png", {"scale": 0.5, "side": "left", "flip": 1})
 	hero.band("（確率と読み合い...それ、まさに俺が大学で研究してた分野じゃないか。）")
 	hero.band("（混合戦略のナッシュ均衡、ベイズ推定による相手の手の予測...。\nここでは俺の数学が、そのまま「戦闘力」になるってことか？））")
 	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_010.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
 	matilda.band("おい、なに黙り込んでるんだ。怖気づいたか？")
 
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_055.png", {"scale": 0.5, "side": "left", "flip": 1})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_024.png", {"scale": 0.5, "side": "left", "flip": 1})
 	hero.band("...いえ、ちょっとワクワクしてき...ました。")
 
 	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_011.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
 	matilda.band("は？ 牢屋の中でワクワクとか、やっぱり変態じゃないか。")
 
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_049.png", {"scale": 0.5, "side": "left", "flip": 1})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_019.png", {"scale": 0.5, "side": "left", "flip": 1})
 	hero.band("(くっそぉ、変態、変態言いやがって、、、\nまてよ、ゲームに勝てば牢屋から出られる？！。)")
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_069.png", {"scale": 0.5, "side": "left", "flip": 1})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_038.png", {"scale": 0.5, "side": "left", "flip": 1})
 	hero.band("しょっ、勝負しませんか？")
 
 	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_012.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
@@ -579,7 +579,7 @@ func _build_prologue(b):
 	matilda.band("お前が勝ったら、晴れて無罪放免だ。負けたら牢屋からは出られねぇ。覚悟しておけよ。")
 	matilda.band("まあ、今日始めたひよっこに全力で勝負したらマチルダさんの名が廃るからな、同じカードで勝負してやるよ。")
 
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_083.png", {"scale": 0.5, "side": "left", "flip": 1})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_049.png", {"scale": 0.5, "side": "left", "flip": 1})
 	hero.band("（くそっ、言いたい放題... んっ、そういえば、この人なんか、さっき最初はグーを出したな。\n俺の事馬鹿にしているから、また最初にグーを出すんじゃないのか...）")
 
 	b.label("battle_start")
@@ -595,7 +595,7 @@ func _build_battle_win(b):
 	#b.bg_filter(0.25, 0.3)
 	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_013.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
 	matilda.band("負けた...素人に。この屈辱は必ず晴らす。\n私はここにいるから必ず再戦しにこい。待っているぞ。")
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_090.png", {"scale": 0.68, "side": "left", "flip": 1})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_055.png", {"scale": 0.68, "side": "left", "flip": 1})
 	hero.band("うへへっ、おいしい思いもしたし。これでやっと牢から出られるぞ。")
 
 # --- バトル敗北 → 再挑戦選択（牢屋シーン） ---
@@ -617,7 +617,7 @@ func _build_battle_lose(b):
 	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_001.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
 	matilda.band("...それとも、このまま尻尾を巻いて帰るかい？")
 
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_118.png", {"scale": 0.50, "side": "left", "flip": 1})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_082.png", {"scale": 0.50, "side": "left", "flip": 1})
 	hero.band("（くそっ...だが、ここで諦めるわけにはいかない。）")
 
 

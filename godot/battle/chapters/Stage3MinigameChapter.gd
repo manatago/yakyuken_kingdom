@@ -220,7 +220,7 @@ func get_lose_behavior() -> String:
 
 func setup_scene(bt):
 	var mag = bt.character(MAGDALENA_ID)
-	mag.set_portrait(MAGDALENA_PORTRAIT, {"scale": 0.55, "side": "center", "position": [0, -200]})
+	mag.set_portrait(MAGDALENA_PORTRAIT, {"scale": 0.50, "side": "center", "position": [0, 0]})
 
 # --- 状態 ---
 var _gauge: int = GAUGE_START
