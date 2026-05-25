@@ -456,58 +456,58 @@ func _build_prologue(b):
 		"appear_duration": 0.8,
 		"appear_distance": 200,
 		"portrait": "res://assets/characters/main/matilda/clothed/matilda_clothed_001.png",
-		"portrait_scale": 0.45,
+		"portrait_scale": 0.98,
 		"position_mode": "offset",
-		"position": [0, 10],
+		"position": [8, 10],
 	})
 	matilda.band("起きたか、変態。")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_002.png", {"scale": 0.7})
 	hero.band("俺は変態じゃな... おっ、きれいなねーさんだな。おっぱいもでかい。")
-	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_002.png", {"scale": 0.65, "position": [-100, 10], "flip": 0})
+	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_002.png", {"scale": 0.914, "position": [-100, 10], "flip": 0})
 	matilda.band("おいおい、いやらしい目で見やがって。ほんとに変態ってやつは、どうしようもないな。")
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_003.png", {"scale": 0.49})
 	hero.band("ぐぬぬ。。。")
 
 	b.narrator_band("変態の濡れ衣を着せられて悔しい思いをしたサトシだったけど、なんといっても牢屋に入れられている身。おとなしくするしかない。")
 
-	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_001.png", {"scale": 0.45, "position": [0, 10]})
+	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_001.png", {"scale": 0.9, "position": [0, 10]})
 	matilda.band("さて、変態の身元調査といこうか。\n変態、お前の名前は？ どこから来た。")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_004.png", {"scale": 0.5, "flip": 1})
 	hero.band("(また変態って...)\nサトシ...です。日本ってところから来た？と思います。")
 
-	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_003.png", {"scale": 0.45, "position": [-80, 0]})
+	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_003.png", {"scale": 0.9, "position": [-80, 0]})
 	matilda.band("ニホン？ 聞いたことないね。この大陸の国じゃないのは確かだ。\n...まあ、異界渡りってやつかい。珍しいけど、前例がないわけじゃない。")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_005.png", {"scale": 0.5, "flip": 1})
 	hero.band("異界渡り...？ そういう概念があるんですか。\nあの、ヤクケン王国って番兵の人が言ってたんですけど、ここは一体どういう国なんですか？")
 
-	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_001.png", {"scale": 0.45, "position": [0, 10]})
+	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_001.png", {"scale": 0.9, "position": [0, 10]})
 	matilda.band("あんた本当に何も知らないんだね。\nこの大陸で一番でかい国さ。")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_004.png", {"scale": 0.5, "flip": 1})
 	hero.band("国の名前からして嫌な予感しかしないんですけど...。")
 
-	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_004.png", {"scale": 0.45, "position": [-200, 10]})
+	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_004.png", {"scale": 0.9, "position": [-200, 10]})
 	matilda.band("質問の前に、まずは身体検査だ。\n牢に入る奴は全員やる決まりでね。じっとしてな。")
-	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_014.png", {"scale": 0.45, "position": [-200, 10]})
+	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_014.png", {"scale": 0.9, "position": [-200, 10]})
 
 	b.narrator_band("マチルダが手のひらをサトシの額にかざすと、淡い光が走った。\nだが――")
 
-	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_005.png", {"scale": 0.65, "position": [-100, 10]})
+	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_005.png", {"scale": 0.914, "position": [-100, 10]})
 	matilda.band("...エラー？ IDが存在しない...？\nまさか、脳にチップが入っていないの！？")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_006.png", {"scale": 0.5, "flip": 1})
 	hero.band("チップ？ 脳に？ な、なんの話ですか？")
 
-	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_006.png", {"scale": 0.45, "position": [-120, 0], "flip": 0})
+	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_006.png", {"scale": 0.9, "position": [-120, 0], "flip": 0})
 	matilda.band("この世界の住人は、生まれた時に識別チップを脳に埋め込まれるんだ。身分証であり、戦闘システムへのインターフェースでもある。それがないってことは...本当に異界の人間なんだね、あんた。")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_007.png", {"scale": 0.7, "flip": 1})
 	hero.band("だから最初からそう言ってるじゃないですか...。")
 
-	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_007.png", {"scale": 0.65, "position": [-120, 10], "flip": 0})
+	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_007.png", {"scale": 0.914, "position": [-120, 10], "flip": 0})
 	matilda.band("...しょうがないね。特例だ。")
 	b.narrator_band("マチルダは懐から小さな注射器のようなものを取り出した。")
 	matilda.band("旧式の汎用チップだけど、ないよりマシさ。うなじを出しな。ちょっとチクっとするよ。")
@@ -522,7 +522,7 @@ func _build_prologue(b):
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_009.png", {"scale": 0.5, "flip": 1})
 	hero.band("いって――――――――――――ぇ。まじ、なんなの...")
 
-	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_001.png", {"scale": 0.45, "position": [0, 10]})
+	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_001.png", {"scale": 0.9, "position": [0, 10]})
 
 	matilda.band("だらしないな、女みたいにビービー泣いてないで、心の中で、テーブルオープンって行ってみろ。")
 
@@ -536,7 +536,7 @@ func _build_prologue(b):
 	b.tutorial("res://battle/chapters/PrologueBattleChapter.gd")
 
 	b.label("after_tutorial")
-	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_001.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
+	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_001.png", {"scale": 0.9, "side": "right", "position": [0, 10]})
 	matilda.band("さっきは言ってなかったけど、HPは服装の枚数だ。")
 	matilda.band("つまり「じゃんけん」に負けると、服を脱がなきゃならない。1回負けるたびに服を1枚脱ぐ。全て脱がされたら、相手のいうことを聞かなきゃなんない。")
 	matilda.band("「じゃんけん」勝負をするときは服は3枚で、相手が全裸になるまでつづける。これは王国ルールだ。ただ、市民にはあんまり根付いてなくてな、街中では 1回勝負が好まれている。")
@@ -544,7 +544,7 @@ func _build_prologue(b):
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_010.png", {"scale": 0.5, "side": "left", "flip": 1})
 	hero.band("そっそれって、野球拳じゃ...")
 
-	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_008.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
+	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_008.png", {"scale": 0.9, "side": "right", "position": [0, 10]})
 	matilda.band("ヤキュウケン？ 聞いたことないね。\nこの国ではすべての争いごとを「じゃんけん」で決める。それが法律だ。")
 
 	hero.band("じゃんけんで!? 裁判も、商取引もですか？")
@@ -554,19 +554,19 @@ func _build_prologue(b):
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_037.png", {"scale": 0.5, "side": "left", "flip": 1})
 	hero.band("（カードを使ったじゃんけんか...）それって、確率と読みあいのゲーム....ですか？")
 
-	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_009.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
+	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_009.png", {"scale": 0.9, "side": "right", "position": [0, 10]})
 	matilda.band("そういうこと。強い奴が出世し、弱い奴は這いつくばる。\n実力主義のわかりやすい世界だろ？")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_050.png", {"scale": 0.5, "side": "left", "flip": 1})
 	hero.band("（確率と読み合い...それ、まさに俺が大学で研究してた分野じゃないか。）")
 	hero.band("（混合戦略のナッシュ均衡、ベイズ推定による相手の手の予測...。\nここでは俺の数学が、そのまま「戦闘力」になるってことか？））")
-	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_010.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
+	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_010.png", {"scale": 0.9, "side": "right", "position": [0, 10]})
 	matilda.band("おい、なに黙り込んでるんだ。怖気づいたか？")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_024.png", {"scale": 0.5, "side": "left", "flip": 1})
 	hero.band("...いえ、ちょっとワクワクしてき...ました。")
 
-	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_011.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
+	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_011.png", {"scale": 0.9, "side": "right", "position": [0, 10]})
 	matilda.band("は？ 牢屋の中でワクワクとか、やっぱり変態じゃないか。")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_019.png", {"scale": 0.5, "side": "left", "flip": 1})
@@ -574,7 +574,7 @@ func _build_prologue(b):
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_038.png", {"scale": 0.5, "side": "left", "flip": 1})
 	hero.band("しょっ、勝負しませんか？")
 
-	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_012.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
+	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_012.png", {"scale": 0.9, "side": "right", "position": [0, 10]})
 	matilda.band("おっ、小心者の変態にもそんな度胸があったんだな。いいぜ、受けてやるよ。")
 	matilda.band("お前が勝ったら、晴れて無罪放免だ。負けたら牢屋からは出られねぇ。覚悟しておけよ。")
 	matilda.band("まあ、今日始めたひよっこに全力で勝負したらマチルダさんの名が廃るからな、同じカードで勝負してやるよ。")
@@ -593,7 +593,7 @@ func _build_battle_win(b):
 
 	b.background("res://assets/backgrounds/prologue/bg05_prison_cell.png", 0)
 	#b.bg_filter(0.25, 0.3)
-	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_013.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
+	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_013.png", {"scale": 0.9, "side": "right", "position": [0, 10]})
 	matilda.band("負けた...素人に。この屈辱は必ず晴らす。\n私はここにいるから必ず再戦しにこい。待っているぞ。")
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_055.png", {"scale": 0.68, "side": "left", "flip": 1})
 	hero.band("うへへっ、おいしい思いもしたし。これでやっと牢から出られるぞ。")
@@ -606,15 +606,15 @@ func _build_battle_lose(b):
 
 	b.background("res://assets/backgrounds/prologue/bg05_prison_cell.png", 0)
 
-	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_001.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
+	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_001.png", {"scale": 0.9, "side": "right", "position": [0, 10]})
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_004.png", {"scale": 0.5, "side": "left", "flip": 1})
 
 	b.narrator_band("サトシはマチルダに敗北し、再び牢屋に放り込まれた。")
 	b.narrator_band("だが、取り上げられたはずのカードは、温情か、すべて手元に戻されていた。")
 
-	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_012.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
+	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_012.png", {"scale": 0.9, "side": "right", "position": [0, 10]})
 	matilda.band("ふっ、カードは返してやる。\nその代わり、もう一度来な。")
-	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_001.png", {"scale": 0.45, "side": "right", "position": [0, 10]})
+	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_001.png", {"scale": 0.9, "side": "right", "position": [0, 10]})
 	matilda.band("...それとも、このまま尻尾を巻いて帰るかい？")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_082.png", {"scale": 0.50, "side": "left", "flip": 1})
