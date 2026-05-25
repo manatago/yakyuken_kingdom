@@ -174,7 +174,16 @@ func outfit_3(bt):
 	if result == "win":
 		matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_014.png", {"scale": 0.80, "side": "center", "position": [0, -194]})
 		matilda.band("くっ、変態の癖に。")
-		#todo:5枚の紙芝居を入れる
+		# 紙芝居 1-3/5: 脱衣シーン（背景と一体で描画、バンドは右側）
+		matilda.leave()
+		bt.background("res://assets/characters/main/matilda/clothed/machilda_undressing1.png")
+		matilda.band("くっ・・・、しょうがないな・・・・", {"side": "right"})
+		bt.background("res://assets/characters/main/matilda/clothed/machilda_undressing2.png")
+		matilda.band("・・・・・・・・・", {"side": "right"})
+		bt.background("res://assets/characters/main/matilda/clothed/machilda_undressing3.png")
+		matilda.band("・・・・・あんまり、まじまじ見るなよぉ・・・・・", {"side": "right"})
+		bt.background("res://assets/backgrounds/prologue/bg05_prison_cell.png")
+		#todo:残り2枚の紙芝居を入れる
 		await bt.play_video("res://assets/videos/prologue_win_1.ogv")
 
 	elif result == "lose":
@@ -199,7 +208,20 @@ func outfit_2(bt):
 	if result == "win":
 		matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_017.png", {"scale": 0.92, "side": "center", "position": [0, -94]})
 		matilda.band("...っ、負けた...")
-		#todo:5枚の紙芝居を入れる
+		# 紙芝居 4-7/5: 2敗目の脱衣シーン（背景と一体で描画）
+		matilda.leave()
+		var satoshi = bt.character("main")
+		bt.background("res://assets/characters/main/matilda/clothed/machilda_undressing4.png")
+		matilda.band("くそっ・・・・こんな変態に・・・", {"side": "right"})
+		bt.background("res://assets/characters/main/matilda/clothed/machilda_undressing5.png")
+		satoshi.band("（強気なお姉さんの恥じらい・・・えろっ・・・）", {"side": "left"})
+		bt.background("res://assets/characters/main/matilda/clothed/machilda_undressing6.png")
+		matilda.band("ほほら・・・・。これでいいか？", {"side": "right"})
+		satoshi.band("ダメです。あと10秒！", {"side": "left"})
+		bt.background("res://assets/characters/main/matilda/clothed/machilda_undressing7.png")
+		matilda.band("（うううう・・・恥ずかしい・・・）", {"side": "right"})
+		bt.background("res://assets/backgrounds/prologue/bg05_prison_cell.png")
+		#todo:残り1枚の紙芝居を入れる
 		await bt.play_video("res://assets/videos/prologue_win_2.ogv")
 	elif result == "lose":
 		matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_018.png", {"scale": 0.8, "side": "center", "position": [0, -199]})
@@ -222,7 +244,24 @@ func outfit_1(bt):
 	if result == "win":
 		matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_021.png", {"scale": 0.67, "side": "center", "position": [-3, -223]})
 		matilda.band("...変態に見られる...。")
-		#todo:5枚の紙芝居を入れる
+		# 紙芝居 8-13/6: 3敗目の脱衣シーン（背景と一体で描画）
+		matilda.leave()
+		var satoshi = bt.character("main")
+		bt.background("res://assets/characters/main/matilda/clothed/machilda_undressing8.png")
+		matilda.band("ほ、本当に、脱ぐからな！", {"side": "right"})
+		bt.background("res://assets/characters/main/matilda/clothed/machilda_undressing9.png")
+		satoshi.band("（スゲェ・・・なまおま◯こ・・・初めて見た・・・）", {"side": "left"})
+		bt.background("res://assets/characters/main/matilda/clothed/machilda_undressing10.png")
+		matilda.band("あ、あれ・・・\nなんか引っかかって・・・", {"side": "right"})
+		bt.background("res://assets/characters/main/matilda/clothed/machilda_undressing11.png")
+		matilda.band("さ、さぁ。脱いだぞ・・・\nこれでいいよな？", {"side": "right"})
+		satoshi.band("いいわけないの、わかってますよね？", {"side": "left"})
+		matilda.band("・・・・・・・・", {"side": "right"})
+		bt.background("res://assets/characters/main/matilda/clothed/machilda_undressing12.png")
+		matilda.band("（くっ・・・・、見られてる・・・\n変態に・・・余すとこなく・・・・）", {"side": "right"})
+		bt.background("res://assets/characters/main/matilda/clothed/machilda_undressing13.png")
+		matilda.band("な、なぁ・・・・\nもういい。だろ？", {"side": "right"})
+		bt.background("res://assets/backgrounds/prologue/bg05_prison_cell.png")
 		await bt.play_video("res://assets/videos/prologue_win_3.ogv")
 	elif result == "lose":
 		matilda.set_portrait("res://assets/characters/mob/guard/default/guard_default_022.png", {"scale": 0.67, "side": "center", "position": [0, -220]})
