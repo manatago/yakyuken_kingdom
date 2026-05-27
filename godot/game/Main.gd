@@ -2613,20 +2613,32 @@ func _run_story_edit(entry: Dictionary):
 	for card in [left_card, right_card]:
 		if not card:
 			continue
-		var sl_c := _get_edit_sliders(card)
+		# GDScript ラムダのクロージャ late-binding 対策で、各イテレーション専用の
+		# ローカル変数 bound_card を作って閉包に取り込ませる（card を直接捕捉すると
+		# ループ終了後の最終値で全ラムダが動くリスクを残すため）。
+		var bound_card: PanelContainer = card
+		var sl_c := _get_edit_sliders(bound_card)
 		if not sl_c.is_empty():
-			sl_c.scale.value_changed.connect(_on_story_edit_card_slider.bind(card))
-			sl_c.x.value_changed.connect(_on_story_edit_card_slider.bind(card))
-			sl_c.y.value_changed.connect(_on_story_edit_card_slider.bind(card))
-		var save_btn_c: Button = card.find_child("SaveBtn", true, false)
+			sl_c.scale.value_changed.connect(_on_story_edit_card_slider.bind(bound_card))
+			sl_c.x.value_changed.connect(_on_story_edit_card_slider.bind(bound_card))
+			sl_c.y.value_changed.connect(_on_story_edit_card_slider.bind(bound_card))
+		var save_btn_c: Button = bound_card.find_child("SaveBtn", true, false)
 		if save_btn_c:
 			save_btn_c.pressed.connect(func():
 				# idx は閉包で参照（後段で更新される _current_idx に追従）
-				_save_story_edit_card(card, entries, _story_edit_current_idx))
-		var copy_btn_c: Button = card.find_child("CopyBtn", true, false)
+				_save_story_edit_card(bound_card, entries, _story_edit_current_idx))
+		var copy_btn_c: Button = bound_card.find_child("CopyBtn", true, false)
 		if copy_btn_c:
 			copy_btn_c.pressed.connect(func():
-				_story_edit_copy_card(card))
+				_story_edit_copy_card(bound_card))
+		var pick_btn_c: Button = bound_card.find_child("PickImageBtn", true, false)
+		if pick_btn_c:
+			pick_btn_c.pressed.connect(func():
+				_show_story_edit_image_picker(bound_card))
+		var flip_btn_c: Button = bound_card.find_child("FlipBtn", true, false)
+		if flip_btn_c:
+			flip_btn_c.pressed.connect(func():
+				_on_story_edit_card_flip(bound_card))
 
 	# Track source file for saving
 	var source_file: String = ""
@@ -2664,16 +2676,10 @@ func _run_story_edit(entry: Dictionary):
 			print("[STORY_EDIT] Label not found: ", start_label, " — fallback to start")
 		else:
 			scan_from = label_idx + 1
-	# scan_from から最初のtext付きBand/Lineまで進める
-	var setup_end := scan_from
-	for i in range(scan_from, entries.size()):
-		var e_scan = entries[i]
-		if e_scan is StoryCommands.Line and not e_scan.text.is_empty():
-			setup_end = i
-			break
-		if e_scan is StoryCommands.Band and not e_scan.text.is_empty():
-			setup_end = i
-			break
+	# scan_from から最初の停止ポイント（実機の入力待ち位置と同じ単位）まで進める
+	var setup_end: int = _story_edit_next_stop(entries, scan_from)
+	if setup_end < 0:
+		setup_end = scan_from
 	if setup_end > 0:
 		idx = setup_end
 	_story_edit_current_idx = idx
@@ -2695,20 +2701,33 @@ func _run_story_edit(entry: Dictionary):
 		if _story_edit_nav_action == "exit":
 			break
 		elif _story_edit_nav_action == "prev":
-			if idx > 0:
-				idx -= 1
+			# 実機のクリック/Enter と同じく「前の入力待ち（停止ポイント）」へ戻る。
+			# 停止ポイント単位なので、絵だけ／テキストだけ、というチラ見せが起きない。
+			var prev_idx: int = _story_edit_prev_stop(entries, idx)
+			if prev_idx >= 0 and prev_idx != idx:
+				idx = prev_idx
 				_story_edit_current_idx = idx
 				_story_edit_reset_scene(story_scene_instance)
 				_story_edit_execute_to(entries, idx, story_scene_instance)
 				_story_edit_update_info(idx_label, cmd_label, entries, idx)
 				_refresh_story_edit_cards(edit_root, story_scene_instance)
 		elif _story_edit_nav_action == "next":
-			if idx < entries.size() - 1:
-				idx += 1
-				_story_edit_current_idx = idx
-				var e = entries[idx]
-				if e != null and not (e is StoryCommands.Battle) and not (e is StoryCommands.TerminalEffect):
+			# 実機と同じく「次の入力待ち（停止ポイント）」まで一気に進める。
+			# 間にある set_portrait/background/hide_character/SeqLabel 等は順に execute_single
+			# で適用され、Battle/TerminalEffect は editor 上ではスキップ。
+			var next_idx: int = _story_edit_next_stop(entries, idx + 1)
+			if next_idx >= 0:
+				for i in range(idx + 1, next_idx + 1):
+					var e = entries[i]
+					if e == null:
+						continue
+					if e is StoryCommands.Battle:
+						continue
+					if e is StoryCommands.TerminalEffect:
+						continue
 					_story_edit_execute_single(e, story_scene_instance)
+				idx = next_idx
+				_story_edit_current_idx = idx
 				_story_edit_update_info(idx_label, cmd_label, entries, idx)
 				_refresh_story_edit_cards(edit_root, story_scene_instance)
 			else:
@@ -2752,6 +2771,395 @@ func _story_edit_copy_card(card: PanelContainer):
 	var info: Label = card.find_child("InfoLabel", true, false)
 	if info:
 		info.text = "コピーしました"
+
+# 実機のクリック/Enter と同じ「次の入力待ちまで一気に進める」単位を判定する。
+# 停止ポイント:
+#   - Band/Line で text が非空（実機もここで _waiting_for_input になる）
+#   - Battle コマンド（制御フロー上、ここで止めて手前の状態を見る）
+func _story_edit_is_stop_point(e) -> bool:
+	if e == null:
+		return false
+	if e is StoryCommands.Band and not e.text.is_empty():
+		return true
+	if e is StoryCommands.Line and not e.text.is_empty():
+		return true
+	if e is StoryCommands.Battle:
+		return true
+	return false
+
+# from_idx 以降で最初の停止ポイントの index を返す。無ければ -1。
+func _story_edit_next_stop(entries: Array, from_idx: int) -> int:
+	var start: int = max(0, from_idx)
+	for i in range(start, entries.size()):
+		if _story_edit_is_stop_point(entries[i]):
+			return i
+	return -1
+
+# 画像差し替えピッカー用ヘルパ群 ----------------------------------------------
+
+# ファイル名から「末尾の連番を除いた prefix」を返す。
+# 例: "satoshi_isekai_007.png" → "satoshi_isekai_"
+# 末尾が数字でなければ basename をそのまま返す（マッチは厳密一致になる）。
+func _story_edit_prefix_of(filename: String) -> String:
+	var base: String = filename.get_basename()
+	var r := RegEx.new()
+	r.compile("^(.+?)(\\d+)$")
+	var m := r.search(base)
+	if m:
+		return m.get_string(1)
+	return base
+
+# 同フォルダの画像名が _story_edit_prefix_of() で得た prefix にマッチするか。
+# prefix + 全桁数字（任意桁）を sibling として認める。
+func _story_edit_match_prefix(filename: String, prefix: String) -> bool:
+	var base: String = filename.get_basename()
+	if not base.begins_with(prefix):
+		return false
+	var rest: String = base.substr(prefix.length())
+	if rest.is_empty():
+		return false
+	for c in rest:
+		if not (c >= "0" and c <= "9"):
+			return false
+	return true
+
+# res:// 配下を再帰的に走査し、.gd ファイル一覧を out に格納する
+func _walk_gd_files_under(res_path: String, out: Array) -> void:
+	var dir := DirAccess.open(res_path)
+	if not dir:
+		return
+	# パス連結用に末尾スラッシュを確保（"res://" は rstrip すると "res:" になるので注意）
+	var base: String = res_path if res_path.ends_with("/") else res_path + "/"
+	dir.list_dir_begin()
+	var name := dir.get_next()
+	while name != "":
+		if name != "." and name != "..":
+			var full: String = base + name
+			if dir.current_is_dir():
+				_walk_gd_files_under(full, out)
+			elif name.ends_with(".gd"):
+				out.append(full)
+		name = dir.get_next()
+	dir.list_dir_end()
+
+# プロジェクト全 .gd ファイルを連結したキャッシュ。ピッカー1セッションの間だけ使う。
+var _story_edit_gd_cache: String = ""
+
+func _story_edit_rebuild_gd_cache() -> void:
+	var files: Array = []
+	_walk_gd_files_under("res://", files)
+	var sb := PackedStringArray()
+	for f in files:
+		var fa := FileAccess.open(f, FileAccess.READ)
+		if fa:
+			sb.append(fa.get_as_text())
+			fa.close()
+	_story_edit_gd_cache = "\n".join(sb)
+
+# 画像パスがプロジェクト全 .gd で何箇所参照されているかを返す。
+# _story_edit_rebuild_gd_cache を事前に呼んでおく前提。
+func _story_edit_count_image_uses(img_path: String) -> int:
+	if _story_edit_gd_cache.is_empty():
+		return 0
+	return _story_edit_gd_cache.count(img_path)
+
+# 画像差し替えピッカー本体 -----------------------------------------------------
+
+func _show_story_edit_image_picker(card: PanelContainer) -> void:
+	if not is_instance_valid(card):
+		return
+	var rect: TextureRect = card.get_meta("bound_rect", null) if card.has_meta("bound_rect") else null
+	if not is_instance_valid(rect) or not rect.texture or rect.texture.resource_path.is_empty():
+		print("[STORY_EDIT] 画像選択: bound_rect の現在画像が取れない")
+		return
+	# 現在パス（pending があればそちら）から folder と prefix を決定
+	var current_path: String = rect.texture.resource_path
+	if card.has_meta("pending_portrait_path"):
+		current_path = card.get_meta("pending_portrait_path")
+	var folder: String = current_path.get_base_dir()
+	var current_file: String = current_path.get_file()
+	var prefix: String = _story_edit_prefix_of(current_file)
+
+	# 同フォルダ + 同 prefix の画像を列挙
+	var matches: Array = []
+	var dir := DirAccess.open(folder)
+	if dir:
+		dir.list_dir_begin()
+		var n := dir.get_next()
+		while n != "":
+			if n != "." and n != ".." and not dir.current_is_dir():
+				var lower: String = n.to_lower()
+				var is_img: bool = lower.ends_with(".png") or lower.ends_with(".jpg") or lower.ends_with(".jpeg") or lower.ends_with(".webp")
+				if is_img and _story_edit_match_prefix(n, prefix):
+					matches.append(n)
+			n = dir.get_next()
+		dir.list_dir_end()
+	matches.sort()
+
+	# 全 .gd ファイルを読み込んで使用数カウント用キャッシュを構築
+	_story_edit_rebuild_gd_cache()
+
+	# モーダル UI 構築
+	var modal := PanelContainer.new()
+	modal.name = "StoryEditImagePicker"
+	modal.set_anchors_preset(Control.PRESET_FULL_RECT)
+	modal.mouse_filter = Control.MOUSE_FILTER_STOP
+	var bg_style := StyleBoxFlat.new()
+	bg_style.bg_color = Color(0, 0, 0, 0.88)
+	modal.add_theme_stylebox_override("panel", bg_style)
+	add_child(modal)
+	move_child(modal, get_child_count() - 1)
+
+	var vbox := VBoxContainer.new()
+	vbox.name = "PickerVBox"
+	vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
+	vbox.anchor_left = 0.02
+	vbox.anchor_right = 0.98
+	vbox.anchor_top = 0.04
+	vbox.anchor_bottom = 0.96
+	vbox.add_theme_constant_override("separation", 8)
+	modal.add_child(vbox)
+
+	var header := HBoxContainer.new()
+	header.add_theme_constant_override("separation", 12)
+	vbox.add_child(header)
+	var title_lbl := Label.new()
+	title_lbl.text = "画像選択  folder: %s  prefix: %s*  該当: %d 件" % [folder, prefix, matches.size()]
+	title_lbl.add_theme_font_size_override("font_size", 14)
+	title_lbl.add_theme_color_override("font_color", Color(0.8, 1.0, 0.8))
+	header.add_child(title_lbl)
+	var spacer := Control.new()
+	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(spacer)
+	var close_btn := Button.new()
+	close_btn.text = "× 閉じる"
+	close_btn.add_theme_font_size_override("font_size", 14)
+	close_btn.pressed.connect(func(): modal.queue_free())
+	header.add_child(close_btn)
+
+	# 本体を左右2分割: 左にサムネグリッド、右に大きいプレビューペイン
+	var body := HBoxContainer.new()
+	body.add_theme_constant_override("separation", 12)
+	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vbox.add_child(body)
+
+	# 左: スクロール可能なサムネグリッド
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_stretch_ratio = 0.72
+	body.add_child(scroll)
+
+	var grid := GridContainer.new()
+	grid.name = "PickerGrid"
+	grid.columns = 6
+	grid.add_theme_constant_override("h_separation", 10)
+	grid.add_theme_constant_override("v_separation", 10)
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(grid)
+
+	# 右: 大きいプレビューペイン
+	var preview_pane := VBoxContainer.new()
+	preview_pane.add_theme_constant_override("separation", 8)
+	preview_pane.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	preview_pane.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	preview_pane.size_flags_stretch_ratio = 0.28
+	body.add_child(preview_pane)
+
+	var preview_title := Label.new()
+	preview_title.text = "プレビュー"
+	preview_title.add_theme_font_size_override("font_size", 13)
+	preview_title.add_theme_color_override("font_color", Color(0.7, 0.9, 0.7))
+	preview_pane.add_child(preview_title)
+
+	var preview_tex_rect := TextureRect.new()
+	preview_tex_rect.name = "PreviewTex"
+	preview_tex_rect.custom_minimum_size = Vector2(320, 480)
+	preview_tex_rect.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+	preview_tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	preview_tex_rect.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	preview_tex_rect.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# 背景を少し明るく（黒地に絵が溶けないように）
+	var pv_bg := PanelContainer.new()
+	var pv_style := StyleBoxFlat.new()
+	pv_style.bg_color = Color(0.12, 0.12, 0.14, 1.0)
+	pv_bg.add_theme_stylebox_override("panel", pv_style)
+	pv_bg.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	pv_bg.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	pv_bg.add_child(preview_tex_rect)
+	preview_pane.add_child(pv_bg)
+
+	var preview_name_lbl := Label.new()
+	preview_name_lbl.name = "PreviewName"
+	preview_name_lbl.text = current_file
+	preview_name_lbl.add_theme_font_size_override("font_size", 13)
+	preview_name_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD
+	preview_pane.add_child(preview_name_lbl)
+
+	var preview_count_lbl := Label.new()
+	preview_count_lbl.name = "PreviewCount"
+	preview_count_lbl.add_theme_font_size_override("font_size", 12)
+	preview_pane.add_child(preview_count_lbl)
+
+	var confirm_btn := Button.new()
+	confirm_btn.text = "✔ この画像で確定"
+	confirm_btn.add_theme_font_size_override("font_size", 14)
+	confirm_btn.add_theme_color_override("font_color", Color(0.4, 1.0, 0.4))
+	confirm_btn.disabled = true  # サムネを選ぶまで押せない
+	preview_pane.add_child(confirm_btn)
+
+	# 初期状態: 現在の画像をプレビューに表示
+	var current_tex: Texture2D = load(current_path)
+	if current_tex:
+		preview_tex_rect.texture = current_tex
+	var cur_count: int = _story_edit_count_image_uses(current_path)
+	preview_count_lbl.text = "（現在の画像）  %s" % ("未使用" if cur_count == 0 else "%d箇所使用" % cur_count)
+
+	# サムネ選択状態を closure 越しに共有
+	var sel_state: Dictionary = {"path": "", "button": null}
+	const THUMB_W: int = 200    # サムネの幅
+	const THUMB_H: int = 400    # サムネの高さ（縦方向は2倍にして顔/上半身が見切れないように）
+	for fn in matches:
+		var full_path: String = folder.rstrip("/") + "/" + fn
+		var tex: Texture2D = load(full_path)
+		if not tex:
+			continue
+		var cell := VBoxContainer.new()
+		cell.custom_minimum_size = Vector2(THUMB_W + 10, THUMB_H + 60)
+		# 立ち絵は縦長。横方向は中央の 1/2 幅をクロップ（2倍ズーム）、
+		# 縦方向はその2倍の高さ（=元の上半身分量）を取り、顔/上半身が見切れないようにする。
+		# 顔位置（画像上部 14% あたり）が thumb の上 1/3 〜 中央に来るよう垂直オフセットを寄せる。
+		var atlas := AtlasTexture.new()
+		atlas.atlas = tex
+		var tw: int = tex.get_width()
+		var th: int = tex.get_height()
+		var crop_w: int = max(1, min(int(tw / 2), int(th * 0.25)))
+		var crop_h: int = max(1, min(th, crop_w * 2))
+		var face_y_est: int = int(th * 0.14)
+		var crop_y: int = clampi(face_y_est - int(crop_h / 3), 0, max(0, th - crop_h))
+		var crop_x: int = max(0, int((tw - crop_w) / 2))
+		atlas.region = Rect2(crop_x, crop_y, crop_w, crop_h)
+		var btn := TextureButton.new()
+		btn.texture_normal = atlas
+		btn.custom_minimum_size = Vector2(THUMB_W, THUMB_H)
+		btn.stretch_mode = TextureButton.STRETCH_SCALE
+		btn.ignore_texture_size = true
+		btn.tooltip_text = full_path
+		# 現在選択中の画像は控えめなハイライト
+		if full_path == current_path:
+			btn.modulate = Color(1.15, 1.3, 1.15)
+		cell.add_child(btn)
+		var name_lbl := Label.new()
+		name_lbl.text = fn
+		name_lbl.add_theme_font_size_override("font_size", 12)
+		name_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD
+		name_lbl.custom_minimum_size = Vector2(THUMB_W, 0)
+		cell.add_child(name_lbl)
+		var count: int = _story_edit_count_image_uses(full_path)
+		var count_lbl := Label.new()
+		count_lbl.text = "未使用" if count == 0 else "%d箇所使用" % count
+		count_lbl.add_theme_font_size_override("font_size", 11)
+		count_lbl.add_theme_color_override("font_color", Color(0.5, 0.5, 0.5) if count == 0 else Color(0.9, 0.85, 0.5))
+		cell.add_child(count_lbl)
+		grid.add_child(cell)
+		# クリック: 選択ハイライト + プレビューペイン更新（まだカードに反映しない）
+		btn.pressed.connect(func():
+			# 前の選択のハイライトを戻す（現在の画像のハイライトは保つ）
+			var prev_btn: TextureButton = sel_state.get("button")
+			if prev_btn and prev_btn != btn:
+				if sel_state.get("path") == current_path:
+					prev_btn.modulate = Color(1.15, 1.3, 1.15)
+				else:
+					prev_btn.modulate = Color.WHITE
+			# 新しい選択を強調
+			btn.modulate = Color(1.5, 1.7, 1.5)
+			sel_state["button"] = btn
+			sel_state["path"] = full_path
+			# プレビューを更新
+			preview_tex_rect.texture = tex
+			preview_name_lbl.text = fn
+			var marker: String = "  ★ 選択中" if full_path != current_path else "  （現在の画像）"
+			preview_count_lbl.text = "%s%s" % [("未使用" if count == 0 else "%d箇所使用" % count), marker]
+			confirm_btn.disabled = false)
+
+	# 確定ボタン: 選択中の画像をカードに反映してピッカーを閉じる
+	confirm_btn.pressed.connect(func():
+		var p: String = sel_state.get("path", "")
+		if p.is_empty():
+			return
+		_on_story_edit_image_picked(card, p)
+		modal.queue_free())
+
+# 反転ボタンのハンドラ：bound_rect.flip_h を即トグル（プレビュー）。
+# 実ファイルへの書き込みは保存ボタン経由でのみ行う（rect.flip_h vs 履歴 flip_h の差分検出で保存判定）。
+func _on_story_edit_card_flip(card: PanelContainer) -> void:
+	if not is_instance_valid(card):
+		return
+	var rect: TextureRect = card.get_meta("bound_rect", null) if card.has_meta("bound_rect") else null
+	if not is_instance_valid(rect):
+		return
+	rect.flip_h = not rect.flip_h
+	# タイトルに反転中マーカー（実機の見た目と一致させるための補助表示）
+	var title: Label = card.find_child("Title", true, false)
+	if title:
+		var side: String = card.get_meta("bound_side", "")
+		var tx_name: String = ""
+		if rect.texture and rect.texture.resource_path:
+			tx_name = rect.texture.resource_path.get_file()
+		var swap_marker: String = "* " if card.has_meta("pending_portrait_path") else ""
+		var flip_marker: String = "↔ " if rect.flip_h else ""
+		title.text = "[%s] %s%s%s" % [side, swap_marker, flip_marker, tx_name]
+	print("[STORY_EDIT] 反転トグル: flip_h=%s" % rect.flip_h)
+
+# ピッカーで画像が選択されたときの処理：bound_rect.texture を即差し替え、
+# card に pending_portrait_path meta を立て、未保存マーカー * をタイトルに出す。
+# 実ファイルへの書き込みは保存ボタン経由でのみ行う。
+func _on_story_edit_image_picked(card: PanelContainer, new_path: String) -> void:
+	if not is_instance_valid(card):
+		return
+	var rect: TextureRect = card.get_meta("bound_rect", null) if card.has_meta("bound_rect") else null
+	if not is_instance_valid(rect):
+		return
+	var new_tex = load(new_path)
+	if not new_tex:
+		print("[STORY_EDIT] 画像ロード失敗: %s" % new_path)
+		return
+	rect.texture = new_tex
+	# 既存のサイズ/スケール/位置はそのまま維持（ユーザーが必要なら手で調整）
+	# サイズだけは新テクスチャに合わせる（スライダーの中心算出に必要）
+	rect.size = new_tex.get_size()
+	# 同じ画像が選ばれた場合は pending を立てない（無意味な保存を避ける）
+	var current_path_meta: String = ""
+	if card.has_meta("pending_portrait_path"):
+		current_path_meta = card.get_meta("pending_portrait_path")
+	var prev_actual: String = ""
+	if story_scene_instance and "portrait_log" in story_scene_instance:
+		var plog: Array = story_scene_instance.portrait_log
+		for i in range(plog.size() - 1, -1, -1):
+			var e = plog[i]
+			if e.get("rect") == rect:
+				prev_actual = e.get("texture_path", "")
+				break
+	if new_path == prev_actual:
+		# 元と同じに戻す選択。pending をクリア。
+		card.remove_meta("pending_portrait_path")
+	else:
+		card.set_meta("pending_portrait_path", new_path)
+	# タイトルに未保存マーカーを反映
+	var title: Label = card.find_child("Title", true, false)
+	if title:
+		var side: String = card.get_meta("bound_side", "")
+		var marker: String = "* " if card.has_meta("pending_portrait_path") else ""
+		title.text = "[%s] %s%s" % [side, marker, new_path.get_file()]
+	print("[STORY_EDIT] 画像差し替え (未保存): %s" % new_path)
+
+# from_idx より手前で最後の停止ポイントの index を返す。無ければ -1。
+func _story_edit_prev_stop(entries: Array, from_idx: int) -> int:
+	var start: int = min(from_idx, entries.size()) - 1
+	for i in range(start, -1, -1):
+		if _story_edit_is_stop_point(entries[i]):
+			return i
+	return -1
 
 func _story_edit_execute_single(e, scene):
 	# Execute a single command with animations disabled
@@ -2878,6 +3286,12 @@ func _refresh_story_edit_cards(root: Control, scene):
 	var right_card: PanelContainer = root.find_child("StoryEditCard_Right", true, false)
 	if not left_card or not right_card:
 		return
+	# ナビゲーション（◀/▶）は execute_to で立ち絵を再生成するので、未保存の
+	# 画像差し替え（pending_portrait_path）はその時点で破棄される。meta も消す。
+	if left_card.has_meta("pending_portrait_path"):
+		left_card.remove_meta("pending_portrait_path")
+	if right_card.has_meta("pending_portrait_path"):
+		right_card.remove_meta("pending_portrait_path")
 	_bind_story_edit_card(left_card, scene, "left", scene.left_char)
 	# right カードは center を優先（バトル/ミニゲームと位置を揃えるため）
 	var right_rect: TextureRect = null
@@ -3071,6 +3485,22 @@ func _create_story_edit_char_card(side: String) -> PanelContainer:
 	copy_btn.add_theme_font_size_override("font_size", 13)
 	copy_btn.add_theme_color_override("font_color", Color(0.6, 0.9, 1.0))
 	action_row.add_child(copy_btn)
+
+	var pick_btn := Button.new()
+	pick_btn.name = "PickImageBtn"
+	pick_btn.text = "🖼 画像"
+	pick_btn.add_theme_font_size_override("font_size", 13)
+	pick_btn.add_theme_color_override("font_color", Color(1.0, 0.9, 0.5))
+	pick_btn.tooltip_text = "同フォルダの同 prefix 画像から差し替え（明示保存が必要）"
+	action_row.add_child(pick_btn)
+
+	var flip_btn := Button.new()
+	flip_btn.name = "FlipBtn"
+	flip_btn.text = "🔁 反転"
+	flip_btn.add_theme_font_size_override("font_size", 13)
+	flip_btn.add_theme_color_override("font_color", Color(1.0, 0.7, 0.9))
+	flip_btn.tooltip_text = "立ち絵を左右反転（明示保存が必要）"
+	action_row.add_child(flip_btn)
 
 	var save_btn := Button.new()
 	save_btn.name = "SaveBtn"
@@ -3275,6 +3705,14 @@ func _save_encounter_portrait(edit_panel: PanelContainer, info: Label, new_scale
 # scale/position を new 値へ更新する。PackedStringArray は値渡しのため、更新後の配列を返す。
 # 戻り値: {"lines": PackedStringArray, "changed": bool, "block_end": int, "scale_key": String}
 func _story_edit_apply_scale_pos_to_block(lines: PackedStringArray, li: int, new_scale: float, new_x: int, new_y: int) -> Dictionary:
+	# ガード: 開始行が set_portrait/appear/show でなければ何もしない。
+	# 過去に band 行へ scale/position を誤挿入する事故痕跡があったため、入口でブロック。
+	if li < 0 or li >= lines.size():
+		return {"lines": lines, "changed": false, "block_end": li, "scale_key": "scale", "rejected": "out_of_range"}
+	var head: String = lines[li]
+	var is_portrait_call: bool = (".set_portrait(" in head) or (".appear(" in head) or (".show(" in head)
+	if not is_portrait_call:
+		return {"lines": lines, "changed": false, "block_end": li, "scale_key": "scale", "rejected": "not_portrait_call"}
 	var block_end: int = _story_edit_find_call_block_end(lines, li)
 	# appear() なら "portrait_scale"、それ以外（set_portrait）は "scale" を使う
 	var scale_key: String = "portrait_scale" if "appear(" in lines[li] else "scale"
@@ -3386,16 +3824,42 @@ func _save_story_edit_card(card: PanelContainer, entries: Array, _idx: int):
 	var new_x: int = int(sl.x.value)
 	var new_y: int = int(sl.y.value)
 
-	# portrait_log から最後の bound_rect 向けエントリを取得
+	# 画像差し替えモード（ピッカーで新しい画像を選んだが保存していない状態）
+	var pending_path: String = card.get_meta("pending_portrait_path", "") if card.has_meta("pending_portrait_path") else ""
+	var is_image_swap: bool = not pending_path.is_empty()
+
+	# portrait_log から最後の bound_rect 向けエントリを取得。
+	# 通常は視覚上の bound_rect.texture と一致するエントリだけを許可する（band の側面上書きで
+	# 別画像の行を誤書き換えする事故を防ぐため）。画像差し替えモードでは bound_rect.texture が
+	# 新画像（履歴に未記録）なので、texture 一致は要求せず rect 一致だけで last_entry を決める。
 	var plog: Array = story_scene_instance.portrait_log if "portrait_log" in story_scene_instance else []
+	var displayed_tex: Texture2D = bound_rect.texture
+	var displayed_tex_path: String = ""
+	if displayed_tex and displayed_tex.resource_path:
+		displayed_tex_path = displayed_tex.resource_path
 	var last_entry: Dictionary = {}
 	for i in range(plog.size() - 1, -1, -1):
 		var e = plog[i]
-		if e.get("rect") == bound_rect:
+		if e.get("rect") != bound_rect:
+			continue
+		if is_image_swap:
+			# 旧画像のエントリを掴む（履歴側は旧パス、bound_rect.texture は新画像）
+			last_entry = e
+			break
+		# 通常: texture 一致を検証
+		var e_tex = e.get("texture")
+		var e_path: String = e.get("texture_path", "")
+		var ok_tex: bool = (e_tex != null and displayed_tex != null and e_tex == displayed_tex)
+		var ok_path: bool = (not e_path.is_empty() and e_path == displayed_tex_path)
+		if ok_tex or ok_path:
 			last_entry = e
 			break
 	if last_entry.is_empty():
-		info.text = "[保存NG] 立ち絵履歴に該当エントリなし"
+		if is_image_swap:
+			info.text = "[保存NG] 立ち絵履歴に該当エントリなし（差し替え先不明）"
+		else:
+			info.text = "[保存NG] 表示中の画像と履歴が食い違う（band で側面上書き等の可能性）"
+			print("[STORY_EDIT][NG] bound_rect.tex='%s' に一致する portrait_log エントリなし" % displayed_tex_path)
 		return
 
 	var src_id: String = last_entry.get("edit_source_id", "")
@@ -3422,6 +3886,61 @@ func _save_story_edit_card(card: PanelContainer, entries: Array, _idx: int):
 		var changed_any: bool = prim["changed"]
 		var block_end: int = prim["block_end"]
 		var scale_key: String = prim["scale_key"]
+		# 画像差し替えモード: ブロック内の旧パス文字列を新パスへ置換する。
+		# 生パス記述（"res://..."）の章のみ対象。定数参照（HERO_NORMAL 等）の章は
+		# パス文字列が現れないため置換が起きず、ここで NG にする。
+		var img_path: String = last_entry.get("texture_path", "")
+		var path_replaced: bool = false
+		if is_image_swap:
+			if img_path.is_empty():
+				info.text = "[保存NG] 旧画像パスが取れない"
+				return
+			var quoted_old: String = '"' + img_path + '"'
+			var quoted_new: String = '"' + pending_path + '"'
+			for j in range(li, block_end + 1):
+				if quoted_old in lines0[j]:
+					lines0[j] = lines0[j].replace(quoted_old, quoted_new)
+					path_replaced = true
+					changed_any = true
+					break
+			if not path_replaced:
+				info.text = "[保存NG] %s 行%d-%d に旧パスの文字列が無い（定数参照?）" % [src_file.get_file(), line_no, block_end + 1]
+				return
+		# --- 反転 (flip_h) の差分検出と書き込み ---
+		# bound_rect.flip_h は反転ボタンで直接トグルされる。履歴と比較して差があれば
+		# 対象ブロックの "flip" キーを書き換える。波及はしない（per-line）。
+		var current_flip: bool = bound_rect.flip_h
+		var logged_flip: bool = last_entry.get("flip_h", false)
+		var flip_changed: bool = current_flip != logged_flip
+		var new_flip_val: int = 1 if current_flip else 0
+		if flip_changed:
+			var flip_found_in_block: bool = false
+			for j in range(li, block_end + 1):
+				var line_j: String = lines0[j]
+				if '"flip"' in line_j:
+					var r_flip := RegEx.new()
+					r_flip.compile('"flip"\\s*:\\s*[01]')
+					var new_line: String = r_flip.sub(line_j, '"flip": %d' % new_flip_val)
+					if new_line != line_j:
+						lines0[j] = new_line
+						changed_any = true
+					flip_found_in_block = true
+					break
+			if not flip_found_in_block:
+				# dict 末尾に "flip": N を挿入（scale/position の挿入ロジックと同じ）
+				var dict_loc_f: Dictionary = _story_edit_find_dict_close(lines0, li, block_end)
+				var dict_end_li_f: int = dict_loc_f.get("li", -1)
+				var dict_end_col_f: int = dict_loc_f.get("col", -1)
+				if dict_end_li_f >= 0:
+					var ln_f: String = lines0[dict_end_li_f]
+					var before_f: String = ln_f.substr(0, dict_end_col_f)
+					var last_ch_f: String = _story_edit_dict_last_char(lines0, dict_end_li_f, dict_end_col_f)
+					var need_comma_f: bool = not (last_ch_f == "{" or last_ch_f == "," or last_ch_f == "")
+					var insert_str: String = '"flip": %d' % new_flip_val
+					if need_comma_f:
+						insert_str = ", " + insert_str
+					lines0[dict_end_li_f] = before_f + insert_str + ln_f.substr(dict_end_col_f)
+					changed_any = true
 		if not changed_any:
 			# 差分が無い = 既に目的の値が入っている（保存済み）か、本当に書けなかったか。
 			var _bt: String = "\n".join(lines0.slice(li, block_end + 1))
@@ -3437,10 +3956,9 @@ func _save_story_edit_card(card: PanelContainer, entries: Array, _idx: int):
 			# else: 既に目的値（成功扱い）。波及は下で行う。
 		# --- 同一画像への波及（ストーリー編集・保存時のみ）---
 		# 同じ画像を使う他の set_portrait/appear/show を同じ scale/position へ揃える。
-		# 保存した時だけ走るので、別位置のまま残したい画像は保存しなければ維持される。
-		var img_path: String = last_entry.get("texture_path", "")
+		# 画像差し替え時は意味が変わるのでスキップ（新旧で別画像）。
 		var propagated := 0
-		if not img_path.is_empty():
+		if not is_image_swap and not img_path.is_empty():
 			for bi in _story_edit_blocks_for_image(lines0, img_path):
 				if bi == li:
 					continue
@@ -3456,24 +3974,49 @@ func _save_story_edit_card(card: PanelContainer, entries: Array, _idx: int):
 			wf0.store_string("\n".join(lines0))
 			wf0.close()
 		# in-memory にも反映:
-		# (a) 立ち絵履歴エントリを更新（再描画整合）
+		# (a) 立ち絵履歴エントリを更新（再描画整合）。画像差し替え時は texture_path/texture も更新。
 		_apply_save_to_log_entry(last_entry, new_scale, new_x, new_y)
-		# (b) 同じ画像を使う ShowCharacter コマンドの portrait_scale / position を上書き。
-		#     これがないと ◀/▶ で再実行されたとき古い値で立ち絵が再表示される。
-		#     波及対象（同一画像）も含めて揃える。
+		if is_image_swap:
+			last_entry["texture_path"] = pending_path
+			var new_tex = load(pending_path)
+			if new_tex:
+				last_entry["texture"] = new_tex
+		# (b) ShowCharacter コマンドの portrait_scale / position / portrait_id / flip を上書き。
+		#     画像差し替え時は src_id 一致の1コマンドだけ更新（他の同一画像は触らない）。
+		#     通常時は scale/pos は同じ画像を使う全コマンドへ波及、flip は primary のみ。
+		if flip_changed:
+			last_entry["flip_h"] = current_flip
 		for cmd in entries:
 			if not (cmd is StoryCommands.ShowCharacter):
 				continue
-			var match_cmd: bool = ("edit_source_id" in cmd) and cmd.edit_source_id == src_id
-			if not match_cmd and not img_path.is_empty() and ("portrait_id" in cmd):
+			var is_primary: bool = ("edit_source_id" in cmd) and cmd.edit_source_id == src_id
+			var match_cmd: bool = is_primary
+			if not match_cmd and not is_image_swap and not img_path.is_empty() and ("portrait_id" in cmd):
 				match_cmd = (cmd.portrait_id == img_path)
 			if match_cmd:
 				cmd.portrait_scale = new_scale
 				cmd.position = Vector2(new_x, new_y)
 				cmd.position_mode = "offset"
-		var extra: String = "（+%d箇所）" % propagated if propagated > 0 else ""
-		info.text = "[保存] %s 行%d%s" % [src_file.get_file(), line_no, extra]
-		print("[STORY_EDIT] SAVED %s:%d (%s) scale=%.2f pos=[%d,%d] propagated=%d" % [src_file.get_file(), line_no, bound_side, new_scale, new_x, new_y, propagated])
+				# flip は primary のみ更新（波及しない、per-line）
+				if flip_changed and is_primary:
+					cmd.flip = new_flip_val
+				if is_image_swap:
+					cmd.portrait_id = pending_path
+					break  # 差し替え時は primary 1コマンドのみ
+		var flip_note: String = (" 反転%s" % ("ON" if current_flip else "OFF")) if flip_changed else ""
+		if is_image_swap:
+			# pending を消費。タイトルは現在の rect 状態に合わせて再構築。
+			card.remove_meta("pending_portrait_path")
+			var title_lbl: Label = card.find_child("Title", true, false)
+			if title_lbl:
+				var fm: String = "↔ " if current_flip else ""
+				title_lbl.text = "[%s] %s%s" % [bound_side, fm, pending_path.get_file()]
+			info.text = "[保存] %s 行%d (画像差し替え: %s%s)" % [src_file.get_file(), line_no, pending_path.get_file(), flip_note]
+			print("[STORY_EDIT] SAVED %s:%d (%s) image swap -> %s flip=%s" % [src_file.get_file(), line_no, bound_side, pending_path, current_flip])
+		else:
+			var extra: String = "（+%d箇所）" % propagated if propagated > 0 else ""
+			info.text = "[保存] %s 行%d%s%s" % [src_file.get_file(), line_no, extra, flip_note]
+			print("[STORY_EDIT] SAVED %s:%d (%s) scale=%.2f pos=[%d,%d] propagated=%d flip_changed=%s" % [src_file.get_file(), line_no, bound_side, new_scale, new_x, new_y, propagated, flip_changed])
 		return
 
 	# フォールバック: 章マッピングが設定されていれば portrait_id ベースで保存
