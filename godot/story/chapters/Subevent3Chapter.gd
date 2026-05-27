@@ -60,7 +60,7 @@ func _build_subevent3_pre(b):
 	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right", "flip": 0})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": HERO_NORMAL, "portrait_scale": 0.63, "flip": 1, "position": [0, 317],
+		"portrait": HERO_NORMAL, "portrait_scale": 0.71, "flip": 1, "position": [0, 70],
 	})
 
 	b.narrator_band("ギルドの扉が静かに開かれ、漆黒の甲冑姿の人物が、\n一歩後ろの老執事に伴われておずおずと入ってきた。")
@@ -106,7 +106,7 @@ func _build_subevent3_pre(b):
 	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right", "flip": 0})
 	receptionist.band("...ところで、サトシ様。")
 
-	hero.set_portrait(HERO_DREAD, {"scale": 0.63, "side": "left", "flip": 1, "position": [0, 317]})
+	hero.set_portrait(HERO_DREAD, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("は、はい？")
 
 	receptionist.band("丁度ようございました。この依頼、サトシ様がお引き受けください。")
@@ -134,7 +134,7 @@ func _build_subevent3_pre(b):
 	hero.band("いやいや、俺、受けるなんて──！")
 
 	# ピー助操作（サトシの声で大声）
-	hero.set_portrait(HERO_RESOLVE, {"scale": 0.63, "side": "left", "flip": 1, "position": [0, 317]})
+	hero.set_portrait(HERO_RESOLVE, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("受けます！ 必ずや呪いを解いてみせます！")
 
 	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -156,7 +156,7 @@ func _build_subevent3_pre(b):
 
 	pisuke.band("ゲコッ。金貨百枚だぞ。家賃が足りねえんだろ。", {"side": "left"})
 
-	hero.set_portrait(HERO_RESIGN, {"scale": 0.63, "side": "left", "flip": 1, "position": [0, 317]})
+	hero.set_portrait(HERO_RESIGN, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...じゃあ、さっきの鍛冶師の工房に行けばいいんだな？")
 
 	pisuke.band("ああ。セバスたちは屋敷で先に待ってる。先に工房だ。", {"side": "left"})
@@ -181,7 +181,7 @@ func _build_subevent3_blacksmith(b):
 	})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": HERO_NORMAL, "portrait_scale": 0.63, "flip": 1, "position": [0, 317],
+		"portrait": HERO_NORMAL, "portrait_scale": 0.71, "flip": 1, "position": [0, 70],
 	})
 
 	b.narrator_band("煤けた看板の下、扉を押すと鉄と石炭の匂いが押し寄せる。\n奥の火床の前に、白髪の老鍛冶が腰を下ろしていた。")
@@ -202,7 +202,7 @@ func _build_subevent3_blacksmith(b):
 
 	pisuke.band("（便利じゃねえか。）", {"side": "left"})
 
-	hero.set_portrait(HERO_DREAD, {"scale": 0.63, "side": "left", "flip": 1, "position": [0, 317]})
+	hero.set_portrait(HERO_DREAD, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("ピー助、今なんか不穏な声が──！")
 
 	pisuke.band("気のせいだ。", {"side": "left"})
@@ -226,7 +226,7 @@ func _build_subevent3_visit(b):
 
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": HERO_NORMAL, "portrait_scale": 0.63, "flip": 1, "position": [0, 317],
+		"portrait": HERO_NORMAL, "portrait_scale": 0.71, "flip": 1, "position": [0, 70],
 	})
 	sebas.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.5,
@@ -237,7 +237,7 @@ func _build_subevent3_visit(b):
 
 	sebas.band("...して、お若いの。具体的には何をなさるおつもりですか？")
 
-	hero.set_portrait(HERO_RESOLVE, {"scale": 0.63, "side": "left", "flip": 1, "position": [0, 317]})
+	hero.set_portrait(HERO_RESOLVE, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("「真言の水晶球」です。\n...これを使って、お嬢様に羞恥を与えます。")
 
 	sebas.band("...羞恥を、与える？")
@@ -259,7 +259,7 @@ func _build_subevent3_visit(b):
 
 	hero.band("で、ですよね...。")
 
-	hero.set_portrait(HERO_SERIOUS, {"scale": 0.63, "side": "left", "flip": 1, "position": [0, 317]})
+	hero.set_portrait(HERO_SERIOUS, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...あ、あの、でも、進捗は目で確認できます。\nこの水晶球、呪いの強さと色がリンクしていて、\n呪いが強いと漆黒、弱まると金色に変わるんです。\n色が薄くなっていけば「効いている」証拠になります。")
 
 	sebas.band("...色が薄まれば進展、濃くなれば後退、と。")
@@ -283,13 +283,13 @@ func _build_subevent3_visit(b):
 	sebas.set_portrait(SEBAS, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 0]})
 	sebas.band("（サトシに深々と一礼）\nお嬢様の尊厳、くれぐれもお守りいただきたく。")
 
-	hero.set_portrait(HERO_DREAD, {"scale": 0.63, "side": "left", "flip": 1, "position": [0, 317]})
+	hero.set_portrait(HERO_DREAD, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...せ、善処します...。")
 
 	# 場面4: 羞恥の儀・スクリプト導入
 	b.narrator_band("水晶球は漆黒のまま、壁の一角に映像投影窓が浮かび上がる。\n伝声塔接続モードはまだオフ。映像は個室内にのみ表示される。")
 
-	hero.set_portrait(HERO_NORMAL, {"scale": 0.63, "side": "left", "flip": 1, "position": [0, 317]})
+	hero.set_portrait(HERO_NORMAL, {"scale": 0.71, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...え、えっと、フィオナさん。\n...一か月、辛かったですよね...本当にお疲れ様でした。")
 
 	b.narrator_band("水晶球の漆黒が、さらに深くなる。呪いの加護度が上昇した。（100 → 110）")
@@ -321,7 +321,7 @@ func _build_subevent3_visit(b):
 	sebas.set_portrait(SEBAS, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 0]})
 	sebas.band("な、なんでございますか、この光は──！？")
 
-	hero.set_portrait(HERO_RESOLVE, {"scale": 0.63, "side": "left", "flip": 1, "position": [0, 317]})
+	hero.set_portrait(HERO_RESOLVE, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...フィオナさん。この水晶球、伝声塔接続モードに切り替えました。\n今から、王国中の伝声塔で、あなたの心の声が同時中継されます。")
 
 	fiona.set_portrait(FIONA, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 30]})
@@ -340,7 +340,7 @@ func _build_subevent3_visit(b):
 
 	pisuke.band("ここで止めたら呪いが戻るぞ。", {"side": "left"})
 
-	hero.set_portrait(HERO_RESOLVE, {"scale": 0.63, "side": "left", "flip": 1, "position": [0, 317]})
+	hero.set_portrait(HERO_RESOLVE, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("みなさーん！ 聞こえますかー！\nエドモンド家ご令嬢、フィオナ様の心の内、お届けしまーす！")
 
 	b.narrator_band("スクリーン映像（王国中に中継）：\n「...み、見ないで...誰も、見ないで...\n...わたくし、もう、嫁に行けません...」")
@@ -379,7 +379,7 @@ func _build_subevent3_visit(b):
 
 	pisuke.band("...あー、停止スイッチが見つからねえなぁ。", {"side": "left"})
 
-	hero.set_portrait(HERO_RESOLVE, {"scale": 0.63, "side": "left", "flip": 1, "position": [0, 317]})
+	hero.set_portrait(HERO_RESOLVE, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("いやーみんな、よく見ろよ！\nこれがエドモンド家ご令嬢、フィオナ様の本当の姿だー！")
 
 	hero.set_portrait(HERO_DESPAIR, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})

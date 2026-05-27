@@ -69,23 +69,25 @@ var _jump_points: Array = [
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true}, "money": 0}},
 	{"label": "_guild_home", "name": "ギルドホーム",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true, "guild_registered": true}, "money": 0}},
-	{"label": "_subevent_pre:subevent1", "name": "サブイベント1 前半（盗賊団）",
+	{"label": "_subevent_pre1:subevent1", "name": "サブイベント1 前半1（ギルドホーム）",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true, "guild_registered": true}, "money": 100}},
-	{"label": "subevent1_jin_battle", "name": "  └ ジン戦 戦闘前", "sequence": "subevent1_pre",
+	{"label": "_subevent_pre2:subevent1", "name": "サブイベント1 前半2（盗賊団アジト）",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true, "guild_registered": true}, "money": 100}},
-	{"label": "subevent1_jin_battle_done", "name": "  └ ジン戦 戦闘後", "sequence": "subevent1_pre",
+	{"label": "subevent1_jin_battle", "name": "  └ ジン戦 戦闘前", "sequence": "subevent1_hideout",
+		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true, "guild_registered": true}, "money": 100}},
+	{"label": "subevent1_jin_battle_done", "name": "  └ ジン戦 戦闘後", "sequence": "subevent1_hideout",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true, "guild_registered": true, "encounter_jin_seen": true}, "money": 100}},
-	{"label": "subevent1_marco_battle", "name": "  └ マルコ戦 戦闘前", "sequence": "subevent1_pre",
+	{"label": "subevent1_marco_battle", "name": "  └ マルコ戦 戦闘前", "sequence": "subevent1_hideout",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true, "guild_registered": true, "encounter_jin_seen": true}, "money": 100}},
-	{"label": "subevent1_marco_battle_done", "name": "  └ マルコ戦 戦闘後", "sequence": "subevent1_pre",
+	{"label": "subevent1_marco_battle_done", "name": "  └ マルコ戦 戦闘後", "sequence": "subevent1_hideout",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true, "guild_registered": true, "encounter_jin_seen": true, "encounter_marco_seen": true}, "money": 100}},
-	{"label": "subevent1_gald_battle", "name": "  └ ガルド戦 戦闘前", "sequence": "subevent1_pre",
+	{"label": "subevent1_gald_battle", "name": "  └ ガルド戦 戦闘前", "sequence": "subevent1_hideout",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true, "guild_registered": true, "encounter_jin_seen": true, "encounter_marco_seen": true}, "money": 100}},
-	{"label": "subevent1_gald_battle_done", "name": "  └ ガルド戦 戦闘後", "sequence": "subevent1_pre",
+	{"label": "subevent1_gald_battle_done", "name": "  └ ガルド戦 戦闘後", "sequence": "subevent1_hideout",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true, "guild_registered": true, "encounter_jin_seen": true, "encounter_marco_seen": true, "encounter_gald_seen": true}, "money": 100}},
-	{"label": "subevent1_boss_battle", "name": "  └ ベルカ戦 戦闘前", "sequence": "subevent1_pre",
+	{"label": "subevent1_boss_battle", "name": "  └ ベルカ戦 戦闘前", "sequence": "subevent1_hideout",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true, "guild_registered": true, "encounter_jin_seen": true, "encounter_marco_seen": true, "encounter_gald_seen": true}, "money": 100}},
-	{"label": "subevent1_belka_battle_done", "name": "  └ ベルカ戦 戦闘後", "sequence": "subevent1_pre",
+	{"label": "subevent1_belka_battle_done", "name": "  └ ベルカ戦 戦闘後", "sequence": "subevent1_hideout",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true, "guild_registered": true, "encounter_jin_seen": true, "encounter_marco_seen": true, "encounter_gald_seen": true, "encounter_belka_seen": true}, "money": 100}},
 	{"label": "_subevent_post:subevent1", "name": "サブイベント1 後半（ベルカ決着後）",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true, "guild_registered": true}, "money": 100}},
@@ -1515,13 +1517,16 @@ func _process(_delta: float):
 	var story_sc = _battle_edit_ref._story_scene
 	if not story_sc:
 		return
-	# ライブのバトルが自走して新しい立ち絵を表示した場合（勝利動画の終了後に
-	# 次の outfit の set_portrait が走る等）、portrait_log は ◀/▶ を介さず増える。
-	# このとき history_idx を最新エントリへ追従させないと、スライダー編集が
-	# 古いエントリへ書き込まれ、別画像のスケール/位置が破壊される。
+	# ライブのバトルが自走して新しい立ち絵を表示した場合、portrait_log は ◀/▶ を
+	# 介さず増える。このとき「ユーザーが今ライブの末尾画像を見ている」ときだけ
+	# 増えた末尾へ追従する。◀ で古い画像に停車中（history_idx < 末尾）のときに
+	# 末尾へ飛ばすと、画面の画像と保存対象（history_idx → edit_source_id）がズレて
+	# 編集したのと別（次）の set_portrait 行が書き換わるため、追従しない。
 	var log_size: int = story_sc.portrait_log.size() if "portrait_log" in story_sc else 0
 	if log_size > _battle_edit_last_log_size:
-		_battle_edit_history_idx = log_size - 1
+		var prev_tail: int = _battle_edit_last_log_size - 1
+		if _battle_edit_history_idx < 0 or _battle_edit_history_idx == prev_tail:
+			_battle_edit_history_idx = log_size - 1
 	_battle_edit_last_log_size = log_size
 	var char_rect: TextureRect = _find_visible_char_rect(story_sc)
 	if not char_rect:
@@ -1566,20 +1571,14 @@ func _on_battle_slider(_value: float, sl: Dictionary, battle_ref):
 	char_rect.position = new_pos
 	if story_sc._char_locked_positions.has(char_rect):
 		story_sc._char_locked_positions[char_rect] = new_pos
-	# スライダー編集を立ち絵履歴へ反映（◀/▶ で戻っても編集が保持されるように）
+	# スライダー編集を立ち絵履歴へ反映（◀/▶ で戻っても編集が保持されるように）。
+	# 書き込み先は「いま復元・表示しているエントリ」= _battle_edit_history_idx に
+	# 一本化する。texture はチャプター内で複数の set_portrait が同一画像を使うため
+	# 識別子に使えない（同画像の最後の出現を拾って別行を壊す原因になる）。
 	var elog := _battle_edit_get_log()
 	var ei := _battle_edit_history_idx
 	if ei < 0:
 		ei = elog.size() - 1
-	# history_idx が表示中の画像と食い違っている場合（ライブ自走等で同期が
-	# ズレた場合）、別画像のエントリへ誤って書き込まないよう、表示中の
-	# テクスチャと一致するエントリ（最新の出現位置）へ書き込み先を補正する。
-	if ei >= 0 and ei < elog.size() and elog[ei].get("texture") != char_rect.texture:
-		ei = -1
-		for i in range(elog.size() - 1, -1, -1):
-			if elog[i].get("texture") == char_rect.texture:
-				ei = i
-				break
 	if ei >= 0 and ei < elog.size() and elog[ei].get("rect") == char_rect:
 		elog[ei]["scale"] = s
 		elog[ei]["position"] = new_pos
@@ -2187,6 +2186,7 @@ const SUBEVENT_CHAPTERS := {
 		"name": "盗賊団を解体せよ！",
 		"chapter_script": "Subevent1ChapterScript",
 		"pre_sequence_id": "subevent1_pre",
+		"pre2_sequence_id": "subevent1_hideout",
 		"post_sequence_id": "subevent1_post",
 	},
 	"subevent2": {
@@ -2451,7 +2451,8 @@ const STORY_EDIT_SEQUENCES := [
 	{"id": "stage1", "label": "scene_guild_reception", "name": "ギルド受付"},
 	# Subevent1 / 2（シーケンス単位、prefix label のため細分なし）
 	{"separator": true, "name": "--- サブイベント ---"},
-	{"id": "subevent1_pre", "name": "サブイベント1 前半（盗賊団）", "chapter": "Subevent1ChapterScript"},
+	{"id": "subevent1_pre", "name": "サブイベント1 前半1（ギルドホーム）", "chapter": "Subevent1ChapterScript"},
+	{"id": "subevent1_hideout", "name": "サブイベント1 前半2（盗賊団アジト）", "chapter": "Subevent1ChapterScript"},
 	{"id": "subevent1_post", "name": "サブイベント1 後半（ベルカ決着後）", "chapter": "Subevent1ChapterScript"},
 	{"id": "subevent2_pre1", "name": "サブイベント2 前半1（ギルド→教会裏庭）", "chapter": "Subevent2ChapterScript"},
 	{"id": "subevent2_pre2", "name": "サブイベント2 前半2（礼拝室→シスター長戦）", "chapter": "Subevent2ChapterScript"},
@@ -2555,6 +2556,11 @@ func _on_story_edit_mode():
 
 func _run_story_edit(entry: Dictionary):
 	var sequence_id: String = entry.id
+
+	# 編集モードでは set_portrait/appear の呼び出し位置(edit_source_id)を記録する必要がある。
+	# 通常バトルをプレイすると BattleScene が editor_capture を false にするため、
+	# ストーリー編集に入るたびに必ず true へ戻す（保存に edit_source_id が要る）。
+	StoryCommands.editor_capture = true
 
 	_create_story_scene()
 
@@ -2795,6 +2801,14 @@ func _story_edit_reset_scene(scene):
 	scene.right_char.visible = false
 	scene.dialogue_band.visible = false
 	scene._character_side_cache.clear()
+	# 立ち絵履歴も破棄して、続く [0..idx] の再生で作り直す。
+	# クリアしないと ◀ で前の画像へ戻っても、以前 ▶ で先へ進んだ時に積まれた
+	# 「後の画像」エントリが rect の最後のエントリとして残り、保存が現在表示中の
+	# 画像ではなく次の画像の set_portrait 行を書き換えてしまう。
+	if "portrait_log" in scene:
+		scene.portrait_log.clear()
+	if "_portrait_log_current_idx" in scene:
+		scene._portrait_log_current_idx = -1
 	# Remove any leftover terminal effect overlays (RichTextLabel/ColorRect)
 	for child in scene.get_children():
 		if child is RichTextLabel or (child is ColorRect and child.color.a < 1.0):
@@ -2999,10 +3013,10 @@ func _create_story_edit_char_card(side: String) -> PanelContainer:
 	style.corner_radius_top_right = 8
 	style.corner_radius_bottom_left = 8
 	style.corner_radius_bottom_right = 8
-	style.content_margin_left = 12
-	style.content_margin_top = 8
-	style.content_margin_right = 12
-	style.content_margin_bottom = 8
+	style.content_margin_left = 10
+	style.content_margin_top = 6
+	style.content_margin_right = 10
+	style.content_margin_bottom = 6
 	panel.add_theme_stylebox_override("panel", style)
 
 	# 左カード=左上、右カード=右上（バトル編集カードと同じ位置）
@@ -3013,7 +3027,10 @@ func _create_story_edit_char_card(side: String) -> PanelContainer:
 		panel.anchor_left = 0.70
 		panel.anchor_right = 0.99
 	panel.anchor_top = 0.02
-	panel.anchor_bottom = 0.55
+	# 余白削減: 下端を画面比で固定せず内容の高さにフィットさせる
+	# （anchor_bottom=0.55 だと黒パネルが縦に伸び、下に大きな余白ができていた）
+	panel.anchor_bottom = 0.02
+	panel.grow_vertical = Control.GROW_DIRECTION_END
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 
 	var vbox := VBoxContainer.new()
@@ -3254,6 +3271,98 @@ func _save_encounter_portrait(edit_panel: PanelContainer, info: Label, new_scale
 # 各エントリが持つため _story_edit_source_file のハードコード章マッピングに
 # 依存しない（プロローグ以外の章でも動く）。edit_source_id が空のときだけ、
 # 旧 portrait_id + ファイル名出現回数マッチングへフォールバックする。
+# ストーリー編集の保存ヘルパ: lines[li] から始まる set_portrait/appear/show ブロックの
+# scale/position を new 値へ更新する。PackedStringArray は値渡しのため、更新後の配列を返す。
+# 戻り値: {"lines": PackedStringArray, "changed": bool, "block_end": int, "scale_key": String}
+func _story_edit_apply_scale_pos_to_block(lines: PackedStringArray, li: int, new_scale: float, new_x: int, new_y: int) -> Dictionary:
+	var block_end: int = _story_edit_find_call_block_end(lines, li)
+	# appear() なら "portrait_scale"、それ以外（set_portrait）は "scale" を使う
+	var scale_key: String = "portrait_scale" if "appear(" in lines[li] else "scale"
+	var has_scale_key := false
+	var has_pos_key := false
+	for j0 in range(li, block_end + 1):
+		if ('"%s"' % scale_key) in lines[j0]:
+			has_scale_key = true
+		if '"scale"' in lines[j0] and scale_key == "portrait_scale":
+			# appear() なのに "scale" を持っているケース（手書き混在）。fallback で "scale" を使う
+			scale_key = "scale"
+			has_scale_key = true
+		if '"position"' in lines[j0]:
+			has_pos_key = true
+	var changed_any := false
+	# 既存キーがあれば置換
+	if has_scale_key or has_pos_key:
+		for j in range(li, block_end + 1):
+			var line_j: String = lines[j]
+			var orig: String = line_j
+			if ('"%s"' % scale_key) in line_j:
+				var r_ps := RegEx.new()
+				r_ps.compile('"%s":\\s*[\\d.]+' % scale_key)
+				line_j = r_ps.sub(line_j, '"%s": %.2f' % [scale_key, new_scale])
+			if '"position"' in line_j:
+				line_j = _battle_edit_pos_regex().sub(line_j, '"position": [%d, %d]' % [new_x, new_y])
+			if line_j != orig:
+				lines[j] = line_j
+				changed_any = true
+	# 不足キーは追加する（dict があれば末尾へ、無ければ dict を新規引数として挿入）
+	if not has_scale_key or not has_pos_key:
+		var dict_loc: Dictionary = _story_edit_find_dict_close(lines, li, block_end)
+		var dict_end_li: int = dict_loc.get("li", -1)
+		var dict_end_col: int = dict_loc.get("col", -1)
+		var insert_scale: bool = not has_scale_key
+		var insert_pos: bool = not has_pos_key
+		if dict_end_li >= 0:
+			var ln: String = lines[dict_end_li]
+			var before: String = ln.substr(0, dict_end_col)
+			var last_ch: String = _story_edit_dict_last_char(lines, dict_end_li, dict_end_col)
+			var need_comma: bool = not (last_ch == "{" or last_ch == "," or last_ch == "")
+			var parts: String = ""
+			if insert_scale:
+				parts += '"%s": %.2f' % [scale_key, new_scale]
+			if insert_pos:
+				if not parts.is_empty(): parts += ", "
+				parts += '"position": [%d, %d]' % [new_x, new_y]
+			if not parts.is_empty():
+				if need_comma:
+					parts = ", " + parts
+				lines[dict_end_li] = before + parts + ln.substr(dict_end_col)
+				changed_any = true
+		else:
+			var ln2: String = lines[block_end]
+			var paren_col: int = ln2.rfind(")")
+			if paren_col >= 0:
+				var dict_parts: String = ""
+				if insert_scale:
+					dict_parts += '"%s": %.2f' % [scale_key, new_scale]
+				if insert_pos:
+					if not dict_parts.is_empty(): dict_parts += ", "
+					dict_parts += '"position": [%d, %d]' % [new_x, new_y]
+				lines[block_end] = ln2.substr(0, paren_col) + ', {' + dict_parts + '}' + ln2.substr(paren_col)
+				changed_any = true
+	return {"lines": lines, "changed": changed_any, "block_end": block_end, "scale_key": scale_key}
+
+# lines 全体から、img_path を参照する set_portrait/appear/show ブロックの開始行(0始まり)を返す。
+# コメント行(#始まり)はスキップする。
+func _story_edit_blocks_for_image(lines: PackedStringArray, img_path: String) -> Array:
+	var starts: Array = []
+	var i := 0
+	while i < lines.size():
+		var ln: String = lines[i]
+		var is_call: bool = (".set_portrait(" in ln) or (".appear(" in ln) or (".show(" in ln)
+		if is_call and not ln.strip_edges().begins_with("#"):
+			var be: int = _story_edit_find_call_block_end(lines, i)
+			var found := false
+			for j in range(i, be + 1):
+				if img_path in lines[j]:
+					found = true
+					break
+			if found:
+				starts.append(i)
+			i = be + 1
+		else:
+			i += 1
+	return starts
+
 func _save_story_edit_card(card: PanelContainer, entries: Array, _idx: int):
 	var info: Label = card.find_child("InfoLabel", true, false)
 	if not info:
@@ -3307,115 +3416,64 @@ func _save_story_edit_card(card: PanelContainer, entries: Array, _idx: int):
 		if li < 0 or li >= lines0.size():
 			info.text = "[保存NG] 行番号が範囲外: %d" % line_no
 			return
-		# 呼び出しが複数行に渡る（hero.appear({\n ... \n})）ケースを扱うため、
-		# `(` から対応する `)` までを括弧バランスでブロック検出する。
-		var block_end: int = _story_edit_find_call_block_end(lines0, li)
-		# appear() なら "portrait_scale"、それ以外（set_portrait）は "scale" を使う
-		var scale_key: String = "portrait_scale" if "appear(" in lines0[li] else "scale"
-		var has_scale_key := false
-		var has_pos_key := false
-		for j0 in range(li, block_end + 1):
-			if ('"%s"' % scale_key) in lines0[j0]:
-				has_scale_key = true
-			if '"scale"' in lines0[j0] and scale_key == "portrait_scale":
-				# appear() なのに "scale" を持っているケース（手書き混在）。fallback で "scale" を使う
-				scale_key = "scale"
-				has_scale_key = true
-			if '"position"' in lines0[j0]:
-				has_pos_key = true
-		var changed_any := false
-		# 既存キーがあれば置換
-		if has_scale_key or has_pos_key:
-			for j in range(li, block_end + 1):
-				var line_j: String = lines0[j]
-				var orig: String = line_j
-				if ('"%s"' % scale_key) in line_j:
-					var r_ps := RegEx.new()
-					r_ps.compile('"%s":\\s*[\\d.]+' % scale_key)
-					line_j = r_ps.sub(line_j, '"%s": %.2f' % [scale_key, new_scale])
-				if '"position"' in line_j:
-					line_j = _battle_edit_pos_regex().sub(line_j, '"position": [%d, %d]' % [new_x, new_y])
-				if line_j != orig:
-					lines0[j] = line_j
-					changed_any = true
-		# 不足キーは追加する（dict があれば末尾へ、無ければ dict を新規引数として挿入）
-		if not has_scale_key or not has_pos_key:
-			var dict_loc: Dictionary = _story_edit_find_dict_close(lines0, li, block_end)
-			var dict_end_li: int = dict_loc.get("li", -1)
-			var dict_end_col: int = dict_loc.get("col", -1)
-			var insert_scale: bool = not has_scale_key
-			var insert_pos: bool = not has_pos_key
-			if dict_end_li >= 0:
-				if li == dict_end_li:
-					# Single-line dict: モジュール `... }` の `}` の直前に挿入
-					var ln: String = lines0[li]
-					var parts: String = ""
-					if insert_scale:
-						parts += '"%s": %.2f, ' % [scale_key, new_scale]
-					if insert_pos:
-						parts += '"position": [%d, %d], ' % [new_x, new_y]
-					lines0[li] = ln.substr(0, dict_end_col) + parts + ln.substr(dict_end_col)
-					changed_any = true
-				else:
-					# Multi-line dict: dict_end_li の直前に新しい行を挿入
-					var indent: String = "\t\t"
-					if dict_end_li > 0:
-						var ref: String = lines0[dict_end_li - 1]
-						var ws := 0
-						while ws < ref.length() and (ref[ws] == "\t" or ref[ws] == " "):
-							ws += 1
-						if ws > 0:
-							indent = ref.substr(0, ws)
-					var rebuilt: PackedStringArray = PackedStringArray()
-					for j in range(lines0.size()):
-						if j == dict_end_li:
-							if insert_scale:
-								rebuilt.append('%s"%s": %.2f,' % [indent, scale_key, new_scale])
-							if insert_pos:
-								rebuilt.append('%s"position": [%d, %d],' % [indent, new_x, new_y])
-						rebuilt.append(lines0[j])
-					lines0 = rebuilt
-					changed_any = true
-			else:
-				# dict が無い → 第2引数として新規 dict を挿入する
-				var ln2: String = lines0[block_end]
-				var paren_col: int = ln2.rfind(")")
-				if paren_col >= 0:
-					var dict_parts: String = ""
-					if insert_scale:
-						dict_parts += '"%s": %.2f' % [scale_key, new_scale]
-					if insert_pos:
-						if not dict_parts.is_empty(): dict_parts += ", "
-						dict_parts += '"position": [%d, %d]' % [new_x, new_y]
-					lines0[block_end] = ln2.substr(0, paren_col) + ', {' + dict_parts + '}' + ln2.substr(paren_col)
-					changed_any = true
+		# 編集対象のブロックを更新（呼び出しが複数行に渡る appear も括弧バランスで検出）
+		var prim: Dictionary = _story_edit_apply_scale_pos_to_block(lines0, li, new_scale, new_x, new_y)
+		lines0 = prim["lines"]
+		var changed_any: bool = prim["changed"]
+		var block_end: int = prim["block_end"]
+		var scale_key: String = prim["scale_key"]
 		if not changed_any:
-			info.text = "[保存NG] %s 行%d-%d を更新できない" % [src_file.get_file(), line_no, block_end + 1]
-			# 診断: 失敗したブロックの内容をコンソールへ出力
-			print("[STORY_EDIT][NG] block in %s:%d-%d:" % [src_file, line_no, block_end + 1])
-			for j_dbg in range(li, block_end + 1):
-				if j_dbg >= 0 and j_dbg < lines0.size():
-					print("[STORY_EDIT][NG]   %d| %s" % [j_dbg + 1, lines0[j_dbg]])
-			return
-		var wf0 := FileAccess.open(abs_path0, FileAccess.WRITE)
-		if not wf0:
-			info.text = "[保存NG] 書き込み不可"
-			return
-		wf0.store_string("\n".join(lines0))
-		wf0.close()
+			# 差分が無い = 既に目的の値が入っている（保存済み）か、本当に書けなかったか。
+			var _bt: String = "\n".join(lines0.slice(li, block_end + 1))
+			var _want_scale: String = '"%s": %.2f' % [scale_key, new_scale]
+			var _want_pos: String = '"position": [%d, %d]' % [new_x, new_y]
+			if not ((_want_scale in _bt) and (_want_pos in _bt)):
+				info.text = "[保存NG] %s 行%d-%d を更新できない" % [src_file.get_file(), line_no, block_end + 1]
+				print("[STORY_EDIT][NG] block in %s:%d-%d:" % [src_file, line_no, block_end + 1])
+				for j_dbg in range(li, block_end + 1):
+					if j_dbg >= 0 and j_dbg < lines0.size():
+						print("[STORY_EDIT][NG]   %d| %s" % [j_dbg + 1, lines0[j_dbg]])
+				return
+			# else: 既に目的値（成功扱い）。波及は下で行う。
+		# --- 同一画像への波及（ストーリー編集・保存時のみ）---
+		# 同じ画像を使う他の set_portrait/appear/show を同じ scale/position へ揃える。
+		# 保存した時だけ走るので、別位置のまま残したい画像は保存しなければ維持される。
+		var img_path: String = last_entry.get("texture_path", "")
+		var propagated := 0
+		if not img_path.is_empty():
+			for bi in _story_edit_blocks_for_image(lines0, img_path):
+				if bi == li:
+					continue
+				var rp: Dictionary = _story_edit_apply_scale_pos_to_block(lines0, bi, new_scale, new_x, new_y)
+				lines0 = rp["lines"]
+				if rp["changed"]:
+					propagated += 1
+		if changed_any or propagated > 0:
+			var wf0 := FileAccess.open(abs_path0, FileAccess.WRITE)
+			if not wf0:
+				info.text = "[保存NG] 書き込み不可"
+				return
+			wf0.store_string("\n".join(lines0))
+			wf0.close()
 		# in-memory にも反映:
 		# (a) 立ち絵履歴エントリを更新（再描画整合）
 		_apply_save_to_log_entry(last_entry, new_scale, new_x, new_y)
-		# (b) 対応する ShowCharacter コマンドの portrait_scale / position を上書き
-		#     これがないと ◀/▶ で再実行されたとき古い値で立ち絵が再表示される
+		# (b) 同じ画像を使う ShowCharacter コマンドの portrait_scale / position を上書き。
+		#     これがないと ◀/▶ で再実行されたとき古い値で立ち絵が再表示される。
+		#     波及対象（同一画像）も含めて揃える。
 		for cmd in entries:
-			if cmd is StoryCommands.ShowCharacter and ("edit_source_id" in cmd) and cmd.edit_source_id == src_id:
+			if not (cmd is StoryCommands.ShowCharacter):
+				continue
+			var match_cmd: bool = ("edit_source_id" in cmd) and cmd.edit_source_id == src_id
+			if not match_cmd and not img_path.is_empty() and ("portrait_id" in cmd):
+				match_cmd = (cmd.portrait_id == img_path)
+			if match_cmd:
 				cmd.portrait_scale = new_scale
 				cmd.position = Vector2(new_x, new_y)
 				cmd.position_mode = "offset"
-				break
-		info.text = "[保存] %s 行%d" % [src_file.get_file(), line_no]
-		print("[STORY_EDIT] SAVED %s:%d-%d (%s) scale=%.2f pos=[%d,%d]" % [src_file.get_file(), line_no, block_end + 1, bound_side, new_scale, new_x, new_y])
+		var extra: String = "（+%d箇所）" % propagated if propagated > 0 else ""
+		info.text = "[保存] %s 行%d%s" % [src_file.get_file(), line_no, extra]
+		print("[STORY_EDIT] SAVED %s:%d (%s) scale=%.2f pos=[%d,%d] propagated=%d" % [src_file.get_file(), line_no, bound_side, new_scale, new_x, new_y, propagated])
 		return
 
 	# フォールバック: 章マッピングが設定されていれば portrait_id ベースで保存
@@ -3476,6 +3534,7 @@ const _STORY_CHAPTER_PATHS := [
 func _force_reload_story_chapters() -> void:
 	if not story_script:
 		return
+	StoryCommands.editor_capture = true  # 章再パース中に edit_source_id を記録させる
 	for path in _STORY_CHAPTER_PATHS:
 		var fresh: GDScript = _load_script_fresh(path)
 		if not fresh:
@@ -3492,6 +3551,23 @@ func _apply_save_to_log_entry(entry: Dictionary, new_scale: float, _new_x: int, 
 	var rect: TextureRect = entry.get("rect")
 	if is_instance_valid(rect):
 		entry["position"] = rect.position
+
+# dict の閉じ `}`（end_li, end_col）の直前にある最後の非空白文字を、行をまたいで
+# 後方走査して返す（区切りカンマの要否判定に使う）。見つからなければ "" を返す。
+func _story_edit_dict_last_char(file_lines: PackedStringArray, end_li: int, end_col: int) -> String:
+	var li: int = end_li
+	var col: int = end_col - 1
+	while li >= 0:
+		var s: String = file_lines[li]
+		if li != end_li:
+			col = s.length() - 1
+		while col >= 0:
+			var ch: String = s[col]
+			if ch != " " and ch != "\t":
+				return ch
+			col -= 1
+		li -= 1
+	return ""
 
 # 呼び出しブロック内の dict の閉じ `}` の位置を返す。{"li": int, "col": int}
 # dict が見つからない場合は {"li": -1, "col": -1} を返す。

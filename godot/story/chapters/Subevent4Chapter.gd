@@ -49,7 +49,7 @@ func _build_subevent4_pre(b):
 	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right", "flip": 0})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": HERO_NORMAL, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
+		"portrait": HERO_NORMAL, "portrait_scale": 0.71, "flip": 1, "position": [0, 70],
 	})
 
 	b.narrator_band("依頼を終えたサトシが、ギルドの酒場でぼんやりしている。\nカウンターの向こうでは、受付嬢が書類を整理している。")
@@ -91,7 +91,7 @@ func _build_subevent4_pre(b):
 	# 場面2: 翌日・処罰審査
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": HERO_NORMAL, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
+		"portrait": HERO_NORMAL, "portrait_scale": 0.71, "flip": 1, "position": [0, 70],
 	})
 	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right", "flip": 0})
 
@@ -366,7 +366,7 @@ func _build_subevent4_post(b):
 
 	pisuke.band("...ゲコッ。\nまあ、悪くねえ展開じゃねえか。", {"side": "left"})
 
-	hero.set_portrait(HERO_IRRITATE, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait(HERO_IRRITATE, {"scale": 0.71, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("お前のせいで五件目が増えたんだけどな！！")
 
 	b.set_flag("subevent4_complete")

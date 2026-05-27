@@ -154,12 +154,18 @@ func _test_subevent1_sequences() -> bool:
 
 	var all_ok := true
 	var pre_seq = story_script.get_sequence("subevent1_pre")
+	var hideout_seq = story_script.get_sequence("subevent1_hideout")
 	var post_seq = story_script.get_sequence("subevent1_post")
 
 	if pre_seq == null:
 		all_ok = fail("subevent1_pre sequence not found") and false
 	elif pre_seq.entries.is_empty():
 		all_ok = fail("subevent1_pre has no entries") and false
+
+	if hideout_seq == null:
+		all_ok = fail("subevent1_hideout sequence not found") and false
+	elif hideout_seq.entries.is_empty():
+		all_ok = fail("subevent1_hideout has no entries") and false
 
 	if post_seq == null:
 		all_ok = fail("subevent1_post sequence not found") and false
@@ -175,7 +181,7 @@ func _test_battle_paths_in_sequence() -> bool:
 
 	var all_ok := true
 
-	for seq_id in ["subevent1_pre", "subevent1_post"]:
+	for seq_id in ["subevent1_pre", "subevent1_hideout", "subevent1_post"]:
 		var seq = story_script.get_sequence(seq_id)
 		if seq == null:
 			continue
@@ -209,7 +215,7 @@ func _test_portrait_paths() -> bool:
 	var all_ok := true
 	var checked := {}
 
-	for seq_id in ["subevent1_pre", "subevent1_post", "subevent2_pre1", "subevent2_pre2", "subevent2_post"]:
+	for seq_id in ["subevent1_pre", "subevent1_hideout", "subevent1_post", "subevent2_pre1", "subevent2_pre2", "subevent2_post"]:
 		var seq = story_script.get_sequence(seq_id)
 		if seq == null:
 			continue

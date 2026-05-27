@@ -210,9 +210,9 @@ func _build_stage1(b):
 		"appear_duration": 0.8,
 		"appear_distance": 200,
 		"portrait": "res://assets/characters/main/satoshi/isekai/satoshi_isekai_012.png",
-		"portrait_scale": 0.5,
+		"portrait_scale": 0.53,
 		"flip": 0,
-	})
+	"position": [0, 70]})
 
 	hero.band("（ここが冒険者ギルド...。ガラの悪そうな連中ばっかりだ。\n目を合わせないように...端っこを歩いて受付に...。）")
 
@@ -284,6 +284,7 @@ func _build_stage1(b):
 	# ============================================================
 	b.label("scene_guild_reception")
 
+	# satoshi_isekai_012 は 206 行目（hero.appear）の設定に統一（scale 0.5・位置は左の既定）
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_012.png", {"scale": 0.53, "side": "left", "flip": 0, "position": [0, 70]})
 	adventurer_a.set_portrait("res://assets/characters/mob/adventurer_a/clothed/adventurer_a_clothed_005.png", {"scale": 0.7, "side": "right", "flip": 1, "position": [0, 100]})
 	# adventurer_a.set_portrait("res://assets/characters/stage1/adventurer_a_001.png", {"scale": 0.5, "side": "right"})
