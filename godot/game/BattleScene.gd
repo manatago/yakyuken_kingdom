@@ -466,6 +466,46 @@ func deck(path: String, extra: Dictionary = {}):
 	else:
 		_setup_deck(path, extra)
 
+func set_battle_ui_visible(v: bool):
+	if card_bar:
+		card_bar.visible = v
+	if item_panel:
+		item_panel.visible = v
+	if hand_panel and not v:
+		hand_panel.visible = false
+	if has_node("PlayerHPPanel"):
+		$PlayerHPPanel.visible = v
+	if has_node("OpponentHPPanel"):
+		$OpponentHPPanel.visible = v
+	if _story_scene:
+		if is_instance_valid(_story_scene.dialogue_band):
+			_story_scene.dialogue_band.visible = v
+		if not v:
+			# 暗化+脱彩シェーダ(直前 band 由来でも、もっと前の story chapter 由来でも)を強制クリア。
+			# _auto_bg_filter(false) は状態フラグの早期 return があるため当てにできない。
+			if "_auto_bg_filter_active" in _story_scene:
+				_story_scene._auto_bg_filter_active = false
+			if is_instance_valid(_story_scene.background_rect):
+				_story_scene.background_rect.material = null
+			if "background_next_rect" in _story_scene and is_instance_valid(_story_scene.background_next_rect):
+				_story_scene.background_next_rect.material = null
+
+# 紙芝居/カットイン向け: VN 風バンドを使わず、独立した SpeechBubble で表示。
+# extra: {"side": "left"|"right"|"center"|"lower_left"|"lower_right",
+#         "speaker": "matilda"|"main"|... (SPEAKER_PRESETS のアイコン用),
+#         "icon_path": "res://...png" (speaker プリセットより優先),
+#         "append": bool (前のバブルに追記)}
+func bubble(text: String, extra: Dictionary = {}):
+	if extra.has("side"):
+		_pending_commands.append({"_bubble_side": true, "side": str(extra["side"])})
+	_pending_commands.append({
+		"_battle_bubble": true,
+		"text": str(text),
+		"append": bool(extra.get("append", false)),
+		"speaker": str(extra.get("speaker", "")),
+		"icon_path": str(extra.get("icon_path", "")),
+	})
+
 func _setup_deck(path: String, extra: Dictionary = {}):
 	var tex = load(path)
 	if not tex is Texture2D:

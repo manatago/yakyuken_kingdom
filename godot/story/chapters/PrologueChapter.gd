@@ -407,7 +407,7 @@ func _build_prologue(b):
 
 	hero.set_portrait("res://assets/characters/main/satoshi/nude/satoshi_nude_010.png", {"scale": 1.05, "flip": 1})
 	hero.band("ヤクケン王国...？ マジの異世界じゃねーか")
-	guard.set_portrait("res://assets/characters/mob/guard/default/guard_default_004.png", {"scale": 0.5, "flip": 1})
+	guard.set_portrait("res://assets/characters/mob/guard/default/guard_default_004.png", {"scale": 0.91, "flip": 1, "position": [-100, -100]})
 	guard.band("おい聞いてんのか！ 王都のど真ん中で裸とは、不敬罪もいいところだ。ちょっとこっちに来い！")
 	hero.set_portrait("res://assets/characters/main/satoshi/nude/satoshi_nude_011.png", {"scale": 1.05})
 	hero.band("ちょっ、まっ、まって。いたい、いたい、、、")
@@ -619,18 +619,3 @@ func _build_battle_lose(b):
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_082.png", {"scale": 0.50, "side": "left", "flip": 1})
 	hero.band("（くそっ...だが、ここで諦めるわけにはいかない。）")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
