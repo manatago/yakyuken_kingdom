@@ -1,6 +1,7 @@
 extends Control
 
 const DefaultStoryScript := preload("res://story/DefaultStory.gd")
+const PortraitLayoutDB = preload("res://story/PortraitLayout.gd")
 
 @warning_ignore("unused_signal")
 signal result_updated(text)
@@ -3801,6 +3802,50 @@ func _story_edit_blocks_for_image(lines: PackedStringArray, img_path: String) ->
 			i += 1
 	return starts
 
+# レジストリ(PortraitLayout.gd)の該当画像の scale/position を書き換える。
+# 立ち絵の scale/position はレジストリが唯一の真実源なので、登録済み画像の保存は
+# ここだけで完結する（ソース章ファイルは触らない）。成功すれば true。
+func _save_portrait_layout(img_path: String, new_scale: float, new_x: int, new_y: int) -> bool:
+	var layout_path := "res://story/PortraitLayout.gd"
+	var abs_path := ProjectSettings.globalize_path(layout_path)
+	var f := FileAccess.open(abs_path, FileAccess.READ)
+	if not f:
+		return false
+	var lines: PackedStringArray = f.get_as_text().split("\n")
+	f.close()
+	var key := '"' + img_path + '"'
+	var hit := -1
+	for i in range(lines.size()):
+		if key in lines[i]:
+			hit = i
+			break
+	var new_line := '\t%s: {"scale": %s, "position": [%d, %d]},' % [key, _trim_num(new_scale), new_x, new_y]
+	if hit >= 0:
+		lines[hit] = new_line
+	else:
+		# 未登録 → LAYOUT 辞書の閉じ "}" の直前に挿入
+		var insert_at := -1
+		for i in range(lines.size()):
+			if lines[i].strip_edges() == "}":
+				insert_at = i
+				break
+		if insert_at < 0:
+			return false
+		lines.insert(insert_at, new_line)
+	var wf := FileAccess.open(abs_path, FileAccess.WRITE)
+	if not wf:
+		return false
+	wf.store_string("\n".join(lines))
+	wf.close()
+	return true
+
+# 0.50 -> "0.5"、0.53 -> "0.53" のように末尾ゼロを落とした数値文字列を返す
+func _trim_num(v: float) -> String:
+	var s := "%.2f" % v
+	if "." in s:
+		s = s.rstrip("0").rstrip(".")
+	return s
+
 func _save_story_edit_card(card: PanelContainer, entries: Array, _idx: int):
 	var info: Label = card.find_child("InfoLabel", true, false)
 	if not info:
@@ -3863,6 +3908,29 @@ func _save_story_edit_card(card: PanelContainer, entries: Array, _idx: int):
 		return
 
 	var src_id: String = last_entry.get("edit_source_id", "")
+
+	# レジストリ経路: 編集中の画像が PortraitLayout に登録済みなら、scale/position は
+	# レジストリへ保存して完結する（章ソースには scale/position を書かない方針）。
+	# 画像差し替え（pending）は別処理なので除外。flip はソース行に残すため後段に委ねず、
+	# レジストリ保存時は flip 変更があれば src 行も更新する。
+	var reg_img: String = last_entry.get("texture_path", "")
+	if not is_image_swap and not reg_img.is_empty() and not PortraitLayoutDB.get_layout(reg_img).is_empty():
+		if _save_portrait_layout(reg_img, new_scale, new_x, new_y):
+			PortraitLayoutDB.set_runtime(reg_img, new_scale, new_x, new_y)
+			_apply_save_to_log_entry(last_entry, new_scale, new_x, new_y)
+			# レジストリは画像1つ=1値なので、同じ画像を使う全シーンへ自動反映される。
+			# in-memory の ShowCharacter コマンドにも反映（◀/▶ 再生整合）。
+			for cmd in entries:
+				if cmd is StoryCommands.ShowCharacter and ("portrait_id" in cmd) and cmd.portrait_id == reg_img:
+					cmd.portrait_scale = new_scale
+					cmd.position = Vector2(new_x, new_y)
+					cmd.position_mode = "offset"
+			info.text = "[保存] PortraitLayout: %s (scale=%s pos=[%d,%d])" % [reg_img.get_file(), _trim_num(new_scale), new_x, new_y]
+			print("[STORY_EDIT] SAVED registry %s scale=%.2f pos=[%d,%d]" % [reg_img, new_scale, new_x, new_y])
+			return
+		else:
+			info.text = "[保存NG] PortraitLayout 書き込み失敗"
+			return
 
 	# edit_source_id 経路: ファイル:行 を直接更新
 	if not src_id.is_empty() and (":" in src_id):

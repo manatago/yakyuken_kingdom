@@ -347,7 +347,7 @@ func _build_subevent2_pre2(b):
 		"appear_duration": 0.6,
 		"appear_distance": 150,
 		"portrait": "res://assets/characters/mob/guard/default/guard_default_025.png",
-		"portrait_scale": 0.40,
+		"portrait_scale": 0.41,
 		"flip": 0,
 	"position": [0, 0]})
 
@@ -356,7 +356,7 @@ func _build_subevent2_pre2(b):
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_010.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("げっ...あ、あんた、あの時の...！")
 
-	guard.set_portrait("res://assets/characters/mob/guard/default/guard_default_026.png", {"scale": 0.40, "side": "right", "flip": 0, "position": [0, 0]})
+	guard.set_portrait("res://assets/characters/mob/guard/default/guard_default_026.png", {"scale": 0.41, "side": "right", "flip": 0, "position": [0, 0]})
 	guard.band("...お前なぁ...。\nこっちは、お前の顔を見るのが今日で三回目だぞ。\n...街の真ん中ですっ裸で発見された「全裸転入者」。\nそんで先週は、盗賊団のアジトで女物の下着の前で硬直してた「変態冒険者」。\n...今回は教会の覗き部屋か。\n...お前、人生のどの瞬間を切り取っても通報案件だな？")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_043.png", {"scale": 0.67, "side": "left", "flip": 1, "position": [-75, 350]})
@@ -380,7 +380,7 @@ func _build_subevent2_pre2(b):
 	sister_head.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
 	guard.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.3,
-		"portrait": "res://assets/characters/mob/guard/default/guard_default_027.png", "portrait_scale": 0.40, "flip": 0, "position": [0, 0],
+		"portrait": "res://assets/characters/mob/guard/default/guard_default_027.png", "portrait_scale": 0.41, "flip": 0, "position": [0, 0],
 	})
 	guard.band("...はぁ。三度目の現行犯、か。ほら、来い。")
 
@@ -407,7 +407,7 @@ func _build_subevent2_pre2(b):
 	sister_head.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
 	guard.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.3,
-		"portrait": "res://assets/characters/mob/guard/default/guard_default_027.png", "portrait_scale": 0.40, "flip": 0, "position": [0, 62],
+		"portrait": "res://assets/characters/mob/guard/default/guard_default_003.png", "portrait_scale": 0.50, "flip": 0, "position": [0, 0],
 	})
 	guard.band("...はぁ。まあ、お望みなら。")
 
@@ -427,7 +427,7 @@ func _build_subevent2_pre2(b):
 	pisuke.band("...ここで勝てば全部ひっくり返せる。やるぞ、サトシ。", {"side": "left"})
 
 	# (旧スケール) hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_088.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_088.png", {"scale": 0.67, "side": "left", "flip": 1, "position": [-100, 350]})
 	hero.band("...ああ。やってやる。")
 
 	b.hide_band()
@@ -462,7 +462,7 @@ func _build_subevent2_post(b):
 	sister_head.set_portrait("res://assets/characters/main/sister_head/clothed/sister_head_clothed_006.png", {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 60]})
 	sister_head.band("...そんな...。私が...負けるなんて...。")
 
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_083.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_036.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...終わりです、シスター長。")
 
 	# シスターAが駆けつける（右側のシスター長と入れ替わり）
@@ -496,7 +496,7 @@ func _build_subevent2_post(b):
 	sister_head.set_portrait("res://assets/characters/main/sister_head/clothed/sister_head_clothed_002.png", {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 60]})
 	sister_head.band("この世界で「清廉潔白」なんて幻想よ。\n権力を持てば、誰だって堕ちる。...あなたも、いずれね。")
 
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_052.png", {"scale": 0.71, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_052.png", {"scale": 0.74, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...俺は堕ちません。\n...たぶん。...いや、脱がすのは別問題として。")
 
 	pisuke.band("最後の台無し感よ。", {"side": "left"})
@@ -527,22 +527,22 @@ func _build_subevent2_post(b):
 		"appear_duration": 0.8,
 		"appear_distance": 200,
 		"portrait": "res://assets/characters/main/receptionist/clothed/receptionist_clothed_008.png",
-		"portrait_scale": 0.5,
+		"portrait_scale": 0.45,
 		"flip": 0,
-	})
+	"position": [0, 0]})
 
 	# (旧スケール) hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_011.png", {"scale": 0.64, "side": "left", "flip": 1, "position": [-90, 290]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_088.png", {"scale": 0.64, "side": "left", "flip": 1, "position": [-90, 290]})
 
 	receptionist.band("...サトシ様。")
 
 	# (旧スケール) hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_015.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_015.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_086.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("あ、はい！ 帰還しました！")
 
 	receptionist.band("...一応、確認させてください。\n教会の件、結果は伺っております。\n...ですが、そこに至るまでの経緯について、\nいくつか不明な点が。")
 
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_010.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_020.png", {"scale": 0.64, "side": "left", "flip": 1, "position": [0, 238]})
 	hero.band("不明な点...？")
 
 	receptionist.band("まず、現場に駆けつけた番兵からの報告。\n「対象者サトシ、特別礼拝室の覗き穴の真正面で発見」と。")
@@ -576,7 +576,7 @@ func _build_subevent2_post(b):
 	receptionist.band("...この件は、一旦、保留にいたします。\n...あくまで、「一旦」、です。")
 
 	# (旧スケール) hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_015.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_015.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_015.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("た、助かっ──")
 
 	b.narrator_band("引き出しを閉める音。\n受付嬢は続けて、別の台帳を取り出して開いた。")
@@ -722,7 +722,7 @@ func _build_subevent2_rematch(b):
 	# 再戦専用シーケンスなので band_retry 不要、直接再戦セリフを流す
 	sister_head.band("...またあなたですか。懲りない方ね。\n日を改めて、性懲りもなくお戻りになるとは。\n...今度こそ、神の名のもとに、裁かせていただきます。")
 
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_088.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_088.png", {"scale": 0.67, "side": "left", "flip": 1, "position": [-100, 350]})
 	hero.band("...今度こそ、終わらせます。")
 
 	b.hide_band()

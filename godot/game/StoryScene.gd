@@ -2,6 +2,7 @@ extends Control
 class_name StoryScene
 
 const Cmd = preload("res://story/StoryCommands.gd")
+const PortraitLayoutDB = preload("res://story/PortraitLayout.gd")
 
 signal sequence_started(sequence_id)
 signal sequence_finished(sequence_id)
@@ -364,37 +365,39 @@ func _show_character(character_data: StoryCharacter, portrait_name: String, side
 	if not was_visible:
 		target_rect.modulate = Color.WHITE
 	var character_id := character_data.id if character_data else ""
-	if portrait_scale > 0.0:
+	# 立ち絵の scale / position は画像パス単位のレジストリ(PortraitLayout)が唯一の真実源。
+	# set_portrait/appear/show 側では scale/position を書かないので、ここで texture_path から
+	# 引く。これにより _show_character がどこから呼ばれても（本体表示・アニメフレーム・
+	# band 再表示）同じ値になり、scale が抜けて 1.0 で巨大化する問題が構造的に消える。
+	# 後方互換: レジストリ未登録の画像のみ、従来どおり引数 portrait_scale / position を使う。
+	var layout: Dictionary = PortraitLayoutDB.get_layout(texture_path)
+	# --- スケール ---
+	# 1. レジストリ登録済み画像 → レジストリ値（プロローグ等の移行済み画像）
+	# 2. 未登録 + 行で portrait_scale 指定 → その値（＋引き継ぎキャッシュ更新）
+	# 3. 未登録 + 指定なし → 前回の同キャラ scale を引き継ぐ（バトル等のアニメ/band 再表示で
+	#    scale を毎回書かない箇所。引き継がないと display_scale=1.0 で巨大化）
+	# 4. どれも無ければデフォルト
+	var char_scale: float
+	if layout.has("scale"):
+		char_scale = float(layout["scale"])
+	elif portrait_scale > 0.0:
+		char_scale = portrait_scale
 		if not character_id.is_empty():
 			_character_portrait_scale_cache[character_id] = portrait_scale
-	var char_scale: float
-	if portrait_scale > 0.0:
-		char_scale = portrait_scale
 	elif not character_id.is_empty() and _character_portrait_scale_cache.has(character_id):
-		# 前回と同じ表示サイズを維持するためにスケールを再計算
-		var prev_scale: float = _character_portrait_scale_cache[character_id]
-		var prev_tex_path: String = ""
-		if _character_portrait_cache.has(character_id):
-			var prev_portrait: String = _character_portrait_cache[character_id]
-			prev_tex_path = character_data.get_portrait_path(prev_portrait) if character_data else ""
-		if not prev_tex_path.is_empty() and prev_tex_path != texture_path:
-			var prev_tex := _get_texture(prev_tex_path)
-			if prev_tex and tex:
-				var prev_h: float = prev_tex.get_size().y
-				var new_h: float = tex.get_size().y
-				if new_h > 0:
-					char_scale = prev_scale * prev_h / new_h
-				else:
-					char_scale = prev_scale
-			else:
-				char_scale = prev_scale
-		else:
-			char_scale = prev_scale
+		char_scale = _character_portrait_scale_cache[character_id]
 	else:
 		char_scale = character_data.display_scale if character_data else 1.0
 	_reset_rect_with_scale(target_rect, side, char_scale)
+	# --- 位置 ---
 	var base_pos := target_rect.position
-	var target_pos := _resolve_character_position(character_id, side, position_mode, position_value, base_pos)
+	var target_pos: Vector2
+	if layout.has("position"):
+		var lp = layout["position"]
+		var off := Vector2(lp[0], lp[1]) if lp is Array and lp.size() >= 2 else Vector2.ZERO
+		target_pos = base_pos + off
+	else:
+		target_pos = _resolve_character_position(character_id, side, position_mode, position_value, base_pos)
 	if not target_pos.is_equal_approx(base_pos):
 		target_rect.position = target_pos
 	var char_offset_y: float = character_data.display_offset_y if character_data else 0.0

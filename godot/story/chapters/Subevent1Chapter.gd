@@ -93,14 +93,14 @@ func _build_subevent1_pre(b):
 	hero.band("（全然清々しくない...。でも金貨50枚は魅力的だ。）")
 
 	# (旧スケール) hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_011.png", {"scale": 0.64, "side": "left", "flip": 1, "position": [-90, 290]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_011.png", {"scale": 0.60, "side": "left", "flip": 1, "position": [-80, 195]})
 	hero.band("...受けます。この依頼。")
 
 	receptionist.set_portrait("res://assets/characters/main/receptionist/clothed/receptionist_clothed_006.png", {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	receptionist.band("...本気ですか？")
 
 	# (旧スケール) hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_014.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_014.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_014.png", {"scale": 0.50, "side": "left", "flip": 1, "position": [0, 0]})
 	hero.band("はい。...たぶん。")
 	# ピー助がサトシの声色で叫ぶ
 	hero.band("パンツ盗賊を許すわけにはいかねえ！\nパンツは俺が守る！ この手で！ この目で！\n美女のパンツは俺が取り戻してやるぜ！")
@@ -112,7 +112,7 @@ func _build_subevent1_pre(b):
 	receptionist.band("...サトシ様。")
 
 	# (旧スケール) hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_015.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_015.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_015.png", {"scale": 0.50, "side": "left", "flip": 1, "position": [0, 0]})
 	hero.band("は、はい。")
 
 	receptionist.band("...今の発言、記録しました。")
@@ -124,7 +124,7 @@ func _build_subevent1_pre(b):
 	receptionist.band("...この依頼は「盗品の回収」も含まれます。\n押収した盗品は、全てギルドに提出してください。\n...全て、です。1枚残らず。")
 
 	# (旧スケール) hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_015.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_015.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_015.png", {"scale": 0.50, "side": "left", "flip": 1, "position": [0, 0]})
 	hero.band("もちろんです！")
 
 	receptionist.band("...生還をお祈りしております。\n...パンツではなく、あなたの。")
@@ -188,7 +188,7 @@ func _build_subevent1_hideout(b):
 		"お、また来たのか...懲りねぇ奴だな。\n今度こそ、二度と起き上がれねぇようにしてやるぜ。"
 	)
 
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_011.png", {"scale": 0.64, "side": "left", "flip": 1, "position": [-90, 290]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_011.png", {"scale": 0.60, "side": "left", "flip": 1, "position": [-80, 195]})
 	hero.band("見張り...か。")
 
 	jin.set_portrait("res://assets/characters/mob/jin/clothed/jin_clothed_002.png", {"scale": 0.50, "side": "right", "flip": 0, "position": [0, 68]})
@@ -258,7 +258,7 @@ func _build_subevent1_hideout(b):
 
 	pisuke.band("こいつ、さっきのとは違うぞ。デッキのバランスがいい。\nグー・チョキ・パーが均等に入ってる。\n...偏りがないから、ベイズ・アイでも読みにくい。\n慎重にいけ。", {"side": "left"})
 
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_011.png", {"scale": 0.64, "side": "left", "flip": 1, "position": [-90, 290]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_011.png", {"scale": 0.60, "side": "left", "flip": 1, "position": [-80, 195]})
 	hero.band("（バランス型か...。偏りがない相手は確率で優位を取りにくい。\nこういう時こそ、相手の「癖」を観察するんだ。）")
 
 	# (旧スケール) hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -338,7 +338,7 @@ func _build_subevent1_hideout(b):
 	)
 
 	# (旧スケール) hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_015.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_015.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_015.png", {"scale": 0.50, "side": "left", "flip": 1, "position": [0, 0]})
 	hero.band("あ、いや、これは誤解で...。")
 
 	gald.set_portrait("res://assets/characters/mob/gald/clothed/gald_clothed_002.png", {"scale": 0.50, "side": "right", "flip": 0, "position": [0, 0]})
@@ -487,7 +487,7 @@ func _build_subevent1_hideout(b):
 	hero.band("（なるほど...部下との戦いはデータ収集も兼ねてたのか。\n偽の癖を見せて、裏をかく。\n数学的に言えば「ベイジアン・トラップ」だ。）")
 
 	# (旧スケール) hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png", {"scale": 0.43, "side": "left", "flip": 1, "position": [0, 61]})
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_011.png", {"scale": 0.64, "side": "left", "flip": 1, "position": [-90, 290]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_011.png", {"scale": 0.60, "side": "left", "flip": 1, "position": [-80, 195]})
 	hero.band("...いいですよ。受けて立ちます。")
 
 	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_001.png", {"scale": 0.43, "side": "right", "flip": 0, "position": [0, 60]})
