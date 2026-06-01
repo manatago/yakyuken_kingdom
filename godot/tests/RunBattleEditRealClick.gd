@@ -173,67 +173,44 @@ func _initialize():
 		printerr("[REAL] FAIL — ▶ で history_idx が1つ進んでいない (%d -> %d)" % [idx_after_back, idx_after_fwd])
 		quit(1); return
 
-	# --- 勝負フロー検証: ▶ で勝負待ちになるまで進め、結果強制ボタン＋カードで決着 ---
-	# ▶ を押して select_hand（勝負待ち）まで進める
-	var battle = main_inst._battle_edit_ref
-	var reached_match := false
-	for _m in range(8):
-		await _click(_center_of(next_btn))
-		await _wait_idle(main_inst)
-		if is_instance_valid(battle) and "_force_result_container" in battle \
-				and battle._force_result_container != null \
-				and is_instance_valid(battle._force_result_container):
-			reached_match = true
-			break
-	if not reached_match:
-		printerr("[REAL] FAIL — ▶ で勝負待ち（結果強制ボタン）に到達できない")
+	# --- 回帰検証(A): ◀ で古い画像に停車中、ライブのバトルが portrait_log を
+	# 伸ばしても _process が history_idx を末尾へ飛ばさないこと。
+	# 飛ばすと保存対象（history_idx → edit_source_id → file:line）が「次の画像」の
+	# set_portrait 行へズレる＝ユーザー報告「保存すると次の画像の設定が変わる」不具合。
+	await _click(_center_of(prev_btn))            # ◀ で先頭(0)へ
+	await _wait_idle(main_inst)
+	var parked_idx: int = main_inst._battle_edit_history_idx
+	printerr("[REAL] 停車 idx=%d" % parked_idx)
+	if parked_idx != 0:
+		printerr("[REAL] FAIL — ◀ で先頭(0)へ戻れていない (idx=%d)" % parked_idx)
 		quit(1); return
-	printerr("[REAL] 勝負待ちに到達。結果強制ボタンで決着させる")
 
-	var log_before_match: int = main_inst._battle_edit_get_log().size()
-
-	# 結果強制「勝ち」ボタンをクリック
-	var win_btn: Button = null
-	for c in battle._force_result_container.find_children("*", "Button", true, false):
-		if c is Button and "勝ち" in c.text:
-			win_btn = c
-			break
-	if win_btn == null:
-		printerr("[REAL] FAIL — 結果強制『勝ち』ボタンが見つからない")
-		quit(1); return
-	await _click(_center_of(win_btn))
-
-	# デッキのカードを1枚選択
-	var card_btn: BaseButton = null
-	for entry in battle._deck_buttons:
-		if not entry.get("used", false) and entry.get("button"):
-			card_btn = entry.button
-			break
-	if card_btn == null:
-		printerr("[REAL] FAIL — デッキのカードボタンが見つからない")
-		quit(1); return
-	await _click(_center_of(card_btn))
-	# 勝負（確定）ボタン
-	await _click(_center_of(battle.confirm_button))
-
-	# janken オーバーレイの解決を待つ
-	for _w in range(240):
+	var elog: Array = main_inst._battle_edit_get_log()
+	var saved_src_before: String = elog[parked_idx].get("edit_source_id", "")
+	var size_before: int = elog.size()
+	# ライブのバトルが新しい立ち絵を表示した状況を擬似（portrait_log を1つ伸ばす）
+	elog.append({
+		"rect": main_inst._battle_edit_target_rect,
+		"texture": null,
+		"scale": 0.99,
+		"position": Vector2(123, 456),
+		"edit_source_id": "res://battle/chapters/FAKE_LIVE.gd:999",
+	})
+	for _w in range(10):
 		await process_frame
-
-	# 旧バグ検証: select_hand が解決されずバトルが select_hand で停止していないこと。
-	# 解決していれば _clear_force_result_buttons により結果強制パネルが消える。
-	# （相手 outfit が1つだけのバトルは勝利で終了する＝それも「停止していない」）
-	var stalled := false
-	if is_instance_valid(battle):
-		if "_force_result_container" in battle \
-				and battle._force_result_container != null \
-				and is_instance_valid(battle._force_result_container):
-			stalled = true
-	var battle_ended := not is_instance_valid(battle)
-	printerr("[REAL] 勝負後: battle_ended=%s force_panel_残存=%s" % [battle_ended, stalled])
-	if stalled:
-		printerr("[REAL] FAIL — 勝負後も結果強制パネルが残存（select_hand が停止＝途中停止バグ）")
+	var parked_idx2: int = main_inst._battle_edit_history_idx
+	printerr("[REAL] log %d->%d 後の idx=%d (期待: %d 維持)" % [size_before, elog.size(), parked_idx2, parked_idx])
+	if parked_idx2 != parked_idx:
+		printerr("[REAL] FAIL — ライブ log 増加で history_idx が末尾へ飛んだ（保存先がズレる回帰）%d -> %d" % [parked_idx, parked_idx2])
 		quit(1); return
 
-	printerr("[REAL] OK — ▶ 履歴・◀/▶・勝負フロー（結果強制で決着→停止せず進行）すべて成功")
+	# 保存対象（history_idx → edit_source_id）が「停車中の画像」のままで、
+	# 後から増えた FAKE_LIVE 行を指していないこと
+	var saved_src_after: String = elog[main_inst._battle_edit_history_idx].get("edit_source_id", "")
+	if saved_src_after != saved_src_before or "FAKE_LIVE" in saved_src_after:
+		printerr("[REAL] FAIL — 保存対象が別行へズレた '%s' -> '%s'" % [saved_src_before, saved_src_after])
+		quit(1); return
+	printerr("[REAL] 保存対象は据え置き: %s" % saved_src_after)
+
+	printerr("[REAL] OK — ▶履歴・◀/▶・位置維持・保存先据え置き(回帰A) すべて成功")
 	quit(0)

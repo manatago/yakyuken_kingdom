@@ -33,12 +33,12 @@ func _build_stage1(b):
 		"appear_duration": 0.8,
 		"appear_distance": 200,
 		"portrait": "res://assets/characters/main/satoshi/isekai/satoshi_isekai_018.png",
-		"portrait_scale": 0.5,
+		"portrait_scale": 0.50,
 		"flip": 0,
-	})
+	"position": [20, 20]})
 	hero.band("（マチルダさん...。あの「じゃんけん」に負けて服を脱ぐときの、屈辱と興奮が入り混じった顔。）")
 
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_029.png", {"scale": 0.5, "side": "left", "flip": 0})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_029.png", {"scale": 0.50, "side": "left", "flip": 0, "position": [20, 20]})
 	hero.band("（...あかん、思い出したらニヤけてまう。俺、やっぱりあっちの世界の単位より、こっちの世界の「徳」の方が向いてるのかも。）")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_036.png", {"scale": 0.53, "side": "left", "flip": 0, "position": [0, 70]})
@@ -106,7 +106,7 @@ func _build_stage1(b):
 	pisuke.band("ああ、そうだ。この世界の理（ことわり）を司る「演算核」だよ。")
 
 	# hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_005.png", {"scale": 0.53, "flip": 1})
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_033.png", {"scale": 0.50, "side": "left", "flip": 1, "position": [ -50, 0]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_033.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("いや、俺がさっき「テーブル・オープン」って念じた時に出たログ...。\nあれ、完全にUNIX系のカーネル構造に似てなかったか？\nもしかして、このチップの内部って...。")
 
 	pisuke.set_portrait("res://assets/characters/main/pisuke/default/pisuke_default_004.png", {"scale": 0.2, "side": "right", "flip": 1, "position": [0, -200]})
@@ -210,9 +210,9 @@ func _build_stage1(b):
 		"appear_duration": 0.8,
 		"appear_distance": 200,
 		"portrait": "res://assets/characters/main/satoshi/isekai/satoshi_isekai_012.png",
-		"portrait_scale": 0.5,
+		"portrait_scale": 0.53,
 		"flip": 0,
-	})
+	"position": [0, 70]})
 
 	hero.band("（ここが冒険者ギルド...。ガラの悪そうな連中ばっかりだ。\n目を合わせないように...端っこを歩いて受付に...。）")
 
@@ -245,7 +245,7 @@ func _build_stage1(b):
 	hero.band("へ、変態じゃないです...。つ、通過儀礼...？")
 
 
-	adventurer_a.set_portrait("res://assets/characters/mob/adventurer_a/clothed/adventurer_a_clothed_002.png", {"scale": 0.53, "side": "right", "flip": 0, "position": [0, 70]})
+	adventurer_a.set_portrait("res://assets/characters/mob/adventurer_a/clothed/adventurer_a_clothed_002.png", {"scale": 0.47, "side": "right", "flip": 0, "position": [0, 75]})
 	adventurer_a.band("俺と「じゃんけん」して勝ったら通してやる。\n負けたら...そのボロ服を脱いでもらおうか。ガハハ！")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_076.png", {"scale": 0.53, "side": "left", "flip": 0, "position": [0, 70]})
@@ -257,10 +257,10 @@ func _build_stage1(b):
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_069.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("！？ ちょ、俺そんなこと一言も...！")
 
-	adventurer_a.set_portrait("res://assets/characters/mob/adventurer_a/clothed/adventurer_a_clothed_003.png", {"scale": 0.53, "side": "right", "flip": 0, "position": [0, 70]})
+	adventurer_a.set_portrait("res://assets/characters/mob/adventurer_a/clothed/adventurer_a_clothed_003.png", {"scale": 0.47, "side": "right", "flip": 0, "position": [0, 75]})
 	adventurer_a.band("...あ？ 今、なんつったテメェ？\n「三下」だと？ 「記念碑」だと？")
 
-	adventurer_a.set_portrait("res://assets/characters/mob/adventurer_a/clothed/adventurer_a_clothed_004.png", {"scale": 0.53, "side": "right", "flip": 0, "position": [0, 70]})
+	adventurer_a.set_portrait("res://assets/characters/mob/adventurer_a/clothed/adventurer_a_clothed_004.png", {"scale": 0.47, "side": "right", "flip": 0, "position": [0, 75]})
 	adventurer_a.band("...上等だ。テメェの顔、覚えたぞ。\n逃げんなよ？ ここで決着つけてやる！")
 
 	b.narrator_band("ギルドの入り口に人だかりができ始めた。\n冒険者Aの怒号に、他の冒険者たちが野次馬のように集まってくる。")
@@ -284,6 +284,7 @@ func _build_stage1(b):
 	# ============================================================
 	b.label("scene_guild_reception")
 
+	# satoshi_isekai_012 は 206 行目（hero.appear）の設定に統一（scale 0.5・位置は左の既定）
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_012.png", {"scale": 0.53, "side": "left", "flip": 0, "position": [0, 70]})
 	adventurer_a.set_portrait("res://assets/characters/mob/adventurer_a/clothed/adventurer_a_clothed_005.png", {"scale": 0.7, "side": "right", "flip": 1, "position": [0, 100]})
 	# adventurer_a.set_portrait("res://assets/characters/stage1/adventurer_a_001.png", {"scale": 0.5, "side": "right"})
@@ -317,13 +318,13 @@ func _build_stage1(b):
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_083.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("（受付嬢...めっちゃ美人じゃないか。この世界、レベル高いな...。）")
 
-	receptionist.set_portrait("res://assets/characters/main/receptionist/clothed/receptionist_clothed_006.png", {"side": "right", "flip": 0, "position": [0, 0]})
+	receptionist.set_portrait("res://assets/characters/main/receptionist/clothed/receptionist_clothed_006.png", {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	receptionist.band("...あの。何かご用ですか？")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_079.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("あっ！ す、すみません！ 冒険者登録をしたいんですけど...。")
 
-	receptionist.set_portrait("res://assets/characters/main/receptionist/clothed/receptionist_clothed_007.png", {"side": "right", "flip": 0, "position": [0, 0]})
+	receptionist.set_portrait("res://assets/characters/main/receptionist/clothed/receptionist_clothed_007.png", {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	receptionist.band("...はい。こちらの魔力水晶に触れてください。")
 
 	pisuke.band("おいおい、また変態顔になってるぞ。\nさっき入り口で言われたの忘れたのか。", {"side": "left"})
@@ -331,14 +332,14 @@ func _build_stage1(b):
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_081.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("（うるさい...。見てただけだ。）")
 
-	receptionist.set_portrait("res://assets/characters/main/receptionist/clothed/receptionist_clothed_008.png", {"side": "right", "flip": 0, "position": [0, 0]})
+	receptionist.set_portrait("res://assets/characters/main/receptionist/clothed/receptionist_clothed_008.png", {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	receptionist.band("...判定完了です。サトシ様、登録が完了しました。")
 	receptionist.band("...犯罪歴は、ないようですね。")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_086.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("（...今、めちゃくちゃジト目で見られた。\n犯罪歴って...そんな目で見られるほど怪しいのか俺...。）")
 
-	receptionist.set_portrait("res://assets/characters/main/receptionist/clothed/receptionist_clothed_009.png", {"side": "right", "flip": 0, "position": [0, 0]})
+	receptionist.set_portrait("res://assets/characters/main/receptionist/clothed/receptionist_clothed_009.png", {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	receptionist.band("冒険者証をお渡しします。...どうぞ。")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_085.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
