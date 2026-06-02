@@ -416,7 +416,7 @@ func _build_subevent1_hideout(b):
 		"portrait": "res://assets/characters/main/belka/clothed/belka_clothed_001.png",
 		"portrait_scale": 0.43,
 		"flip": 0,
-	"position": [0, 60]})
+	"position": [0, 62]})
 
 	belka.band_retry(
 		"encounter_belka_seen",
@@ -453,7 +453,7 @@ func _build_subevent1_hideout(b):
 	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_006.png", {"scale": 0.43, "side": "right", "flip": 0, "position": [0, 61]})
 	belka.band("「パンツ泥棒」？")
 
-	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_001.png", {"scale": 0.43, "side": "right", "flip": 0, "position": [0, 60]})
+	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_001.png", {"scale": 0.43, "side": "right", "flip": 0, "position": [0, 62]})
 	belka.band("...ボクたちは「解放」してるんだよ。\nこの窮屈な社会で、布一枚に縛られた人々の魂をね。")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_004.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
@@ -490,7 +490,7 @@ func _build_subevent1_hideout(b):
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_011.png", {"scale": 0.60, "side": "left", "flip": 1, "position": [-80, 195]})
 	hero.band("...いいですよ。受けて立ちます。")
 
-	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_001.png", {"scale": 0.43, "side": "right", "flip": 0, "position": [0, 60]})
+	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_001.png", {"scale": 0.43, "side": "right", "flip": 0, "position": [0, 62]})
 	belka.band("へっ、いい目じゃん。...さあ、始めようぜ。")
 
 	b.hide_band()

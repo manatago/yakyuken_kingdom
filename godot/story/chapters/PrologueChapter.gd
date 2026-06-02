@@ -558,17 +558,3 @@ func _build_battle_lose(b):
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_082.png", {"side": "left", "flip": 1})
 	hero.band("（くそっ...だが、ここで諦めるわけにはいかない。）")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
