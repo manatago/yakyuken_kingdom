@@ -1,0 +1,4 @@
+服を脱ぐ時のprefixはundressing_clothes(matilda_undressing_clothes_001.png)
+ブラを脱ぐ時はundressing_bra
+パンツを脱ぐ時はundressing_panty
+鬼畜モードの時はsex
