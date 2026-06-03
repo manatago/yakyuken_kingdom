@@ -49,6 +49,10 @@ func _initialize():
 	var entry := {"id": "prologue", "name": "プロローグ"}
 	var src_file := "res://story/chapters/PrologueChapter.gd"
 	var snapshot := _read(src_file)
+	# registry 移行後、プロローグの登録画像は scale/position を PortraitLayout.gd へ保存する。
+	# 章ソースではなく registry が書き換わるため、registry もスナップショット＆復元する。
+	var reg_file := "res://story/PortraitLayout.gd"
+	var reg_snapshot := _read(reg_file)
 
 	var done: Array = [false]
 	var coro = func():
@@ -102,13 +106,16 @@ func _initialize():
 			printerr("[SS] save InfoLabel: %s" % info_text)
 			_check(info_text.begins_with("[保存]"), "save reported success (got '%s')" % info_text)
 
-			# ファイルが書き換わったか（"scale" または "portrait_scale" のどちらか）
+			# 保存先は「章ソース」か「registry(PortraitLayout.gd)」のどちらか。
+			# registry 登録画像（プロローグの大半）は registry 側に書かれるので両方を見る。
 			var after := _read(src_file)
-			var has_scale: bool = ('"scale": 0.91' in after) or ('"portrait_scale": 0.91' in after)
-			var has_pos: bool = '"position": [33, -44]' in after
-			printerr("[SS] file has scale 0.91 = %s, position [33,-44] = %s" % [has_scale, has_pos])
-			_check(has_scale, "file contains scale 0.91 or portrait_scale 0.91")
-			_check(has_pos, "file contains position [33, -44]")
+			var after_reg := _read(reg_file)
+			var has_scale: bool = ('"scale": 0.91' in after) or ('"portrait_scale": 0.91' in after) \
+				or ('"scale": 0.91' in after_reg)
+			var has_pos: bool = ('"position": [33, -44]' in after) or ('"position": [33, -44]' in after_reg)
+			printerr("[SS] scale 0.91 = %s, position [33,-44] = %s (src or registry)" % [has_scale, has_pos])
+			_check(has_scale, "scale 0.91 が章ソースか registry に書かれた")
+			_check(has_pos, "position [33, -44] が章ソースか registry に書かれた")
 
 	# 編集モードを終了
 	var nav_bar: PanelContainer = layout.find_child("StoryEditNavBar", true, false)
@@ -119,5 +126,6 @@ func _initialize():
 			for _w in range(30): await process_frame
 
 	_write(src_file, snapshot)
-	printerr("[SS] (file restored), fails=%d" % _fails)
+	_write(reg_file, reg_snapshot)
+	printerr("[SS] (files restored), fails=%d" % _fails)
 	quit(1 if _fails > 0 else 0)

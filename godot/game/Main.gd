@@ -2686,6 +2686,10 @@ func _run_story_edit(entry: Dictionary):
 	_story_edit_current_idx = idx
 	_story_edit_reset_scene(story_scene_instance)
 	# label指定時はラベル直後から実行（以前のシーンを再生しない）。指定なしは0から。
+	# ただしラベル開始だと、そのシーンが引き継ぐ背景（ラベルより前の background()）を
+	# 取りこぼし、前画面の残骸（例: 大学キャンパス）が背景に居座る。再生前に開始位置より
+	# 前の直近 Background を1つ補完して、正しいシーン背景から始める。
+	_story_edit_apply_preceding_background(entries, scan_from, story_scene_instance)
 	_story_edit_execute_to(entries, idx, story_scene_instance, scan_from)
 	_story_edit_update_info(idx_label, cmd_label, entries, idx)
 	_refresh_story_edit_cards(edit_root, story_scene_instance)
@@ -3202,6 +3206,21 @@ func _story_edit_execute_to(entries: Array, target_idx: int, scene, start_idx: i
 		if e is StoryCommands.TerminalEffect:
 			continue
 		_story_edit_execute_single(e, scene)
+
+# 開始位置 before_idx より前にある「直近の Background」を1つだけ即時適用する。
+# ラベル途中から編集を開く時、そのシーンが引き継ぐ背景（before_idx より前で設定された
+# background()）を取りこぼし、前画面の残骸（例: 大学キャンパス）が背景に居座るのを防ぐ。
+# ジャンプ時はクロスフェード不要なので restore_background で background_rect に即時セットする。
+# before_idx 以降の範囲に background() があれば、続く再生で上書きされるので二重適用にならない。
+func _story_edit_apply_preceding_background(entries: Array, before_idx: int, scene) -> void:
+	for i in range(before_idx - 1, -1, -1):
+		var e = entries[i]
+		if e is StoryCommands.Background:
+			if scene.has_method("restore_background"):
+				var tex = load(e.path)
+				if tex:
+					scene.restore_background(tex)
+			return
 
 func _story_edit_reset_scene(scene):
 	# Reset character visibility
@@ -3846,6 +3865,60 @@ func _trim_num(v: float) -> String:
 		s = s.rstrip("0").rstrip(".")
 	return s
 
+# flip は per-line なので registry ではなく章ソース行に書く。
+# src_id (file:line) のブロック内の "flip" キーを書き換え、無ければ dict 末尾に挿入する。
+# scale/position 経路（後段）と同じロジックだが、こちらは flip だけを触る。
+func _save_flip_to_source(src_id: String, new_flip_val: int) -> bool:
+	if src_id.is_empty() or not (":" in src_id):
+		return false
+	var colon: int = src_id.rfind(":")
+	var src_file: String = src_id.substr(0, colon)
+	var line_no: int = int(src_id.substr(colon + 1))
+	var abs_path: String = ProjectSettings.globalize_path(src_file)
+	var f := FileAccess.open(abs_path, FileAccess.READ)
+	if not f:
+		return false
+	var lines: PackedStringArray = f.get_as_text().split("\n")
+	f.close()
+	var li: int = line_no - 1
+	if li < 0 or li >= lines.size():
+		return false
+	var block_end: int = _story_edit_find_call_block_end(lines, li)
+	var changed: bool = false
+	var flip_found: bool = false
+	for j in range(li, block_end + 1):
+		var line_j: String = lines[j]
+		if '"flip"' in line_j:
+			var r_flip := RegEx.new()
+			r_flip.compile('"flip"\\s*:\\s*[01]')
+			var new_line: String = r_flip.sub(line_j, '"flip": %d' % new_flip_val)
+			if new_line != line_j:
+				lines[j] = new_line
+				changed = true
+			flip_found = true
+			break
+	if not flip_found:
+		var dict_loc: Dictionary = _story_edit_find_dict_close(lines, li, block_end)
+		var dict_end_li: int = dict_loc.get("li", -1)
+		var dict_end_col: int = dict_loc.get("col", -1)
+		if dict_end_li >= 0:
+			var ln: String = lines[dict_end_li]
+			var before: String = ln.substr(0, dict_end_col)
+			var last_ch: String = _story_edit_dict_last_char(lines, dict_end_li, dict_end_col)
+			var need_comma: bool = not (last_ch == "{" or last_ch == "," or last_ch == "")
+			var insert_str: String = '"flip": %d' % new_flip_val
+			if need_comma:
+				insert_str = ", " + insert_str
+			lines[dict_end_li] = before + insert_str + ln.substr(dict_end_col)
+			changed = true
+	if changed:
+		var wf := FileAccess.open(abs_path, FileAccess.WRITE)
+		if not wf:
+			return false
+		wf.store_string("\n".join(lines))
+		wf.close()
+	return changed
+
 func _save_story_edit_card(card: PanelContainer, entries: Array, _idx: int):
 	var info: Label = card.find_child("InfoLabel", true, false)
 	if not info:
@@ -3918,6 +3991,14 @@ func _save_story_edit_card(card: PanelContainer, entries: Array, _idx: int):
 		if _save_portrait_layout(reg_img, new_scale, new_x, new_y):
 			PortraitLayoutDB.set_runtime(reg_img, new_scale, new_x, new_y)
 			_apply_save_to_log_entry(last_entry, new_scale, new_x, new_y)
+			# flip は registry に乗らない per-line 値。変更があれば章ソース行へ別途書く。
+			var current_flip: bool = bound_rect.flip_h
+			var logged_flip: bool = last_entry.get("flip_h", false)
+			var flip_changed: bool = current_flip != logged_flip
+			var new_flip_val: int = 1 if current_flip else 0
+			if flip_changed:
+				_save_flip_to_source(src_id, new_flip_val)
+				last_entry["flip_h"] = current_flip
 			# レジストリは画像1つ=1値なので、同じ画像を使う全シーンへ自動反映される。
 			# in-memory の ShowCharacter コマンドにも反映（◀/▶ 再生整合）。
 			for cmd in entries:
@@ -3925,8 +4006,12 @@ func _save_story_edit_card(card: PanelContainer, entries: Array, _idx: int):
 					cmd.portrait_scale = new_scale
 					cmd.position = Vector2(new_x, new_y)
 					cmd.position_mode = "offset"
-			info.text = "[保存] PortraitLayout: %s (scale=%s pos=[%d,%d])" % [reg_img.get_file(), _trim_num(new_scale), new_x, new_y]
-			print("[STORY_EDIT] SAVED registry %s scale=%.2f pos=[%d,%d]" % [reg_img, new_scale, new_x, new_y])
+					# flip は primary（同一 src_id）のみ更新（per-line、波及しない）
+					if flip_changed and ("edit_source_id" in cmd) and cmd.edit_source_id == src_id:
+						cmd.flip = new_flip_val
+			var flip_note: String = (" 反転%s" % ("ON" if current_flip else "OFF")) if flip_changed else ""
+			info.text = "[保存] PortraitLayout: %s (scale=%s pos=[%d,%d])%s" % [reg_img.get_file(), _trim_num(new_scale), new_x, new_y, flip_note]
+			print("[STORY_EDIT] SAVED registry %s scale=%.2f pos=[%d,%d] flip_changed=%s" % [reg_img, new_scale, new_x, new_y, flip_changed])
 			return
 		else:
 			info.text = "[保存NG] PortraitLayout 書き込み失敗"
