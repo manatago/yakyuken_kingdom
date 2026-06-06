@@ -60,9 +60,18 @@ for f in "$TESTS_DIR"/Run*.gd; do
 	if [ -n "$FILTER" ] && [[ "$name" != *"$FILTER"* ]]; then
 		continue
 	fi
-	printf '[REG] %-40s ... ' "$name"
+	# display必須テストの自動判定: root.push_input を使うものは実ディスプレイが要る
+	# （headless では入力イベントが届かず、メニューが開かず偽失敗/ハングする）。
+	# それらは --headless を付けずに実行する。
+	headless="--headless"
+	tag=""
+	if grep -q 'push_input' "$f"; then
+		headless=""
+		tag=" (display)"
+	fi
+	printf '[REG] %-40s ... ' "$name$tag"
 	# 失敗時のログを拾えるよう出力は変数に溜める
-	out="$("$GODOT" --path "$ROOT/godot" --headless --script "res://tests/$name.gd" 2>&1)"
+	out="$("$GODOT" --path "$ROOT/godot" $headless --script "res://tests/$name.gd" 2>&1)"
 	code=$?
 	if [ "$code" -eq 0 ]; then
 		echo "PASS"

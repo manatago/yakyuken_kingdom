@@ -51,15 +51,21 @@ func _initialize():
 	if log.size() < 1:
 		quit(1); return
 
-	# entry #0 = setup_scene の guard_024 (scale 0.80)。これを「過去エントリ」とみなす。
+	# entry #0 = setup_scene の guard_024 (scale 0.80)。これを「過去エントリ」とみなし、
+	# autonomous advance 後も破壊されないことを検証する。
 	var stale_idx := 0
 	var stale_scale_before: float = log[stale_idx].get("scale", -1.0)
 	var stale_pos_before: Vector2 = log[stale_idx].get("position", Vector2.ZERO)
 	var stale_tex = log[stale_idx].get("texture")
 
-	# ユーザが ◀ で過去エントリへ戻った状態を作る
-	main_inst._battle_edit_history_idx = stale_idx
-	printerr("[NAVSYNC] simulated user at history_idx=%d (size=%d)" % [stale_idx, log.size()])
+	# ユーザが「ライブ末尾」を見ている状態を作る。
+	# 本体の意図的仕様（4300f23）: ◀ で過去に停車中は autonomous advance に追従しない
+	# （追従すると画面と保存対象がズレて別 set_portrait 行を書き換えるため）。
+	# ライブ末尾にいるときだけ追従する。本テストはその「ライブ追従」契約を検証する。
+	var tail_idx: int = log.size() - 1
+	main_inst._battle_edit_history_idx = tail_idx
+	main_inst._battle_edit_last_log_size = log.size()
+	printerr("[NAVSYNC] simulated user at LIVE tail history_idx=%d (size=%d)" % [tail_idx, log.size()])
 
 	# --- ライブのバトルが自走して新しい立ち絵を出した状況を再現 ---
 	# guard_014（2048x2048, scale 0.40 相当）の別テクスチャを直接 log へ追加し、
@@ -120,6 +126,24 @@ func _initialize():
 		_check(is_equal_approx(elog[live_idx].get("scale", -1.0), 0.55),
 			"live entry #%d scale updated to 0.55 (actual=%.3f)" % [
 				live_idx, elog[live_idx].get("scale", -1.0)])
+
+	# --- 検証 3: 停車ケース（4300f23 の意図）---
+	# ◀ で過去エントリに停車中（history_idx < 末尾）のとき、autonomous advance に
+	# 追従しないこと。追従すると画面と保存対象がズレ、別 set_portrait 行を書き換える。
+	main_inst._battle_edit_history_idx = 0
+	main_inst._battle_edit_last_log_size = sc.portrait_log.size()
+	var parked_before: int = main_inst._battle_edit_history_idx
+	sc.portrait_log.append({
+		"rect": center, "side": "center", "texture": live_tex,
+		"texture_path": "res://assets/characters/mob/guard/default/guard_default_014.png",
+		"character_id": "matilda", "scale": 0.40, "position": Vector2(550.4, 207.8),
+		"flip_h": false, "background": null, "dialogue": {},
+	})
+	for _w in range(4):
+		await process_frame
+	_check(main_inst._battle_edit_history_idx == parked_before,
+		"parked history_idx stays put on autonomous advance (expected=%d actual=%d)" % [
+			parked_before, main_inst._battle_edit_history_idx])
 
 	printerr("[NAVSYNC] done, fails=%d" % _fails)
 	quit(1 if _fails > 0 else 0)

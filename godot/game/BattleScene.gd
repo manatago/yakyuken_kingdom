@@ -496,6 +496,12 @@ func set_battle_ui_visible(v: bool):
 #         "icon_path": "res://...png" (speaker プリセットより優先),
 #         "append": bool (前のバブルに追記)}
 func bubble(text: String, extra: Dictionary = {}):
+	# 編集モード（force_result_mode = 立ち絵キャプチャ）ではバブルを出さない。
+	# バブルは会話演出で立ち絵キャプチャには不要。フェード/タイプライター/入力待ちが
+	# キャプチャを遅延・停止させる（紙芝居バブルで size=2 のまま止まる原因）。
+	# play_video / wait と同じく force_result_mode は即時抜ける方針。
+	if force_result_mode:
+		return
 	if extra.has("side"):
 		_pending_commands.append({"_bubble_side": true, "side": str(extra["side"])})
 	_pending_commands.append({
@@ -2151,6 +2157,12 @@ func _hide_indicator():
 		_bubble_indicator = null
 
 func _wait_for_input():
+	# 編集モード（force_result_mode = 立ち絵キャプチャ）では入力待ちをスキップ。
+	# バトル outfit 分岐の紙芝居バブル（bt.bubble）等が _flush_pending →
+	# _show_bubble → ここで永久に止まり、キャプチャがハングするのを防ぐ。
+	# play_video / wait と同じく force_result_mode は即時抜ける方針。
+	if force_result_mode:
+		return
 	# Wait for any current press to be released first
 	while Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) or Input.is_action_pressed("ui_accept"):
 		await get_tree().process_frame
