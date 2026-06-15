@@ -414,7 +414,7 @@ func _build_subevent1_hideout(b):
 		"appear_duration": 0.6,
 		"appear_distance": 200,
 		"portrait": "res://assets/characters/main/belka/clothed/belka_clothed_001.png",
-		"portrait_scale": 0.43,
+		"portrait_scale": 0.49,
 		"flip": 0,
 	"position": [0, 62]})
 
@@ -424,20 +424,20 @@ func _build_subevent1_hideout(b):
 		"...あんたか。学習能力ねぇな。\n何度ボコられりゃ気が済むんだよ？"
 	)
 
-	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_002.png", {"scale": 0.43, "side": "right", "flip": 0, "position": [0, 60]})
+	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_002.png", {"scale": 0.49, "side": "right", "flip": 0, "position": [0, 60]})
 	belka.band_retry(
 		"encounter_belka_seen",
 		"ジンもマルコもガルドもやられたって？\n...ひとりで？ マジで？\n...あんた、ギルドの冒険者？\nなんか頼りなさそうだけど...。",
 		"まあ、ボクのコレクションが増えるなら、\nそれはそれで歓迎だけどね。\n...今度こそ、丁寧に剥いでやるよ。"
 	)
 
-	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_003.png", {"scale": 0.43, "side": "right", "flip": 0, "position": [0, 60]})
+	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_003.png", {"scale": 0.49, "side": "right", "flip": 0, "position": [0, 60]})
 	belka.band("...ふーん。ボクのギャラリー、じっくり見てたろ。\nさっき聞こえたぜ。「保存状態がプロの仕事」だって？")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_010.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("それは俺じゃなくて...！", {"scale": 0.43, "position": [0, 61]})
 
-	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_005.png", {"scale": 0.43, "side": "right", "flip": 0, "position": [0, 61]})
+	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_005.png", {"scale": 0.43, "side": "right", "flip": 0, "position": [0, -22]})
 	belka.band("あんたしかいないだろ、ここに。\nへへ、でも嬉しいね。分かるヤツがいるとさ。\n湿度管理とか、苦労してんだよあれ。")
 
 	pisuke.band("おい、こいつヤバいぞ。チップのデータ、相当なもんだ。\n元A級冒険者ってのは本当だ。カードの質も高い。\n...見た目に騙されるなよ。", {"side": "left"})
@@ -450,16 +450,16 @@ func _build_subevent1_hideout(b):
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_012.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("あ、えっと...シルキーファングの首領さんですか？\nパンツ泥棒をやめるように...。")
 
-	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_006.png", {"scale": 0.43, "side": "right", "flip": 0, "position": [0, 61]})
+	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_006.png", {"scale": 0.49, "side": "right", "flip": 0, "position": [0, 61]})
 	belka.band("「パンツ泥棒」？")
 
-	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_001.png", {"scale": 0.43, "side": "right", "flip": 0, "position": [0, 62]})
+	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_001.png", {"scale": 0.49, "side": "right", "flip": 0, "position": [0, 62]})
 	belka.band("...ボクたちは「解放」してるんだよ。\nこの窮屈な社会で、布一枚に縛られた人々の魂をね。")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_004.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("（いや、縛ってるのはパンツのゴムだけだろ...。）")
 
-	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_007.png", {"scale": 0.43, "side": "right", "flip": 0, "position": [0, 61]})
+	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_007.png", {"scale": 0.49, "side": "right", "flip": 0, "position": [0, 61]})
 	belka.band("ボクのコレクション、見たろ？\nあれは「解放された魂の結晶」だ。\n芸術が分かんないヤツは帰りな。")
 
 	# (旧スケール) hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_013.png", {"scale": 0.43, "side": "left", "flip": 1, "position": [0, 61]})
@@ -469,7 +469,7 @@ func _build_subevent1_hideout(b):
 	# belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_001.png", {"scale": 0.43, "side": "right", "flip": 0, "position": [0, 61]})
 	belka.band("「額装」って言え。")
 
-	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_008.png", {"scale": 0.43, "side": "right", "flip": 0, "position": [0, 61]})
+	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_008.png", {"scale": 0.49, "side": "right", "flip": 0, "position": [0, 61]})
 	belka.band("...面白いヤツだね。部下を3人も倒してここまで来るとか、\nしかもコレクションの良さが分かる目も持ってるし。")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_010.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
@@ -490,7 +490,7 @@ func _build_subevent1_hideout(b):
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_011.png", {"scale": 0.60, "side": "left", "flip": 1, "position": [-80, 195]})
 	hero.band("...いいですよ。受けて立ちます。")
 
-	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_001.png", {"scale": 0.43, "side": "right", "flip": 0, "position": [0, 62]})
+	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_013.png", {"scale": 0.49, "side": "right", "flip": 0, "position": [0, 62]})
 	belka.band("へっ、いい目じゃん。...さあ、始めようぜ。")
 
 	b.hide_band()
@@ -522,19 +522,19 @@ func _build_subevent1_post(b):
 	b.background("res://assets/backgrounds/prologue/bg06_prison_arena.png", 0.0)
 	b.show_band()
 
-	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_009.png", {"scale": 0.55, "side": "right", "flip": 0, "position": [0, 250]})
+	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_009.png", {"scale": 0.58, "side": "right", "flip": 0, "position": [0, 250]})
 	belka.band("...うそだろ。ボクが...負けるなんて。")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_083.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...勝った。")
 
-	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_010.png", {"scale": 0.55, "side": "right", "flip": 0, "position": [0, 250]})
+	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_010.png", {"scale": 0.58, "side": "right", "flip": 0, "position": [0, 250]})
 	belka.band("...ふーん。あんた、何者だよ。\nまるで、確率が見えてるみたいだった。")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_055.png", {"scale": 0.74, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("いや、まあ、ちょっとした数学の応用です。")
 
-	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_011.png", {"scale": 0.55, "side": "right", "flip": 0, "position": [0, 250]})
+	belka.set_portrait("res://assets/characters/main/belka/clothed/belka_clothed_011.png", {"scale": 0.58, "side": "right", "flip": 0, "position": [0, 250]})
 	belka.band("約束は守るよ。シルキーファングは今日で解散だ。\n盗品も返す。...騎士団、呼べばいいよ。")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_051.png", {"scale": 0.74, "side": "left", "flip": 1, "position": [0, 70]})
@@ -578,7 +578,7 @@ func _build_subevent1_post(b):
 	belka.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.3,
 		"portrait": "res://assets/characters/main/belka/clothed/belka_clothed_012.png",
-		"portrait_scale": 0.55, "flip": 0, "position": [0, 250],
+		"portrait_scale": 0.58, "flip": 0, "position": [0, 250],
 	})
 	belka.band("なあ、おっさん。ちょっといいかい？")
 
@@ -594,7 +594,7 @@ func _build_subevent1_post(b):
 	belka.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.3,
 		"portrait": "res://assets/characters/main/belka/clothed/belka_clothed_012.png",
-		"portrait_scale": 0.55, "flip": 0, "position": [0, 250],
+		"portrait_scale": 0.58, "flip": 0, "position": [0, 250],
 	})
 	belka.band("ボクを倒したあいつ、すげえ奴だぜ。\nボクのコレクション見て、「プロの仕事だ」「湿度管理が完璧だ」って\n保存状態を絶賛してたよ。\n...捕まえるなら、ボクじゃなくてあいつの方かもな？")
 
