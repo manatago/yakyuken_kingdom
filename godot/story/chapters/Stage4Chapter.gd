@@ -15,7 +15,7 @@ const HERO_DREAD := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_
 const HERO_SHOCK := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_010.png"
 const HERO_PROTEST := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_016.png"
 const HERO_AWKWARD := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_067.png"
-const HERO_TIRED := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_087.png"
+const HERO_TIRED := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_014.png"
 const HERO_NERVOUS := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_091.png"
 const HERO_SERIOUS := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_011.png"
 const HERO_RESOLVE := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_088.png"
@@ -26,7 +26,7 @@ const HERO_FORWARD := "res://assets/characters/main/satoshi/isekai/satoshi_iseka
 const HERO_GUILTY := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_013.png"
 const HERO_INSPIRE := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_009.png"
 const HERO_RESIGN := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_011.png"
-const HERO_DESPAIR := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_018.png"
+const HERO_DESPAIR := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_070.png"
 const HERO_BLANK := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_005.png"
 
 const RECEP_NORMAL := "res://assets/characters/main/receptionist/clothed/receptionist_clothed_005.png"
@@ -61,10 +61,10 @@ func _build_stage4_pre(b):
 	b.background(BG_GUILD, 0.5)
 	b.show_band()
 
-	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right", "flip": 0})
+	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": HERO_NORMAL, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
+		"portrait": HERO_NORMAL, "portrait_scale": 0.50, "flip": 1, "position": [0, 70],
 	})
 
 	receptionist.band("サトシ様。本日、貴殿宛てに、大変、重い書状がございます。")
@@ -72,24 +72,24 @@ func _build_stage4_pre(b):
 	hero.set_portrait(HERO_DREAD, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...嫌な予感しかしない。")
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right", "flip": 0})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	receptionist.band("...魔法師団長セレス・ソルヴェイグ様より、正式なご指名勝負の\n挑戦状でございます。")
 
-	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait(HERO_SHOCK, {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("魔法師団長！ って、戦争の時に最前線に立つ人でしょう！？")
 
-	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right", "flip": 0})
+	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	receptionist.band("...はい。現役の王都四傑の一角でございます。")
 
 	hero.set_portrait(HERO_PROTEST, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("俺、冒険者だぞ！ 格が違いすぎる！")
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right", "flip": 0})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	receptionist.band("...挑戦状の名目は「王都四傑の一角として、連勝中の異邦冒険者の\n実力を直接見極めたい」とのことでございます。")
 
 	pisuke.band("...無害な文面だな。公式には「親善的な実力検証」って体裁だ。", {"side": "left"})
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right", "flip": 0})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	receptionist.band("...なお、挑戦状には、追記がございます。")
 
 	receptionist.band("「師団本部・第三演習場にて、観客入場不可の条件で実施。\n魔道器具による記録を行う。\n使用する魔術・技能の事前申告は不要。不意打ち・隠し技、\n双方自由とする」")
@@ -99,13 +99,13 @@ func _build_stage4_pre(b):
 
 	pisuke.band("普通の決闘なら、使う魔術や技能は前もって相手に伝え合う慣習だ。\nそれを「不要」と指定してきた。何を仕掛けてくるか、こっちは\n全く分からねえぞ。", {"side": "left"})
 
-	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right", "flip": 0})
+	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	receptionist.band("...なお、挑戦状は既に受理済みでございます。当方に拒否権は\nございません。\n...お心づもりを、ご自身で、お立てください。")
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right", "flip": 0})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	receptionist.band("...ご健闘を、とは、申し上げません。\n...いずれ、敗れる相手だろうと、私は、思っております。")
 
-	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait(HERO_SHOCK, {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("えっ、な、なんで俺が負ける前提で話すんですか！？")
 
 	receptionist.band("...魔法師団長様は、王国外との魔術戦の最終兵器。\n国の命運を背負うお方に、一介の冒険者が勝てる確率は、ギルド統計上、\n約一割でございます。")
@@ -149,14 +149,14 @@ func _build_stage4_infiltrate(b):
 	b.background(BG_BACK, 0.5)
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": HERO_NERVOUS, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
+		"portrait": HERO_NERVOUS, "portrait_scale": 0.53, "flip": 1, "position": [0, 70],
 	})
 
 	pisuke.band("...外壁ギリギリまで近寄れ。そこで、俺様が接続を試みる。", {"side": "left"})
 
 	pisuke.band("...接続...接続...あっ、ブロックされた。", {"side": "left"})
 
-	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait(HERO_SHOCK, {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("え？")
 
 	pisuke.band("魔道封印が、こっちのハック手法を先読みしてる。\n...しかも、防御だけじゃねえ。逆探知も走ってやがる。", {"side": "left"})
@@ -177,7 +177,7 @@ func _build_stage4_infiltrate(b):
 
 	pisuke.band("...ゲコッ。まずい。こっちの「接続手法の指紋」が、向こうの\n防御ログに残った。師団長が見れば、「何者かが師団本部の魔道\nネットワークにハックを試みた」って即座に分かる。", {"side": "left"})
 
-	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait(HERO_SHOCK, {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("それが、俺の仕業だって、特定されたら...！？")
 
 	pisuke.band("...次の対面で、セレス本人から、直接、問い詰められるだろうな。\n向こうは確信犯扱いで来るぞ。", {"side": "left"})
@@ -227,7 +227,7 @@ func _build_stage4_meet(b):
 	})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": HERO_NERVOUS, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
+		"portrait": HERO_NERVOUS, "portrait_scale": 0.53, "flip": 1, "position": [0, 70],
 	})
 
 	seles.band("...お待たせした、サトシ殿。セレス・ソルヴェイグだ。")
@@ -248,7 +248,7 @@ func _build_stage4_meet(b):
 
 	seles.band("ご丁寧に、聖霊系の反応まで、検知されております。\n...この国で、聖霊を帯同する冒険者は、極めて、稀でございます。\n...心当たりは、ございますか。")
 
-	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait(HERO_SHOCK, {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("え、いや、あの、それは、その...！")
 
 	pisuke.band("サトシ、落ち着け。具体的に特定されてるわけじゃねえ。", {"side": "left"})
@@ -269,7 +269,7 @@ func _build_stage4_meet(b):
 
 	seles.band("私が勝った場合、貴殿には、「秘密保持の魔道契約」を、結んで\nいただきます。")
 
-	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait(HERO_SHOCK, {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("秘密、保持...？")
 
 	seles.band("貴殿が、本勝負、並びに本日までに知り得た、私に関する一切の事柄を、\n二度と、第三者に口外できなくなる、という契約でございます。\n...口外を試みた瞬間、魔道封印により、言葉が、消えます。")
@@ -376,12 +376,12 @@ func _build_stage4_contract(b):
 
 	pisuke.band("セレス、ドMだ。特に、「自分が縛られて、身動きが取れなくなる」\n構図が、深層魔力の核そのものになってる。\n...毎晩、自分を縛って、妄想に浸る習慣がある。", {"side": "left"})
 
-	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait(HERO_SHOCK, {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("え、え、師団長、そういう人なの！？")
 
 	pisuke.band("さらに言うと、「魔法縛の術式解析」って論文を大量に書いてる。\n表向きは対魔族拘束術の研究だが、内容は、自分に施す拘束魔法の\n精度向上の記録だ。挿絵は全部、自画像。縛られた状態の。", {"side": "left"})
 
-	hero.set_portrait(HERO_BLANK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait(HERO_BLANK, {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...研究という体で、自己緊縛の記録を、公的論文にしてる...？")
 
 	pisuke.band("ゲコッ。本人は「これは研究だ」と信じてる。自分の性癖として\n自覚してない。", {"side": "left"})
@@ -495,7 +495,7 @@ func _build_stage4_post(b):
 
 	seles.band("...だが、不思議と、貴殿を、憎みきれない。")
 
-	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait(HERO_SHOCK, {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("え？")
 
 	seles.band("...貴殿は、私を、言葉で、徹底的に、支配した。\n...あの、「逆に引く」「強く締める」という、私の結び目に、\n貴殿の指示が、直接、刻まれた。")
@@ -521,7 +521,7 @@ func _build_stage4_post(b):
 
 	seles.band("そして、その「研究」とは、貴殿を、師団の研究室に、被験体として、\n生涯、拘束する術式の開発、である。")
 
-	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait(HERO_SHOCK, {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("ええ！？")
 
 	seles.band("次、お会いする時、私は、必ず、貴殿を、捕獲する。\n...そして、今度は、私が、貴殿を、「研究対象」として、結び上げる。")
@@ -562,7 +562,7 @@ func _build_stage4_close(b):
 	b.background(BG_GUILD, 0.5)
 	b.show_band()
 
-	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right", "flip": 0})
+	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
 		"portrait": HERO_TIRED, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
@@ -572,7 +572,7 @@ func _build_stage4_close(b):
 
 	hero.band("あ、はい。勝ちました。")
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right", "flip": 0})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	receptionist.band("...なお、師団長から、サトシ様宛ての個人書簡が、同封されて\nございます。")
 
 	hero.set_portrait(HERO_AWKWARD, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -580,12 +580,12 @@ func _build_stage4_close(b):
 
 	b.narrator_band("書簡：「次にお会いする時が、待ち遠しく存じます。——セレス」")
 
-	hero.set_portrait(HERO_BLANK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait(HERO_BLANK, {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("ピー助、これ、アサシンのレイラさんと、似たような...。")
 
 	pisuke.band("ゲコッ。二人目の終生執着者が誕生、だな。\nお前、生涯、つけ狙われる女が、また一人増えたぞ。", {"side": "left"})
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right", "flip": 0})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	receptionist.band("...ギルドの「要監視対象A」摘要欄に、追記いたします。\n「対象、王国高官二名より個人的追跡対象として認定。暗部調査部門の\nアサシン、および、魔法師団長。以後、王都滞在時の、生命の危機、\n増加の可能性あり」。")
 
 	hero.set_portrait(HERO_DESPAIR, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})

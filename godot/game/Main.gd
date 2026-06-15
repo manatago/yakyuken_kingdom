@@ -106,7 +106,7 @@ var _jump_points: Array = [
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true, "guild_registered": true, "subevent1_complete": true, "encounter_sister_long_seen": true}, "money": 200}},
 	{"label": "subevent2_rematch_battle_done", "name": "  └ シスター長 再戦 戦闘後", "sequence": "subevent2_rematch",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true, "guild_registered": true, "subevent1_complete": true, "encounter_sister_long_seen": true}, "money": 200}},
-	{"label": "_subevent_pre:subevent3", "name": "--- Subevent3 (フィオナ) ---",
+	{"label": "_subevent_pre:subevent3", "name": "--- サブイベント3（フィオナ） ---",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
 	{"label": "_subevent_pre:subevent3", "name": "場面1 依頼受注",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
@@ -118,7 +118,7 @@ var _jump_points: Array = [
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
 	{"label": "_subevent_post:subevent3", "name": "  └ フィオナ戦 戦闘後（場面8 決着）",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
-	{"label": "_subevent_pre:subevent4", "name": "--- Subevent4 (受付嬢) ---",
+	{"label": "_subevent_pre:subevent4", "name": "--- サブイベント4（受付嬢） ---",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
 	{"label": "_subevent_pre:subevent4", "name": "前半",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
@@ -2450,7 +2450,7 @@ const STORY_EDIT_SEQUENCES := [
 	{"id": "stage1", "label": "scene_guild_hall", "name": "冒険者ギルド"},
 	{"id": "stage1", "label": "stage1_battle_start", "name": "冒険者Aバトル"},
 	{"id": "stage1", "label": "scene_guild_reception", "name": "ギルド受付"},
-	# Subevent1 / 2（シーケンス単位、prefix label のため細分なし）
+	# サブイベント1 / 2（シーケンス単位、prefix label のため細分なし）
 	{"separator": true, "name": "--- サブイベント ---"},
 	{"id": "subevent1_pre", "name": "サブイベント1 前半1（ギルドホーム）", "chapter": "Subevent1ChapterScript"},
 	{"id": "subevent1_hideout", "name": "サブイベント1 前半2（盗賊団アジト）", "chapter": "Subevent1ChapterScript"},
@@ -2458,6 +2458,16 @@ const STORY_EDIT_SEQUENCES := [
 	{"id": "subevent2_pre1", "name": "サブイベント2 前半1（ギルド→教会裏庭）", "chapter": "Subevent2ChapterScript"},
 	{"id": "subevent2_pre2", "name": "サブイベント2 前半2（礼拝室→シスター長戦）", "chapter": "Subevent2ChapterScript"},
 	{"id": "subevent2_post", "name": "サブイベント2 後半（シスター長決着後）", "chapter": "Subevent2ChapterScript"},
+	# サブイベント3
+	{"separator": true, "name": "--- サブイベント3（フィオナ） ---"},
+	{"id": "subevent3_pre", "name": "サブイベント3 場面1 依頼受注"},
+	{"id": "subevent3_blacksmith", "name": "サブイベント3 場面2 鍛冶屋"},
+	{"id": "subevent3_visit", "name": "サブイベント3 場面3-7 エドモンド邸"},
+	{"id": "subevent3_post", "name": "サブイベント3 場面8 決着・後日談"},
+	# サブイベント4
+	{"separator": true, "name": "--- サブイベント4（受付嬢） ---"},
+	{"id": "subevent4_pre", "name": "サブイベント4 前半"},
+	{"id": "subevent4_post", "name": "サブイベント4 後半"},
 	# Stage2
 	{"separator": true, "name": "--- Stage2 ---"},
 	{"id": "stage2_pre", "name": "Stage2 場面1 盗難濡れ衣"},
@@ -2497,16 +2507,6 @@ const STORY_EDIT_SEQUENCES := [
 	{"separator": true, "name": "--- Stage7 (エンディング) ---"},
 	{"id": "stage7_throne", "name": "Stage7 場面1 王座継承"},
 	{"id": "stage7_epilogue", "name": "Stage7 場面2 エピローグ"},
-	# Subevent3
-	{"separator": true, "name": "--- Subevent3 (フィオナ) ---"},
-	{"id": "subevent3_pre", "name": "Subevent3 場面1 依頼受注"},
-	{"id": "subevent3_blacksmith", "name": "Subevent3 場面2 鍛冶屋"},
-	{"id": "subevent3_visit", "name": "Subevent3 場面3-7 エドモンド邸"},
-	{"id": "subevent3_post", "name": "Subevent3 場面8 決着・後日談"},
-	# Subevent4
-	{"separator": true, "name": "--- Subevent4 (受付嬢) ---"},
-	{"id": "subevent4_pre", "name": "Subevent4 前半"},
-	{"id": "subevent4_post", "name": "Subevent4 後半"},
 ]
 
 signal _story_edit_selected(index: int)
@@ -4217,14 +4217,16 @@ func _save_story_edit_card(card: PanelContainer, entries: Array, _idx: int):
 const _STORY_CHAPTER_PATHS := [
 	"res://story/chapters/PrologueChapter.gd",
 	"res://story/chapters/Stage1Chapter.gd",
+	"res://story/chapters/Subevent1Chapter.gd",
+	"res://story/chapters/Subevent2Chapter.gd",
+	"res://story/chapters/Subevent3Chapter.gd",
+	"res://story/chapters/Subevent4Chapter.gd",
 	"res://story/chapters/Stage2Chapter.gd",
 	"res://story/chapters/Stage3Chapter.gd",
 	"res://story/chapters/Stage4Chapter.gd",
 	"res://story/chapters/Stage5Chapter.gd",
 	"res://story/chapters/Stage6Chapter.gd",
 	"res://story/chapters/Stage7Chapter.gd",
-	"res://story/chapters/Subevent3Chapter.gd",
-	"res://story/chapters/Subevent4Chapter.gd",
 ]
 
 func _force_reload_story_chapters() -> void:
@@ -4435,15 +4437,15 @@ const EVENT_BATTLE_CHAPTERS := [
 	{"id": "stage1", "name": "ステージ1 チュートリアル（冒険者A戦）", "path": "res://battle/chapters/Stage1BattleChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png", "mode": "tutorial"},
 	# --- イベントバトル ---
 	{"id": "prologue", "name": "プロローグ（マチルダ戦）", "path": "res://battle/chapters/PrologueBattleChapter.gd", "bg": "res://assets/backgrounds/prologue/bg05_prison_cell.png", "mode": "battle"},
+	{"id": "subevent1_boss", "name": "サブイベント1（ベルカ戦）", "path": "res://battle/chapters/BelkaBattleChapter.gd", "bg": "res://assets/backgrounds/prologue/bg06_prison_arena.png", "mode": "battle"},
+	{"id": "subevent2_boss", "name": "サブイベント2（シスター長戦）", "path": "res://battle/chapters/SisterBattleChapter.gd", "bg": "res://assets/backgrounds/subevent2/bg05_church_peep_room.png", "mode": "battle"},
+	{"id": "subevent3_fiona", "name": "サブイベント3（フィオナ戦）", "path": "res://battle/chapters/FionaBattleChapter.gd", "bg": "res://assets/backgrounds/subevent3/bg_noble_room.png", "mode": "battle"},
+	{"id": "subevent4_recep", "name": "サブイベント4（受付嬢戦）", "path": "res://battle/chapters/ReceptionistBattleChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png", "mode": "battle"},
 	{"id": "stage2", "name": "ステージ2（レイラ戦）", "path": "res://battle/chapters/Stage2BattleChapter.gd", "bg": "res://assets/backgrounds/stage2/bg_inn_meeting.png", "mode": "battle"},
 	{"id": "stage3", "name": "ステージ3（マグダレナ戦）", "path": "res://battle/chapters/Stage3BattleChapter.gd", "bg": "res://assets/backgrounds/subevent2/bg02_church_interior.png", "mode": "battle"},
 	{"id": "stage4", "name": "ステージ4（セレス戦）", "path": "res://battle/chapters/Stage4BattleChapter.gd", "bg": "res://assets/backgrounds/stage4/bg_dojo_third.png", "mode": "battle"},
 	{"id": "stage5", "name": "ステージ5（フェリア戦）", "path": "res://battle/chapters/Stage5BattleChapter.gd", "bg": "res://assets/backgrounds/stage5/bg_training_ground.png", "mode": "battle"},
 	{"id": "stage6", "name": "ステージ6（王女戦）", "path": "res://battle/chapters/Stage6BattleChapter.gd", "bg": "res://assets/backgrounds/stage6/bg_royal_hall.png", "mode": "battle"},
-	{"id": "subevent1_boss", "name": "サブイベント1（ベルカ戦）", "path": "res://battle/chapters/BelkaBattleChapter.gd", "bg": "res://assets/backgrounds/prologue/bg06_prison_arena.png", "mode": "battle"},
-	{"id": "subevent2_boss", "name": "サブイベント2（シスター長戦）", "path": "res://battle/chapters/SisterBattleChapter.gd", "bg": "res://assets/backgrounds/subevent2/bg05_church_peep_room.png", "mode": "battle"},
-	{"id": "subevent3_fiona", "name": "サブイベント3（フィオナ戦）", "path": "res://battle/chapters/FionaBattleChapter.gd", "bg": "res://assets/backgrounds/subevent3/bg_noble_room.png", "mode": "battle"},
-	{"id": "subevent4_recep", "name": "サブイベント4（受付嬢戦）", "path": "res://battle/chapters/ReceptionistBattleChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png", "mode": "battle"},
 	# --- ミニゲーム ---
 	{"id": "minigame_smoke", "name": "＜ミニゲーム＞スモークテスト", "path": "res://battle/chapters/MinigameSmokeChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png", "mode": "minigame"},
 	{"id": "minigame_subevent3", "name": "＜ミニゲーム＞サブイベント3（羞恥の儀）", "path": "res://battle/chapters/Subevent3MinigameChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png", "mode": "minigame"},

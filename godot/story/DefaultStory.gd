@@ -5,6 +5,8 @@ const StoryDsl := preload("res://story/StoryCommands.gd")
 const StoryCharacterResource := preload("res://story/StoryCharacter.gd")
 const PrologueChapterScript := preload("res://story/chapters/PrologueChapter.gd")
 const Stage1ChapterScript := preload("res://story/chapters/Stage1Chapter.gd")
+const Subevent1ChapterScript := preload("res://story/chapters/Subevent1Chapter.gd")
+const Subevent2ChapterScript := preload("res://story/chapters/Subevent2Chapter.gd")
 const Stage2ChapterScript := preload("res://story/chapters/Stage2Chapter.gd")
 const Stage3ChapterScript := preload("res://story/chapters/Stage3Chapter.gd")
 const Stage4ChapterScript := preload("res://story/chapters/Stage4Chapter.gd")
@@ -59,14 +61,16 @@ func _build_chapters() -> void:
 	var chapters := [
 		PrologueChapterScript.new(),
 		Stage1ChapterScript.new(),
+		Subevent1ChapterScript.new(),
+		Subevent2ChapterScript.new(),
+		Subevent3ChapterScript.new(),
+		Subevent4ChapterScript.new(),
 		Stage2ChapterScript.new(),
 		Stage3ChapterScript.new(),
 		Stage4ChapterScript.new(),
 		Stage5ChapterScript.new(),
 		Stage6ChapterScript.new(),
 		Stage7ChapterScript.new(),
-		Subevent3ChapterScript.new(),
-		Subevent4ChapterScript.new(),
 	]
 	for chapter in chapters:
 		_register_chapter(chapter)

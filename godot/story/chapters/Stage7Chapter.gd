@@ -12,7 +12,7 @@ const HERO_NORMAL := "res://assets/characters/main/satoshi/isekai/satoshi_isekai
 const HERO_SHOCK := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_010.png"
 const HERO_AWKWARD := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_067.png"
 const HERO_GUILTY := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_013.png"
-const HERO_DESPAIR := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_018.png"
+const HERO_DESPAIR := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_070.png"
 const HERO_HOPE := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_015.png"
 const HERO_RESIGN := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_011.png"
 const HERO_DISTANT := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_083.png"
@@ -105,7 +105,7 @@ func _build_stage7_throne(b):
 
 	feria.band("（去り際、振り返って、冷たい目）\n...卑怯者の、ノゾキ魔の、国王殿下。")
 
-	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait(HERO_SHOCK, {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("その呼び方、公式記録に、残さないで！")
 
 	feria.band("...王宮記録は、極めて正確でございます。")
@@ -131,31 +131,31 @@ func _build_stage7_epilogue(b):
 	b.background(BG_GUILD, 0.5)
 	b.show_band()
 
-	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right", "flip": 0})
+	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
 		"portrait": HERO_RESIGN, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
 	})
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right", "flip": 0})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	receptionist.band("...サトシ様。国王ご即位、おめでとうございます。")
 
 	hero.set_portrait(HERO_AWKWARD, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("あ、はい、ありがとう、ございます...。")
 
-	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right", "flip": 0})
+	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	receptionist.band("...本日付で、ギルドの「要監視対象A」欄は、閉じさせていただきます。")
 
 	hero.set_portrait(HERO_HOPE, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("あ、やっと、外れる...！")
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right", "flip": 0})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	receptionist.band("...代わりに、「国王陛下専用・要監視対象A」という新規台帳を、\n開設いたします。")
 
-	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait(HERO_SHOCK, {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("なんで俺専用で、新台帳が、できるの！？")
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right", "flip": 0})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	receptionist.band("...これまでの記録をすべて引き継ぎ、加えて、本日より、以下を\n第一行目に記載いたしました。\n\n「国王陛下。公の場で、女性に、急所を触らせる習性あり。\n...最大の警戒対象は、陛下のお膝元、王都全域」。")
 
 	hero.set_portrait(HERO_DESPAIR, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -181,13 +181,13 @@ func _build_stage7_epilogue(b):
 	hero.set_portrait(HERO_PROTEST, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("勲章じゃない！ 歴史的汚点だ！")
 
-	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right", "flip": 0})
+	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	receptionist.band("...なお、陛下の礼装は、王宮の仕立てにて、すでに裾の硬さに\n耐える特注品に、改修が進んでおります。")
 
 	hero.set_portrait(HERO_PANIC, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("国の予算で、そんなの、作らないで！")
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right", "flip": 0})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	receptionist.band("...ですが、一点だけ、申し添えさせてください。")
 
 	hero.set_portrait(HERO_DAZED, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -205,7 +205,7 @@ func _build_stage7_epilogue(b):
 	hero.set_portrait(HERO_DAZED, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...受付嬢さん、それ、初めて、笑ってくれた、よな。")
 
-	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.5, "side": "right", "flip": 0})
+	receptionist.set_portrait(RECEP_NORMAL, {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	receptionist.band("...気のせいでございます。")
 
 	hero.set_portrait(HERO_WARM, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -222,7 +222,7 @@ func _build_stage7_epilogue(b):
 	b.background(BG_SUNSET, 0.5)
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": HERO_DISTANT, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
+		"portrait": HERO_DISTANT, "portrait_scale": 0.53, "flip": 1, "position": [0, 70],
 	})
 
 	hero.band("...みのり。...俺、ちょっと、忙しくなりそうだよ。\nでも、いつか、戻るから。\n...それまで、こっちで、なんとかやってみる。")
