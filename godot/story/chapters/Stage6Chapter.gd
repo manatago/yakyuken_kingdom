@@ -13,14 +13,14 @@ const HERO_SHOCK := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_
 const HERO_PANIC := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_016.png"
 const HERO_AWKWARD := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_067.png"
 const HERO_NERVOUS := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_091.png"
-const HERO_DESPAIR := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_018.png"
+const HERO_DESPAIR := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_070.png"
 const HERO_RESOLVE := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_088.png"
 const HERO_SERIOUS := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_011.png"
 const HERO_COLD := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_012.png"
 const HERO_DISTANT := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_083.png"
 const HERO_DAZED := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_028.png"
 const HERO_HOPE := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_015.png"
-const HERO_TIRED := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_087.png"
+const HERO_TIRED := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_014.png"
 
 const RECEP_COLD := "res://assets/characters/main/receptionist/clothed/receptionist_clothed_007.png"
 const RECEP_BUSINESS := "res://assets/characters/main/receptionist/clothed/receptionist_clothed_006.png"
@@ -55,24 +55,24 @@ func _build_stage6_pre(b):
 	b.background(BG_GUILD, 0.5)
 	b.show_band()
 
-	receptionist.set_portrait(RECEP_COLD, {"scale": 0.5, "side": "right", "flip": 0})
+	receptionist.set_portrait(RECEP_COLD, {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	hero.appear({
 		"side": "left", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": HERO_NORMAL, "portrait_scale": 0.5, "flip": 1, "position": [0, 70],
+		"portrait": HERO_NORMAL, "portrait_scale": 0.50, "flip": 1, "position": [0, 70],
 	})
 
 	receptionist.band("サトシ様。...王宮より、直々の召喚状が届いております。\n発行者は、王女アレクシア殿下ご自身の署名入りでございます。")
 
-	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait(HERO_SHOCK, {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("はあ！？ 王女、本人から！？\n...俺、殿下に何か、ご無礼でも...！？")
 
-	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.5, "side": "right", "flip": 0})
+	receptionist.set_portrait(RECEP_BUSINESS, {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	receptionist.band("...名目は「王都四傑連破の功労を労う、宮中晩餐会ご招待」。\n...非公式の行事として記載がございますが、ご出席は実質義務化されて\nおります。")
 
 	hero.set_portrait(HERO_PANIC, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("晩餐会！？ 俺、そんな高貴な場、行ったこと、ないですよ！\nマナーとか、全然分からないですし...！")
 
-	receptionist.set_portrait(RECEP_JIT, {"scale": 0.5, "side": "right", "flip": 0})
+	receptionist.set_portrait(RECEP_JIT, {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	receptionist.band("...ご健闘を、とは、申し上げません。\n...ただ、不敬罪だけは、避けていただきますよう。")
 
 	hero.band("そんなのに、行くの俺、絶対嫌なんですけど...！")
@@ -116,7 +116,7 @@ func _build_stage6_banquet(b):
 
 	pisuke.band("ゲコッ。...サトシ、察した通りだ。\nあの4人、全員、王女の腹心だ。\n俺様、ずっと感づいてたが、言わなかった。今、全員、お前を迎えるために、\n揃ってる。", {"side": "left"})
 
-	hero.set_portrait(HERO_NERVOUS, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait(HERO_NERVOUS, {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("（ピー助、それ、もっと早く言えよ！）")
 
 	pisuke.band("言っても、何か変わったか？\n...それに、王女本人が動いてくるのは、今日が、初めてだ。\nこれまでは、四人がそれぞれの事情で動いてた。\n...今日は、王女が、まとめて、後処理に来てる。", {"side": "left"})
@@ -131,7 +131,7 @@ func _build_stage6_banquet(b):
 
 	layla.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
-		"portrait": LAYLA, "portrait_scale": 0.5, "position": [0, 100],
+		"portrait": LAYLA, "portrait_scale": 0.50, "position": [0, 10],
 	})
 	layla.band("...サトシ様。冷製のスープでございます。\n...また、お会いいたしましたね。\n...前回の屈辱、忘れては、おりません。")
 
@@ -174,7 +174,7 @@ func _build_stage6_banquet(b):
 	})
 	magdalena.band("神は、全ての所作を、ご覧でございます。\n...異邦の方の、素朴なお食事も、きっと、お慈悲深く、御覧に\nなっておられるでしょう。")
 
-	hero.set_portrait(HERO_DISTANT, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait(HERO_DISTANT, {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("（神経由の悪口！ 神経由の悪口！）")
 
 	noble.band("...ところで、サトシ殿。王都の四傑を、連破されたそうですな。\n...さぞ、卑怯な戦法を、ご使用に、なられたので？")
@@ -238,7 +238,7 @@ func _build_stage6_banquet(b):
 
 	noble.band("...殿下、であれば、北の最果ての、極寒の牢獄は、いかがでしょう。\n...入った者は、二度と、生きては出られぬ、と言われる、あの地。")
 
-	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait(HERO_SHOCK, {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("ちょ、ちょっと、待って！ 二度と出られない！？")
 
 	pisuke.band("黙ってろ。ここから、引けねえ。", {"side": "left"})
@@ -314,12 +314,12 @@ func _build_stage6_recover(b):
 
 	pisuke.band("...次元の違う手を、ここで、仕込む。\n戦闘中、王女のデータを、少しだけ、読めた。\n...性に関する情報の免疫が、ゼロ。\n箱入りで育って、そっち系の刺激は、完全に未知だ。", {"side": "left"})
 
-	hero.set_portrait(HERO_NERVOUS, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait(HERO_NERVOUS, {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...で？")
 
 	pisuke.band("お前の急所を、強制的に王女に触らせれば、認知限界突破で、\n勅令も絶対王政も、以後、封じられる。\n...他の章と、同じパターンだ。相手の弱点を突いて、秘技を封じて、\n通常のジャンケン勝負に持ち込む。", {"side": "left"})
 
-	hero.set_portrait(HERO_SHOCK, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait(HERO_SHOCK, {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("ええええええ！？ 晩餐会の場で、全員見てるんだぞ！？")
 
 	pisuke.band("だから、覚悟が要る。この世界に来てからの性的記憶、全部\n総動員。最悪のマナーで、王女の結界も、王家の秘技も、全部\n剥がせ。そうすれば、あと3つの勝負のうち、1つで3本先取、取れる\n公算が出る。", {"side": "left"})

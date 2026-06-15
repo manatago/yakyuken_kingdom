@@ -106,7 +106,7 @@ var _jump_points: Array = [
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true, "guild_registered": true, "subevent1_complete": true, "encounter_sister_long_seen": true}, "money": 200}},
 	{"label": "subevent2_rematch_battle_done", "name": "  └ シスター長 再戦 戦闘後", "sequence": "subevent2_rematch",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "met_pisuke": true, "guild_registered": true, "subevent1_complete": true, "encounter_sister_long_seen": true}, "money": 200}},
-	{"label": "_subevent_pre:subevent3", "name": "--- Subevent3 (フィオナ) ---",
+	{"label": "_subevent_pre:subevent3", "name": "--- サブイベント3（フィオナ） ---",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
 	{"label": "_subevent_pre:subevent3", "name": "場面1 依頼受注",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
@@ -118,7 +118,7 @@ var _jump_points: Array = [
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
 	{"label": "_subevent_post:subevent3", "name": "  └ フィオナ戦 戦闘後（場面8 決着）",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
-	{"label": "_subevent_pre:subevent4", "name": "--- Subevent4 (受付嬢) ---",
+	{"label": "_subevent_pre:subevent4", "name": "--- サブイベント4（受付嬢） ---",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
 	{"label": "_subevent_pre:subevent4", "name": "前半",
 		"state": {"inventory": DEFAULT_INVENTORY, "flags": {"prologue_complete": true, "guild_registered": true}, "money": 300}},
@@ -2450,7 +2450,7 @@ const STORY_EDIT_SEQUENCES := [
 	{"id": "stage1", "label": "scene_guild_hall", "name": "冒険者ギルド"},
 	{"id": "stage1", "label": "stage1_battle_start", "name": "冒険者Aバトル"},
 	{"id": "stage1", "label": "scene_guild_reception", "name": "ギルド受付"},
-	# Subevent1 / 2（シーケンス単位、prefix label のため細分なし）
+	# サブイベント1 / 2（シーケンス単位、prefix label のため細分なし）
 	{"separator": true, "name": "--- サブイベント ---"},
 	{"id": "subevent1_pre", "name": "サブイベント1 前半1（ギルドホーム）", "chapter": "Subevent1ChapterScript"},
 	{"id": "subevent1_hideout", "name": "サブイベント1 前半2（盗賊団アジト）", "chapter": "Subevent1ChapterScript"},
@@ -2458,6 +2458,16 @@ const STORY_EDIT_SEQUENCES := [
 	{"id": "subevent2_pre1", "name": "サブイベント2 前半1（ギルド→教会裏庭）", "chapter": "Subevent2ChapterScript"},
 	{"id": "subevent2_pre2", "name": "サブイベント2 前半2（礼拝室→シスター長戦）", "chapter": "Subevent2ChapterScript"},
 	{"id": "subevent2_post", "name": "サブイベント2 後半（シスター長決着後）", "chapter": "Subevent2ChapterScript"},
+	# サブイベント3
+	{"separator": true, "name": "--- サブイベント3（フィオナ） ---"},
+	{"id": "subevent3_pre", "name": "サブイベント3 場面1 依頼受注"},
+	{"id": "subevent3_blacksmith", "name": "サブイベント3 場面2 鍛冶屋"},
+	{"id": "subevent3_visit", "name": "サブイベント3 場面3-7 エドモンド邸"},
+	{"id": "subevent3_post", "name": "サブイベント3 場面8 決着・後日談"},
+	# サブイベント4
+	{"separator": true, "name": "--- サブイベント4（受付嬢） ---"},
+	{"id": "subevent4_pre", "name": "サブイベント4 前半"},
+	{"id": "subevent4_post", "name": "サブイベント4 後半"},
 	# Stage2
 	{"separator": true, "name": "--- Stage2 ---"},
 	{"id": "stage2_pre", "name": "Stage2 場面1 盗難濡れ衣"},
@@ -2497,16 +2507,6 @@ const STORY_EDIT_SEQUENCES := [
 	{"separator": true, "name": "--- Stage7 (エンディング) ---"},
 	{"id": "stage7_throne", "name": "Stage7 場面1 王座継承"},
 	{"id": "stage7_epilogue", "name": "Stage7 場面2 エピローグ"},
-	# Subevent3
-	{"separator": true, "name": "--- Subevent3 (フィオナ) ---"},
-	{"id": "subevent3_pre", "name": "Subevent3 場面1 依頼受注"},
-	{"id": "subevent3_blacksmith", "name": "Subevent3 場面2 鍛冶屋"},
-	{"id": "subevent3_visit", "name": "Subevent3 場面3-7 エドモンド邸"},
-	{"id": "subevent3_post", "name": "Subevent3 場面8 決着・後日談"},
-	# Subevent4
-	{"separator": true, "name": "--- Subevent4 (受付嬢) ---"},
-	{"id": "subevent4_pre", "name": "Subevent4 前半"},
-	{"id": "subevent4_post", "name": "Subevent4 後半"},
 ]
 
 signal _story_edit_selected(index: int)
@@ -2686,6 +2686,10 @@ func _run_story_edit(entry: Dictionary):
 	_story_edit_current_idx = idx
 	_story_edit_reset_scene(story_scene_instance)
 	# label指定時はラベル直後から実行（以前のシーンを再生しない）。指定なしは0から。
+	# ただしラベル開始だと、そのシーンが引き継ぐ背景（ラベルより前の background()）を
+	# 取りこぼし、前画面の残骸（例: 大学キャンパス）が背景に居座る。再生前に開始位置より
+	# 前の直近 Background を1つ補完して、正しいシーン背景から始める。
+	_story_edit_apply_preceding_background(entries, scan_from, story_scene_instance)
 	_story_edit_execute_to(entries, idx, story_scene_instance, scan_from)
 	_story_edit_update_info(idx_label, cmd_label, entries, idx)
 	_refresh_story_edit_cards(edit_root, story_scene_instance)
@@ -3202,6 +3206,21 @@ func _story_edit_execute_to(entries: Array, target_idx: int, scene, start_idx: i
 		if e is StoryCommands.TerminalEffect:
 			continue
 		_story_edit_execute_single(e, scene)
+
+# 開始位置 before_idx より前にある「直近の Background」を1つだけ即時適用する。
+# ラベル途中から編集を開く時、そのシーンが引き継ぐ背景（before_idx より前で設定された
+# background()）を取りこぼし、前画面の残骸（例: 大学キャンパス）が背景に居座るのを防ぐ。
+# ジャンプ時はクロスフェード不要なので restore_background で background_rect に即時セットする。
+# before_idx 以降の範囲に background() があれば、続く再生で上書きされるので二重適用にならない。
+func _story_edit_apply_preceding_background(entries: Array, before_idx: int, scene) -> void:
+	for i in range(before_idx - 1, -1, -1):
+		var e = entries[i]
+		if e is StoryCommands.Background:
+			if scene.has_method("restore_background"):
+				var tex = load(e.path)
+				if tex:
+					scene.restore_background(tex)
+			return
 
 func _story_edit_reset_scene(scene):
 	# Reset character visibility
@@ -3846,6 +3865,60 @@ func _trim_num(v: float) -> String:
 		s = s.rstrip("0").rstrip(".")
 	return s
 
+# flip は per-line なので registry ではなく章ソース行に書く。
+# src_id (file:line) のブロック内の "flip" キーを書き換え、無ければ dict 末尾に挿入する。
+# scale/position 経路（後段）と同じロジックだが、こちらは flip だけを触る。
+func _save_flip_to_source(src_id: String, new_flip_val: int) -> bool:
+	if src_id.is_empty() or not (":" in src_id):
+		return false
+	var colon: int = src_id.rfind(":")
+	var src_file: String = src_id.substr(0, colon)
+	var line_no: int = int(src_id.substr(colon + 1))
+	var abs_path: String = ProjectSettings.globalize_path(src_file)
+	var f := FileAccess.open(abs_path, FileAccess.READ)
+	if not f:
+		return false
+	var lines: PackedStringArray = f.get_as_text().split("\n")
+	f.close()
+	var li: int = line_no - 1
+	if li < 0 or li >= lines.size():
+		return false
+	var block_end: int = _story_edit_find_call_block_end(lines, li)
+	var changed: bool = false
+	var flip_found: bool = false
+	for j in range(li, block_end + 1):
+		var line_j: String = lines[j]
+		if '"flip"' in line_j:
+			var r_flip := RegEx.new()
+			r_flip.compile('"flip"\\s*:\\s*[01]')
+			var new_line: String = r_flip.sub(line_j, '"flip": %d' % new_flip_val)
+			if new_line != line_j:
+				lines[j] = new_line
+				changed = true
+			flip_found = true
+			break
+	if not flip_found:
+		var dict_loc: Dictionary = _story_edit_find_dict_close(lines, li, block_end)
+		var dict_end_li: int = dict_loc.get("li", -1)
+		var dict_end_col: int = dict_loc.get("col", -1)
+		if dict_end_li >= 0:
+			var ln: String = lines[dict_end_li]
+			var before: String = ln.substr(0, dict_end_col)
+			var last_ch: String = _story_edit_dict_last_char(lines, dict_end_li, dict_end_col)
+			var need_comma: bool = not (last_ch == "{" or last_ch == "," or last_ch == "")
+			var insert_str: String = '"flip": %d' % new_flip_val
+			if need_comma:
+				insert_str = ", " + insert_str
+			lines[dict_end_li] = before + insert_str + ln.substr(dict_end_col)
+			changed = true
+	if changed:
+		var wf := FileAccess.open(abs_path, FileAccess.WRITE)
+		if not wf:
+			return false
+		wf.store_string("\n".join(lines))
+		wf.close()
+	return changed
+
 func _save_story_edit_card(card: PanelContainer, entries: Array, _idx: int):
 	var info: Label = card.find_child("InfoLabel", true, false)
 	if not info:
@@ -3918,6 +3991,14 @@ func _save_story_edit_card(card: PanelContainer, entries: Array, _idx: int):
 		if _save_portrait_layout(reg_img, new_scale, new_x, new_y):
 			PortraitLayoutDB.set_runtime(reg_img, new_scale, new_x, new_y)
 			_apply_save_to_log_entry(last_entry, new_scale, new_x, new_y)
+			# flip は registry に乗らない per-line 値。変更があれば章ソース行へ別途書く。
+			var current_flip: bool = bound_rect.flip_h
+			var logged_flip: bool = last_entry.get("flip_h", false)
+			var flip_changed: bool = current_flip != logged_flip
+			var new_flip_val: int = 1 if current_flip else 0
+			if flip_changed:
+				_save_flip_to_source(src_id, new_flip_val)
+				last_entry["flip_h"] = current_flip
 			# レジストリは画像1つ=1値なので、同じ画像を使う全シーンへ自動反映される。
 			# in-memory の ShowCharacter コマンドにも反映（◀/▶ 再生整合）。
 			for cmd in entries:
@@ -3925,8 +4006,12 @@ func _save_story_edit_card(card: PanelContainer, entries: Array, _idx: int):
 					cmd.portrait_scale = new_scale
 					cmd.position = Vector2(new_x, new_y)
 					cmd.position_mode = "offset"
-			info.text = "[保存] PortraitLayout: %s (scale=%s pos=[%d,%d])" % [reg_img.get_file(), _trim_num(new_scale), new_x, new_y]
-			print("[STORY_EDIT] SAVED registry %s scale=%.2f pos=[%d,%d]" % [reg_img, new_scale, new_x, new_y])
+					# flip は primary（同一 src_id）のみ更新（per-line、波及しない）
+					if flip_changed and ("edit_source_id" in cmd) and cmd.edit_source_id == src_id:
+						cmd.flip = new_flip_val
+			var flip_note: String = (" 反転%s" % ("ON" if current_flip else "OFF")) if flip_changed else ""
+			info.text = "[保存] PortraitLayout: %s (scale=%s pos=[%d,%d])%s" % [reg_img.get_file(), _trim_num(new_scale), new_x, new_y, flip_note]
+			print("[STORY_EDIT] SAVED registry %s scale=%.2f pos=[%d,%d] flip_changed=%s" % [reg_img, new_scale, new_x, new_y, flip_changed])
 			return
 		else:
 			info.text = "[保存NG] PortraitLayout 書き込み失敗"
@@ -4132,14 +4217,16 @@ func _save_story_edit_card(card: PanelContainer, entries: Array, _idx: int):
 const _STORY_CHAPTER_PATHS := [
 	"res://story/chapters/PrologueChapter.gd",
 	"res://story/chapters/Stage1Chapter.gd",
+	"res://story/chapters/Subevent1Chapter.gd",
+	"res://story/chapters/Subevent2Chapter.gd",
+	"res://story/chapters/Subevent3Chapter.gd",
+	"res://story/chapters/Subevent4Chapter.gd",
 	"res://story/chapters/Stage2Chapter.gd",
 	"res://story/chapters/Stage3Chapter.gd",
 	"res://story/chapters/Stage4Chapter.gd",
 	"res://story/chapters/Stage5Chapter.gd",
 	"res://story/chapters/Stage6Chapter.gd",
 	"res://story/chapters/Stage7Chapter.gd",
-	"res://story/chapters/Subevent3Chapter.gd",
-	"res://story/chapters/Subevent4Chapter.gd",
 ]
 
 func _force_reload_story_chapters() -> void:
@@ -4350,15 +4437,15 @@ const EVENT_BATTLE_CHAPTERS := [
 	{"id": "stage1", "name": "ステージ1 チュートリアル（冒険者A戦）", "path": "res://battle/chapters/Stage1BattleChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png", "mode": "tutorial"},
 	# --- イベントバトル ---
 	{"id": "prologue", "name": "プロローグ（マチルダ戦）", "path": "res://battle/chapters/PrologueBattleChapter.gd", "bg": "res://assets/backgrounds/prologue/bg05_prison_cell.png", "mode": "battle"},
+	{"id": "subevent1_boss", "name": "サブイベント1（ベルカ戦）", "path": "res://battle/chapters/BelkaBattleChapter.gd", "bg": "res://assets/backgrounds/prologue/bg06_prison_arena.png", "mode": "battle"},
+	{"id": "subevent2_boss", "name": "サブイベント2（シスター長戦）", "path": "res://battle/chapters/SisterBattleChapter.gd", "bg": "res://assets/backgrounds/subevent2/bg05_church_peep_room.png", "mode": "battle"},
+	{"id": "subevent3_fiona", "name": "サブイベント3（フィオナ戦）", "path": "res://battle/chapters/FionaBattleChapter.gd", "bg": "res://assets/backgrounds/subevent3/bg_noble_room.png", "mode": "battle"},
+	{"id": "subevent4_recep", "name": "サブイベント4（受付嬢戦）", "path": "res://battle/chapters/ReceptionistBattleChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png", "mode": "battle"},
 	{"id": "stage2", "name": "ステージ2（レイラ戦）", "path": "res://battle/chapters/Stage2BattleChapter.gd", "bg": "res://assets/backgrounds/stage2/bg_inn_meeting.png", "mode": "battle"},
 	{"id": "stage3", "name": "ステージ3（マグダレナ戦）", "path": "res://battle/chapters/Stage3BattleChapter.gd", "bg": "res://assets/backgrounds/subevent2/bg02_church_interior.png", "mode": "battle"},
 	{"id": "stage4", "name": "ステージ4（セレス戦）", "path": "res://battle/chapters/Stage4BattleChapter.gd", "bg": "res://assets/backgrounds/stage4/bg_dojo_third.png", "mode": "battle"},
 	{"id": "stage5", "name": "ステージ5（フェリア戦）", "path": "res://battle/chapters/Stage5BattleChapter.gd", "bg": "res://assets/backgrounds/stage5/bg_training_ground.png", "mode": "battle"},
 	{"id": "stage6", "name": "ステージ6（王女戦）", "path": "res://battle/chapters/Stage6BattleChapter.gd", "bg": "res://assets/backgrounds/stage6/bg_royal_hall.png", "mode": "battle"},
-	{"id": "subevent1_boss", "name": "サブイベント1（ベルカ戦）", "path": "res://battle/chapters/BelkaBattleChapter.gd", "bg": "res://assets/backgrounds/prologue/bg06_prison_arena.png", "mode": "battle"},
-	{"id": "subevent2_boss", "name": "サブイベント2（シスター長戦）", "path": "res://battle/chapters/SisterBattleChapter.gd", "bg": "res://assets/backgrounds/subevent2/bg05_church_peep_room.png", "mode": "battle"},
-	{"id": "subevent3_fiona", "name": "サブイベント3（フィオナ戦）", "path": "res://battle/chapters/FionaBattleChapter.gd", "bg": "res://assets/backgrounds/subevent3/bg_noble_room.png", "mode": "battle"},
-	{"id": "subevent4_recep", "name": "サブイベント4（受付嬢戦）", "path": "res://battle/chapters/ReceptionistBattleChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png", "mode": "battle"},
 	# --- ミニゲーム ---
 	{"id": "minigame_smoke", "name": "＜ミニゲーム＞スモークテスト", "path": "res://battle/chapters/MinigameSmokeChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png", "mode": "minigame"},
 	{"id": "minigame_subevent3", "name": "＜ミニゲーム＞サブイベント3（羞恥の儀）", "path": "res://battle/chapters/Subevent3MinigameChapter.gd", "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png", "mode": "minigame"},
