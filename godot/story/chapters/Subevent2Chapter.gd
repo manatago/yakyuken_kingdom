@@ -315,7 +315,7 @@ func _build_subevent2_pre2(b):
 		"appear_duration": 0.8,
 		"appear_distance": 200,
 		"portrait": "res://assets/characters/main/sister_head/clothed/sister_head_clothed_001.png",
-		"portrait_scale": 0.5,
+		"portrait_scale": 0.42,
 		"flip": 0,
 		"position": [0, 60],
 	})
@@ -325,14 +325,14 @@ func _build_subevent2_pre2(b):
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_010.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("！ シスター長...！")
 
-	sister_head.set_portrait("res://assets/characters/main/sister_head/clothed/sister_head_clothed_003.png", {"scale": 0.54, "side": "right", "flip": 0, "position": [20, 140]})
+	sister_head.set_portrait("res://assets/characters/main/sister_head/clothed/sister_head_clothed_003.png", {"scale": 0.42, "side": "right", "flip": 0, "position": [20, 78]})
 	sister_head.band("...その帳簿、見てしまったのね。\n困ったわ。本当に困ったわ。")
 
 	# (旧スケール) hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_054.png", {"scale": 0.76, "side": "left", "flip": 1, "position": [0, 90]})
 	hero.band("証拠は押さえました。この帳簿をギルドに持っていきます。")
 
-	sister_head.set_portrait("res://assets/characters/main/sister_head/clothed/sister_head_clothed_002.png", {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 60]})
+	sister_head.set_portrait("res://assets/characters/main/sister_head/clothed/sister_head_clothed_002.png", {"scale": 0.42, "side": "right", "flip": 0, "position": [0, 60]})
 	sister_head.band("ふふ。持っていく？ ...それは無理よ。")
 
 	b.narrator_band("バタン！と扉が勢いよく開き、見覚えのある番兵たちが踏み込んできた。\n先頭の番兵がサトシを見た瞬間、その動きが止まった。")
@@ -366,14 +366,14 @@ func _build_subevent2_pre2(b):
 	guard.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
 	sister_head.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.3,
-		"portrait": "res://assets/characters/main/sister_head/clothed/sister_head_clothed_003.png", "portrait_scale": 0.5, "flip": 0, "position": [0, 60],
+		"portrait": "res://assets/characters/main/sister_head/clothed/sister_head_clothed_003.png", "portrait_scale": 0.42, "flip": 0, "position": [20, 78],
 	})
 	sister_head.band("...あら、お知り合い？ ...ますます好都合ね。\n番兵の方々、この方、覗き穴の前で...ああ、口に出すのも恐ろしい。")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_057.png", {"scale": 0.67, "side": "left", "flip": 1, "position": [-110, 345]})
 	hero.band("ちょ、違っ...俺は帳簿を──！")
 
-	sister_head.set_portrait("res://assets/characters/main/sister_head/clothed/sister_head_clothed_001.png", {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 60]})
+	sister_head.set_portrait("res://assets/characters/main/sister_head/clothed/sister_head_clothed_001.png", {"scale": 0.42, "side": "right", "flip": 0, "position": [0, 60]})
 	sister_head.band("「帳簿」？ ...何のことかしら。")
 
 	# 番兵に切り替え
@@ -399,7 +399,7 @@ func _build_subevent2_pre2(b):
 	guard.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
 	sister_head.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.3,
-		"portrait": "res://assets/characters/main/sister_head/clothed/sister_head_clothed_005.png", "portrait_scale": 0.5, "flip": 0, "position": [0, 60],
+		"portrait": "res://assets/characters/main/sister_head/clothed/sister_head_clothed_005.png", "portrait_scale": 0.42, "flip": 0, "position": [0, 60],
 	})
 	sister_head.band("...ふふ。いいでしょう。神はきっと、真実を見ていらっしゃるわ。\n番兵の方々、席を外していただけるかしら。\n神聖な裁きに、余人は無用ですもの。")
 
@@ -421,7 +421,7 @@ func _build_subevent2_pre2(b):
 	# 番兵退場後、シスター長を再登場させてバトルへ
 	sister_head.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.4,
-		"portrait": "res://assets/characters/main/sister_head/clothed/sister_head_clothed_005.png", "portrait_scale": 0.5, "flip": 0, "position": [0, 60],
+		"portrait": "res://assets/characters/main/sister_head/clothed/sister_head_clothed_005.png", "portrait_scale": 0.42, "flip": 0, "position": [0, 60],
 	})
 
 	pisuke.band("...ここで勝てば全部ひっくり返せる。やるぞ、サトシ。", {"side": "left"})
@@ -459,7 +459,7 @@ func _build_subevent2_post(b):
 	b.background("res://assets/backgrounds/subevent2/bg02_church_interior.png", 0.0)
 	b.show_band()
 
-	sister_head.set_portrait("res://assets/characters/main/sister_head/clothed/sister_head_clothed_006.png", {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 60]})
+	sister_head.set_portrait("res://assets/characters/main/sister_head/clothed/sister_head_clothed_006.png", {"scale": 0.42, "side": "right", "flip": 0, "position": [0, 60]})
 	sister_head.band("...そんな...。私が...負けるなんて...。")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_036.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
@@ -489,11 +489,11 @@ func _build_subevent2_post(b):
 	sister_a.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
 	sister_head.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.3,
-		"portrait": "res://assets/characters/main/sister_head/clothed/sister_head_clothed_005.png", "portrait_scale": 0.5, "flip": 0, "position": [0, 60],
+		"portrait": "res://assets/characters/main/sister_head/clothed/sister_head_clothed_005.png", "portrait_scale": 0.42, "flip": 0, "position": [0, 60],
 	})
 	sister_head.band("...ふふ。やるじゃない、あなた。\n...まさか、あんな冴えない冒険者に負けるなんて。\n...でもね、覚えておきなさい。")
 
-	sister_head.set_portrait("res://assets/characters/main/sister_head/clothed/sister_head_clothed_002.png", {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 60]})
+	sister_head.set_portrait("res://assets/characters/main/sister_head/clothed/sister_head_clothed_002.png", {"scale": 0.42, "side": "right", "flip": 0, "position": [0, 60]})
 	sister_head.band("この世界で「清廉潔白」なんて幻想よ。\n権力を持てば、誰だって堕ちる。...あなたも、いずれね。")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_052.png", {"scale": 0.74, "side": "left", "flip": 1, "position": [0, 70]})
@@ -714,7 +714,7 @@ func _build_subevent2_rematch(b):
 		"appear_effect": "fade",
 		"appear_duration": 0.5,
 		"portrait": "res://assets/characters/main/sister_head/clothed/sister_head_clothed_001.png",
-		"portrait_scale": 0.5,
+		"portrait_scale": 0.42,
 		"flip": 0,
 		"position": [0, 60],
 	})
