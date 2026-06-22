@@ -166,7 +166,7 @@ func _init():
 				},
 				"farewell_win": {
 					"path": "res://assets/characters/random_battle/char001/clothed/char001_clothed_003.png",
-					"scale": 0.50, "side": "center", "position": [0, 150],
+					"scale": 0.50, "side": "center", "position": [0, 100],
 				},
 				"farewell_lose": {
 					"path": "res://assets/characters/random_battle/char001/clothed/char001_clothed_004.png",

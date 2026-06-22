@@ -23,6 +23,9 @@ playwright-report/
 # Claude Code internal data
 .claude/
 
+# Serena local project state
+.serena/
+
 # OS
 .DS_Store
 Thumbs.db
