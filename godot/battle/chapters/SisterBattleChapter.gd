@@ -104,6 +104,8 @@ func sister_outfit_3(bt):
 		bt.background("res://assets/characters/main/sister_head/clothed/sister_head_undressing_cloth_004.png")
 		bt.bubble("こ、これでいいんですよ・・・ね・・・", {"side": "right"})
 		bt.background("res://assets/backgrounds/subevent2/bg05_church_peep_room.png")
+		# 紙芝居のバブル群を UI 非表示のまま消化してから UI を戻す
+		await bt.wait(0.0)
 		bt.set_battle_ui_visible(true)
 		bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.5, "position": [0, 180]})
 	elif result == "lose":
@@ -148,6 +150,8 @@ func sister_outfit_2(bt):
 		bt.background("res://assets/characters/main/sister_head/clothed/sister_head_undressing_bra_007.png")
 		bt.bubble("はい・・・・・・", {"side": "right"})
 		bt.background("res://assets/backgrounds/subevent2/bg05_church_peep_room.png")
+		# 紙芝居のバブル群を UI 非表示のまま消化してから UI を戻す
+		await bt.wait(0.0)
 		bt.set_battle_ui_visible(true)
 		bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.5, "position": [0, 180]})
 	elif result == "lose":
@@ -215,6 +219,8 @@ func sister_outfit_1(bt):
 		bt.background("res://assets/characters/main/sister_head/clothed/sister_head_undressing_panty_016.png")
 		bt.bubble("（・・・・・・・・）", {"side": "right"})
 		bt.background("res://assets/backgrounds/subevent2/bg05_church_peep_room.png")
+		# 紙芝居のバブル群を UI 非表示のまま消化してから UI を戻す
+		await bt.wait(0.0)
 		bt.set_battle_ui_visible(true)
 		bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.5, "position": [0, 180]})
 	elif result == "lose":
