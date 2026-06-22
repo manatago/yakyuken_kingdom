@@ -103,6 +103,7 @@ var _round_item_effect: String = ""  # "protect_card", "protect_hp", "intimidate
 
 # 結果強制モード（イベントバトル編集用）
 var force_result_mode := false
+var force_result_selector_mode := false
 var _forced_result: String = ""  # "win", "lose", "draw"
 
 # Deck building state
@@ -648,7 +649,7 @@ func select_hand() -> Dictionary:
 	card_label.text = "カードを選択してください"
 	confirm_button.visible = false
 	_show_item_buttons()
-	if force_result_mode:
+	if force_result_selector_mode:
 		_show_force_result_buttons()
 	# Show Bayes Eye during card selection (if chapter supports it)
 	var _has_bayes: bool = _chapter and _chapter.has_method("has_bayes_eye") and _chapter.has_bayes_eye()
@@ -679,9 +680,11 @@ func janken(selection: Dictionary, ai_opts: Dictionary = {}) -> String:
 	var result := _judge_with_grade(player_hand, player_grade, opponent_hand, opponent_grade)
 	# 結果強制モード: 結果に合わせて相手の手も変更
 	# 編集モードでは _forced_result をクリアせず、結果セレクタの選択を次ラウンド以降も維持する
-	if force_result_mode and not _forced_result.is_empty():
+	if (force_result_mode or force_result_selector_mode) and not _forced_result.is_empty():
 		print("[FORCE] original=%s forced=%s" % [result, _forced_result])
 		result = _forced_result
+		if force_result_selector_mode:
+			_forced_result = ""
 		match result:
 			"win":
 				# プレイヤーが勝つ手を相手に出させる

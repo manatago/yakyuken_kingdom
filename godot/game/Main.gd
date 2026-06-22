@@ -256,6 +256,7 @@ var story_scene_instance
 var story_script: DefaultStory
 
 var is_dialogue_active = false
+var _jump_force_result_selector_mode := false
 
 func _ready():
 	# 編集モードで ShowCharacter の呼び出し位置を記録するため、章登録より前に有効化。
@@ -331,6 +332,7 @@ func _on_jump_selected(point: Dictionary):
 	jump_menu.visible = false
 	var label_name: String = point.label
 	var sequence_id: String = point.get("sequence", "prologue")
+	_jump_force_result_selector_mode = _is_battle_jump_label(label_name)
 	# ジャンプポイントの状態を GameState にセット
 	GameState.reset()
 	var state: Dictionary = point.get("state", {})
@@ -426,9 +428,13 @@ func _on_jump_selected(point: Dictionary):
 		elif sequence_id.begins_with("subevent4"):
 			_ensure_subevent_registered("subevent4")
 		await scenario_from(sequence_id, label_name)
+		_jump_force_result_selector_mode = false
 		story_scene_instance.queue_free()
 		story_scene_instance = null
 		title_menu.visible = true
+
+func _is_battle_jump_label(label_name: String) -> bool:
+	return "battle" in label_name
 
 func _on_jump_back():
 	jump_menu.visible = false
@@ -1693,6 +1699,7 @@ func _on_battle_requested(cmd):
 		add_child(mg_battle)
 		mg_battle.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		mg_battle.setup(story_script.get_cast(), story_scene_instance.background_rect.texture, GameState.inventory)
+		mg_battle.force_result_selector_mode = _jump_force_result_selector_mode
 		mg_battle.start_battle(cmd.chapter, false, true)
 		var mg_result: String = await mg_battle.battle_finished
 		mg_battle.queue_free()
@@ -1707,6 +1714,7 @@ func _on_battle_requested(cmd):
 		add_child(tut_battle)
 		tut_battle.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		tut_battle.setup(story_script.get_cast(), story_scene_instance.background_rect.texture, GameState.inventory)
+		tut_battle.force_result_selector_mode = _jump_force_result_selector_mode
 		tut_battle.start_battle(cmd.chapter, true)
 		var tut_result: String = await tut_battle.battle_finished
 		var tut_rewards = tut_battle.get_battle_rewards()
@@ -1736,7 +1744,7 @@ func _on_battle_requested(cmd):
 
 	while true:
 		# バトル実行
-		var battle_result: Dictionary = await _execute_battle(cmd.chapter, bg_tex)
+		var battle_result: Dictionary = await _execute_battle(cmd.chapter, bg_tex, _jump_force_result_selector_mode)
 		final_result = battle_result.result
 
 		if final_result == "win":
@@ -1850,11 +1858,12 @@ func _play_common_lose_narration(cmd) -> void:
 
 # --- バトル実行共通関数 ---
 
-func _execute_battle(chapter: BattleChapterBase, bg_tex: Texture2D) -> Dictionary:
+func _execute_battle(chapter: BattleChapterBase, bg_tex: Texture2D, result_selector_mode := false) -> Dictionary:
 	var battle_instance = battle_scene_scene.instantiate()
 	add_child(battle_instance)
 	battle_instance.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	battle_instance.setup(story_script.get_cast() if story_script else {}, bg_tex, GameState.inventory)
+	battle_instance.force_result_selector_mode = result_selector_mode
 	battle_instance.start_battle(chapter)
 	var result: String = await battle_instance.battle_finished
 
