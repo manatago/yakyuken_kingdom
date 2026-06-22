@@ -12,6 +12,7 @@ signal result_updated(text)
 @onready var title_menu = $TitleMenu
 @onready var new_game_button = $TitleMenu/NewGameButton
 @onready var continue_button = $TitleMenu/ContinueButton
+@onready var event_battle_button = $TitleMenu/EventBattleButton
 @onready var edit_mode_button = $TitleMenu/EditModeButton
 @onready var jump_menu = $JumpMenu
 @onready var jump_list = $JumpMenu/JumpScroll/JumpList
@@ -267,6 +268,7 @@ func _ready():
 	GameState.init_default_inventory()
 	new_game_button.pressed.connect(_on_new_game)
 	continue_button.pressed.connect(_on_continue)
+	event_battle_button.pressed.connect(_on_title_event_battle_mode)
 	edit_mode_button.pressed.connect(_on_edit_mode)
 	back_button.pressed.connect(_on_jump_back)
 	title_menu.visible = true
@@ -4468,22 +4470,91 @@ signal _event_chapter_selected(index: int)
 
 func _on_event_battle_edit_mode():
 	jump_menu.visible = false
-	await _show_event_chapter_select()
+	await _show_event_chapter_select(false, false)
 
-func _show_event_chapter_select():
+func _on_title_event_battle_mode():
+	title_menu.visible = false
+	jump_menu.visible = false
+	await _show_standalone_event_battle_select()
+
+func _get_event_chapter_options(only_battles: bool) -> Array:
+	var result: Array = []
+	for ch_info in EVENT_BATTLE_CHAPTERS:
+		if only_battles and String(ch_info.get("mode", "battle")) != "battle":
+			continue
+		result.append(ch_info)
+	return result
+
+func _show_standalone_event_battle_select():
+	var chapter_options := _get_event_chapter_options(true)
 	for child in jump_list.get_children():
 		child.queue_free()
 	var back_btn := Button.new()
 	back_btn.text = "← 戻る"
 	back_btn.add_theme_font_size_override("font_size", 20)
 	back_btn.pressed.connect(func():
-		_show_edit_menu())
+		_event_chapter_selected.emit(-1))
 	jump_list.add_child(back_btn)
 	var sep := HSeparator.new()
 	jump_list.add_child(sep)
 
-	for i in range(EVENT_BATTLE_CHAPTERS.size()):
-		var ch_info: Dictionary = EVENT_BATTLE_CHAPTERS[i]
+	for i in range(chapter_options.size()):
+		var ch_info: Dictionary = chapter_options[i]
+		var btn := Button.new()
+		btn.text = ch_info.name
+		btn.add_theme_font_size_override("font_size", 20)
+		var idx: int = i
+		btn.pressed.connect(func(): _event_chapter_selected.emit(idx))
+		jump_list.add_child(btn)
+	jump_menu.visible = true
+
+	while true:
+		var selected_idx: int = await _event_chapter_selected
+		if selected_idx < 0:
+			jump_menu.visible = false
+			title_menu.visible = true
+			return
+		jump_menu.visible = false
+		await _run_event_battle_standalone(chapter_options[selected_idx])
+		for child2 in jump_list.get_children():
+			child2.queue_free()
+		var back_btn2 := Button.new()
+		back_btn2.text = "← 戻る"
+		back_btn2.add_theme_font_size_override("font_size", 20)
+		back_btn2.pressed.connect(func():
+			_event_chapter_selected.emit(-1))
+		jump_list.add_child(back_btn2)
+		var sep2 := HSeparator.new()
+		jump_list.add_child(sep2)
+		for i2 in range(chapter_options.size()):
+			var ch_info2: Dictionary = chapter_options[i2]
+			var btn2 := Button.new()
+			btn2.text = ch_info2.name
+			btn2.add_theme_font_size_override("font_size", 20)
+			var idx2: int = i2
+			btn2.pressed.connect(func(): _event_chapter_selected.emit(idx2))
+			jump_list.add_child(btn2)
+		jump_menu.visible = true
+
+func _show_event_chapter_select(only_battles := false, return_to_title := false):
+	var chapter_options := _get_event_chapter_options(only_battles)
+	for child in jump_list.get_children():
+		child.queue_free()
+	var back_btn := Button.new()
+	back_btn.text = "← 戻る"
+	back_btn.add_theme_font_size_override("font_size", 20)
+	back_btn.pressed.connect(func():
+		if return_to_title:
+			jump_menu.visible = false
+			title_menu.visible = true
+		else:
+			_show_edit_menu())
+	jump_list.add_child(back_btn)
+	var sep := HSeparator.new()
+	jump_list.add_child(sep)
+
+	for i in range(chapter_options.size()):
+		var ch_info: Dictionary = chapter_options[i]
 		var btn := Button.new()
 		btn.text = ch_info.name
 		btn.add_theme_font_size_override("font_size", 20)
@@ -4495,7 +4566,7 @@ func _show_event_chapter_select():
 	while true:
 		var selected_idx: int = await _event_chapter_selected
 		jump_menu.visible = false
-		await _run_event_battle_edit(EVENT_BATTLE_CHAPTERS[selected_idx])
+		await _run_event_battle_edit(chapter_options[selected_idx])
 		# チャプター選択に戻る
 		for child2 in jump_list.get_children():
 			child2.queue_free()
@@ -4503,12 +4574,16 @@ func _show_event_chapter_select():
 		back_btn2.text = "← 戻る"
 		back_btn2.add_theme_font_size_override("font_size", 20)
 		back_btn2.pressed.connect(func():
-			_show_edit_menu())
+			if return_to_title:
+				jump_menu.visible = false
+				title_menu.visible = true
+			else:
+				_show_edit_menu())
 		jump_list.add_child(back_btn2)
 		var sep2 := HSeparator.new()
 		jump_list.add_child(sep2)
-		for i2 in range(EVENT_BATTLE_CHAPTERS.size()):
-			var ch_info2: Dictionary = EVENT_BATTLE_CHAPTERS[i2]
+		for i2 in range(chapter_options.size()):
+			var ch_info2: Dictionary = chapter_options[i2]
 			var btn2 := Button.new()
 			btn2.text = ch_info2.name
 			btn2.add_theme_font_size_override("font_size", 20)
@@ -4516,6 +4591,20 @@ func _show_event_chapter_select():
 			btn2.pressed.connect(func(): _event_chapter_selected.emit(idx2))
 			jump_list.add_child(btn2)
 		jump_menu.visible = true
+
+func _run_event_battle_standalone(ch_info: Dictionary):
+	GameState.reset()
+	GameState.init_default_inventory()
+	GameState.money = 1000
+	if not story_script:
+		story_script = DefaultStoryScript.new()
+
+	var script_res = _load_script_fresh(ch_info.path)
+	if not script_res:
+		return
+	var chapter = script_res.new()
+	var bg_tex = load(ch_info.bg) if not ch_info.bg.is_empty() else null
+	var _battle_result: Dictionary = await _execute_battle(chapter, bg_tex, true)
 
 func _run_event_battle_edit(ch_info: Dictionary):
 	GameState.reset()
