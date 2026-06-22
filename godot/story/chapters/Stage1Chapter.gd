@@ -72,10 +72,10 @@ func _build_stage1(b):
 	pisuke.band("いわば、システムが正常に認識できない「バグ」みたいな存在なんだよ。")
 
 	# バグ呼ばわりへのリアクション（出会いの締め）
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_026.png", {"scale": 0.53, "side": "left", "flip": 0, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_026.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("バ、バグ！？ さっきから言いたい放題だな、お前...！")
 
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_017.png", {"scale": 0.53, "side": "left", "flip": 0, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_017.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("（...いや、待てよ。「システムが認識できない」ってことは、\n裏を返せば、この世界のルールに縛られないってことか...？）")
 
 	pisuke.set_portrait("res://assets/characters/main/pisuke/default/pisuke_default_002.png", {"scale": 0.2, "side": "right", "flip": 1, "position": [0, -400]})

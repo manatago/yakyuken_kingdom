@@ -83,7 +83,7 @@ func _build_subevent2_pre1(b):
 	hero.band("え？ いえ、行ってませ...")
 
 	# (旧スケール) hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_011.png", {"scale": 0.64, "side": "left", "flip": 1, "position": [-90, 290]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_011.png", {"scale": 0.60, "side": "left", "flip": 1, "position": [-90, 200]})
 	hero.band("（...待て。三日前、ピー助に「妙な電波を感知した」と\n教会の裏手まで引きずり回されたよな...？）")
 
 	pisuke.band("...おい。顔がギクッてなってるぞ。", {"side": "left"})
@@ -96,7 +96,7 @@ func _build_subevent2_pre1(b):
 
 	pisuke.band("...俺は他人には見えてねえからな。\n言えば言うほど、お前は頭のおかしい奴に見えるぞ。", {"side": "left"})
 
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_047.png", {"scale": 0.67, "side": "left", "flip": 1, "position": [-80, 350]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_047.png", {"scale": 0.60, "side": "left", "flip": 1, "position": [-80, 200]})
 	hero.band("（詰んだ...！）")
 
 	receptionist.band("...前回の盗賊団のアジトの件、覚えていらっしゃいますか。\nサトシ様が「証拠品」として持ち帰ろうとしたあの...コレクション。")
@@ -123,7 +123,7 @@ func _build_subevent2_pre1(b):
 	receptionist.band("...わかりました。一旦、信じます。\n...ただし、条件があります。")
 
 	# (旧スケール) hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_013.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_042.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_042.png", {"scale": 0.50, "side": "left", "flip": 1, "position": [0, 0]})
 	hero.band("一旦？ 条件？")
 
 	receptionist.band("この件、サトシ様に調査していただきます。\n...正式な依頼ではなく、非公式で。")
@@ -145,7 +145,7 @@ func _build_subevent2_pre1(b):
 	receptionist.set_portrait("res://assets/characters/main/receptionist/clothed/receptionist_clothed_007.png", {"scale": 0.45, "side": "right", "flip": 0, "position": [0, 0]})
 	receptionist.band("...ご理解いただけて何よりです。")
 
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_064.png", {"scale": 0.64, "side": "left", "flip": 1, "position": [-90, 290]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_064.png", {"scale": 0.60, "side": "left", "flip": 1, "position": [-90, 200]})
 	hero.band("（目が、一切、笑ってない。\n...これ、断ったら本気で通報されるやつだ...。）")
 
 	receptionist.leave({
@@ -230,7 +230,7 @@ func _build_subevent2_pre1(b):
 	pisuke.band("「プレミアム礼拝サービス」...名前だけは上品だな。\nやってることは最低だが。", {"side": "left"})
 
 	# (旧スケール) hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_011.png", {"scale": 0.64, "side": "left", "flip": 1, "position": [-90, 290]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_011.png", {"scale": 0.60, "side": "left", "flip": 1, "position": [-90, 200]})
 	hero.band("それで献金額が異常に増えてたのか...。\nシスターたちは知ってるんですか？")
 
 	sister_a.band("...薄々気づいている人もいます。でも、シスター長は教会の最高権力者です。\n逆らえば破門されてしまう...。")
@@ -576,7 +576,7 @@ func _build_subevent2_post(b):
 	receptionist.band("...この件は、一旦、保留にいたします。\n...あくまで、「一旦」、です。")
 
 	# (旧スケール) hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_015.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_015.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_015.png", {"scale": 0.50, "side": "left", "flip": 1, "position": [0, 0]})
 	hero.band("た、助かっ──")
 
 	b.narrator_band("引き出しを閉める音。\n受付嬢は続けて、別の台帳を取り出して開いた。")
@@ -618,7 +618,7 @@ func _build_subevent2_post(b):
 
 	receptionist.band("...どうぞ。")
 
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_033.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_033.png", {"scale": 0.50, "side": "left", "flip": 1, "position": [0, 0]})
 	hero.band("（...教会の不正を暴いた英雄のはずなのに。\nなんで俺の犯罪者リストだけが充実していくんだ...。）")
 
 	receptionist.leave({
@@ -668,7 +668,7 @@ func _build_subevent2_battle_lose(b):
 
 	b.narrator_band("ピー助の機転で、サトシは地下牢を抜け出した。\n裏路地に身を潜め、夜が明けるのを待つ。\n教会側はサトシの脱獄に気付いていないらしい。")
 
-	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_011.png", {"scale": 0.64, "side": "left", "flip": 1, "position": [-90, 290]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_011.png", {"scale": 0.60, "side": "left", "flip": 1, "position": [-90, 200]})
 	hero.band("...一旦、ギルドに戻る。\nカードは一部失った。立て直してから、もう一度あの聖女を叩く。")
 
 	b.narrator_band("サトシは人通りに紛れ、ギルドホームへ戻った。")

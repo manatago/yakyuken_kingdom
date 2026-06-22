@@ -158,7 +158,7 @@ func _init():
 			"portraits": {
 				"encounter": {
 					"path": "res://assets/characters/random_battle/char001/clothed/char001_clothed_001.png",
-					"scale": 0.70, "side": "center", "position": [0, -180],
+					"scale": 0.55, "side": "center", "position": [0, 180],
 				},
 				"battle": {
 					"path": "res://assets/characters/random_battle/char001/clothed/char001_clothed_001.png",
@@ -166,11 +166,11 @@ func _init():
 				},
 				"farewell_win": {
 					"path": "res://assets/characters/random_battle/char001/clothed/char001_clothed_003.png",
-					"scale": 0.8, "side": "center", "position": [0, -30],
+					"scale": 0.50, "side": "center", "position": [0, 150],
 				},
 				"farewell_lose": {
 					"path": "res://assets/characters/random_battle/char001/clothed/char001_clothed_004.png",
-					"scale": 0.53, "side": "center", "position": [0, 200],
+					"scale": 0.55, "side": "center", "position": [0, 180],
 				},
 			},
 			"lines": {
