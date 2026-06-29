@@ -4,8 +4,17 @@ extends BattleChapterBase
 # 呪いの加護度ゲージを0にすれば成功、130で失敗。
 # docs/scenarios/subevent3_scenario.txt 準拠。
 
-const ARMOR_PORTRAIT := "res://assets/characters/main/fiona/clothed/fiona_clothed_001.png"
+const ARMOR_PORTRAIT := "res://assets/characters/main/fiona/clothed/fiona_clothed_001.png"  # 01 idle_neutral (デフォルト/中立)
+const FIONA_GRATEFUL := "res://assets/characters/main/fiona/clothed/fiona_clothed_003.png"  # 03 感謝・優しさへの反応 (delta +10 系)
+const FIONA_SHY      := "res://assets/characters/main/fiona/clothed/fiona_clothed_004.png"  # 04 もじもじ羞恥 (delta -5 系)
+const FIONA_SHOCK    := "res://assets/characters/main/fiona/clothed/fiona_clothed_008.png"  # 08 ピー助禁忌追撃 初発
+const FIONA_ANGUISH  := "res://assets/characters/main/fiona/clothed/fiona_clothed_009.png"  # 09 ピー助追撃二の矢
+const FIONA_SOBBING  := "res://assets/characters/main/fiona/clothed/fiona_clothed_011.png"  # 11 嗚咽崩壊 (周回減衰時)
 const FIONA_ID := "fiona_armor"
+
+# 注: setup_scene と _apply_choice/_apply_pisuke の set_portrait で使う共通レイアウト。
+# 16 種の立ち絵はすべて同じスケール/位置で揃えてある前提。
+const _FIONA_LAYOUT := {"scale": 0.55, "side": "center", "position": [0, 37]}
 
 const GAUGE_MAX := 130
 const GAUGE_START := 100      # 儀式開始時点の素の加護度
@@ -267,7 +276,7 @@ signal _choice_emitted(idx: int)
 
 func setup_scene(bt):
 	var fiona = bt.character(FIONA_ID)
-	fiona.set_portrait(ARMOR_PORTRAIT, {"scale": 0.55, "side": "center", "position": [0, 37]})
+	fiona.set_portrait(ARMOR_PORTRAIT, _FIONA_LAYOUT)
 
 func minigame(bt):
 	_gauge = GAUGE_START
@@ -329,6 +338,14 @@ func _apply_choice(bt, idx: int):
 		bt.set_bubble_side("bottom-left")
 		bt.narrator_band("サトシ:\n%s" % choice.satoshi, "satoshi", satoshi_ico)
 		await bt.wait(0.0)
+		# delta に応じてフィオナ立ち絵を切り替え
+		var fiona_handle = bt.character(FIONA_ID)
+		if delta > 0:
+			fiona_handle.set_portrait(FIONA_GRATEFUL, _FIONA_LAYOUT)
+		elif delta < 0:
+			fiona_handle.set_portrait(FIONA_SHY, _FIONA_LAYOUT)
+		else:
+			fiona_handle.set_portrait(ARMOR_PORTRAIT, _FIONA_LAYOUT)
 		bt.set_bubble_side("right")
 		bt.narrator_band("フィオナ:\n%s" % choice.fiona, "fiona", ICO_FIONA_DEFAULT)
 		await bt.wait(0.0)
@@ -368,18 +385,26 @@ func _apply_pisuke(bt):
 
 	var line: Dictionary = PISUKE_LINES[pick]
 
+	var fiona_handle = bt.character(FIONA_ID)
 	# サトシが言いかけて乗っ取られる演出
 	bt.set_bubble_side("bottom-left")
 	bt.narrator_band("サトシ:\n...えっと──", "satoshi", ICO_SATOSHI_NERVOUS)
 	await bt.wait(0.0)
 	bt.narrator_band("ピー助（サトシの声に被せて）:\n%s" % line.opening, "pisuke")
 	await bt.wait(0.0)
+	# ピー助の禁忌追撃 初発 → 衝撃で後ずさり
+	fiona_handle.set_portrait(FIONA_SHOCK, _FIONA_LAYOUT)
 	bt.set_bubble_side("right")
 	bt.narrator_band("フィオナ:\n%s" % line.fiona, "fiona", ICO_FIONA_DEFAULT)
 	await bt.wait(0.0)
 	bt.set_bubble_side("bottom-left")
 	bt.narrator_band("ピー助（畳みかけて）:\n%s" % line.followup, "pisuke")
 	await bt.wait(0.0)
+	# 二の矢: 周回 0 (初回) は嗚咽崩壊、減衰した周回では傷ついた抗議どまり
+	if _pisuke_cycle == 0:
+		fiona_handle.set_portrait(FIONA_SOBBING, _FIONA_LAYOUT)
+	else:
+		fiona_handle.set_portrait(FIONA_ANGUISH, _FIONA_LAYOUT)
 	bt.set_bubble_side("right")
 	bt.narrator_band("フィオナ:\n%s" % line.fiona2, "fiona", ICO_FIONA_DEFAULT)
 	await bt.wait(0.0)

@@ -27,7 +27,15 @@ const RECEP_NORMAL := "res://assets/characters/main/receptionist/clothed/recepti
 const RECEP_COLD := "res://assets/characters/main/receptionist/clothed/receptionist_clothed_007.png"
 const RECEP_JIT := "res://assets/characters/main/receptionist/clothed/receptionist_clothed_008.png"
 const RECEP_BUSINESS := "res://assets/characters/main/receptionist/clothed/receptionist_clothed_006.png"
-const FIONA := "res://assets/characters/main/fiona/clothed/fiona_clothed_001.png"
+const FIONA := "res://assets/characters/main/fiona/clothed/fiona_clothed_001.png"  # 01 idle_neutral (default)
+const FIONA_TIMID_AGREE   := "res://assets/characters/main/fiona/clothed/fiona_clothed_002.png"  # 02 場面3 同意
+const FIONA_GRATEFUL      := "res://assets/characters/main/fiona/clothed/fiona_clothed_003.png"  # 03 場面4 感謝
+const FIONA_CONFUSED      := "res://assets/characters/main/fiona/clothed/fiona_clothed_005.png"  # 05 場面6 ...は？
+const FIONA_EXHAUSTED     := "res://assets/characters/main/fiona/clothed/fiona_clothed_006.png"  # 06 場面6 はぁ...はぁ...
+const FIONA_PANIC_DENY    := "res://assets/characters/main/fiona/clothed/fiona_clothed_007.png"  # 07 場面6 けして...
+const FIONA_SCREAM        := "res://assets/characters/main/fiona/clothed/fiona_clothed_010.png"  # 10 場面7 絶叫
+const FIONA_SOBBING       := "res://assets/characters/main/fiona/clothed/fiona_clothed_011.png"  # 11 場面7 嗚咽 + 敗北
+const FIONA_COLD_REJECT   := "res://assets/characters/main/fiona/clothed/fiona_clothed_012.png"  # 12 敗北 もう、結構です
 const SEBAS := "res://assets/characters/mob/sebas/default/sebas_default_001.png"
 const GOREN := "res://assets/characters/mob/goren/default/goren_default_001.png"
 
@@ -69,7 +77,7 @@ func _build_subevent3_pre(b):
 	receptionist.leave({"exit_effect": "fade", "exit_duration": 0.3, "wait_for_exit": false})
 	fiona.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": FIONA, "portrait_scale": 0.5, "position": [0, 30],
+		"portrait": FIONA, "portrait_scale": 0.40, "position": [0, 30],
 	})
 
 	b.narrator_band("フィオナお嬢様。漆黒の呪いの鎧に身を包まれている。")
@@ -279,7 +287,7 @@ func _build_subevent3_visit(b):
 
 	sebas.band("...お嬢様。この冒険者の方にお任せしたく。")
 
-	fiona.set_portrait(FIONA, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 30]})
+	fiona.set_portrait(FIONA_TIMID_AGREE, {"scale": 0.40, "side": "right", "flip": 0, "position": [0, 30]})
 	fiona.band("...う、うん...セバスが、そう言うなら...。")
 
 	sebas.set_portrait(SEBAS, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 0]})
@@ -296,7 +304,7 @@ func _build_subevent3_visit(b):
 
 	b.narrator_band("水晶球の漆黒が、さらに深くなる。呪いの加護度が上昇した。（100 → 110）")
 
-	fiona.set_portrait(FIONA, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 30]})
+	fiona.set_portrait(FIONA_GRATEFUL, {"scale": 0.40, "side": "right", "flip": 0, "position": [0, 30]})
 	fiona.band("...あ、ありがとう...お優しい方ですね...。")
 
 	sebas.set_portrait(SEBAS, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 0]})
@@ -313,7 +321,7 @@ func _build_subevent3_visit(b):
 	b.show_band()
 	b.narrator_band("水晶球の光が強まり、鎧の表面に深い亀裂が走った。\nしかし、完全崩壊には至らない。")
 
-	fiona.set_portrait(FIONA, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 30]})
+	fiona.set_portrait(FIONA_EXHAUSTED, {"scale": 0.40, "side": "right", "flip": 0, "position": [0, 30]})
 	fiona.band("はぁ...はぁ...。")
 
 	pisuke.band("...ダメだ、個室じゃ最後の一押しが届かねえ。呪いはまだ半分残ってる。\n仕方ねえ。伝声塔、起動するぜ。", {"side": "left"})
@@ -326,7 +334,7 @@ func _build_subevent3_visit(b):
 	hero.set_portrait(HERO_RESOLVE, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...フィオナさん。この水晶球、伝声塔接続モードに切り替えました。\n今から、王国中の伝声塔で、あなたの心の声が同時中継されます。")
 
-	fiona.set_portrait(FIONA, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 30]})
+	fiona.set_portrait(FIONA_CONFUSED, {"scale": 0.40, "side": "right", "flip": 0, "position": [0, 30]})
 	fiona.band("...は？")
 
 	hero.set_portrait(HERO_PANIC, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -335,7 +343,7 @@ func _build_subevent3_visit(b):
 	sebas.set_portrait(SEBAS, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 0]})
 	sebas.band("お、お、お待ちくださいませ──！？")
 
-	fiona.set_portrait(FIONA, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 30]})
+	fiona.set_portrait(FIONA_PANIC_DENY, {"scale": 0.40, "side": "right", "flip": 0, "position": [0, 30]})
 	fiona.band("...い、いや...けして...けして...！")
 
 	hero.band("止めろピー助！ 本当に止めろ！")
@@ -370,7 +378,7 @@ func _build_subevent3_visit(b):
 
 	b.narrator_band("水晶球を通じて広場のスクリーンと王国中の伝声塔に、その姿が鮮明に投影される。")
 
-	fiona.set_portrait(FIONA, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 30]})
+	fiona.set_portrait(FIONA_SCREAM, {"scale": 0.40, "side": "right", "flip": 0, "position": [0, 30]})
 	fiona.band("いや...いや、いやぁぁぁ...！")
 
 	sebas.set_portrait(SEBAS, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 0]})
@@ -389,7 +397,7 @@ func _build_subevent3_visit(b):
 
 	sebas.band("...ごく一部、でございます...ごく一部の、全、国、民、で...。")
 
-	fiona.set_portrait(FIONA, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 30]})
+	fiona.set_portrait(FIONA_SOBBING, {"scale": 0.40, "side": "right", "flip": 0, "position": [0, 30]})
 	fiona.band("全国民じゃないですかぁぁ...。")
 
 	pisuke.band("...お、見つけた見つけた、停止スイッチ。", {"side": "left"})
@@ -468,6 +476,7 @@ func _build_subevent3_minigame_lose(b):
 
 	b.narrator_band("水晶球は完全に漆黒に染まり、ピシリと小さなヒビが走った。\nフィオナの心は完全に閉ざされ、儀式は崩壊した。")
 
+	fiona.set_portrait(FIONA_COLD_REJECT, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 30]})
 	fiona.band("...もう、結構です。...今日は、お引き取りください。")
 
 	sebas.band("...本日は、ここまでに。\n...ご準備が整いましたら、改めてお越しくださいませ。")

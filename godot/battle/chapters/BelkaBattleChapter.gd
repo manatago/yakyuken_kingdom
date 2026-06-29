@@ -87,6 +87,8 @@ func belka_outfit_3(bt):
 		bt.background("res://assets/characters/main/belka/clothed/belka_undressing_cloth_003.png")
 		bt.bubble("（もう負けられない・・・・）", {"side": "right"})
 		bt.background("res://assets/backgrounds/prologue/bg06_prison_arena.png")
+		# 紙芝居のバブル群を UI 非表示のまま消化してから UI を戻す
+		await bt.wait(0.0)
 		bt.set_battle_ui_visible(true)
 		bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.55, "position": [0, 180]})
 	elif result == "lose":
@@ -132,6 +134,8 @@ func belka_outfit_2(bt):
 		bt.background("res://assets/characters/main/belka/clothed/belka_undressing_bra_007.png")
 		bt.bubble("お前どんだけおっぱい好きなんだよ・・・・", {"side": "right"})
 		bt.background("res://assets/backgrounds/prologue/bg06_prison_arena.png")
+		# 紙芝居のバブル群を UI 非表示のまま消化してから UI を戻す
+		await bt.wait(0.0)
 		bt.set_battle_ui_visible(true)
 		bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.55, "position": [0, 180]})
 	elif result == "lose":
@@ -197,6 +201,8 @@ func belka_outfit_1(bt):
 		bt.background("res://assets/characters/main/belka/clothed/belka_undressing_panty_016.png")
 		bt.bubble("（凄ぇ・・・・先端着衣の威力・・・\nパネぇっす・・・・・）", {"side": "left"})
 		bt.background("res://assets/backgrounds/prologue/bg06_prison_arena.png")
+		# 紙芝居のバブル群を UI 非表示のまま消化してから UI を戻す
+		await bt.wait(0.0)
 		bt.set_battle_ui_visible(true)
 		bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.55, "position": [0, 180]})
 	elif result == "lose":
