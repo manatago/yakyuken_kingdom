@@ -28,6 +28,7 @@ const RECEP_COLD := "res://assets/characters/main/receptionist/clothed/reception
 const RECEP_JIT := "res://assets/characters/main/receptionist/clothed/receptionist_clothed_008.png"
 const RECEP_BUSINESS := "res://assets/characters/main/receptionist/clothed/receptionist_clothed_006.png"
 const FIONA := "res://assets/characters/main/fiona/clothed/fiona_clothed_001.png"  # 01 idle_neutral (default)
+const FIONA_INTRO_ARMOR := "res://assets/characters/main/fiona/clothed/fiona_clothed_017.png"  # 17 場面1 呪いの鎧登場
 const FIONA_TIMID_AGREE   := "res://assets/characters/main/fiona/clothed/fiona_clothed_002.png"  # 02 場面3 同意
 const FIONA_GRATEFUL      := "res://assets/characters/main/fiona/clothed/fiona_clothed_003.png"  # 03 場面4 感謝
 const FIONA_CONFUSED      := "res://assets/characters/main/fiona/clothed/fiona_clothed_005.png"  # 05 場面6 ...は？
@@ -77,10 +78,10 @@ func _build_subevent3_pre(b):
 	receptionist.leave({"exit_effect": "fade", "exit_duration": 0.3, "wait_for_exit": false})
 	fiona.appear({
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.5,
-		"portrait": FIONA, "portrait_scale": 0.40, "position": [0, 30],
+		"portrait": FIONA_INTRO_ARMOR, "portrait_scale": 0.40, "position": [0, 30],
 	})
 
-	b.narrator_band("フィオナお嬢様。漆黒の呪いの鎧に身を包まれている。")
+	b.narrator_band("美しいシルバーの髪の女の子に似合わない、黒い鎧を纏っている。")
 
 	# セバスが代弁
 	fiona.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
@@ -88,10 +89,12 @@ func _build_subevent3_pre(b):
 		"side": "right", "appear_effect": "fade", "appear_duration": 0.3,
 		"portrait": SEBAS, "portrait_scale": 0.5, "position": [0, 30],
 	})
-	sebas.band("...失礼いたします。\n当家のお嬢様の呪いを解いてくださる方を。報酬は金貨百枚。")
+	sebas.band("...失礼いたします。\n当家のお嬢様の呪いを解いてくださる方を。\n報酬は金貨百枚用意しております。")
+
+	b.narrator_band("ギルドは一瞬静まり返り、皆が目を逸らす。")
 
 	hero.set_portrait(HERO_PUZZLE, {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
-	hero.band("...なんで、みんな逃げるんですか？")
+	hero.band("...なんで、みんな目を逸らすんですか？")
 
 	# 受付嬢が事情を説明
 	sebas.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
@@ -101,10 +104,17 @@ func _build_subevent3_pre(b):
 		"flip": 0,
 		"position": [0, 0],
 	})
-	receptionist.band("...エドモンド家ご令嬢フィオナ様でございます。\n一月前、呪いの鎧「ヴァニティ・チェイン」に閉じ込められて以来、\n抜け出せずにおられます。\nすでに魔術師二十人・冒険者三十人が野球拳で挑戦しましたが、\n...全員、逆に脱がされて帰っております。")
+	receptionist.band("...エドモンド家ご令嬢フィオナ様でございます。")
+
+	receptionist.band("一月前、呪いの鎧「ヴァニティ・チェイン」に閉じ込められて以来、\n抜け出せずにおられます。\nすでに魔術師二十人・冒険者三十人が野球拳で挑戦しましたが、...")
+	
+	hero.band("ダメだったんですか？")
+	
+	receptionist.band("...全員、逆に脱がされて帰っております。")
+
 
 	hero.set_portrait(HERO_SHOCK, {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
-	hero.band("あの鎧、野球拳そんなに強いんですか！？")
+	hero.band("野球拳そんなに強いんですか！？")
 
 	receptionist.band("呪いが装着者に「絶対に勝つ」ことを強制するそうで。\nフィオナ様ご本人は脱ぎたがっていらっしゃるのに、\n自ら負けることもできないご様子でございます。")
 
@@ -196,19 +206,41 @@ func _build_subevent3_blacksmith(b):
 
 	b.narrator_band("煤けた看板の下、扉を押すと鉄と石炭の匂いが押し寄せる。\n奥の火床の前に、白髪の老鍛冶が腰を下ろしていた。")
 
-	goren.band("...「ヴァニティ・チェイン」、のぅ。懐かしい名前じゃ。\n儂も若い頃、「真言の水晶球」で色々と遊んだことがある。")
+	goren.band("...「真言の水晶球」、のぅ。懐かしい名前じゃ。\n儂も若い頃、色々と遊んだことがある。")
 
 	hero.set_portrait(HERO_PUZZLE, {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
-	hero.band("遊んだ？ ...その後、どうなったんですか？")
+	hero.band("遊んだ？ ...遊び道具なんですか？")
+	
+	goren.band("本来は戦争のための道具じゃ。\n戦争の時に現場の真実を映像と音声で伝えることができる。")
+	
+	hero.band("便利じゃないですか。\n他にも色々使えそうですけど...")
+	
+	goren.band("映像はともかく、\n本人の心の声まで伝えてしまうのが問題での")
+	
+	hero.band("だから「真言」か...なるほど。")
+	
+	hero.band("で、それでどうやって遊んだんですか？")
 
-	goren.band("...女房の心を広場で生中継した。\n翌朝、工房は全焼しておった。女房の手でな。\n...「羞恥は取り返しがつかん」。ゆめゆめ、忘れるな。")
+	goren.band("...風呂場に仕掛けて、娘の成長を確認した。")
+	
+	hero.band("（ど変態じゃねーか。）\nなるほど。そういう使い方もできるんですね。")
+	
+	goren.band("だが気をつけろ...バレたらどえらいことになるぞ。")
+	
+	hero.band("ひょっとして娘さんにバレたんですか？")
+	
+	goren.band("...ああ。\n怒り狂って出て行った。\nそれ以来、娘とは会えとらん。")
+	
+	hero.band("（淡々と話すな。この変態...）")
+	
+	hero.band("(話を進めよう)\nで、その水晶があると聞いたんですが...")
 
 	b.narrator_band("ゴルンは棚から青白い光の水晶球を取り出し、サトシに差し出した。")
 
-	goren.band("これが「真言の水晶球」。装着者の心の声を映像化する魔具じゃ。\nこれで鎧の精神防御を突破できる。\n\n「伝声塔接続モード」を起動すれば、王都広場のスクリーンと\n王国中の主要通りの伝声塔に映像が同時中継される。\n使いどころには気をつけよ。")
+	goren.band("これが「真言の水晶球」じゃ。\nこれで精神防御はなんでも突破できる。\n\n「伝声塔接続モード」を起動すれば、王都広場のスクリーンと\n王国中の主要通りの伝声塔に映像が同時中継される。\n使いどころには気をつけろ。")
 
 	hero.set_portrait(HERO_SHOCK, {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
-	hero.band("王国中に中継って...使うんですか！？")
+	hero.band("王国中に中継って...使い所あるのかなぁ")
 
 	pisuke.band("（便利じゃねえか。）", {"side": "left"})
 
@@ -217,7 +249,7 @@ func _build_subevent3_blacksmith(b):
 
 	pisuke.band("気のせいだ。", {"side": "left"})
 
-	goren.band("...手順は守れよ。\n①羞恥の儀で呪いを弱めてから、②野球拳を挑む。\n逆にした者は皆、脱がされて帰ってきた。")
+	goren.band("...いいか、くれぐれも使い方を間違えるなよ")
 
 # =========================================================
 # 場面3+4+5+6+7: エドモンド邸〜羞恥の儀〜伝声塔起動〜フィオナ戦〜鎧崩壊
@@ -243,7 +275,7 @@ func _build_subevent3_visit(b):
 		"portrait": SEBAS, "portrait_scale": 0.5, "position": [0, 0],
 	})
 
-	b.narrator_band("エドモンド邸の奥、来客の通らぬ一室。\nエドモンド卿本人は領地出張中で、セバスが立ち会う。\nフィオナお嬢様も同席（呪いの鎧姿）。")
+	b.narrator_band("エドモンド邸の奥の一室。")
 
 	sebas.band("...して、お若いの。具体的には何をなさるおつもりですか？")
 
@@ -252,25 +284,31 @@ func _build_subevent3_visit(b):
 
 	sebas.band("...羞恥を、与える？")
 
-	hero.band("え、えっと、順を追って説明します。\nまず、呪いの鎧は「野球拳で装着者を絶対に勝たせる」仕組みで、\nお嬢様が脱ぎたくても自分で負けられないんです。")
+	hero.band("え、えっと、順を追って説明します。\nまず、呪いの鎧は「野球拳で装着者を絶対に勝たせる」能力です。")
+	
+	hero.band("で、その呪いを解くのは究極の羞恥感情を与えること、ですよね？")
+	
+	sebas.band("...おっしゃる通りでございます。")
+	
+	hero.band("野球拳で負ければ羞恥状態になるのに、その野球拳に負けられない。\nその堂々巡りの状態なわけですよね。")
+	
 
-	sebas.band("...存じております。お嬢様は日々そのことに苦しんでおられます。")
 
-	hero.band("呪いの加護を弱める唯一の方法が、装着者に強い羞恥を与えることで...\nでも、鎧が中身を隠している限り、普通に喋りかけても羞恥は発生しません。")
+	sebas.band("...その通りでございます。\nお嬢様は日々そのことに苦しんでおられます。")
 
-	hero.band("この水晶球は、お嬢様の心の声を強制的に映像化する魔具です。\n心の内を晒されると、鎧の内側でも羞恥が発生して、呪いが弱まります。\n呪いが弱まった直後に野球拳を挑めば、今度こそ勝てる...そういう仕組みです。")
+	hero.band("この水晶球は、お嬢様の姿と心の声を強制的に映像化する魔具です。\n心の内を晒されると、鎧の内側でも羞恥が発生して、呪いが弱るんじゃないかと思いまして。")
+	
+	hero.band("呪いが弱まった直後に野球拳を挑めば、今度こそ勝てる...そういう仕組みです。")
 
-	sebas.band("...つまり、お嬢様のお心の内を、\nわたくしの眼前で晒すと仰っしゃるのですか。")
+	sebas.band("...つまり、お嬢様のお心の内を、\n我々に晒すと仰っしゃるのですか。")
 
 	hero.set_portrait(HERO_AWKWARD, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...は、はい。")
 
-	sebas.band("...断じて受け入れがたい所業にございます。")
-
-	hero.band("で、ですよね...。")
+	sebas.band("...やむおえんでしょう。\nしかし、それはどうやって使うものなのでしょう？")
 
 	hero.set_portrait(HERO_SERIOUS, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
-	hero.band("...あ、あの、でも、進捗は目で確認できます。\nこの水晶球、呪いの強さと色がリンクしていて、\n呪いが強いと漆黒、弱まると金色に変わるんです。\n色が薄くなっていけば「効いている」証拠になります。")
+	hero.band("...おっさんから聞いた話だと...。\nこの水晶球、呪いの強さと色がリンクしていて、\n呪いが強いと漆黒、弱まると金色に変わるんです。\n色が薄くなっていけば「効いている」証拠になります。")
 
 	sebas.band("...色が薄まれば進展、濃くなれば後退、と。")
 
@@ -284,6 +322,8 @@ func _build_subevent3_visit(b):
 	hero.band("...そ、その時は？")
 
 	sebas.band("...お察しください。")
+	
+	b.narrator_band("5分後...")
 
 	sebas.band("...お嬢様。この冒険者の方にお任せしたく。")
 
@@ -291,13 +331,13 @@ func _build_subevent3_visit(b):
 	fiona.band("...う、うん...セバスが、そう言うなら...。")
 
 	sebas.set_portrait(SEBAS, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 0]})
-	sebas.band("（サトシに深々と一礼）\nお嬢様の尊厳、くれぐれもお守りいただきたく。")
+	sebas.band("（サトシに深々と一礼）\nお嬢様をよろしくお願いいたします。")
 
 	hero.set_portrait(HERO_DREAD, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...せ、善処します...。")
 
 	# 場面4: 羞恥の儀・スクリプト導入
-	b.narrator_band("水晶球は漆黒のまま、壁の一角に映像投影窓が浮かび上がる。\n伝声塔接続モードはまだオフ。映像は個室内にのみ表示される。")
+	b.narrator_band("水晶球は漆黒のまま、壁の一角に映像投影窓が浮かび上がる。\n伝声塔接続モードは当然オフ。映像は個室内にのみ表示される。")
 
 	hero.set_portrait(HERO_NORMAL, {"scale": 0.50, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...え、えっと、フィオナさん。\n...一か月、辛かったですよね...本当にお疲れ様でした。")
@@ -319,7 +359,7 @@ func _build_subevent3_visit(b):
 
 	# 場面6: 伝声塔接続・強制公開
 	b.show_band()
-	b.narrator_band("水晶球の光が強まり、鎧の表面に深い亀裂が走った。\nしかし、完全崩壊には至らない。")
+	b.narrator_band("水晶球の光が強まり、鎧の留め具が外れる音がした。\nしかし、まだ留め具はたくさんある。")
 
 	fiona.set_portrait(FIONA_EXHAUSTED, {"scale": 0.40, "side": "right", "flip": 0, "position": [0, 30]})
 	fiona.band("はぁ...はぁ...。")
@@ -334,7 +374,7 @@ func _build_subevent3_visit(b):
 	hero.set_portrait(HERO_RESOLVE, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...フィオナさん。この水晶球、伝声塔接続モードに切り替えました。\n今から、王国中の伝声塔で、あなたの心の声が同時中継されます。")
 
-	fiona.set_portrait(FIONA_CONFUSED, {"scale": 0.40, "side": "right", "flip": 0, "position": [0, 30]})
+	fiona.set_portrait(FIONA_CONFUSED, {"scale": 0.71, "side": "right", "flip": 0, "position": [-52, -65]})
 	fiona.band("...は？")
 
 	hero.set_portrait(HERO_PANIC, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
@@ -378,7 +418,7 @@ func _build_subevent3_visit(b):
 
 	b.narrator_band("水晶球を通じて広場のスクリーンと王国中の伝声塔に、その姿が鮮明に投影される。")
 
-	fiona.set_portrait(FIONA_SCREAM, {"scale": 0.40, "side": "right", "flip": 0, "position": [0, 30]})
+	fiona.set_portrait(FIONA_SCREAM, {"scale": 0.80, "side": "right", "flip": 0, "position": [0, 30]})
 	fiona.band("いや...いや、いやぁぁぁ...！")
 
 	sebas.set_portrait(SEBAS, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 0]})
@@ -397,7 +437,7 @@ func _build_subevent3_visit(b):
 
 	sebas.band("...ごく一部、でございます...ごく一部の、全、国、民、で...。")
 
-	fiona.set_portrait(FIONA_SOBBING, {"scale": 0.40, "side": "right", "flip": 0, "position": [0, 30]})
+	fiona.set_portrait(FIONA_SOBBING, {"scale": 0.71, "side": "right", "flip": 0, "position": [0, -16]})
 	fiona.band("全国民じゃないですかぁぁ...。")
 
 	pisuke.band("...お、見つけた見つけた、停止スイッチ。", {"side": "left"})

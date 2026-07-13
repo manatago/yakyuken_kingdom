@@ -93,7 +93,7 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_menu_btn_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_menu_btn_hover")
 text = "中断から始める"
 
-[node name="EventBattleButton" type="Button" parent="TitleMenu"]
+[node name="EventBattleButton" type="Button" parent="TitleMenu" unique_id=390350294]
 layout_mode = 2
 theme_override_font_sizes/font_size = 22
 theme_override_styles/normal = SubResource("StyleBoxFlat_menu_btn")
@@ -128,7 +128,7 @@ theme_override_font_sizes/font_size = 28
 text = "ジャンプ先を選択"
 horizontal_alignment = 1
 
-[node name="JumpScroll" type="ScrollContainer" parent="JumpMenu"]
+[node name="JumpScroll" type="ScrollContainer" parent="JumpMenu" unique_id=571930695]
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0

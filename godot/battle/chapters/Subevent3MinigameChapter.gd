@@ -9,7 +9,7 @@ const FIONA_GRATEFUL := "res://assets/characters/main/fiona/clothed/fiona_clothe
 const FIONA_SHY      := "res://assets/characters/main/fiona/clothed/fiona_clothed_004.png"  # 04 もじもじ羞恥 (delta -5 系)
 const FIONA_SHOCK    := "res://assets/characters/main/fiona/clothed/fiona_clothed_008.png"  # 08 ピー助禁忌追撃 初発
 const FIONA_ANGUISH  := "res://assets/characters/main/fiona/clothed/fiona_clothed_009.png"  # 09 ピー助追撃二の矢
-const FIONA_SOBBING  := "res://assets/characters/main/fiona/clothed/fiona_clothed_011.png"  # 11 嗚咽崩壊 (周回減衰時)
+const FIONA_SOBBING  := "res://assets/characters/main/fiona/clothed/fiona_clothed_018.png"  # 18 嗚咽崩壊 (周回減衰時 / ミニゲーム専用)
 const FIONA_ID := "fiona_armor"
 
 # 注: setup_scene と _apply_choice/_apply_pisuke の set_portrait で使う共通レイアウト。
@@ -902,7 +902,7 @@ func _refresh_choice_buttons():
 # --- ルール説明（ミニゲーム冒頭） ---
 func _play_rules_intro(bt):
 	await _narrate_wait(bt, "【羞恥の儀】\nフィオナを封じる呪いの鎧「ヴァニティ・チェイン」。\n装着者自身に強烈な羞恥を与え、呪いの加護を削り取れ。")
-	await _narrate_wait(bt, "左上のゲージは「呪いの加護度」。\n0 まで削れば呪いは弱まり、鎧は崩れる。\n逆に 130 に達すれば、儀式は失敗だ。")
+	await _narrate_wait(bt, "左上のゲージは「呪いの加護度」。\n0 まで削れば呪いは弱まり、鎧は外れる。\n逆に 130 に達すれば、儀式は失敗だ。")
 	await _narrate_wait(bt, "選択肢を選び、フィオナに問いかけろ。\n彼女が恥じらえば加護度は下がる。\n...が、的外れな気遣いは逆効果となる。")
 
 func _play_scripted_intro(bt):
