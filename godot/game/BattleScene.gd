@@ -710,6 +710,8 @@ func janken(selection: Dictionary, ai_opts: Dictionary = {}) -> String:
 	if result == "win":
 		_opponent_outfit -= 1
 		_captured_by_player.append({"hand": HAND_KEYS[opponent_hand], "grade": opponent_grade})
+		if GameState.has_equipment("greed_ring"):
+			_capture_additional_opponent_card()
 	elif result == "lose":
 		# 鉄の盾: HPが減らない
 		if _round_item_effect != "protect_hp":
@@ -940,6 +942,9 @@ signal _result_panel_closed
 
 func _show_reward_message():
 	_rolled_gold = _chapter.roll_gold() if _chapter else 0
+	if GameState.has_equipment("gold_charm"):
+		var charm: Dictionary = ItemDatabase.get_item("gold_charm")
+		_rolled_gold += int(charm.get("gold_bonus_amount", 0))
 	var has_cards: bool = _chapter.can_gain_cards() and not _captured_by_player.is_empty()
 	if not has_cards and _rolled_gold <= 0:
 		return
@@ -1092,6 +1097,17 @@ func get_battle_rewards() -> Dictionary:
 		"captured_by_player": _captured_by_player.duplicate(true),
 		"captured_by_opponent": _captured_by_opponent.duplicate(true),
 	}
+
+func _capture_additional_opponent_card() -> void:
+	var available: Array = []
+	for entry in _opponent_deck:
+		if not entry.used:
+			available.append(entry)
+	if available.is_empty():
+		return
+	var extra = available.pick_random()
+	extra.used = true
+	_captured_by_player.append({"hand": HAND_KEYS[extra.hand], "grade": extra.grade})
 
 # --- Janken overlay animation ---
 
@@ -1387,17 +1403,14 @@ func get_bayes_probability(with_grade_effect: bool = false) -> Dictionary:
 	# 指定した手の確率を増減し、残り2手の比率は維持する。
 	if with_grade_effect and not _round_probability_adjustment.is_empty():
 		var target_key: String = _round_probability_adjustment.get("target_hand", "rock")
-		var target_hand: Hand = HAND_FROM_KEY.get(target_key, Hand.ROCK)
 		var delta: float = _round_probability_adjustment.get("delta", 0.0)
-		var old_value: float = prob.get(target_hand, 0.0)
-		var new_value: float = clampf(old_value + delta, 0.0, 1.0)
-		var remaining_old: float = 1.0 - old_value
-		if remaining_old > 0.0:
-			var ratio: float = (1.0 - new_value) / remaining_old
-			for hand in prob:
-				if hand != target_hand:
-					prob[hand] *= ratio
-		prob[target_hand] = new_value
+		var string_probabilities := {}
+		for hand in prob:
+			string_probabilities[HAND_KEYS.get(hand, "rock")] = prob[hand]
+		var adjusted := ItemDatabase.apply_probability_adjustment(string_probabilities, target_key, delta)
+		prob = {}
+		for hand in adjusted:
+			prob[HAND_FROM_KEY.get(hand, Hand.ROCK)] = adjusted[hand]
 
 	# グレード補正（カード選択後のみ）
 	if with_grade_effect and _selected_grade > 1 and _hand_selected:

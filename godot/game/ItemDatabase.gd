@@ -69,9 +69,10 @@ const ITEMS := {
 	"gold_charm": {
 		"id": "gold_charm",
 		"name": "金運のお守り",
-		"description": "バトル勝利時にゴールドも獲得",
+		"description": "バトル勝利時にゴールドを20追加で獲得",
 		"type": ItemType.EQUIPMENT,
 		"effect": "gold_bonus",
+		"gold_bonus_amount": 20,
 	},
 }
 
@@ -97,3 +98,16 @@ static func get_all_items() -> Array:
 	for id in ITEMS:
 		result.append(ITEMS[id])
 	return result
+
+static func apply_probability_adjustment(probabilities: Dictionary, target_hand: String, delta: float) -> Dictionary:
+	var adjusted := probabilities.duplicate()
+	var old_value: float = float(adjusted.get(target_hand, 0.0))
+	var new_value: float = clampf(old_value + delta, 0.0, 1.0)
+	var remaining_old: float = 1.0 - old_value
+	if remaining_old > 0.0:
+		var ratio: float = (1.0 - new_value) / remaining_old
+		for hand in adjusted:
+			if hand != target_hand:
+				adjusted[hand] = float(adjusted[hand]) * ratio
+	adjusted[target_hand] = new_value
+	return adjusted

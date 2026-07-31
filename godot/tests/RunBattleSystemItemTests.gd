@@ -25,6 +25,15 @@ func _initialize() -> void:
 		_check(is_equal_approx(float(item.get("probability_delta", 0.0)), expected_deltas[item_id]), "%s has the expected delta" % item_id)
 		_check(ResourceLoader.exists(item.get("icon_path", "")), "%s icon exists" % item_id)
 
+	var adjusted := ItemDatabaseScript.apply_probability_adjustment(
+		{"rock": 0.4, "scissors": 0.3, "paper": 0.3}, "rock", 0.15
+	)
+	_check(is_equal_approx(float(adjusted.rock), 0.55), "probability item raises the target hand")
+	_check(is_equal_approx(float(adjusted.scissors), 0.225), "probability item preserves the other-hand ratio")
+	_check(is_equal_approx(float(adjusted.paper), 0.225), "probability item keeps total probability at one")
+	var charm: Dictionary = ItemDatabaseScript.get_item("gold_charm")
+	_check(int(charm.get("gold_bonus_amount", 0)) == 20, "gold charm has a configured bonus")
+
 	var chapter = BattleSystemTestChapterScript.new()
 	_check(chapter.get_player_deck_size() == 6 and chapter.get_opponent_deck_size() == 6, "normal test chapter has stable six-card decks")
 	_check(chapter.get_player_outfit_count() == 3 and chapter.get_opponent_outfit_count() == 3, "normal test chapter has three rounds of durability")
