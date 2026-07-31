@@ -99,7 +99,8 @@ var _captured_by_player: Array = [] # opponent's lost cards
 var _captured_by_opponent: Array = [] # player's lost cards
 
 # アイテム使用状態（ラウンドごとにリセット）
-var _round_item_effect: String = ""  # "protect_card", "protect_hp", "intimidate", ""
+var _round_item_effect: String = ""  # "protect_card", "protect_hp", "intimidate", "adjust_probability", ""
+var _round_probability_adjustment: Dictionary = {}
 
 # 結果強制モード（イベントバトル編集用）
 var force_result_mode := false
@@ -637,6 +638,7 @@ func _position_battle_dialogue_band(raise_for_selection: bool):
 func select_hand() -> Dictionary:
 	await _flush_pending()
 	_round_item_effect = ""
+	_round_probability_adjustment.clear()
 	# 編集モード: カード選択UIを出さず、デッキのカードを自動消費して即返す
 	if force_result_mode:
 		return _edit_auto_pick_card()
@@ -839,7 +841,7 @@ func _show_item_buttons():
 		btn.text = "%s ×%d" % [item.get("name", item.id), item.get("count", 1)]
 		btn.add_theme_font_size_override("font_size", 14)
 		btn.tooltip_text = item_info.get("description", "")
-		var icon_tex = load(GameState.DEFAULT_ITEM_ICON_PATH)
+		var icon_tex = load(item_info.get("icon_path", GameState.DEFAULT_ITEM_ICON_PATH))
 		if icon_tex:
 			btn.icon = icon_tex
 			btn.expand_icon = true
@@ -858,11 +860,17 @@ func _on_item_used(item_id: String, btn: Button):
 	if item_info.is_empty():
 		return
 	_round_item_effect = item_info.get("effect", "")
+	_round_probability_adjustment.clear()
+	if _round_item_effect == "adjust_probability":
+		_round_probability_adjustment = {
+			"target_hand": item_info.get("target_hand", "rock"),
+			"delta": float(item_info.get("probability_delta", 0.0)),
+		}
 	GameState.remove_item(item_id, 1)
 	btn.disabled = true
 	btn.text = "使用済み"
-	# 威圧の札: ベイズアイを更新
-	if _round_item_effect == "intimidate":
+	# 確率操作アイテム: ベイズアイを更新
+	if _round_item_effect == "intimidate" or _round_item_effect == "adjust_probability":
 		_update_bayes_display()
 	# アイテムパネルを更新
 	_show_item_buttons()
@@ -1376,6 +1384,21 @@ func get_bayes_probability(with_grade_effect: bool = false) -> Dictionary:
 				if h != lose_hand_enum:
 					prob[h] *= ratio
 
+	# 指定した手の確率を増減し、残り2手の比率は維持する。
+	if with_grade_effect and not _round_probability_adjustment.is_empty():
+		var target_key: String = _round_probability_adjustment.get("target_hand", "rock")
+		var target_hand: Hand = HAND_FROM_KEY.get(target_key, Hand.ROCK)
+		var delta: float = _round_probability_adjustment.get("delta", 0.0)
+		var old_value: float = prob.get(target_hand, 0.0)
+		var new_value: float = clampf(old_value + delta, 0.0, 1.0)
+		var remaining_old: float = 1.0 - old_value
+		if remaining_old > 0.0:
+			var ratio: float = (1.0 - new_value) / remaining_old
+			for hand in prob:
+				if hand != target_hand:
+					prob[hand] *= ratio
+		prob[target_hand] = new_value
+
 	# グレード補正（カード選択後のみ）
 	if with_grade_effect and _selected_grade > 1 and _hand_selected:
 		var player_hand_key: String = HAND_KEYS.get(_selected_hand, "rock")
@@ -1403,8 +1426,8 @@ func _hide_bayes_eye_immediate():
 	bayes_eye_panel.visible = false
 
 func _update_bayes_display():
-	var with_grade: bool = _hand_selected and _selected_grade > 1
-	var prob := get_bayes_probability(with_grade)
+	var with_effects: bool = (_hand_selected and _selected_grade > 1) or not _round_item_effect.is_empty()
+	var prob := get_bayes_probability(with_effects)
 	var rock_pct: int = int(prob.get(Hand.ROCK, 0.0) * 100)
 	var scissors_pct: int = int(prob.get(Hand.SCISSORS, 0.0) * 100)
 	var paper_pct: int = int(prob.get(Hand.PAPER, 0.0) * 100)

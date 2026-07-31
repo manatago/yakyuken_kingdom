@@ -2,6 +2,7 @@ extends Control
 
 const DefaultStoryScript := preload("res://story/DefaultStory.gd")
 const PortraitLayoutDB = preload("res://story/PortraitLayout.gd")
+const BattleSystemTestChapter := preload("res://battle/chapters/BattleSystemTestChapter.gd")
 
 @warning_ignore("unused_signal")
 signal result_updated(text)
@@ -307,20 +308,27 @@ func _show_edit_menu():
 	title_menu.visible = false
 	for child in jump_list.get_children():
 		child.queue_free()
-	# ランダムバトル編集ボタン
+	# ランダムエンカウント立ち絵編集ボタン
 	var edit_btn := Button.new()
-	edit_btn.text = "▶ ランダムバトル編集"
+	edit_btn.text = "▶ ランダムエンカウント立ち絵編集"
 	edit_btn.add_theme_font_size_override("font_size", 20)
 	edit_btn.add_theme_color_override("font_color", Color(0.3, 1.0, 0.5))
 	edit_btn.pressed.connect(_on_char_edit_mode)
 	jump_list.add_child(edit_btn)
-	# イベントバトル編集ボタン
+	# イベントバトル立ち絵編集ボタン
 	var event_edit_btn := Button.new()
-	event_edit_btn.text = "▶ イベントバトル編集"
+	event_edit_btn.text = "▶ イベントバトル立ち絵編集"
 	event_edit_btn.add_theme_font_size_override("font_size", 20)
 	event_edit_btn.add_theme_color_override("font_color", Color(1.0, 0.8, 0.3))
 	event_edit_btn.pressed.connect(_on_event_battle_edit_mode)
 	jump_list.add_child(event_edit_btn)
+	# バトルシステム確認ボタン
+	var system_test_btn := Button.new()
+	system_test_btn.text = "▶ バトルシステム確認"
+	system_test_btn.add_theme_font_size_override("font_size", 20)
+	system_test_btn.add_theme_color_override("font_color", Color(0.9, 0.6, 1.0))
+	system_test_btn.pressed.connect(_on_battle_system_test_mode)
+	jump_list.add_child(system_test_btn)
 	# ストーリー編集ボタン
 	var story_edit_btn := Button.new()
 	story_edit_btn.text = "▶ ストーリー編集"
@@ -445,6 +453,99 @@ func _on_jump_back():
 # --- ランダムバトル編集モード ---
 
 signal _char_edit_selected(char_id: String)
+signal _battle_system_test_selected(mode: String)
+signal _battle_system_random_selected(char_id: String)
+
+func _on_battle_system_test_mode():
+	jump_menu.visible = false
+	for child in jump_list.get_children():
+		child.queue_free()
+	var title := Label.new()
+	title.text = "バトルシステム確認"
+	title.add_theme_font_size_override("font_size", 24)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	jump_list.add_child(title)
+	var normal_btn := Button.new()
+	normal_btn.text = "通常バトル確認"
+	normal_btn.tooltip_text = "固定デッキの相手と通常ルールで戦い、カードとアイテムを確認する"
+	normal_btn.add_theme_font_size_override("font_size", 20)
+	normal_btn.pressed.connect(func(): _battle_system_test_selected.emit("normal"))
+	jump_list.add_child(normal_btn)
+	var random_btn := Button.new()
+	random_btn.text = "ランダムバトル確認"
+	random_btn.tooltip_text = "ランダムエンカウントの相手を選び、実際のデッキと傾向で戦う"
+	random_btn.add_theme_font_size_override("font_size", 20)
+	random_btn.pressed.connect(func(): _battle_system_test_selected.emit("random"))
+	jump_list.add_child(random_btn)
+	var back_btn := Button.new()
+	back_btn.text = "← 戻る"
+	back_btn.add_theme_font_size_override("font_size", 20)
+	back_btn.pressed.connect(func(): _battle_system_test_selected.emit("back"))
+	jump_list.add_child(back_btn)
+	jump_menu.visible = true
+
+	var mode: String = await _battle_system_test_selected
+	if mode == "back":
+		_show_edit_menu()
+		return
+	jump_menu.visible = false
+	var saved_state := GameState.to_dict()
+	_prepare_battle_system_test_state()
+	if mode == "normal":
+		await _show_edit_equip_screen()
+		var normal_chapter := BattleSystemTestChapter.new()
+		var normal_bg = load(normal_chapter.get_battle_background())
+		await _execute_battle(normal_chapter, normal_bg)
+	elif mode == "random":
+		var encounter_data: Dictionary = await _show_battle_system_random_select()
+		if not encounter_data.is_empty():
+			await _show_edit_equip_screen()
+			var random_chapter := RandomBattleChapter.new()
+			var bg_path: String = encounter_data.get("battle_bg", "res://assets/backgrounds/stage1/bg07_st1_001.png")
+			encounter_data["battle_bg"] = bg_path
+			random_chapter.setup_from_encounter(encounter_data)
+			var random_bg = load(bg_path)
+			await _execute_battle(random_chapter, random_bg)
+	GameState.apply(saved_state)
+	_show_edit_menu()
+
+func _prepare_battle_system_test_state() -> void:
+	GameState.reset()
+	GameState.init_default_inventory()
+	GameState.money = 1000
+	for item_data in ItemDatabase.get_all_consumables():
+		GameState.add_item({"id": item_data.id, "name": item_data.name, "count": 9})
+	for equip_data in ItemDatabase.get_all_equipment():
+		GameState.equipment.append({"id": equip_data.id, "name": equip_data.name})
+
+func _show_battle_system_random_select() -> Dictionary:
+	if not _current_town_map:
+		_current_town_map = Stage1TownMapScript.new()
+	var chars: Dictionary = _current_town_map.get_all_encounter_chars()
+	for child in jump_list.get_children():
+		child.queue_free()
+	var title := Label.new()
+	title.text = "ランダムバトル確認 - 相手選択"
+	title.add_theme_font_size_override("font_size", 22)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	jump_list.add_child(title)
+	for char_id in chars:
+		var char_data: Dictionary = chars[char_id]
+		var btn := Button.new()
+		btn.text = char_data.get("name", char_id)
+		btn.add_theme_font_size_override("font_size", 20)
+		var selected_id: String = char_id
+		btn.pressed.connect(func(): _battle_system_random_selected.emit(selected_id))
+		jump_list.add_child(btn)
+	var back_btn := Button.new()
+	back_btn.text = "← 戻る"
+	back_btn.add_theme_font_size_override("font_size", 20)
+	back_btn.pressed.connect(func(): _battle_system_random_selected.emit(""))
+	jump_list.add_child(back_btn)
+	jump_menu.visible = true
+	var selected_id: String = await _battle_system_random_selected
+	jump_menu.visible = false
+	return chars.get(selected_id, {})
 
 func _on_char_edit_mode():
 	print("[EDIT] _on_char_edit_mode called")
