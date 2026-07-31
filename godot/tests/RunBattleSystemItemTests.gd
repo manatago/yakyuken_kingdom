@@ -33,6 +33,10 @@ func _initialize() -> void:
 	_check(is_equal_approx(float(adjusted.paper), 0.225), "probability item keeps total probability at one")
 	var charm: Dictionary = ItemDatabaseScript.get_item("gold_charm")
 	_check(int(charm.get("gold_bonus_amount", 0)) == 20, "gold charm has a configured bonus")
+	_check(ItemDatabaseScript.get_capture_count([]) == 1, "normal wins capture one card")
+	_check(ItemDatabaseScript.get_capture_count([{"id": "greed_ring"}]) == 2, "greed ring captures two cards on a win")
+	_check(ItemDatabaseScript.get_gold_bonus([]) == 0, "no equipment gives no gold bonus")
+	_check(ItemDatabaseScript.get_gold_bonus([{"id": "gold_charm"}]) == 20, "gold charm adds twenty gold on victory")
 
 	var chapter = BattleSystemTestChapterScript.new()
 	_check(chapter.get_player_deck_size() == 6 and chapter.get_opponent_deck_size() == 6, "normal test chapter has stable six-card decks")

@@ -111,3 +111,15 @@ static func apply_probability_adjustment(probabilities: Dictionary, target_hand:
 				adjusted[hand] = float(adjusted[hand]) * ratio
 	adjusted[target_hand] = new_value
 	return adjusted
+
+static func get_capture_count(equipment: Array) -> int:
+	for item in equipment:
+		if item.get("id", "") == "greed_ring":
+			return 2
+	return 1
+
+static func get_gold_bonus(equipment: Array) -> int:
+	for item in equipment:
+		if item.get("id", "") == "gold_charm":
+			return int(ITEMS.gold_charm.get("gold_bonus_amount", 0))
+	return 0

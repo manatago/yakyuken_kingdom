@@ -710,7 +710,7 @@ func janken(selection: Dictionary, ai_opts: Dictionary = {}) -> String:
 	if result == "win":
 		_opponent_outfit -= 1
 		_captured_by_player.append({"hand": HAND_KEYS[opponent_hand], "grade": opponent_grade})
-		if GameState.has_equipment("greed_ring"):
+		if ItemDatabase.get_capture_count(GameState.equipment) > 1:
 			_capture_additional_opponent_card()
 	elif result == "lose":
 		# 鉄の盾: HPが減らない
@@ -942,9 +942,7 @@ signal _result_panel_closed
 
 func _show_reward_message():
 	_rolled_gold = _chapter.roll_gold() if _chapter else 0
-	if GameState.has_equipment("gold_charm"):
-		var charm: Dictionary = ItemDatabase.get_item("gold_charm")
-		_rolled_gold += int(charm.get("gold_bonus_amount", 0))
+	_rolled_gold += ItemDatabase.get_gold_bonus(GameState.equipment)
 	var has_cards: bool = _chapter.can_gain_cards() and not _captured_by_player.is_empty()
 	if not has_cards and _rolled_gold <= 0:
 		return
