@@ -226,4 +226,9 @@ This project uses Kiro-style specification workflow:
 ## AgentSkills Claude Rules
 
 Read and follow `.agentskills/rules/CLAUDE.base.md` together with the project-root `AGENTS.md`.
+
+Claude-side skills and sub-agents are deployed separately from the `.agentskills` symlink.
+Run `bash /path/to/AgentSkills/scripts/deploy-skills.sh` once per machine to link
+`test-orchestrator` / `code-review` / `cowork-chrome-launcher` into `~/.claude/skills` and the
+matching sub-agents into `~/.claude/agents`.
 <!-- AgentSkills Claude Rules: END -->

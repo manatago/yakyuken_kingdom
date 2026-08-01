@@ -23,10 +23,6 @@ playwright-report/
 # Claude Code internal data
 .claude/
 
-# AgentSkills kit (absolute symlink to a machine-local checkout; redeploy with
-# `bash /path/to/AgentSkills/common/setup/deploy.sh <repo>` on each machine)
-.agentskills
-
 # OS
 .DS_Store
 Thumbs.db
@@ -46,3 +42,7 @@ archives/
 *_backup.png
 *_backup.tscn
 # (godot/assets/characters/prologue/* directories are now tracked via Git LFS — see .gitattributes / .lfsconfig)
+
+# AgentSkills kit (absolute symlink to a machine-local checkout; redeploy with
+# `bash /path/to/AgentSkills/common/setup/deploy.sh <repo>` on each machine)
+.agentskills

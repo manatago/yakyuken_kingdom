@@ -29,4 +29,8 @@
 
 Before starting AgentSkills workflow work, read and follow `.agentskills/rules/AGENTS.base.md`.
 Use `::help` to display the available pseudo-commands and execution evidence.
+
+`.agentskills` is a symlink to a machine-local AgentSkills checkout and is intentionally
+untracked. If it is missing, recreate it once per machine:
+`bash /path/to/AgentSkills/common/setup/deploy.sh /path/to/yakyuken_kingdom`.
 <!-- AgentSkills Common Rules: END -->
