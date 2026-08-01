@@ -21,6 +21,8 @@ class Line extends Base:
 	var wait_for_input: bool = true
 	var min_duration: float = 0.0
 	var duration: float = 0.5
+	# 編集モード用: この say/said/aside を呼び出した章のソース位置 ("ファイル:行")
+	var edit_source_id: String = ""
 	func execute(scene):
 		return scene.play_line(self)
 
@@ -94,6 +96,8 @@ class Band extends Base:
 	var side_override: String = ""
 	var clear_text: bool = false
 	var append: bool = false
+	# 編集モード用: この band を呼び出した章のソース位置 ("ファイル:行")
+	var edit_source_id: String = ""
 	# 再戦時バリアント：retry_flag_key が GameState.flags で true の時、
 	# text の代わりに retry_text を使う。空文字なら無効。
 	var retry_flag_key: String = ""
@@ -448,6 +452,12 @@ class CharacterHandle:
 		_on_command = on_command
 
 	func _record(command):
+		# 編集モード時、say/band などの beat コマンドにも呼び出し位置を埋めておく。
+		# 個別 set_portrait の入っていないセリフに新規 set_portrait を挿入したい
+		# ケースで、対象行が特定できるようにするため。
+		if command and StoryCommands.editor_capture:
+			if (command is StoryCommands.Line or command is StoryCommands.Band) and command.edit_source_id.is_empty():
+				command.edit_source_id = _capture_source_id()
 		if command and _on_command.is_valid():
 			_on_command.call(command)
 		return command
@@ -577,6 +587,17 @@ class _CommandCollector:
 
 	func _add_command(command):
 		if command:
+			# 編集モード時、builder 直接呼び出しの Line/Band (narrator_band /
+			# protagonist_band / b.band など) にも呼び出し位置を残す。
+			# セバスを表示中の narrator_band で立ち絵を差し替えるケースを
+			# ハンドリングできるようにするため。
+			if StoryCommands.editor_capture:
+				if (command is StoryCommands.Line or command is StoryCommands.Band) and command.edit_source_id.is_empty():
+					for frame in get_stack():
+						var src: String = frame.get("source", "")
+						if "/chapters/" in src:
+							command.edit_source_id = "%s:%d" % [src, frame.get("line", 0)]
+							break
 			_commands.append(command)
 
 	func character(id: String) -> CharacterHandle:
