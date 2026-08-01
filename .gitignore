@@ -23,6 +23,10 @@ playwright-report/
 # Claude Code internal data
 .claude/
 
+# AgentSkills kit (absolute symlink to a machine-local checkout; redeploy with
+# `bash /path/to/AgentSkills/common/setup/deploy.sh <repo>` on each machine)
+.agentskills
+
 # OS
 .DS_Store
 Thumbs.db

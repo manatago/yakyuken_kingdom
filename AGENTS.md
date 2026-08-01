@@ -23,3 +23,10 @@
 ## セキュリティと構成メモ
 - 外部サービスのトークンは `.env.local` など未コミットファイルに置き、Godot 側へ渡す場合は `project.godot` に直書きしないで `autoload` スクリプトから参照します。
 - 大きな画像を扱う際は `godot/tools/install_all_assets.py` や `godot/tools/setup_assets.py` で生成されるテンポラリを `.gitignore` で管理し、誤ってバイナリをコミットしないようにします。
+
+<!-- AgentSkills Common Rules: BEGIN -->
+## AgentSkills Common Rules
+
+Before starting AgentSkills workflow work, read and follow `.agentskills/rules/AGENTS.base.md`.
+Use `::help` to display the available pseudo-commands and execution evidence.
+<!-- AgentSkills Common Rules: END -->
