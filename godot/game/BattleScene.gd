@@ -101,6 +101,7 @@ var _captured_by_opponent: Array = [] # player's lost cards
 # アイテム使用状態（ラウンドごとにリセット）
 var _round_item_effect: String = ""  # "protect_card", "protect_hp", "intimidate", "adjust_probability", ""
 var _round_probability_adjustment: Dictionary = {}
+var _round_item_id: String = ""
 
 # 結果強制モード（イベントバトル編集用）
 var force_result_mode := false
@@ -143,6 +144,19 @@ func setup(cast: Dictionary, bg_texture: Texture2D = null, inventory: Array = []
 	_initial_bg_texture = bg_texture
 	_player_inventory = inventory.duplicate(true)
 
+func _register_chapter_opponent() -> void:
+	if _chapter == null:
+		return
+	var opponent_id := _chapter.get_opponent_id()
+	var opponent_name := _chapter.get_opponent_name()
+	if opponent_id.is_empty() or opponent_name.is_empty() or _cast.has(opponent_id):
+		return
+	var opponent := StoryCharacter.new()
+	opponent.id = opponent_id
+	opponent.display_name = opponent_name
+	opponent.default_side = "right"
+	_cast[opponent_id] = opponent
+
 var _is_tutorial := false
 var _is_minigame := false
 
@@ -150,6 +164,7 @@ func start_battle(chapter: BattleChapterBase, is_tutorial := false, is_minigame 
 	_chapter = chapter
 	_is_tutorial = is_tutorial
 	_is_minigame = is_minigame
+	_register_chapter_opponent()
 	add_child(_chapter)
 	_dsl = Cmd.new(_cast)
 	_captured_by_player.clear()
@@ -639,6 +654,7 @@ func select_hand() -> Dictionary:
 	await _flush_pending()
 	_round_item_effect = ""
 	_round_probability_adjustment.clear()
+	_round_item_id = ""
 	# 編集モード: カード選択UIを出さず、デッキのカードを自動消費して即返す
 	if force_result_mode:
 		return _edit_auto_pick_card()
@@ -835,11 +851,23 @@ func _run_portrait_capture():
 
 func _show_item_buttons():
 	_clear_item_buttons()
+	if not _round_item_id.is_empty():
+		var selected_row := HBoxContainer.new()
+		var spacer := Control.new()
+		spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		selected_row.add_child(spacer)
+		var cancel_btn := Button.new()
+		cancel_btn.text = "リセット"
+		cancel_btn.add_theme_font_size_override("font_size", 14)
+		cancel_btn.pressed.connect(_cancel_round_item)
+		selected_row.add_child(cancel_btn)
+		item_slots.add_child(selected_row)
 	for item in GameState.items:
 		var item_info: Dictionary = ItemDatabase.get_item(item.id)
 		if item_info.is_empty() or item_info.type != ItemDatabase.ItemType.CONSUMABLE:
 			continue
 		var btn := Button.new()
+		var item_id: String = item.id
 		btn.text = "%s ×%d" % [item.get("name", item.id), item.get("count", 1)]
 		btn.add_theme_font_size_override("font_size", 14)
 		btn.tooltip_text = item_info.get("description", "")
@@ -847,7 +875,12 @@ func _show_item_buttons():
 		if icon_tex:
 			btn.icon = icon_tex
 			btn.expand_icon = true
-		var item_id: String = item.id
+		if not _round_item_id.is_empty():
+			btn.disabled = true
+			if item_id == _round_item_id:
+				btn.add_theme_color_override("font_disabled_color", Color(1.0, 0.85, 0.35))
+			else:
+				btn.add_theme_color_override("font_disabled_color", Color(0.55, 0.55, 0.55))
 		btn.pressed.connect(_on_item_used.bind(item_id, btn))
 		item_slots.add_child(btn)
 
@@ -862,6 +895,7 @@ func _on_item_used(item_id: String, btn: Button):
 	if item_info.is_empty():
 		return
 	_round_item_effect = item_info.get("effect", "")
+	_round_item_id = item_id
 	_round_probability_adjustment.clear()
 	if _round_item_effect == "adjust_probability":
 		_round_probability_adjustment = {
@@ -875,6 +909,18 @@ func _on_item_used(item_id: String, btn: Button):
 	if _round_item_effect == "intimidate" or _round_item_effect == "adjust_probability":
 		_update_bayes_display()
 	# アイテムパネルを更新
+	_show_item_buttons()
+
+func _cancel_round_item():
+	if _round_item_id.is_empty():
+		return
+	var item_info: Dictionary = ItemDatabase.get_item(_round_item_id)
+	if not item_info.is_empty():
+		GameState.add_item({"id": _round_item_id, "name": item_info.get("name", _round_item_id), "count": 1})
+	_round_item_effect = ""
+	_round_item_id = ""
+	_round_probability_adjustment.clear()
+	_update_bayes_display()
 	_show_item_buttons()
 
 # --- 結果強制ボタン（イベントバトル編集用） ---

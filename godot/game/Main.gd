@@ -501,11 +501,23 @@ func _on_battle_system_test_mode():
 		if not encounter_data.is_empty():
 			await _show_edit_equip_screen()
 			var random_chapter := RandomBattleChapter.new()
-			var bg_path: String = encounter_data.get("battle_bg", "res://assets/backgrounds/stage1/bg07_st1_001.png")
+			var bg_path: String = await _show_edit_area_select(encounter_data)
 			encounter_data["battle_bg"] = bg_path
 			random_chapter.setup_from_encounter(encounter_data)
 			var random_bg = load(bg_path)
-			await _execute_battle(random_chapter, random_bg)
+			var encounter_home: GuildHome = guild_home_scene.instantiate()
+			add_child(encounter_home)
+			encounter_home.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+			encounter_home.setup(random_bg, _current_town_map)
+			await _show_random_battle_encounter(encounter_home, encounter_data)
+			encounter_home.queue_free()
+			var battle_result: Dictionary = await _execute_battle(random_chapter, random_bg)
+			var farewell_home: GuildHome = guild_home_scene.instantiate()
+			add_child(farewell_home)
+			farewell_home.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+			farewell_home.setup(random_bg, _current_town_map)
+			await _show_random_battle_farewell(farewell_home, random_chapter, battle_result.result)
+			farewell_home.queue_free()
 	GameState.apply(saved_state)
 	_show_edit_menu()
 
@@ -831,6 +843,11 @@ func _show_edit_area_select(encounter_data: Dictionary) -> String:
 	if char_areas.size() <= 1:
 		if char_areas.size() == 1:
 			return char_areas[0].bg
+		for area_id in _current_town_map.get_home_connections():
+			var fallback_area: Dictionary = areas.get(area_id, {})
+			var fallback_bg: String = fallback_area.get("bg", "")
+			if not fallback_bg.is_empty():
+				return fallback_bg
 		return _current_town_map.get_home_background()
 
 	# エリア選択UI
@@ -920,9 +937,9 @@ func _show_edit_equip_screen():
 	equip_container.add_theme_constant_override("separation", 4)
 	vbox.add_child(equip_container)
 
-	# アイテム
+	# 消耗品
 	var item_title := Label.new()
-	item_title.text = "【消耗品】"
+	item_title.text = "【消耗品】クリックで選択・解除"
 	item_title.add_theme_font_size_override("font_size", 20)
 	item_title.add_theme_color_override("font_color", Color(0.3, 1.0, 0.5))
 	vbox.add_child(item_title)
@@ -931,6 +948,15 @@ func _show_edit_equip_screen():
 	item_container.name = "ItemList"
 	item_container.add_theme_constant_override("separation", 4)
 	vbox.add_child(item_container)
+
+	var reset_btn := Button.new()
+	reset_btn.text = "選択をリセット"
+	reset_btn.add_theme_font_size_override("font_size", 16)
+	reset_btn.pressed.connect(func():
+		_reset_battle_system_test_selection()
+		_refresh_equip_list(equip_container)
+		_refresh_item_list(item_container))
+	vbox.add_child(reset_btn)
 
 	# バトルへ進むボタン
 	var start_btn := Button.new()
@@ -972,14 +998,33 @@ func _refresh_equip_list(container: VBoxContainer):
 func _refresh_item_list(container: VBoxContainer):
 	for child in container.get_children():
 		child.queue_free()
-	for item in GameState.items:
-		var item_info: Dictionary = ItemDatabase.get_item(item.id)
-		if item_info.is_empty():
-			continue
-		var row := Label.new()
-		row.text = "  %s ×%d — %s" % [item.get("name", item.id), item.get("count", 1), item_info.get("description", "")]
-		row.add_theme_font_size_override("font_size", 16)
-		container.add_child(row)
+	for item_data in ItemDatabase.get_all_consumables():
+		var item_id: String = item_data.id
+		var is_selected: bool = GameState.get_item_count(item_id) > 0
+		var btn := Button.new()
+		if is_selected:
+			btn.text = "✓ %s ×%d — %s" % [item_data.name, GameState.get_item_count(item_id), item_data.description]
+			btn.add_theme_color_override("font_color", Color(0.3, 1.0, 0.8))
+		else:
+			btn.text = "  %s — %s" % [item_data.name, item_data.description]
+			btn.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
+		btn.add_theme_font_size_override("font_size", 16)
+		btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		btn.pressed.connect(func():
+			if is_selected:
+				GameState.remove_item(item_id, GameState.get_item_count(item_id))
+			else:
+				GameState.add_item({"id": item_id, "name": item_data.name, "count": 9})
+			_refresh_item_list(container))
+		container.add_child(btn)
+
+func _reset_battle_system_test_selection() -> void:
+	GameState.items.clear()
+	GameState.equipment.clear()
+	for item_data in ItemDatabase.get_all_consumables():
+		GameState.add_item({"id": item_data.id, "name": item_data.name, "count": 9})
+	for equip_data in ItemDatabase.get_all_equipment():
+		GameState.equipment.append({"id": equip_data.id, "name": equip_data.name})
 
 func _show_edit_result_screen(home: GuildHome):
 	# バトル後のアイテム・装備品確認
@@ -2261,32 +2306,60 @@ func _on_town_battle(area_id: String, chapter: BattleChapterBase, home: GuildHom
 	var result: String = battle_result.result
 	home.visible = true
 
-	# 去り際シーン（ランダムバトル用）
-	if chapter.has_method("get_encounter_farewell"):
-		var farewell_line: String = chapter.get_encounter_farewell(result)
-		if not farewell_line.is_empty():
-			var fw_key: String = "farewell_win" if result == "win" else "farewell_lose"
-			var fw_portrait: Dictionary = EncounterDatabase.get_portrait(chapter._data, fw_key) if chapter.has_method("get_encounter_farewell_portrait") else {}
-			var fw_path: String = fw_portrait.get("path", "")
-			if not fw_path.is_empty():
-				var fw_tex = load(fw_path)
-				if fw_tex:
-					home.encounter_portrait.texture = fw_tex
-					home._apply_encounter_portrait(fw_tex, fw_portrait)
-			home.encounter_portrait.visible = true
-			home.narration_label.visible = false
-			home.nav_row.visible = false
-			home.encounter_speaker.text = chapter.get_opponent_name()
-			home.encounter_speaker.visible = true
-			home.encounter_body.text = farewell_line
-			home.encounter_right.visible = true
-			home.narration_band.visible = true
-			home._waiting_for_click = true
-			await home._click_received
-			home._waiting_for_click = false
-			home._hide_encounter()
+	await _show_random_battle_farewell(home, chapter, result)
 
 	home.arrive_at(area_id)
+
+func _show_random_battle_farewell(home: GuildHome, chapter: BattleChapterBase, result: String) -> void:
+	if not chapter.has_method("get_encounter_farewell"):
+		return
+	var farewell_line: String = chapter.get_encounter_farewell(result)
+	if farewell_line.is_empty():
+		return
+	var farewell_portrait: Dictionary = chapter.get_encounter_farewell_portrait(result) if chapter.has_method("get_encounter_farewell_portrait") else {}
+	var farewell_path: String = farewell_portrait.get("path", "")
+	if not farewell_path.is_empty():
+		var farewell_texture = load(farewell_path)
+		if farewell_texture:
+			home.encounter_portrait.texture = farewell_texture
+			home._apply_encounter_portrait(farewell_texture, farewell_portrait)
+	home.encounter_portrait.visible = true
+	home.narration_label.visible = false
+	home.nav_row.visible = false
+	home.menu_bar.visible = false
+	home.encounter_speaker.text = chapter.get_opponent_name()
+	home.encounter_speaker.visible = true
+	home.encounter_body.text = farewell_line
+	home.encounter_right.visible = true
+	home.narration_band.visible = true
+	home._waiting_for_click = true
+	await home._click_received
+	home._waiting_for_click = false
+	home._hide_encounter()
+
+func _show_random_battle_encounter(home: GuildHome, encounter_data: Dictionary) -> void:
+	var encounter_portrait: Dictionary = EncounterDatabase.get_portrait(encounter_data, "encounter")
+	var encounter_path: String = encounter_portrait.get("path", "")
+	if encounter_path.is_empty():
+		return
+	var encounter_texture = load(encounter_path)
+	if not encounter_texture:
+		return
+	home.encounter_portrait.texture = encounter_texture
+	home._apply_encounter_portrait(encounter_texture, encounter_portrait)
+	home.encounter_portrait.visible = true
+	home.narration_label.visible = false
+	home.nav_row.visible = false
+	home.menu_bar.visible = false
+	home.encounter_speaker.text = encounter_data.get("name", "")
+	home.encounter_speaker.visible = true
+	home.encounter_body.text = EncounterDatabase.pick_line(encounter_data, "greetings")
+	home.encounter_right.visible = true
+	home.narration_band.visible = true
+	home._waiting_for_click = true
+	await home._click_received
+	home._waiting_for_click = false
+	home._hide_encounter()
 
 # --- サブイベント実行 ---
 
