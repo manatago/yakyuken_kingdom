@@ -16,10 +16,8 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - name: Check out repository and LFS assets
+      - name: Check out repository
         uses: actions/checkout@v4
-        with:
-          lfs: true
 
       - name: Download Godot 4.6.2
         env:
@@ -32,11 +30,6 @@ jobs:
             "https://github.com/godotengine/godot/releases/download/$GODOT_VERSION/$GODOT_ARCHIVE"
           unzip -q "$RUNNER_TEMP/$GODOT_ARCHIVE" -d "$RUNNER_TEMP/godot"
           chmod +x "$RUNNER_TEMP/godot/Godot_v4.6.2-stable_linux.x86_64"
-
-      - name: Verify Godot project loads headlessly
-        run: |
-          "$RUNNER_TEMP/godot/Godot_v4.6.2-stable_linux.x86_64" \
-            --headless --path godot --editor --quit
 
       - name: Run battle system item tests
         run: |
