@@ -3938,6 +3938,13 @@ func _battle_edit_pos_regex() -> RegEx:
 	r.compile('"position":\\s*\\[[^\\]]*\\]')
 	return r
 
+# 編集モードから章ソース (.gd) を書き戻す際の共通処理。
+# バックアップと原子的な差し替えは SourceFileWriter に置いてある（Main.gd は
+# GameState オートロード依存でテストからインスタンス化できないため、
+# ロジック側を独立させて SourceFileWriterTests から直接検証している）。
+func _write_source_file(abs_path: String, text: String) -> bool:
+	return SourceFileWriter.write(abs_path, text)
+
 func _save_battle_edit(edit_panel: PanelContainer, info: Label):
 	if not edit_panel.has_meta("chapter_path"):
 		info.text = "[保存NG] chapter_pathが未設定"
@@ -3993,12 +4000,9 @@ func _save_chapter_portrait(info: Label, new_scale: float, new_x: int, new_y: in
 	if '"position"' in line:
 		line = _battle_edit_pos_regex().sub(line, '"position": [%d, %d]' % [new_x, new_y])
 	lines[li] = line
-	var wf := FileAccess.open(abs_path, FileAccess.WRITE)
-	if not wf:
+	if not _write_source_file(abs_path, "\n".join(lines)):
 		info.text = "[保存NG] 書き込み不可"
 		return
-	wf.store_string("\n".join(lines))
-	wf.close()
 	info.text = "[保存] %s 行%d を更新" % [src_file.get_file(), line_no]
 	print("[BATTLE_EDIT] SAVED %s:%d scale=%.2f pos=[%d,%d]" % [src_file.get_file(), line_no, new_scale, new_x, new_y])
 
@@ -4054,12 +4058,9 @@ func _save_encounter_portrait(edit_panel: PanelContainer, info: Label, new_scale
 	if updated == 0:
 		info.text = "[保存NG] %s/%s に scale/position 行なし" % [enc_id, portrait_key]
 		return
-	var wf := FileAccess.open(abs_path, FileAccess.WRITE)
-	if not wf:
+	if not _write_source_file(abs_path, "\n".join(lines)):
 		info.text = "[保存NG] 書き込み不可"
 		return
-	wf.store_string("\n".join(lines))
-	wf.close()
 	info.text = "[保存] %s の %s 立ち絵を更新" % [enc_id, portrait_key]
 	print("[BATTLE_EDIT] SAVED encounter %s/%s: scale=%.2f pos=[%d,%d]" % [enc_id, portrait_key, new_scale, new_x, new_y])
 
@@ -4200,12 +4201,7 @@ func _save_portrait_layout(img_path: String, new_scale: float, new_x: int, new_y
 		if insert_at < 0:
 			return false
 		lines.insert(insert_at, new_line)
-	var wf := FileAccess.open(abs_path, FileAccess.WRITE)
-	if not wf:
-		return false
-	wf.store_string("\n".join(lines))
-	wf.close()
-	return true
+	return _write_source_file(abs_path, "\n".join(lines))
 
 # 0.50 -> "0.5"、0.53 -> "0.53" のように末尾ゼロを落とした数値文字列を返す
 func _trim_num(v: float) -> String:
@@ -4261,11 +4257,8 @@ func _save_flip_to_source(src_id: String, new_flip_val: int) -> bool:
 			lines[dict_end_li] = before + insert_str + ln.substr(dict_end_col)
 			changed = true
 	if changed:
-		var wf := FileAccess.open(abs_path, FileAccess.WRITE)
-		if not wf:
+		if not _write_source_file(abs_path, "\n".join(lines)):
 			return false
-		wf.store_string("\n".join(lines))
-		wf.close()
 	return changed
 
 # 自動保存デバウンサ: スライダー/反転が動くたびに呼び、Timer を再スタートする。
@@ -4510,12 +4503,9 @@ func _story_edit_insert_new_portrait_before(card: PanelContainer, cur_cmd, new_p
 		if i == line_no - 1:
 			out_lines.append(insert_line)
 		out_lines.append(lines[i])
-	var wf := FileAccess.open(abs_path, FileAccess.WRITE)
-	if not wf:
+	if not _write_source_file(abs_path, "\n".join(out_lines)):
 		print("[STORY_EDIT][INSERT] 書き込み不可: %s" % abs_path)
 		return false
-	wf.store_string("\n".join(out_lines))
-	wf.close()
 	# --- in-memory entries にも新規 ShowCharacter を差し込む ---
 	var new_show := StoryCommands.ShowCharacter.new()
 	new_show.character_id = char_id
@@ -4541,8 +4531,7 @@ func _story_edit_insert_new_portrait_before(card: PanelContainer, cur_cmd, new_p
 			var e = plog2[i]
 			if e.get("rect") == bound_rect:
 				e["texture_path"] = new_path
-				e["texture"] = ImageTexture.create_from_image(Image.load_from_file(ProjectSettings.globalize_path(new_path))) if false else null
-				# ↑ 上のロード式は heavy なので落として、既に rect.texture に設定済みの物を採用
+				# new_path を読み直すのは heavy なので、既に rect へ設定済みの物を流用する
 				e["texture"] = bound_rect.texture
 				e["edit_source_id"] = "%s:%d" % [src_file, line_no]
 				e["portrait_scale"] = new_scale
@@ -4750,12 +4739,9 @@ func _story_edit_change_current_speaker(root: Control) -> void:
 	var indent: String = m.get_string(1)
 	var rest: String = m.get_string(4)
 	lines[line_no - 1] = indent + new_prefix + rest
-	var wf := FileAccess.open(abs_path, FileAccess.WRITE)
-	if not wf:
+	if not _write_source_file(abs_path, "\n".join(lines)):
 		if info_lbl: info_lbl.text = "[話者NG] 書き込み不可"
 		return
-	wf.store_string("\n".join(lines))
-	wf.close()
 	# in-memory も追従
 	cur_cmd.speaker_id = new_speaker_id
 	if info_lbl: info_lbl.text = "[話者] %s 行%d の話者を %s に変更" % [src_file.get_file(), line_no, new_speaker_id]
@@ -4816,12 +4802,9 @@ func _story_edit_do_delete_dialogue(root: Control, cur_cmd, src_id: String) -> v
 		if i >= line_no - 1 and i <= block_end:
 			continue
 		out_lines.append(lines[i])
-	var wf := FileAccess.open(abs_path, FileAccess.WRITE)
-	if not wf:
+	if not _write_source_file(abs_path, "\n".join(out_lines)):
 		if info_lbl: info_lbl.text = "[削除NG] 書き込み不可"
 		return
-	wf.store_string("\n".join(out_lines))
-	wf.close()
 	# in-memory から取り除き、後続 entry の edit_source_id を上に詰める
 	var deleted_idx: int = _story_edit_current_idx
 	_story_edit_entries.remove_at(deleted_idx)
@@ -4897,12 +4880,9 @@ func _story_edit_update_current_dialogue(root: Control) -> void:
 	if not replaced:
 		if info_lbl: info_lbl.text = "[更新NG] 対象行にクォート文字列が無い"
 		return
-	var wf := FileAccess.open(abs_path, FileAccess.WRITE)
-	if not wf:
+	if not _write_source_file(abs_path, "\n".join(lines)):
 		if info_lbl: info_lbl.text = "[更新NG] 書き込み不可"
 		return
-	wf.store_string("\n".join(lines))
-	wf.close()
 	# in-memory コマンドにも反映 (表示中の text も差し替えたいので)
 	cur_cmd.text = new_text
 	if info_lbl: info_lbl.text = "[更新] %s 行%d のセリフを更新" % [src_file.get_file(), line_no]
@@ -5015,12 +4995,9 @@ func _story_edit_insert_new_dialogue(root: Control) -> void:
 		out_lines.append(lines[i])
 		if i == block_end:
 			out_lines.append(insert_line)
-	var wf := FileAccess.open(abs_path, FileAccess.WRITE)
-	if not wf:
+	if not _write_source_file(abs_path, "\n".join(out_lines)):
 		if info_lbl: info_lbl.text = "[追加NG] 書き込み不可"
 		return
-	wf.store_string("\n".join(out_lines))
-	wf.close()
 	# in-memory entries にも Band を1つ挿入 (立ち絵は継続なので portrait_id 空)
 	var new_band := StoryCommands.Band.new()
 	new_band.visible = true
@@ -5476,12 +5453,9 @@ func _save_story_edit_card(card: PanelContainer, entries: Array, _idx: int):
 				if rp["changed"]:
 					propagated += 1
 		if changed_any or propagated > 0:
-			var wf0 := FileAccess.open(abs_path0, FileAccess.WRITE)
-			if not wf0:
+			if not _write_source_file(abs_path0, "\n".join(lines0)):
 				info.text = "[保存NG] 書き込み不可"
 				return
-			wf0.store_string("\n".join(lines0))
-			wf0.close()
 		# in-memory にも反映:
 		# (a) 立ち絵履歴エントリを更新（再描画整合）。画像差し替え時は texture_path/texture も更新。
 		_apply_save_to_log_entry(last_entry, new_scale, new_x, new_y)
@@ -5558,12 +5532,9 @@ func _save_story_edit_card(card: PanelContainer, entries: Array, _idx: int):
 	if '"position"' in line:
 		line = _battle_edit_pos_regex().sub(line, '"position": [%d, %d]' % [new_x, new_y])
 	lines[found_line] = line
-	var wf := FileAccess.open(abs_path, FileAccess.WRITE)
-	if not wf:
+	if not _write_source_file(abs_path, "\n".join(lines)):
 		info.text = "[保存NG] 書き込み不可"
 		return
-	wf.store_string("\n".join(lines))
-	wf.close()
 	_apply_save_to_log_entry(last_entry, new_scale, new_x, new_y)
 	info.text = "[保存] %s 行%d（fb）" % [_story_edit_source_file.get_file(), found_line + 1]
 	print("[STORY_EDIT] SAVED (fallback) %s:%d (%s)" % [_story_edit_source_file.get_file(), found_line + 1, bound_side])
@@ -5773,12 +5744,9 @@ func _story_edit_save_current(entries: Array, idx: int, edit_panel: PanelContain
 	lines[found_line] = line
 
 	# Write back
-	var write_file := FileAccess.open(abs_path, FileAccess.WRITE)
-	if not write_file:
+	if not _write_source_file(abs_path, "\n".join(lines)):
 		print("[STORY_EDIT] Cannot write file: %s" % abs_path)
 		return
-	write_file.store_string("\n".join(lines))
-	write_file.close()
 
 	print("[STORY_EDIT] SAVED line %d: %s" % [found_line + 1, portrait_filename])
 	print('[STORY_EDIT]   "scale": %.2f, "position": [%d, %d]' % [new_scale, new_x, new_y])

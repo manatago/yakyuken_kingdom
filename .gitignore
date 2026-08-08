@@ -42,3 +42,7 @@ archives/
 *_backup.png
 *_backup.tscn
 # (godot/assets/characters/prologue/* directories are now tracked via Git LFS — see .gitattributes / .lfsconfig)
+
+# Chapter source backups written by the edit mode (see godot/game/SourceFileWriter.gd)
+*.gd.bak
+*.gd.tmp
