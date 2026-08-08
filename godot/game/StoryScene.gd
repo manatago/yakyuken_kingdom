@@ -1258,7 +1258,14 @@ func _load_texture(resource_path: String) -> Texture2D:
 		if absolute_path != resource_path:
 			err = image.load(absolute_path)
 	if err == OK:
-		return ImageTexture.create_from_image(image)
+		var tex := ImageTexture.create_from_image(image)
+		# ★ 重要: fallback 生成テクスチャに resource_path を継承させる。
+		# これを付けないと、編集モードで新規保存直後の PNG (まだ .import なし) を
+		# 使う際に rect.texture.resource_path が空になり、次の「置換」で
+		# 「画像が特定できない」と誤検知される。
+		if tex:
+			tex.take_over_path(resource_path)
+		return tex
 	return null
 
 # --- Side/position resolution ---
