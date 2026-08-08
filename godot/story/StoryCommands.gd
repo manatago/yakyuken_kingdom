@@ -6,6 +6,26 @@ class_name StoryCommands
 # get_stack() で記録するかどうかの判定に使う。通常プレイ時は false。
 static var editor_capture := false
 
+# ソース位置キャプチャが実際に意味を持つか。
+# editor_capture は Main._ready() で無条件に true になり、通常のストーリー再生中も
+# 立ったままになる。一方 get_stack() はデバッグ実行時のみ有効で、リリースビルドでは
+# 常に空配列を返す。つまりリリースでは結果が必ず "" になるのに、コマンドごとの
+# スタックウォークだけが走る。編集モードはエディタ上でしか使わないので、
+# リリースビルドではコストごと落とす。
+static func source_capture_enabled() -> bool:
+	return editor_capture and OS.has_feature("debug")
+
+# 呼び出し元スタックを遡り、最初に見つかったチャプターのソース位置を
+# "ファイル:行" で返す。該当なし、または無効時は空文字。
+static func capture_chapter_source_id() -> String:
+	if not source_capture_enabled():
+		return ""
+	for frame in get_stack():
+		var src: String = frame.get("source", "")
+		if "/chapters/" in src:
+			return "%s:%d" % [src, frame.get("line", 0)]
+	return ""
+
 # --- Command classes (data) ---
 
 class Base extends Resource:
@@ -21,6 +41,8 @@ class Line extends Base:
 	var wait_for_input: bool = true
 	var min_duration: float = 0.0
 	var duration: float = 0.5
+	# 編集モード用: この say/said/aside を呼び出した章のソース位置 ("ファイル:行")
+	var edit_source_id: String = ""
 	func execute(scene):
 		return scene.play_line(self)
 
@@ -94,6 +116,8 @@ class Band extends Base:
 	var side_override: String = ""
 	var clear_text: bool = false
 	var append: bool = false
+	# 編集モード用: この band を呼び出した章のソース位置 ("ファイル:行")
+	var edit_source_id: String = ""
 	# 再戦時バリアント：retry_flag_key が GameState.flags で true の時、
 	# text の代わりに retry_text を使う。空文字なら無効。
 	var retry_flag_key: String = ""
@@ -448,21 +472,20 @@ class CharacterHandle:
 		_on_command = on_command
 
 	func _record(command):
+		# 編集モード時、say/band などの beat コマンドにも呼び出し位置を埋めておく。
+		# 個別 set_portrait の入っていないセリフに新規 set_portrait を挿入したい
+		# ケースで、対象行が特定できるようにするため。
+		if command and StoryCommands.source_capture_enabled():
+			if (command is StoryCommands.Line or command is StoryCommands.Band) and command.edit_source_id.is_empty():
+				command.edit_source_id = _capture_source_id()
 		if command and _on_command.is_valid():
 			_on_command.call(command)
 		return command
 
 	# 編集モード用: set_portrait / show / appear を呼び出したチャプター側の
 	# ソース位置を "ファイル:行" で返す。立ち絵履歴の重複排除キー（beat の識別子）。
-	# get_stack() はデバッグ実行時のみ有効だが、編集モードはエディタ上で使うため問題ない。
 	func _capture_source_id() -> String:
-		if not StoryCommands.editor_capture:
-			return ""
-		for frame in get_stack():
-			var src: String = frame.get("source", "")
-			if "/chapters/" in src:
-				return "%s:%d" % [src, frame.get("line", 0)]
-		return ""
+		return StoryCommands.capture_chapter_source_id()
 
 	# show_character コマンドへ呼び出し位置を埋め込んで記録する
 	func _record_show(command):
@@ -577,6 +600,13 @@ class _CommandCollector:
 
 	func _add_command(command):
 		if command:
+			# 編集モード時、builder 直接呼び出しの Line/Band (narrator_band /
+			# protagonist_band / b.band など) にも呼び出し位置を残す。
+			# セバスを表示中の narrator_band で立ち絵を差し替えるケースを
+			# ハンドリングできるようにするため。
+			if StoryCommands.source_capture_enabled():
+				if (command is StoryCommands.Line or command is StoryCommands.Band) and command.edit_source_id.is_empty():
+					command.edit_source_id = StoryCommands.capture_chapter_source_id()
 			_commands.append(command)
 
 	func character(id: String) -> CharacterHandle:
