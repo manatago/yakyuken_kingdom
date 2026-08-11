@@ -27,6 +27,7 @@ func get_tests() -> Array:
 		{"name": "write_leaves_no_temp_file", "callable": Callable(self, "_test_no_temp_left")},
 		{"name": "write_to_unwritable_path_keeps_original", "callable": Callable(self, "_test_failure_keeps_original")},
 		{"name": "main_uses_common_writer_for_sources", "callable": Callable(self, "_test_main_uses_writer")},
+		{"name": "main_references_writer_via_preload", "callable": Callable(self, "_test_main_preloads_writer")},
 	]
 
 func before_each() -> void:
@@ -126,7 +127,7 @@ func _test_main_uses_writer() -> bool:
 	var src := _read_raw(MAIN_PATH)
 	if src.is_empty():
 		return fail("Main.gd を読めない")
-	if not expect_true(src.contains("SourceFileWriter.write("), "Main.gd が SourceFileWriter を使っていない"):
+	if not expect_true(src.contains("SourceFileWriterScript.write("), "Main.gd が共通ライタを使っていない"):
 		return false
 	for line in src.split("\n"):
 		var stripped := line.strip_edges()
@@ -134,4 +135,29 @@ func _test_main_uses_writer() -> bool:
 			continue
 		if stripped.contains("store_string(\"\\n\".join("):
 			return fail("章ソースを共通ライタを通さず直接書いている行がある: %s" % stripped)
+	return expect_true(true)
+
+# Main.gd は他スクリプトを preload 定数で参照すること。
+#
+# class_name によるグローバルクラス名は、エディタがプロジェクトを走査したときに
+# .godot/global_script_class_cache.cfg へ登録される。.godot/ は gitignore 対象なので、
+# エディタを通さずに class_name 付きスクリプトを追加してグローバル名で参照すると、
+# 「Identifier not declared in the current scope」で Main.gd 全体がパースエラーになり、
+# タイトル画面のボタンが軒並み無反応になる。
+#
+# なお、このテストは Main.gd の全パースエラーを検出できるわけではない。
+# 起動時の確定チェックは:
+#   /Applications/Godot.app/Contents/MacOS/Godot --path godot --headless --quit-after 120
+func _test_main_preloads_writer() -> bool:
+	var src := _read_raw(MAIN_PATH)
+	if src.is_empty():
+		return fail("Main.gd を読めない")
+	if not expect_true(src.contains('preload("res://game/SourceFileWriter.gd")'), "Main.gd が SourceFileWriter.gd を preload していない"):
+		return false
+	for line in src.split("\n"):
+		var stripped := line.strip_edges()
+		if stripped.begins_with("#") or stripped.begins_with("const "):
+			continue
+		if stripped.contains("SourceFileWriter."):
+			return fail("グローバルクラス名で直接参照している行がある（preload 定数を使うこと）: %s" % stripped)
 	return expect_true(true)

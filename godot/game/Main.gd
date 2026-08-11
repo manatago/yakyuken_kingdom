@@ -3,6 +3,7 @@ extends Control
 const DefaultStoryScript := preload("res://story/DefaultStory.gd")
 const PortraitLayoutDB = preload("res://story/PortraitLayout.gd")
 const BgRemovalEditorScript := preload("res://game/BgRemovalEditor.gd")
+const SourceFileWriterScript := preload("res://game/SourceFileWriter.gd")
 
 @warning_ignore("unused_signal")
 signal result_updated(text)
@@ -3943,7 +3944,7 @@ func _battle_edit_pos_regex() -> RegEx:
 # GameState オートロード依存でテストからインスタンス化できないため、
 # ロジック側を独立させて SourceFileWriterTests から直接検証している）。
 func _write_source_file(abs_path: String, text: String) -> bool:
-	return SourceFileWriter.write(abs_path, text)
+	return SourceFileWriterScript.write(abs_path, text)
 
 func _save_battle_edit(edit_panel: PanelContainer, info: Label):
 	if not edit_panel.has_meta("chapter_path"):
