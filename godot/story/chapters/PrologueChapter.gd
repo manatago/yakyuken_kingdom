@@ -49,7 +49,6 @@ func _build_prologue(b):
 		"appear_distance": 200,
 		"portrait": "res://assets/characters/main/minori/modern/minori_modern_001.png"})
 	b.narrator_band("一方、幼馴染の女の子は有名私大の弁論サークルに所属しており、政治家秘書のバイトをやっており、将来は政治家を目指している。弁論大会で多数の受賞歴を誇る。")
-	b.narrator_band("彼女は密かに主人公に思いを寄せているが、才能の無駄遣いをしている彼を呆れ顔で見つめる、典型的なツンデレタイプ。")
 	heroine.leave({
 		"exit_effect": "fade_slide",
 		"exit_to": "right",
@@ -65,7 +64,7 @@ func _build_prologue(b):
 		"portrait": "res://assets/characters/main/satoshi/modern/satoshi_modern_002.png"})
 	# ── 場面2：みのりとの会話 ──
 	hero.set_portrait("res://assets/characters/main/satoshi/modern/satoshi_modern_004.png", {})
-	hero.band("今日も数理モデルの講義をバックレたった...")
+	hero.band("今日も数理解析概論の講義をバックレたった...")
 	heroine.appear({
 		"side": "right",
 		"appear_effect": "fade_slide",
@@ -97,7 +96,7 @@ func _build_prologue(b):
 	heroine.set_portrait("res://assets/characters/main/minori/modern/minori_modern_008.png", {})
 	heroine.band("あっ、もう行かなきゃ。")
 	heroine.set_portrait("res://assets/characters/main/minori/modern/minori_modern_009.png", {})
-	heroine.band("いい、今年こそ単位をちゃんととるのよ。")
+	heroine.band("もう・・・ちょっとは真面目にやりなさいよね・・・")
 	heroine.leave({
 		"exit_effect": "fade_slide",
 		"exit_to": "right",
@@ -120,9 +119,9 @@ func _build_prologue(b):
 		"appear_distance": 200,
 		"portrait": "res://assets/characters/main/satoshi/modern/satoshi_modern_010.png"})
 	# hero.set_portrait("res://assets/characters/main/satoshi/modern/satoshi_modern_010.png", {"scale": 0.5})
-	hero.band("（部屋はエロゲ箱と政治パンフと教科書の雪崩。俺の人生を縮図みたく語ってくれるインスタレーションアートだ。）")
+	hero.band("（部屋はエロゲ箱と数学書が大和積まれている。俺の人生を縮図みたく語ってくれるインスタレーションアートだ。）")
 	hero.set_portrait("res://assets/characters/main/satoshi/modern/satoshi_modern_011.png", {})
-	hero.band("けど...単位があと三つ足りないのはガチで笑えない。目の前の編集済みセーブデータより、現実の単位をロードし直さないと。")
+	hero.band("けど...単位が足りないのはガチで笑えない。\n目の前の編集済みセーブデータより、現実の単位をロードし直さないと。")
 
 	b.narrator_band("スマホが震えた。みのりからのメッセージだ。")
 
@@ -134,7 +133,7 @@ func _build_prologue(b):
 		"appear_distance": 200,
 		"portrait": "res://assets/characters/main/minori/modern/minori_modern_010.png",
 		"flip": 0})
-	heroine.band("あんたの大学のサイトに出てたけど、「大型加速器実験補助、履修認定あり」って募集、知ってる？締切明日までだって。")
+	heroine.band("あんたの大学のサイトに出てたけど、「大型加速器実験補助、履修認定あり」って募集、知ってる？\n締切明日までだって。")
 	# heroine.set_portrait("res://assets/characters/main/minori/modern/minori_modern_010.png", {"scale": 0.6, "position": [150, 50]})
 	heroine.leave({
 		"exit_effect": "fade_slide",
@@ -144,9 +143,9 @@ func _build_prologue(b):
 	hero.set_portrait("res://assets/characters/main/satoshi/modern/satoshi_modern_012.png", {})
 	hero.band("...なんでお前が俺の大学の掲示板チェックしてんだよ。")
 	hero.set_portrait("res://assets/characters/main/satoshi/modern/satoshi_modern_013.png", {})
-	hero.band("とは打てずに、「調査済み✌」とだけ返した。かっこわる。...ていうか全然調査してなかった。")
+	hero.band("とは打てずに、「調査済み✌」とだけ返した。\nかっこわる。...ていうか全然調査してなかった。")
 	hero.set_portrait("res://assets/characters/main/satoshi/modern/satoshi_modern_014.png", {})
-	hero.band("掲示板...あった。ギリギリ滑り込むしかない。")
+	hero.band("掲示板...あった。ギリギリ滑り込むしかない。\nこれで新しいエロゲ買えるな・・・")
 	hero.leave({
 		"exit_effect": "fade_slide",
 		"exit_to": "right",
@@ -179,11 +178,11 @@ func _build_prologue(b):
 	hero.set_portrait("res://assets/characters/main/satoshi/modern/satoshi_modern_016.png", {})
 	hero.band("あ、どうも。えっと、具体的に何をすれば...")
 	receptionist.set_portrait("res://assets/characters/main/receptionist/clothed/receptionist_clothed_003.png", {"flip": 0})
-	receptionist.band("簡単よ。制御室に入って、合図があったらボタンを押すだけ。それ以外は絶対に触らないでね。")
+	receptionist.band("簡単よ。制御室に入って、合図があったらボタンを押すだけ。\nそれ以外は絶対に触らないでね。")
 	hero.set_portrait("res://assets/characters/main/satoshi/modern/satoshi_modern_017.png", {})
 	hero.band("ボタン一個で単位もらえるとか、最高のバイトじゃないすか。")
 	receptionist.set_portrait("res://assets/characters/main/receptionist/clothed/receptionist_clothed_004.png", {"flip": 0})
-	receptionist.band("ふふ、みんなそう言うわ。でもね、ここの装置、ちょっと気まぐれなの。何かあったらすぐ赤いボタンを押して。非常停止だから。")
+	receptionist.band("ふふ、みんなそう言うわ。でもね、ここの装置、ちょっと気まぐれなの。\n何かあったらすぐ赤いボタンを押して。非常停止だから。")
 	hero.set_portrait("res://assets/characters/main/satoshi/modern/satoshi_modern_018.png", {})
 	hero.band("（フラグ立ってる感がすごいんだが。）")
 
@@ -385,8 +384,8 @@ func _build_prologue(b):
 		"portrait": "res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png"})
 
 	hero.band("いてててて。あれっ、ここはどこだっけ。確か昨日はバイト先で光の渦に飲み込まれて、気が付いたら裸だったんだ。")
-	hero.band("あの番兵、えらい怒っていたよな。すごい剣幕だった。しかし、人を変態呼ばわりしやがって。俺は被害者だっちゅーの。")
-	hero.band("しかし、ここはどこだ？日本語が通じるから日本？でも街の風景は異世界転生のまんまじゃね？")
+	hero.band("あの番兵、えらい怒っていたよな。\nすごい剣幕だった。しかし、人を変態呼ばわりしやがって。\n俺は被害者だっちゅーの。")
+	hero.band("しかし、ここはどこだ？日本語が通じるから日本？\nでも街の風景は異世界転生のまんまじゃね？")
 
 	matilda.appear({
 		"side": "right",
@@ -402,13 +401,13 @@ func _build_prologue(b):
 	matilda.band("起きたか、変態。")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_002.png", {})
-	hero.band("俺は変態じゃな... おっ、きれいなねーさんだな。おっぱいもでかい。")
+	hero.band("俺は変態じゃな... \n（おっ、きれいなねーさんだな。おっぱいもでかい。）")
 	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_002.png", {"scale": 0.914, "position": [-100, 10], "flip": 0})
-	matilda.band("おいおい、いやらしい目で見やがって。ほんとに変態ってやつは、どうしようもないな。")
+	matilda.band("おいおい、いやらしい目で見やがって。\nほんとに変態ってやつは、どうしようもないな。")
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_003.png", {"scale": 0.50, "position": [0, 0]})
 	hero.band("ぐぬぬ。。。")
 
-	b.narrator_band("変態の濡れ衣を着せられて悔しい思いをしたサトシだったけど、なんといっても牢屋に入れられている身。おとなしくするしかない。")
+	b.narrator_band("変態の濡れ衣を着せられて、牢屋に入れられている身。\nおとなしくするしかない。")
 
 	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_001.png", {"scale": 0.9, "position": [0, 10]})
 	matilda.band("さて、変態の身元調査といこうか。\n変態、お前の名前は？ どこから来た。")
@@ -441,7 +440,7 @@ func _build_prologue(b):
 	hero.band("チップ？ 脳に？ な、なんの話ですか？")
 
 	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_006.png", {"scale": 0.9, "position": [-120, 0], "flip": 0})
-	matilda.band("この世界の住人は、生まれた時に識別チップを脳に埋め込まれるんだ。身分証であり、戦闘システムへのインターフェースでもある。それがないってことは...本当に異界の人間なんだね、あんた。")
+	matilda.band("この世界の住人は、生まれた時に識別チップを脳に埋め込まれるんだ。\n身分証であり、戦闘システムへのインターフェースでもある。\nそれがないってことは...本当に異界の人間なんだね、あんた。")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_007.png", {"flip": 1})
 	hero.band("だから最初からそう言ってるじゃないですか...。")
@@ -449,7 +448,7 @@ func _build_prologue(b):
 	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_007.png", {"scale": 0.914, "position": [-120, 10], "flip": 0})
 	matilda.band("...しょうがないね。特例だ。")
 	b.narrator_band("マチルダは懐から小さな注射器のようなものを取り出した。")
-	matilda.band("旧式の汎用チップだけど、ないよりマシさ。うなじを出しな。ちょっとチクっとするよ。")
+	matilda.band("旧式の汎用チップだけど、ないよりマシさ。\nうなじを出しな。ちょっとチクっとするよ。")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_008.png", {"flip": 1})
 	hero.band("えっ、ちょ、いきなり注射!? 説明――いっっっ!!")
@@ -459,16 +458,16 @@ func _build_prologue(b):
 	b.narrator_band("マチルダに無理やり注射をされて、サトシのうなじに激痛が走った...")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_009.png", {"flip": 1})
-	hero.band("いって――――――――――――ぇ。まじ、なんなの...")
+	hero.band("いって――――――――――――ぇ。\nまじ、なんなの...")
 
 	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_001.png", {"scale": 0.9, "position": [0, 10]})
 
-	matilda.band("だらしないな、女みたいにビービー泣いてないで、心の中で、テーブルオープンって行ってみろ。")
+	matilda.band("だらしないな、ビービー泣いてないで、心の中で、テーブルオープンって言ってみろ。")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_004.png", {"flip": 1})
 	hero.band("(なっ、なんだよ、自分だって女のくせに。うっ、睨まれている。\nテッ、テッ、テーブル...オープン)")
 
-	b.narrator_band("サトシが心のなかで「テーブルオープン」と言った瞬間、視界が一変した。")
+	b.narrator_band("その瞬間、視界が一変した。")
 	b.hide_band()
 
 	b.label("tutorial_start")
@@ -478,7 +477,7 @@ func _build_prologue(b):
 	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_001.png", {"scale": 0.9, "side": "right", "position": [0, 10]})
 	matilda.band("さっきは言ってなかったけど、HPは服装の枚数だ。")
 	matilda.band("つまり「じゃんけん」に負けると、服を脱がなきゃならない。1回負けるたびに服を1枚脱ぐ。全て脱がされたら、相手のいうことを聞かなきゃなんない。")
-	matilda.band("「じゃんけん」勝負をするときは服は3枚で、相手が全裸になるまでつづける。これは王国ルールだ。ただ、市民にはあんまり根付いてなくてな、街中では 1回勝負が好まれている。")
+	matilda.band("「じゃんけん」勝負をするときは服は3枚で、相手が全裸になるまでつづける。\nこれは王国ルールだ。ただ、市民にはあんまり根付いてなくてな、街中では 1回勝負が好まれている。")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_010.png", {"side": "left", "flip": 1})
 	hero.band("そっそれって、野球拳じゃ...")
@@ -514,8 +513,8 @@ func _build_prologue(b):
 	hero.band("しょっ、勝負しませんか？")
 
 	matilda.set_portrait("res://assets/characters/main/matilda/clothed/matilda_clothed_012.png", {"scale": 0.9, "side": "right", "position": [0, 10]})
-	matilda.band("おっ、小心者の変態にもそんな度胸があったんだな。いいぜ、受けてやるよ。")
-	matilda.band("お前が勝ったら、晴れて無罪放免だ。負けたら牢屋からは出られねぇ。覚悟しておけよ。")
+	matilda.band("おっ、小心者の変態にもそんな度胸があったんだな。\nいいぜ、受けてやるよ。")
+	matilda.band("お前が勝ったら、晴れて無罪放免だ。\n負けたら牢屋からは出られねぇ。覚悟しておけよ。")
 	matilda.band("まあ、今日始めたひよっこに全力で勝負したらマチルダさんの名が廃るからな、同じカードで勝負してやるよ。")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_049.png", {"side": "left", "flip": 1})

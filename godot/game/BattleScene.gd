@@ -511,6 +511,8 @@ func bubble(text: String, extra: Dictionary = {}):
 		"append": bool(extra.get("append", false)),
 		"speaker": str(extra.get("speaker", "")),
 		"icon_path": str(extra.get("icon_path", "")),
+		# 0 = 未指定 (BUBBLE_FONT_SIZE を使う)
+		"font_size": int(extra.get("font_size", 0)),
 	})
 
 func _setup_deck(path: String, extra: Dictionary = {}):
@@ -1299,7 +1301,7 @@ func _flush_pending():
 			if not is_append and speech_bubble.visible:
 				await _hide_bubble()
 			_apply_speaker_icon(speaker, icon_path)
-			await _show_bubble(cmd.text, is_append)
+			await _show_bubble(cmd.text, is_append, int(cmd.get("font_size", 0)))
 		elif cmd is Dictionary and cmd.has("_highlight"):
 			_highlight_target(cmd.target, cmd.get("options", {}))
 		elif cmd is Dictionary and cmd.has("_unhighlight"):
@@ -1878,41 +1880,81 @@ func _resolve_target(target_name: String) -> Control:
 func set_bubble_side(side: String):
 	_pending_commands.append({"_bubble_side": true, "side": side})
 
+# 吹き出しの位置・大きさプリセット (アンカー比率)。
+# 紙芝居編集のプレビューもこの表と BUBBLE_FONT_SIZE を参照する。二重に持つと
+# 「編集画面では合っているのに本番でズレる」事故になる。
+#
+# 旧値から縦横それぞれ 2/3 に縮小 (幅 0.33 -> 0.22 / 高さ 0.27 -> 0.18、
+# center のみ幅 0.50 -> 0.3333)。画面端に寄せている辺 (left なら左、right なら右、
+# bottom-* なら下) は動かさず、内側へ詰める。
+const BUBBLE_SIDE_ANCHORS := {
+	"left":         {"l": 0.02,   "r": 0.24,   "t": 0.05, "b": 0.23},
+	"right":        {"l": 0.76,   "r": 0.98,   "t": 0.05, "b": 0.23},
+	"center":       {"l": 0.3333, "r": 0.6667, "t": 0.05, "b": 0.23},
+	"bottom-left":  {"l": 0.02,   "r": 0.24,   "t": 0.64, "b": 0.82},
+	"bottom-right": {"l": 0.76,   "r": 0.98,   "t": 0.64, "b": 0.82},
+}
+
+# 吹き出し本文の既定の文字サイズ。ui/SpeechBubble.tscn の BubbleLabel と同値に
+# 保つこと (BubbleLayoutTests がズレを検出する)。
+# bt.bubble(text, {"font_size": N}) で 1 セリフ単位に上書きできる。
+# 枠の高さは _fit_bubble_to_text が文字量に合わせて伸縮させるので、
+# 文字を大きくしてもセリフが切れることはない。
+const BUBBLE_FONT_SIZE := 34
+
+# 高さ計算は ui/BubbleFit.gd に置いてある。BattleScene は GameState 依存で
+# --script 実行では静的関数を呼べないため、テストから叩ける場所へ出してある。
+const BubbleFitScript := preload("res://ui/BubbleFit.gd")
+const BUBBLE_MAX_HEIGHT_RATIO := BubbleFitScript.MAX_HEIGHT_RATIO
+
 func _apply_bubble_side(side: String):
 	# Hide bubble instantly before repositioning to prevent flash
 	if speech_bubble.visible:
 		speech_bubble.visible = false
 		speech_bubble.modulate = Color.WHITE
-	# 全サイドを 33% 幅で統一（サトシ／フェリアの吹き出し幅を揃える）
-	match side:
-		"left":
-			speech_bubble.anchor_left = 0.02
-			speech_bubble.anchor_right = 0.35
-			speech_bubble.anchor_top = 0.05
-			speech_bubble.anchor_bottom = 0.32
-		"right":
-			speech_bubble.anchor_left = 0.65
-			speech_bubble.anchor_right = 0.98
-			speech_bubble.anchor_top = 0.05
-			speech_bubble.anchor_bottom = 0.32
-		"center":
-			speech_bubble.anchor_left = 0.25
-			speech_bubble.anchor_right = 0.75
-			speech_bubble.anchor_top = 0.05
-			speech_bubble.anchor_bottom = 0.32
-		"bottom-left":
-			speech_bubble.anchor_left = 0.02
-			speech_bubble.anchor_right = 0.35
-			speech_bubble.anchor_top = 0.55
-			speech_bubble.anchor_bottom = 0.82
-		"bottom-right":
-			speech_bubble.anchor_left = 0.65
-			speech_bubble.anchor_right = 0.98
-			speech_bubble.anchor_top = 0.55
-			speech_bubble.anchor_bottom = 0.82
+	if not BUBBLE_SIDE_ANCHORS.has(side):
+		return  # 未知の side は無視（従来どおり位置を変えない）
+	_current_bubble_side = side
+	var a: Dictionary = BUBBLE_SIDE_ANCHORS[side]
+	speech_bubble.anchor_left = a["l"]
+	speech_bubble.anchor_right = a["r"]
+	speech_bubble.anchor_top = a["t"]
+	speech_bubble.anchor_bottom = a["b"]
+	speech_bubble.offset_top = 0
+	speech_bubble.offset_bottom = 0
+
+var _current_bubble_side: String = "center"
+
+# 現在のセリフに合わせて吹き出しの高さを決める。
+# 上部スロットは上辺を、bottom-* は下辺を固定して反対側へ伸ばす。
+func _fit_bubble_to_text(text: String) -> void:
+	if not is_instance_valid(speech_bubble) or not is_instance_valid(bubble_label):
+		return
+	if not BUBBLE_SIDE_ANCHORS.has(_current_bubble_side):
+		return
+	var a: Dictionary = BUBBLE_SIDE_ANCHORS[_current_bubble_side]
+	var vp: Vector2 = get_viewport_rect().size
+	var box_w: float = vp.x * (float(a["r"]) - float(a["l"]))
+	var min_h: float = vp.y * (float(a["b"]) - float(a["t"]))
+	var max_h: float = vp.y * BUBBLE_MAX_HEIGHT_RATIO
+	var font: Font = bubble_label.get_theme_font("font")
+	var fs: int = bubble_label.get_theme_font_size("font_size")
+	var box_h: float = BubbleFitScript.box_height(text, font, fs, box_w, min_h, max_h)
+	var anchored_bottom: bool = float(a["t"]) >= 0.5
+	if anchored_bottom:
+		speech_bubble.anchor_top = a["b"]
+		speech_bubble.anchor_bottom = a["b"]
+		speech_bubble.offset_top = -box_h
+		speech_bubble.offset_bottom = 0
+	else:
+		speech_bubble.anchor_top = a["t"]
+		speech_bubble.anchor_bottom = a["t"]
+		speech_bubble.offset_top = 0
+		speech_bubble.offset_bottom = box_h
 
 func _setup_bubble_style():
 	bubble_label.add_theme_color_override("font_color", Color(0.2, 0.15, 0.1))
+	bubble_label.add_theme_font_size_override("font_size", BUBBLE_FONT_SIZE)
 
 var _bubble_indicator: Label = null
 var _indicator_tween: Tween = null
@@ -2034,17 +2076,22 @@ func _apply_speaker_icon(speaker: String, override_icon: String = ""):
 
 const BUBBLE_TYPE_CHAR_SPEED := 0.06  # 1文字あたりの秒数
 
-func _show_bubble(text: String, append: bool = false):
+func _show_bubble(text: String, append: bool = false, font_size: int = 0):
+	# セリフ単位の文字サイズ指定。0 なら既定へ戻す（前のセリフの指定を引きずらない）。
+	bubble_label.add_theme_font_size_override("font_size",
+		font_size if font_size > 0 else BUBBLE_FONT_SIZE)
 	# 句読点優先のスマート改行を事前適用（Godot の autowrap が変な位置で切るのを防ぐ）
 	var wrapped := BubbleWrap.wrap(text)
 	if append and speech_bubble.visible:
 		# Append to existing text (instant for簡易)
 		bubble_label.text += "\n" + wrapped
 		bubble_label.visible_characters = -1
+		_fit_bubble_to_text(bubble_label.text)
 	else:
 		# New bubble
 		bubble_label.text = wrapped
 		bubble_label.visible_characters = 0  # hide all until typewriter reveals
+		_fit_bubble_to_text(wrapped)
 		speech_bubble.visible = true
 		speech_bubble.modulate = Color(1, 1, 1, 0)
 		var fade_in := create_tween()

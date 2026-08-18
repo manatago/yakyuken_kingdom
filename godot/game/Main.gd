@@ -4,6 +4,10 @@ const DefaultStoryScript := preload("res://story/DefaultStory.gd")
 const PortraitLayoutDB = preload("res://story/PortraitLayout.gd")
 const BgRemovalEditorScript := preload("res://game/BgRemovalEditor.gd")
 const SourceFileWriterScript := preload("res://game/SourceFileWriter.gd")
+const PortraitPickerScript := preload("res://game/PortraitPicker.gd")
+const PortraitImportCacheScript := preload("res://game/PortraitImportCache.gd")
+const SlideshowEditorScript := preload("res://game/SlideshowEditor.gd")
+const SlideshowSourceScript := preload("res://battle/SlideshowSource.gd")
 
 @warning_ignore("unused_signal")
 signal result_updated(text)
@@ -323,6 +327,16 @@ func _show_edit_menu():
 	event_edit_btn.add_theme_color_override("font_color", Color(1.0, 0.8, 0.3))
 	event_edit_btn.pressed.connect(_on_event_battle_edit_mode)
 	jump_list.add_child(event_edit_btn)
+
+	# 紙芝居編集ボタン（敗北ごとの一枚絵スライド）
+	# バトル編集とは別枠。紙芝居は全画面背景＋セリフで、立ち絵の scale/position を
+	# 持たないため、バトル編集のスライダー UI がそのままでは意味を成さない。
+	var slideshow_edit_btn := Button.new()
+	slideshow_edit_btn.text = "▶ 紙芝居編集（敗北シーン）"
+	slideshow_edit_btn.add_theme_font_size_override("font_size", 20)
+	slideshow_edit_btn.add_theme_color_override("font_color", Color(1.0, 0.6, 0.8))
+	slideshow_edit_btn.pressed.connect(_on_slideshow_edit_mode)
+	jump_list.add_child(slideshow_edit_btn)
 	# ストーリー編集ボタン
 	var story_edit_btn := Button.new()
 	story_edit_btn.text = "▶ ストーリー編集"
@@ -689,6 +703,9 @@ func _random_phase_battle(home: GuildHome, encounter_data: Dictionary, bg_tex, b
 
 	var action: String = await _random_wait_phase_action(battle_edit_panel)
 
+	# 操作レイヤとドロップ購読も落とす。ここを忘れると全画面の入力吸い込み層が
+	# 残り、以降のクリックが背後の UI に届かなくなる。
+	_battle_edit_teardown()
 	_battle_edit_active = false
 	_battle_edit_target_rect = null
 	_battle_edit_panel = null
@@ -1510,6 +1527,16 @@ func _connect_edit_to_battle(edit_panel: PanelContainer, battle_ref, encounter_d
 		_battle_edit_history_idx = 0
 		_battle_edit_restore_portrait(bsc.portrait_log[0])
 		print("[BATTLE_EDIT] reset to first portrait (#0 of %d)" % bsc.portrait_log.size())
+	# 立ち絵の直接操作（クリック選択 / ドラッグ移動 / ホイール拡縮）
+	_battle_edit_setup_drag_layer(edit_panel)
+	# OS からの画像ドラッグ&ドロップを購読。ストーリー編集と同じく、macOS の一部構成では
+	# このシグナルが飛ばないことがある（その場合は既存の保存フローを使う）。
+	var bwin := get_window()
+	if bwin and not bwin.files_dropped.is_connected(_on_battle_edit_files_dropped):
+		bwin.files_dropped.connect(_on_battle_edit_files_dropped)
+	var broot := get_tree().root
+	if broot and broot != bwin and not broot.files_dropped.is_connected(_on_battle_edit_files_dropped):
+		broot.files_dropped.connect(_on_battle_edit_files_dropped)
 
 func _process(_delta: float):
 	if not _battle_edit_active:
@@ -1558,6 +1585,288 @@ func _find_visible_char_rect(story_sc) -> TextureRect:
 		if rect and rect.visible and rect.texture:
 			return rect
 	return null
+
+# バトル編集の立ち絵直接操作 ------------------------------------------------------
+# ストーリー編集と同じ操作感（クリック選択 / ドラッグ移動 / ホイール拡縮 /
+# ドラッグ&ドロップ差し替え）をバトル編集にも用意する。
+# 値は必ずスライダーへ書き、rect は _on_battle_slider が動かす。スライダーが
+# _save_battle_edit の真実源なので、rect を直接動かすと保存内容とズレる。
+#
+# 位置の基準はストーリー編集と違い常に「中央下寄せ」。_on_battle_slider の
+# new_pos 計算と同じ式にすること（ズレるとホイール拡縮でカーソルが固定できない）。
+
+var _battle_edit_selected_rect: TextureRect = null
+var _battle_edit_dragging := false
+var _battle_edit_drag_last := Vector2.ZERO
+
+func _battle_edit_base_pos(rect: TextureRect, s: float) -> Vector2:
+	if not is_instance_valid(rect) or not rect.texture:
+		return Vector2.ZERO
+	var tex_size: Vector2 = rect.texture.get_size()
+	var vp_size: Vector2 = get_viewport_rect().size
+	return Vector2((vp_size.x - tex_size.x * s) / 2.0, vp_size.y - tex_size.y * s)
+
+func _battle_edit_drag_layer() -> Control:
+	for child in get_children():
+		if child is Control and child.name == "BattleEditDragLayer":
+			return child
+	return null
+
+# 現在編集対象になっている立ち絵。
+func _battle_edit_current_rect() -> TextureRect:
+	if not _battle_edit_active or not is_instance_valid(_battle_edit_ref):
+		return null
+	var story_sc = _battle_edit_ref._story_scene if "_story_scene" in _battle_edit_ref else null
+	if not story_sc:
+		return null
+	return _find_visible_char_rect(story_sc)
+
+# scale / x / y をまとめて反映する。個別代入だと scale だけ変わった中間フレームで
+# 立ち絵が跳ねるので、シグナルを止めて3つ入れてからハンドラを1回呼ぶ。
+func _battle_edit_apply_transform(s: float, x: float, y: float) -> void:
+	var sl: Dictionary = _battle_edit_sl
+	if sl.is_empty() or not is_instance_valid(_battle_edit_ref):
+		return
+	var vs: float = clampf(s, sl.scale.min_value, sl.scale.max_value)
+	var vx: float = clampf(x, sl.x.min_value, sl.x.max_value)
+	var vy: float = clampf(y, sl.y.min_value, sl.y.max_value)
+	for pair in [[sl.scale, sl.get("scale_spin"), vs], [sl.x, sl.get("x_spin"), vx], [sl.y, sl.get("y_spin"), vy]]:
+		var slider: Range = pair[0]
+		var spin = pair[1]
+		if slider:
+			slider.set_block_signals(true); slider.value = pair[2]; slider.set_block_signals(false)
+		if spin:
+			spin.set_block_signals(true); spin.value = pair[2]; spin.set_block_signals(false)
+	_on_battle_slider(0.0, sl, _battle_edit_ref)
+
+func _battle_edit_select(rect: TextureRect) -> void:
+	_battle_edit_selected_rect = rect
+	var layer := _battle_edit_drag_layer()
+	if layer:
+		layer.queue_redraw()
+
+func _on_battle_edit_portrait_input(event: InputEvent) -> void:
+	if not _battle_edit_active:
+		return
+	var rect := _battle_edit_current_rect()
+	var layer := _battle_edit_drag_layer()
+	var origin: Vector2 = layer.global_position if is_instance_valid(layer) else Vector2.ZERO
+	if event is InputEventMouseButton:
+		var mb := event as InputEventMouseButton
+		var pos: Vector2 = mb.position + origin
+		if mb.button_index == MOUSE_BUTTON_LEFT:
+			if mb.pressed:
+				# バトル編集は立ち絵が常に1枚なので、透明部分でも掴めてよい
+				# （ストーリー編集は複数枚が重なるのでアルファ判定が要る）。
+				var hit: TextureRect = null
+				if is_instance_valid(rect) and rect.get_global_rect().has_point(pos):
+					hit = rect
+				_battle_edit_select(hit)
+				_battle_edit_dragging = is_instance_valid(hit)
+				_battle_edit_drag_last = pos
+				if _battle_edit_dragging and layer:
+					layer.accept_event()
+			else:
+				_battle_edit_dragging = false
+		elif mb.pressed and (mb.button_index == MOUSE_BUTTON_WHEEL_UP or mb.button_index == MOUSE_BUTTON_WHEEL_DOWN):
+			if not is_instance_valid(rect):
+				return
+			_battle_edit_select(rect)
+			var factor: float = _STORY_EDIT_WHEEL_FACTOR if mb.button_index == MOUSE_BUTTON_WHEEL_UP else 1.0 / _STORY_EDIT_WHEEL_FACTOR
+			_battle_edit_zoom_at(rect, factor, pos)
+			if layer:
+				layer.accept_event()
+	elif event is InputEventMouseMotion and _battle_edit_dragging:
+		var pos2: Vector2 = (event as InputEventMouseMotion).position + origin
+		var delta: Vector2 = pos2 - _battle_edit_drag_last
+		_battle_edit_drag_last = pos2
+		if delta == Vector2.ZERO:
+			return
+		var sl: Dictionary = _battle_edit_sl
+		if sl.is_empty():
+			return
+		_battle_edit_apply_transform(sl.scale.value, sl.x.value + delta.x, sl.y.value + delta.y)
+		if layer:
+			layer.queue_redraw()
+			layer.accept_event()
+
+# カーソル位置を固定したまま拡縮する（base_pos が scale で動くぶんを X/Y で相殺）。
+func _battle_edit_zoom_at(rect: TextureRect, factor: float, cursor: Vector2) -> void:
+	var sl: Dictionary = _battle_edit_sl
+	if sl.is_empty() or not is_instance_valid(rect) or not rect.texture:
+		return
+	var s0: float = sl.scale.value
+	if s0 <= 0.0:
+		return
+	var s1: float = clampf(snappedf(s0 * factor, sl.scale.step), sl.scale.min_value, sl.scale.max_value)
+	if is_equal_approx(s0, s1):
+		return
+	var u: Vector2 = (cursor - rect.position) / s0
+	var base1: Vector2 = _battle_edit_base_pos(rect, s1)
+	var pos1: Vector2 = cursor - u * s1
+	_battle_edit_apply_transform(s1, pos1.x - base1.x, pos1.y - base1.y)
+	var layer := _battle_edit_drag_layer()
+	if layer:
+		layer.queue_redraw()
+
+# 操作レイヤを Main へ差し込む。edit_panel の1つ下に置いて、スライダーや
+# ボタンが先にクリックを取れるようにする。
+func _battle_edit_setup_drag_layer(edit_panel: PanelContainer) -> void:
+	var existing := _battle_edit_drag_layer()
+	if existing:
+		# queue_free() は遅延なので、名前を持ったまま残っていると新しい層が
+		# 自動リネームされ、名前引きの _battle_edit_drag_layer() が旧ノードを
+		# 返し続ける（2回目以降ドラッグ/拡縮が黙って効かなくなる）。
+		remove_child(existing)
+		existing.queue_free()
+	var layer := Control.new()
+	layer.name = "BattleEditDragLayer"
+	layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	layer.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(layer)
+	if is_instance_valid(edit_panel) and edit_panel.get_parent() == self:
+		move_child(layer, edit_panel.get_index())
+	layer.gui_input.connect(_on_battle_edit_portrait_input)
+	layer.draw.connect(func():
+		if not is_instance_valid(_battle_edit_selected_rect):
+			return
+		var gr: Rect2 = _battle_edit_selected_rect.get_global_rect()
+		layer.draw_rect(Rect2(gr.position - layer.global_position, gr.size), Color(1.0, 0.85, 0.4, 0.85), false, 2.0))
+
+# 編集終了時の後始末。操作レイヤとドロップ購読を落とす。
+func _battle_edit_teardown() -> void:
+	_battle_edit_teardown_drag_layer()
+	var bwin := get_window()
+	if bwin and bwin.files_dropped.is_connected(_on_battle_edit_files_dropped):
+		bwin.files_dropped.disconnect(_on_battle_edit_files_dropped)
+	var broot := get_tree().root
+	if broot and broot.files_dropped.is_connected(_on_battle_edit_files_dropped):
+		broot.files_dropped.disconnect(_on_battle_edit_files_dropped)
+
+func _battle_edit_teardown_drag_layer() -> void:
+	var layer := _battle_edit_drag_layer()
+	if layer:
+		layer.queue_free()
+	_battle_edit_selected_rect = null
+	_battle_edit_dragging = false
+
+# バトル編集: OS からの画像ドロップで、いま表示している立ち絵を差し替える。
+# ストーリー編集と違い新しい行は挿入しない。バトル章の set_portrait は
+# 勝ち/負け/引き分けなどのフェーズに対応づいていて、行を増やすと構造が壊れるため、
+# 現在のフェーズの1行のパスだけを新しい別名ファイルへ向け直す。
+func _on_battle_edit_files_dropped(files: PackedStringArray) -> void:
+	if not _battle_edit_active:
+		return
+	if files.is_empty():
+		return
+	var picked: String = ""
+	for f in files:
+		var lower: String = String(f).to_lower()
+		if lower.ends_with(".png") or lower.ends_with(".jpg") or lower.ends_with(".jpeg") or lower.ends_with(".webp"):
+			picked = f
+			break
+	if picked.is_empty():
+		print("[BATTLE_EDIT][DROP] 画像形式ではない: %s" % ",".join(files))
+		return
+	var rect := _battle_edit_current_rect()
+	if not is_instance_valid(rect) or not rect.texture or rect.texture.resource_path.is_empty():
+		print("[BATTLE_EDIT][DROP] 対象の立ち絵が特定できない")
+		_battle_edit_set_info("[DROP NG] 立ち絵が特定できない")
+		return
+	var target_res: String = rect.texture.resource_path
+	print("[BATTLE_EDIT][DROP] %s を %s に投下 → エディタを開く" % [picked, target_res.get_file()])
+	_open_bg_removal_editor(null, rect, ProjectSettings.globalize_path(target_res), target_res, picked,
+		func(final_image: Image): _battle_edit_apply_edited_image(rect, target_res, final_image))
+
+func _battle_edit_set_info(text: String) -> void:
+	if not is_instance_valid(_battle_edit_panel):
+		return
+	var info: Label = _battle_edit_panel.find_child("InfoLabel", true, false)
+	if info:
+		info.text = text
+
+# 別名保存 → 章ソースの現在行のパスを差し替え → 画面と履歴を追従。
+func _battle_edit_apply_edited_image(rect: TextureRect, target_res: String, final_image: Image) -> void:
+	if not is_instance_valid(rect):
+		return
+	var new_res: String = _next_variant_path(target_res)
+	if new_res.is_empty():
+		_battle_edit_set_info("[DROP NG] 別名パスを決められない")
+		return
+	var new_abs: String = ProjectSettings.globalize_path(new_res)
+	DirAccess.make_dir_recursive_absolute(new_abs.get_base_dir())
+	if final_image.save_png(new_abs) != OK:
+		_battle_edit_set_info("[DROP NG] PNG 保存失敗")
+		return
+	# 同名ファイルの古いインポートキャッシュが残っていると load() がそちらを返す
+	var purged: int = PortraitImportCacheScript.purge(new_res)
+	if purged > 0:
+		print("[BATTLE_EDIT] 旧インポートキャッシュを破棄: %s (%d ファイル)" % [new_res.get_file(), purged])
+	# 章ソースの現在行のパスを差し替える
+	var elog := _battle_edit_get_log()
+	var idx := _battle_edit_history_idx
+	if idx < 0:
+		idx = elog.size() - 1
+	if idx < 0 or idx >= elog.size():
+		_battle_edit_set_info("[DROP NG] 編集中の立ち絵が不明")
+		return
+	var src_id: String = elog[idx].get("edit_source_id", "")
+	if not _battle_edit_rewrite_portrait_path(src_id, target_res, new_res):
+		return
+	# 画面と履歴を新画像へ
+	var new_tex := ImageTexture.create_from_image(final_image)
+	new_tex.take_over_path(new_res)
+	rect.texture = new_tex
+	rect.size = new_tex.get_size()
+	elog[idx]["texture"] = new_tex
+	elog[idx]["texture_path"] = new_res
+	var sl: Dictionary = _battle_edit_sl
+	if not sl.is_empty():
+		_battle_edit_apply_transform(sl.scale.value, sl.x.value, sl.y.value)
+	_battle_edit_set_info("[差し替え] %s" % new_res.get_file())
+	print("[BATTLE_EDIT] 画像差し替え: %s → %s" % [target_res.get_file(), new_res.get_file()])
+
+# src_id ("ファイル:行") の行にある old_res を new_res へ向け直す。
+# 生パス記述と定数参照 (LAYLA_PORTRAIT 等) の両方に対応する。
+func _battle_edit_rewrite_portrait_path(src_id: String, old_res: String, new_res: String) -> bool:
+	if src_id.is_empty() or not (":" in src_id):
+		_battle_edit_set_info("[DROP NG] 呼び出し位置が未記録（デバッグ実行が必要）")
+		return false
+	var colon: int = src_id.rfind(":")
+	var src_file: String = src_id.substr(0, colon)
+	var line_no: int = int(src_id.substr(colon + 1))
+	var abs_path: String = ProjectSettings.globalize_path(src_file)
+	var f := FileAccess.open(abs_path, FileAccess.READ)
+	if not f:
+		_battle_edit_set_info("[DROP NG] ファイルを開けない")
+		return false
+	var lines: PackedStringArray = f.get_as_text().split("\n")
+	f.close()
+	if line_no <= 0 or line_no > lines.size():
+		_battle_edit_set_info("[DROP NG] 行番号範囲外 (%d)" % line_no)
+		return false
+	var li: int = line_no - 1
+	var quoted_new: String = '"' + new_res + '"'
+	if ('"' + old_res + '"') in lines[li]:
+		lines[li] = lines[li].replace('"' + old_res + '"', quoted_new)
+	else:
+		# 定数参照: 同ファイル内の const 宣言から old_res を指す名前を集めて置換する
+		var const_names: Array = _story_edit_constants_for_path(lines, old_res)
+		var replaced := false
+		for cn in const_names:
+			var word_re := RegEx.new()
+			word_re.compile("\\b" + cn + "\\b")
+			if word_re.search(lines[li]):
+				lines[li] = word_re.sub(lines[li], quoted_new)
+				replaced = true
+				break
+		if not replaced:
+			_battle_edit_set_info("[DROP NG] %s 行%d に旧パス/定数が見つからない" % [src_file.get_file(), line_no])
+			return false
+	if not _write_source_file(abs_path, "\n".join(lines)):
+		_battle_edit_set_info("[DROP NG] 書き込み不可")
+		return false
+	return true
 
 func _on_battle_slider(_value: float, sl: Dictionary, battle_ref):
 	if not is_instance_valid(battle_ref):
@@ -2722,6 +3031,10 @@ func _run_story_edit(entry: Dictionary, jump_edit_source_id: String = ""):
 		if bg_btn_c:
 			bg_btn_c.pressed.connect(func():
 				_on_story_edit_card_bg_removal(bound_card))
+		var change_char_btn_c: Button = bound_card.find_child("ChangeCharBtn", true, false)
+		if change_char_btn_c:
+			change_char_btn_c.pressed.connect(func():
+				_on_story_edit_card_change_char(bound_card, edit_root))
 		# 自動保存タイマー: timeout で保存関数を呼ぶ
 		var autosave_timer: Timer = bound_card.find_child("AutoSaveTimer", true, false)
 		if autosave_timer:
@@ -2866,6 +3179,10 @@ func _run_story_edit(entry: Dictionary, jump_edit_source_id: String = ""):
 				break
 
 	edit_root.queue_free()
+	_story_edit_selected_rect = null
+	_story_edit_drag_card = null
+	_story_edit_dragging = false
+	_story_edit_alpha_cache.clear()
 	_story_edit_entries = []
 	# 開きっぱなしの BgRemovalEditor があれば掃除 (置換/除去 で開いたまま「戻る」した場合の保険)
 	_cleanup_bg_removal_editors()
@@ -2937,31 +3254,14 @@ func _story_edit_next_stop(entries: Array, from_idx: int) -> int:
 
 # 画像差し替えピッカー用ヘルパ群 ----------------------------------------------
 
-# ファイル名から「末尾の連番を除いた prefix」を返す。
-# 例: "satoshi_isekai_007.png" → "satoshi_isekai_"
-# 末尾が数字でなければ basename をそのまま返す（マッチは厳密一致になる）。
+# 立ち絵の命名規則（系統名の切り出しと sibling 判定）とサムネ生成は PortraitPicker に
+# 置いてある。Main.gd は GameState オートロード依存でテストからインスタンス化できない
+# ため、純粋なロジック側を独立させて PortraitPickerTests から直接検証している。
 func _story_edit_prefix_of(filename: String) -> String:
-	var base: String = filename.get_basename()
-	var r := RegEx.new()
-	r.compile("^(.+?)(\\d+)$")
-	var m := r.search(base)
-	if m:
-		return m.get_string(1)
-	return base
+	return PortraitPickerScript.prefix_of(filename)
 
-# 同フォルダの画像名が _story_edit_prefix_of() で得た prefix にマッチするか。
-# prefix + 全桁数字（任意桁）を sibling として認める。
 func _story_edit_match_prefix(filename: String, prefix: String) -> bool:
-	var base: String = filename.get_basename()
-	if not base.begins_with(prefix):
-		return false
-	var rest: String = base.substr(prefix.length())
-	if rest.is_empty():
-		return false
-	for c in rest:
-		if not (c >= "0" and c <= "9"):
-			return false
-	return true
+	return PortraitPickerScript.matches_prefix(filename, prefix)
 
 # res:// 配下を再帰的に走査し、.gd ファイル一覧を out に格納する
 func _walk_gd_files_under(res_path: String, out: Array) -> void:
@@ -3161,26 +3461,13 @@ func _show_story_edit_image_picker(card: PanelContainer) -> void:
 	const THUMB_H: int = 400    # サムネの高さ（縦方向は2倍にして顔/上半身が見切れないように）
 	for fn in matches:
 		var full_path: String = folder.rstrip("/") + "/" + fn
-		var tex: Texture2D = load(full_path)
-		if not tex:
+		var thumb: Texture2D = PortraitPickerScript.make_thumb(full_path, THUMB_W, THUMB_H)
+		if not thumb:
 			continue
 		var cell := VBoxContainer.new()
 		cell.custom_minimum_size = Vector2(THUMB_W + 10, THUMB_H + 60)
-		# 立ち絵は縦長。横方向は中央の 1/2 幅をクロップ（2倍ズーム）、
-		# 縦方向はその2倍の高さ（=元の上半身分量）を取り、顔/上半身が見切れないようにする。
-		# 顔位置（画像上部 14% あたり）が thumb の上 1/3 〜 中央に来るよう垂直オフセットを寄せる。
-		var atlas := AtlasTexture.new()
-		atlas.atlas = tex
-		var tw: int = tex.get_width()
-		var th: int = tex.get_height()
-		var crop_w: int = max(1, min(int(tw / 2), int(th * 0.25)))
-		var crop_h: int = max(1, min(th, crop_w * 2))
-		var face_y_est: int = int(th * 0.14)
-		var crop_y: int = clampi(face_y_est - int(crop_h / 3), 0, max(0, th - crop_h))
-		var crop_x: int = max(0, int((tw - crop_w) / 2))
-		atlas.region = Rect2(crop_x, crop_y, crop_w, crop_h)
 		var btn := TextureButton.new()
-		btn.texture_normal = atlas
+		btn.texture_normal = thumb
 		btn.custom_minimum_size = Vector2(THUMB_W, THUMB_H)
 		btn.stretch_mode = TextureButton.STRETCH_SCALE
 		btn.ignore_texture_size = true
@@ -3215,8 +3502,9 @@ func _show_story_edit_image_picker(card: PanelContainer) -> void:
 			btn.modulate = Color(1.5, 1.7, 1.5)
 			sel_state["button"] = btn
 			sel_state["path"] = full_path
-			# プレビューを更新
-			preview_tex_rect.texture = tex
+			# プレビューを更新。フル解像度が要るのはここだけなので都度 load する
+			# （サムネはグリッド構築時に縮小コピーへ差し替えて元画像を手放している）。
+			preview_tex_rect.texture = load(full_path)
 			preview_name_lbl.text = fn
 			var marker: String = "  ★ 選択中" if full_path != current_path else "  （現在の画像）"
 			preview_count_lbl.text = "%s%s" % [("未使用" if count == 0 else "%d箇所使用" % count), marker]
@@ -3413,6 +3701,358 @@ const _LAST_STORY_EDIT_CFG := "user://last_story_edit.cfg"
 # 現在編集中のシーケンス STORY_EDIT_SEQUENCES 内 index (最終編集を記録する際に使う)
 var _story_edit_current_seq_idx: int = -1
 
+# 立ち絵のキャラ差し替え ---------------------------------------------------------
+# 「この場面のセバスをフィオナにしたい」ケース。set_portrait の呼び出し元変数
+# (sebas → fiona) と画像パスを同時に書き換える。
+# 🖼画像 ピッカーは同一キャラのフォルダに限定されている（別キャラが混ざらないため）
+# ので、キャラをまたぐ差し替えはこちらで行う。
+# ドラッグ&ドロップで作る新規ファイルは現在の画像パスの隣に置かれるので、
+# 別キャラの絵を放り込みたいときは「キャラ変更 → ドロップ」の順にする。
+
+# 章 .gd の `var X = b.character("Y")` からキャラ一覧を作り、現在のキャラを選択する。
+func _populate_portrait_char_selector(sel: OptionButton, current_char_id: String) -> void:
+	if not is_instance_valid(sel):
+		return
+	sel.clear()
+	var src_id: String = _find_nearest_source_id(_story_edit_entries, _story_edit_current_idx)
+	if src_id.is_empty() or not (":" in src_id):
+		return
+	var src_file: String = src_id.substr(0, src_id.rfind(":"))
+	var f := FileAccess.open(ProjectSettings.globalize_path(src_file), FileAccess.READ)
+	if not f:
+		return
+	var text: String = f.get_as_text()
+	f.close()
+	var re := RegEx.new()
+	re.compile('^\\s*var\\s+([A-Za-z_][A-Za-z0-9_]*)\\s*=\\s*b\\.character\\s*\\(\\s*"([^"]+)"\\s*\\)')
+	var seen := {}
+	var select_idx: int = -1
+	for line in text.split("\n"):
+		var m: RegExMatch = re.search(line)
+		if not m:
+			continue
+		var var_name: String = m.get_string(1)
+		var char_id: String = m.get_string(2)
+		if seen.has(char_id):
+			continue
+		seen[char_id] = true
+		sel.add_item("%s  (%s)" % [var_name, char_id])
+		sel.set_item_metadata(sel.item_count - 1, {"var": var_name, "id": char_id})
+		if char_id == current_char_id:
+			select_idx = sel.item_count - 1
+	if select_idx >= 0:
+		sel.select(select_idx)
+
+# キャラ ID から代表的な立ち絵パスを1つ返す。
+# assets/characters/{main,mob}/<id>/<衣装>/ 配下の、名前順で最初の画像。
+# 立ち絵は <id>_<衣装>_001.png のような連番なので、これで「素の1枚」が取れる。
+# 見つからなければ空文字。
+func _story_edit_char_default_portrait(char_id: String) -> String:
+	if char_id.is_empty():
+		return ""
+	for group in ["main", "mob"]:
+		var char_dir: String = "res://assets/characters/%s/%s" % [group, char_id]
+		var d := DirAccess.open(char_dir)
+		if not d:
+			continue
+		var subs: Array = []
+		for sub in d.get_directories():
+			subs.append(sub)
+		subs.sort()
+		# 素立ち絵が入りやすい衣装を優先する
+		for preferred in ["default", "clothed"]:
+			if subs.has(preferred):
+				subs.erase(preferred)
+				subs.push_front(preferred)
+		for sub in subs:
+			var sub_dir: String = char_dir + "/" + sub
+			var sd := DirAccess.open(sub_dir)
+			if not sd:
+				continue
+			var imgs: Array = []
+			for n in sd.get_files():
+				var lower: String = n.to_lower()
+				if lower.ends_with(".png") or lower.ends_with(".jpg") or lower.ends_with(".jpeg") or lower.ends_with(".webp"):
+					imgs.append(n)
+			if imgs.is_empty():
+				continue
+			imgs.sort()
+			return sub_dir + "/" + imgs[0]
+	return ""
+
+# bound_rect が今どのキャラの立ち絵かを portrait_log から引く。
+func _story_edit_char_id_for_rect(rect: TextureRect) -> String:
+	if not is_instance_valid(rect) or not story_scene_instance:
+		return ""
+	if not ("portrait_log" in story_scene_instance):
+		return ""
+	var plog: Array = story_scene_instance.portrait_log
+	for i in range(plog.size() - 1, -1, -1):
+		if plog[i].get("rect") == rect:
+			return plog[i].get("character_id", "")
+	return ""
+
+# 「キャラ変更」ボタン本体。
+func _on_story_edit_card_change_char(card: PanelContainer, root: Control) -> void:
+	if not is_instance_valid(card):
+		return
+	var info: Label = card.find_child("InfoLabel", true, false)
+	var sel: OptionButton = card.find_child("PortraitCharSelector", true, false)
+	if not sel or sel.item_count == 0:
+		if info: info.text = "[キャラNG] キャラ一覧が空"
+		return
+	var meta = sel.get_selected_metadata()
+	if not meta:
+		if info: info.text = "[キャラNG] キャラを選んでください"
+		return
+	var new_var: String = meta.get("var", "")
+	var new_id: String = meta.get("id", "")
+	var rect: TextureRect = card.get_meta("bound_rect", null) if card.has_meta("bound_rect") else null
+	if not is_instance_valid(rect):
+		if info: info.text = "[キャラNG] 立ち絵が bind されていない"
+		return
+	var cur_id: String = _story_edit_char_id_for_rect(rect)
+	if new_id == cur_id:
+		if info: info.text = "[キャラ] 既に %s です" % new_id
+		return
+	# 書き換え対象の set_portrait 行を portrait_log から引く
+	var src_id: String = ""
+	if story_scene_instance and "portrait_log" in story_scene_instance:
+		var plog: Array = story_scene_instance.portrait_log
+		for i in range(plog.size() - 1, -1, -1):
+			if plog[i].get("rect") == rect:
+				src_id = plog[i].get("edit_source_id", "")
+				break
+	if src_id.is_empty() or not (":" in src_id):
+		if info: info.text = "[キャラNG] 対象行が特定できない"
+		return
+	var new_path: String = _story_edit_char_default_portrait(new_id)
+	if new_path.is_empty():
+		if info: info.text = "[キャラNG] %s の立ち絵フォルダが見つからない" % new_id
+		return
+	var colon: int = src_id.rfind(":")
+	var src_file: String = src_id.substr(0, colon)
+	var line_no: int = int(src_id.substr(colon + 1))
+	var abs_path: String = ProjectSettings.globalize_path(src_file)
+	var f := FileAccess.open(abs_path, FileAccess.READ)
+	if not f:
+		if info: info.text = "[キャラNG] ファイルを開けない"
+		return
+	var lines: PackedStringArray = f.get_as_text().split("\n")
+	f.close()
+	if line_no <= 0 or line_no > lines.size():
+		if info: info.text = "[キャラNG] 行番号範囲外 (%d)" % line_no
+		return
+	# <indent><var>.set_portrait(<第1引数><残り>
+	# 第1引数は生パス文字列か定数トークンのみ許す。appear({...}) のような
+	# dict 始まりは対象外にして、壊すより何もしない方に倒す。
+	var re := RegEx.new()
+	re.compile('^(\\s*)([A-Za-z_][A-Za-z0-9_]*)\\.(set_portrait)\\s*\\(\\s*("[^"]*"|[A-Za-z_][A-Za-z0-9_]*)(.*)$')
+	var m: RegExMatch = re.search(lines[line_no - 1])
+	if not m:
+		if info: info.text = "[キャラNG] %s 行%d は set_portrait(パス, ...) の形ではない" % [src_file.get_file(), line_no]
+		print("[STORY_EDIT][CHAR] 解釈できない行: %s" % lines[line_no - 1].strip_edges())
+		return
+	var old_var: String = m.get_string(2)
+	lines[line_no - 1] = '%s%s.%s("%s"%s' % [m.get_string(1), new_var, m.get_string(3), new_path, m.get_string(5)]
+	if not _write_source_file(abs_path, "\n".join(lines)):
+		if info: info.text = "[キャラNG] 書き込み不可"
+		return
+	# in-memory のコマンドも追従させ、その場で再生し直して画面へ反映する
+	for cmd in _story_edit_entries:
+		if cmd is StoryCommands.ShowCharacter and ("edit_source_id" in cmd) and cmd.edit_source_id == src_id:
+			cmd.character_id = new_id
+			cmd.portrait_id = new_path
+			break
+	if info: info.text = "[キャラ] %s → %s (%s)" % [old_var, new_var, new_path.get_file()]
+	print("[STORY_EDIT][CHAR] %s:%d %s → %s / %s" % [src_file.get_file(), line_no, old_var, new_var, new_path])
+	_save_last_story_edit(_story_edit_current_seq_idx, src_id)
+	if story_scene_instance:
+		_story_edit_reset_scene(story_scene_instance)
+		_story_edit_execute_to(_story_edit_entries, _story_edit_current_idx, story_scene_instance)
+		if is_instance_valid(root):
+			_refresh_story_edit_cards(root, story_scene_instance)
+
+# 立ち絵の直接操作 -------------------------------------------------------------
+# クリックで選択 / ドラッグで X・Y / ホイールで スケール。
+# 更新は必ずカードのスライダーへ書き、rect は既存の _on_story_edit_card_slider が動かす。
+# スライダーが保存 (_save_story_edit_card) の真実源なので、rect を直接動かすと
+# 「画面では動いたのに保存されない」状態になる。
+
+var _story_edit_selected_rect: TextureRect = null
+var _story_edit_drag_card: PanelContainer = null
+var _story_edit_dragging := false
+var _story_edit_drag_last := Vector2.ZERO
+# ヒットテスト用のアルファ画像キャッシュ (resource_path -> 縮小 Image)
+var _story_edit_alpha_cache := {}
+const _STORY_EDIT_ALPHA_PROBE_W := 256
+const _STORY_EDIT_WHEEL_FACTOR := 1.06
+
+func _story_edit_drag_layer() -> Control:
+	for child in get_children():
+		if child is Control and child.name == "StoryEditRoot":
+			return child.find_child("PortraitDragLayer", true, false)
+	return null
+
+# 立ち絵の透過部分を避けてヒットテストする。背景除去済みの立ち絵は余白が広く、
+# 左右の立ち絵は矩形同士がよく重なるので、矩形判定だけだと「見えていない方」を
+# 掴んでしまう。
+func _story_edit_alpha_image(tex: Texture2D) -> Image:
+	if tex == null:
+		return null
+	var key: String = tex.resource_path
+	if key.is_empty():
+		return null
+	if _story_edit_alpha_cache.has(key):
+		return _story_edit_alpha_cache[key]
+	var img: Image = tex.get_image()
+	if img == null:
+		return null
+	if img.get_width() > _STORY_EDIT_ALPHA_PROBE_W:
+		var h: int = max(1, int(img.get_height() * float(_STORY_EDIT_ALPHA_PROBE_W) / float(img.get_width())))
+		img = img.duplicate()
+		img.resize(_STORY_EDIT_ALPHA_PROBE_W, h, Image.INTERPOLATE_NEAREST)
+	_story_edit_alpha_cache[key] = img
+	return img
+
+func _story_edit_pixel_opaque(rect: TextureRect, pos: Vector2) -> bool:
+	var gr: Rect2 = rect.get_global_rect()
+	if gr.size.x <= 0.0 or gr.size.y <= 0.0:
+		return false
+	var img := _story_edit_alpha_image(rect.texture)
+	if img == null:
+		return true  # 判定できないときは矩形内なら掴めることにする
+	var u: float = (pos.x - gr.position.x) / gr.size.x
+	var v: float = (pos.y - gr.position.y) / gr.size.y
+	if rect.flip_h:
+		u = 1.0 - u
+	if rect.flip_v:
+		v = 1.0 - v
+	var px: int = clampi(int(u * img.get_width()), 0, img.get_width() - 1)
+	var py: int = clampi(int(v * img.get_height()), 0, img.get_height() - 1)
+	return img.get_pixel(px, py).a > 0.1
+
+# pos の下にある立ち絵を返す。不透明ピクセルを優先し、無ければ矩形内の最初の1枚。
+func _story_edit_pick_rect_at(pos: Vector2) -> TextureRect:
+	var candidates: Array = []
+	if is_instance_valid(story_scene_instance):
+		for side in ["left_char", "center_char", "right_char"]:
+			if side in story_scene_instance:
+				candidates.append(story_scene_instance.get(side))
+	var in_bounds: TextureRect = null
+	for r in candidates:
+		if not is_instance_valid(r) or not r.visible or not r.texture:
+			continue
+		if not r.get_global_rect().has_point(pos):
+			continue
+		if in_bounds == null:
+			in_bounds = r
+		if _story_edit_pixel_opaque(r, pos):
+			return r
+	return in_bounds
+
+# scale / x / y をまとめてカードへ書き込む。個別に代入すると中間状態で rect が
+# 一度跳ねる（scale だけ変わって位置が未補正のフレームができる）ので、
+# シグナルを止めて3つ入れてからハンドラを1回だけ呼ぶ。
+func _story_edit_apply_transform(card: PanelContainer, s: float, x: float, y: float) -> void:
+	if not is_instance_valid(card):
+		return
+	var sl := _get_edit_sliders(card)
+	if sl.is_empty():
+		return
+	var vs: float = clampf(s, sl.scale.min_value, sl.scale.max_value)
+	var vx: float = clampf(x, sl.x.min_value, sl.x.max_value)
+	var vy: float = clampf(y, sl.y.min_value, sl.y.max_value)
+	for pair in [[sl.scale, sl.scale_spin, vs], [sl.x, sl.x_spin, vx], [sl.y, sl.y_spin, vy]]:
+		var slider: Range = pair[0]
+		var spin: Range = pair[1]
+		if slider:
+			slider.set_block_signals(true); slider.value = pair[2]; slider.set_block_signals(false)
+		if spin:
+			spin.set_block_signals(true); spin.value = pair[2]; spin.set_block_signals(false)
+	_on_story_edit_card_slider(0.0, card)
+	_story_edit_arm_autosave(card)
+
+func _story_edit_select_rect(rect: TextureRect) -> void:
+	_story_edit_selected_rect = rect
+	_story_edit_drag_card = _find_card_for_rect(rect) if is_instance_valid(rect) else null
+	var layer := _story_edit_drag_layer()
+	if layer:
+		layer.queue_redraw()
+
+# ドラッグ操作レイヤの入力ハンドラ。
+func _on_story_edit_portrait_input(event: InputEvent) -> void:
+	if not is_instance_valid(story_scene_instance):
+		return
+	var layer := _story_edit_drag_layer()
+	# gui_input のイベント座標はレイヤのローカル。レイヤは全画面なので通常そのまま
+	# ビューポート座標だが、明示的にオフセットを足して座標系を固定しておく
+	# （立ち絵の当たり判定は get_global_rect() = ビューポート座標で行うため）。
+	var origin: Vector2 = layer.global_position if is_instance_valid(layer) else Vector2.ZERO
+	if event is InputEventMouseButton:
+		var mb := event as InputEventMouseButton
+		var pos: Vector2 = mb.position + origin
+		if mb.button_index == MOUSE_BUTTON_LEFT:
+			if mb.pressed:
+				var hit := _story_edit_pick_rect_at(pos)
+				_story_edit_select_rect(hit)
+				_story_edit_dragging = is_instance_valid(hit) and is_instance_valid(_story_edit_drag_card)
+				_story_edit_drag_last = pos
+				if _story_edit_dragging and layer:
+					layer.accept_event()
+			else:
+				_story_edit_dragging = false
+		elif mb.pressed and (mb.button_index == MOUSE_BUTTON_WHEEL_UP or mb.button_index == MOUSE_BUTTON_WHEEL_DOWN):
+			# ホイールはカーソル下の立ち絵を対象にする（選択済みでもカーソル優先）。
+			var hit := _story_edit_pick_rect_at(pos)
+			if not is_instance_valid(hit):
+				hit = _story_edit_selected_rect
+			if not is_instance_valid(hit):
+				return
+			if hit != _story_edit_selected_rect:
+				_story_edit_select_rect(hit)
+			var factor: float = _STORY_EDIT_WHEEL_FACTOR if mb.button_index == MOUSE_BUTTON_WHEEL_UP else 1.0 / _STORY_EDIT_WHEEL_FACTOR
+			_story_edit_zoom_at(hit, factor, pos)
+			if layer:
+				layer.accept_event()
+	elif event is InputEventMouseMotion and _story_edit_dragging:
+		var pos2: Vector2 = (event as InputEventMouseMotion).position + origin
+		var delta: Vector2 = pos2 - _story_edit_drag_last
+		_story_edit_drag_last = pos2
+		if delta == Vector2.ZERO or not is_instance_valid(_story_edit_drag_card):
+			return
+		var sl := _get_edit_sliders(_story_edit_drag_card)
+		if sl.is_empty():
+			return
+		_story_edit_apply_transform(_story_edit_drag_card, sl.scale.value, sl.x.value + delta.x, sl.y.value + delta.y)
+		if layer:
+			layer.queue_redraw()
+			layer.accept_event()
+
+# カーソル位置を固定したまま拡縮する。単に scale だけ変えると base_pos が
+# 動くぶん立ち絵が跳ねて、狙った場所を拡大できない。
+func _story_edit_zoom_at(rect: TextureRect, factor: float, cursor: Vector2) -> void:
+	var card := _find_card_for_rect(rect)
+	if not is_instance_valid(card):
+		return
+	var sl := _get_edit_sliders(card)
+	if sl.is_empty() or not rect.texture:
+		return
+	var s0: float = sl.scale.value
+	if s0 <= 0.0:
+		return
+	var s1: float = clampf(snappedf(s0 * factor, sl.scale.step), sl.scale.min_value, sl.scale.max_value)
+	if is_equal_approx(s0, s1):
+		return
+	# カーソル直下のテクスチャ座標を、拡縮後も同じ画面位置に来るよう位置を解く
+	var u: Vector2 = (cursor - rect.position) / s0
+	var base1: Vector2 = _story_edit_get_base_pos(rect, s1)
+	var pos1: Vector2 = cursor - u * s1
+	_story_edit_apply_transform(card, s1, pos1.x - base1.x, pos1.y - base1.y)
+	var layer := _story_edit_drag_layer()
+	if layer:
+		layer.queue_redraw()
+
 # 各カード（左/右）の slider value_changed ハンドラ。card に bind 中の rect を動かす。
 func _on_story_edit_card_slider(_value: float, card: PanelContainer):
 	if not is_instance_valid(card):
@@ -3464,6 +4104,13 @@ func _refresh_story_edit_cards(root: Control, scene):
 		right_rect = scene.right_char
 		right_side = "right"
 	_bind_story_edit_card(right_card, scene, right_side, right_rect)
+	# ナビで立ち絵が消えたら選択を落とす。残っていてもサイズが変わるので枠は描き直す。
+	if is_instance_valid(_story_edit_selected_rect) and (not _story_edit_selected_rect.visible or not _story_edit_selected_rect.texture):
+		_story_edit_selected_rect = null
+		_story_edit_drag_card = null
+	var _dl := _story_edit_drag_layer()
+	if _dl:
+		_dl.queue_redraw()
 
 func _bind_story_edit_card(card: PanelContainer, _scene, side: String, rect: TextureRect):
 	if not is_instance_valid(rect) or not rect.visible or not rect.texture:
@@ -3478,6 +4125,10 @@ func _bind_story_edit_card(card: PanelContainer, _scene, side: String, rect: Tex
 	if title:
 		var tex_name: String = rect.texture.resource_path.get_file() if rect.texture.resource_path else "(no texture)"
 		title.text = "[%s] %s" % [side, tex_name]
+	# キャラ選択は章の b.character 宣言から毎回作り直す（章をまたぐと顔ぶれが変わる）
+	var pchar_sel: OptionButton = card.find_child("PortraitCharSelector", true, false)
+	if pchar_sel:
+		_populate_portrait_char_selector(pchar_sel, _story_edit_char_id_for_rect(rect))
 	var sl := _get_edit_sliders(card)
 	if sl.is_empty():
 		return
@@ -3503,6 +4154,24 @@ func _create_story_edit_layout() -> Control:
 	root.name = "StoryEditRoot"
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE  # 子のパネルだけがクリックを受ける
+
+	# 立ち絵の直接操作レイヤ（クリックで選択 / ドラッグで移動 / ホイールで拡縮）。
+	# EditPanelsContainer より「先に」追加することで下に敷き、カードやナビ帯が
+	# 先にクリックを取れるようにする（Godot は後ろの兄弟ほど手前で、入力も手前優先）。
+	# 値は必ずカードのスライダー経由で更新する。スライダーが保存の真実源なので、
+	# rect を直接動かすと保存内容とズレる。
+	var drag_layer := Control.new()
+	drag_layer.name = "PortraitDragLayer"
+	drag_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	drag_layer.mouse_filter = Control.MOUSE_FILTER_STOP
+	root.add_child(drag_layer)
+	drag_layer.gui_input.connect(_on_story_edit_portrait_input)
+	drag_layer.draw.connect(func():
+		if not is_instance_valid(_story_edit_selected_rect):
+			return
+		var gr: Rect2 = _story_edit_selected_rect.get_global_rect()
+		var local := Rect2(gr.position - drag_layer.global_position, gr.size)
+		drag_layer.draw_rect(local, Color(0.35, 1.0, 0.6, 0.85), false, 2.0))
 
 	# 編集 UI 本体は EditPanelsContainer にまとめて、可視性/透明度をコンテナ単位で
 	# トグルする。既定は非表示 (画面に立ち絵/背景/セリフ帯だけが見える状態)。
@@ -3804,6 +4473,36 @@ func _create_story_edit_char_card(side: String) -> PanelContainer:
 	info.add_theme_font_size_override("font_size", 11)
 	info.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
 	vbox.add_child(info)
+
+	# キャラ差し替え行: この立ち絵が「誰の」set_portrait なのかを別キャラへ移す。
+	# 画像だけ差し替える 🖼画像 とは別物（あちらは同一キャラのフォルダに限定される）。
+	# ドラッグ&ドロップで作る新規ファイルは「現在の画像パスの隣」に置かれるため
+	# (_next_variant_path)、キャラを移してからドロップしないと別キャラのフォルダに
+	# 保存されてしまう。順序は キャラ変更 → ドロップ。
+	var char_row := HBoxContainer.new()
+	char_row.name = "PortraitCharRow"
+	char_row.add_theme_constant_override("separation", 4)
+	char_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_child(char_row)
+
+	var portrait_char_lbl := Label.new()
+	portrait_char_lbl.text = "キャラ:"
+	portrait_char_lbl.add_theme_font_size_override("font_size", 12)
+	char_row.add_child(portrait_char_lbl)
+
+	var portrait_char_sel := OptionButton.new()
+	portrait_char_sel.name = "PortraitCharSelector"
+	portrait_char_sel.add_theme_font_size_override("font_size", 12)
+	portrait_char_sel.tooltip_text = "この立ち絵を別のキャラへ差し替える。章内の b.character(...) 宣言から一覧化する"
+	char_row.add_child(portrait_char_sel)
+
+	var change_char_btn := Button.new()
+	change_char_btn.name = "ChangeCharBtn"
+	change_char_btn.text = "キャラ変更"
+	change_char_btn.add_theme_font_size_override("font_size", 12)
+	change_char_btn.add_theme_color_override("font_color", Color(1.0, 0.85, 0.5))
+	change_char_btn.tooltip_text = "set_portrait の呼び出し元変数と画像を、選んだキャラのものへ書き換える"
+	char_row.add_child(change_char_btn)
 
 	var action_row := HBoxContainer.new()
 	action_row.name = "ActionRow"
@@ -4368,7 +5067,9 @@ func _on_story_edit_card_bg_removal(card: PanelContainer) -> void:
 	var target_abs: String = ProjectSettings.globalize_path(target_res)
 	_open_bg_removal_editor(card, rect, target_abs, target_res, target_abs)
 
-func _open_bg_removal_editor(card: PanelContainer, rect: TextureRect, target_abs: String, target_res: String, source_path: String) -> void:
+# applied_override が有効なら _apply_edited_image の代わりにそちらへ Image を渡す。
+# バトル編集は「行を挿入せず現在の set_portrait のパスを差し替える」ので別処理になる。
+func _open_bg_removal_editor(card: PanelContainer, rect: TextureRect, target_abs: String, target_res: String, source_path: String, applied_override: Callable = Callable()) -> void:
 	var _info: Label = card.find_child("InfoLabel", true, false) if is_instance_valid(card) else null
 	# gui_embed_subwindows は触らない。macOS の埋め込み display server は
 	# メインウィンドウ以外を本物の OS ウィンドウにできず、FileDialog 等も含めて
@@ -4377,7 +5078,10 @@ func _open_bg_removal_editor(card: PanelContainer, rect: TextureRect, target_abs
 	var editor = BgRemovalEditorScript.new()
 	editor.setup(source_path, target_res.get_file())
 	editor.applied.connect(func(final_image: Image):
-		_apply_edited_image(card, rect, target_abs, target_res, final_image)
+		if applied_override.is_valid():
+			applied_override.call(final_image)
+		else:
+			_apply_edited_image(card, rect, target_abs, target_res, final_image)
 		editor.queue_free())
 	editor.cancelled.connect(func(): editor.queue_free())
 	add_child(editor)
@@ -4401,6 +5105,13 @@ func _apply_edited_image(card: PanelContainer, rect: TextureRect, _target_abs: S
 	if save_err != OK:
 		if info: info.text = "[除去 NG] PNG 保存失敗 (err=%d)" % save_err
 		return
+	# 同名ファイルが過去に存在してインポートされていた場合、.import と .ctex が残っている
+	# （.import は gitignore 対象なので、画像をツリーから消しても道連れにならない）。
+	# 消しておかないと load() が remap 経由で古い .ctex を返し、resource_path だけ新しくて
+	# 絵は古い、という状態になる。実行中のプロセスは再インポートできないのでここで潰す。
+	var purged: int = PortraitImportCacheScript.purge(new_res)
+	if purged > 0:
+		print("[STORY_EDIT] 旧インポートキャッシュを破棄: %s (%d ファイル)" % [new_res.get_file(), purged])
 	# 表示テクスチャを新画像に差し替え (適用時点で見た目を即反映)
 	var new_tex := ImageTexture.create_from_image(final_image)
 	if new_tex == null:
@@ -4517,10 +5228,17 @@ func _story_edit_insert_new_portrait_before(card: PanelContainer, cur_cmd, new_p
 	new_show.side_override = bound_side
 	new_show.flip = flip
 	new_show.edit_source_id = "%s:%d" % [src_file, line_no]
-	_story_edit_entries.insert(_story_edit_current_idx, new_show)
-	# 現在セリフより後 (line_no 以降) の entries の edit_source_id を +1 シフト。
+	# 先に既存 entries をずらしてから new_show を差し込む。順序は入れ替えないこと。
+	# 現在セリフより後 (line_no 以降) の entries の edit_source_id を +1 シフトする。
 	# 現在セリフ自身も line_no にあったが、これから +1 位置になるので合わせて更新される。
+	# 一方 new_show は line_no そのものを占めるのでシフト対象ではない。先に insert して
+	# しまうと new_show まで +1 され、以後ずっと 1 行下 (= 元のセリフ行) を指し続ける:
+	#   - 保存/反転が set_portrait ではない行を掴んで [NG] block になる
+	#   - 挿入を重ねるとズレが累積し、複数コマンドの edit_source_id が衝突して
+	#     portrait_log の重複排除 (StoryScene の edit_source_id 一致判定) に飲まれ、
+	#     ページ送りで差し替えが消えたように見える
 	_story_edit_shift_source_ids(src_file, line_no, 1)
+	_story_edit_entries.insert(_story_edit_current_idx, new_show)
 	# セリフが +1 ずれたので追従。
 	_story_edit_current_idx += 1
 	# portrait_log の該当エントリを新規 set_portrait の状態に更新しておく。
@@ -5792,6 +6510,72 @@ func _on_title_event_battle_mode():
 	jump_menu.visible = false
 	await _show_standalone_event_battle_select()
 
+# 紙芝居編集: 章を選んで SlideshowEditor を開く。
+# 紙芝居を持たない章（ミニゲーム等）は一覧に出さない。
+func _on_slideshow_edit_mode():
+	jump_menu.visible = false
+	await _show_slideshow_chapter_select()
+
+func _slideshow_chapter_options() -> Array:
+	var result: Array = []
+	for ch_info in EVENT_BATTLE_CHAPTERS:
+		var path: String = String(ch_info.get("path", ""))
+		if path.is_empty():
+			continue
+		var blocks: Array = SlideshowSourceScript.parse_blocks(SlideshowSourceScript.read_lines(path))
+		if blocks.is_empty():
+			continue
+		var pages: int = 0
+		for b in blocks:
+			pages += (b["pages"] as Array).size()
+		var entry: Dictionary = ch_info.duplicate()
+		entry["slideshow_blocks"] = blocks.size()
+		entry["slideshow_pages"] = pages
+		result.append(entry)
+	return result
+
+func _show_slideshow_chapter_select():
+	var options := _slideshow_chapter_options()
+	for child in jump_list.get_children():
+		child.queue_free()
+	var back_btn := Button.new()
+	back_btn.text = "← 戻る"
+	back_btn.add_theme_font_size_override("font_size", 20)
+	back_btn.pressed.connect(func(): _event_chapter_selected.emit(-1))
+	jump_list.add_child(back_btn)
+	jump_list.add_child(HSeparator.new())
+	if options.is_empty():
+		var none := Label.new()
+		none.text = "紙芝居を持つ章がありません"
+		jump_list.add_child(none)
+	for i in range(options.size()):
+		var ch_info: Dictionary = options[i]
+		var btn := Button.new()
+		btn.text = "%s  (%d敗ぶん / 全%dページ)" % [ch_info.name, ch_info["slideshow_blocks"], ch_info["slideshow_pages"]]
+		btn.add_theme_font_size_override("font_size", 18)
+		var idx: int = i
+		btn.pressed.connect(func(): _event_chapter_selected.emit(idx))
+		jump_list.add_child(btn)
+	jump_menu.visible = true
+	while true:
+		var selected_idx: int = await _event_chapter_selected
+		if selected_idx < 0:
+			jump_menu.visible = false
+			title_menu.visible = true
+			return
+		jump_menu.visible = false
+		await _run_slideshow_edit(String(options[selected_idx].get("path", "")))
+		jump_menu.visible = true
+
+func _run_slideshow_edit(chapter_path: String):
+	if chapter_path.is_empty():
+		return
+	var editor = SlideshowEditorScript.new()
+	editor.setup(chapter_path)
+	add_child(editor)
+	move_child(editor, get_child_count() - 1)
+	await editor.closed
+
 func _get_event_chapter_options(only_battles: bool) -> Array:
 	var result: Array = []
 	for ch_info in EVENT_BATTLE_CHAPTERS:
@@ -5966,6 +6750,7 @@ func _run_event_battle_edit(ch_info: Dictionary):
 				event_battle.battle_finished.emit("abort"))
 
 	var _result: String = await event_battle.battle_finished
+	_battle_edit_teardown()
 	_battle_edit_active = false
 	_battle_edit_target_rect = null
 	_battle_edit_panel = null
