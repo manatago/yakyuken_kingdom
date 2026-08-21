@@ -98,7 +98,7 @@ func sister_outfit_3(bt):
 		bt.background("res://assets/characters/main/sister_head/clothed/sister_head_undressing_cloth_001.png")
 		bt.bubble("この私が脱ぐことになるなんて・・・・", {"side": "right"})
 		bt.background("res://assets/characters/main/sister_head/clothed/sister_head_undressing_cloth_002.png")
-		bt.bubble("(男の人に見られちゃうなんて・・・・)", {"side": "right"})
+		bt.bubble("(男の人に見られちゃうなんて・・・・)", {"side": "left"})
 		bt.background("res://assets/characters/main/sister_head/clothed/sister_head_undressing_cloth_003.png")
 		bt.bubble("な、なんか、・・・\nうまく脱げなくて・・・", {"side": "right"})
 		bt.background("res://assets/characters/main/sister_head/clothed/sister_head_undressing_cloth_004.png")

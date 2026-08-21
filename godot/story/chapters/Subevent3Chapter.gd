@@ -11,13 +11,11 @@ const BG_NOBLE_ROOM := "res://assets/backgrounds/subevent3/bg_noble_room.png"
 
 const HERO_NORMAL := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_001.png"
 const HERO_SHOCK := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_010.png"
-const HERO_AWKWARD := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_067.png"
 const HERO_WEAK := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_004.png"
 const HERO_DREAD := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_064.png"
 const HERO_RESIGN := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_011.png"
 const HERO_PUZZLE := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_006.png"
 const HERO_IRRITATE := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_007.png"
-const HERO_SERIOUS := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_011.png"
 const HERO_RESOLVE := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_088.png"
 const HERO_DISTANT := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_083.png"
 const HERO_DESPAIR := "res://assets/characters/main/satoshi/isekai/satoshi_isekai_070.png"
@@ -27,15 +25,9 @@ const RECEP_NORMAL := "res://assets/characters/main/receptionist/clothed/recepti
 const RECEP_COLD := "res://assets/characters/main/receptionist/clothed/receptionist_clothed_007.png"
 const RECEP_JIT := "res://assets/characters/main/receptionist/clothed/receptionist_clothed_008.png"
 const RECEP_BUSINESS := "res://assets/characters/main/receptionist/clothed/receptionist_clothed_006.png"
-const FIONA := "res://assets/characters/main/fiona/clothed/fiona_clothed_001.png"  # 01 idle_neutral (default)
 const FIONA_INTRO_ARMOR := "res://assets/characters/main/fiona/clothed/fiona_clothed_017.png"  # 17 場面1 呪いの鎧登場
 const FIONA_TIMID_AGREE   := "res://assets/characters/main/fiona/clothed/fiona_clothed_002.png"  # 02 場面3 同意
 const FIONA_GRATEFUL      := "res://assets/characters/main/fiona/clothed/fiona_clothed_003.png"  # 03 場面4 感謝
-const FIONA_CONFUSED      := "res://assets/characters/main/fiona/clothed/fiona_clothed_005.png"  # 05 場面6 ...は？
-const FIONA_EXHAUSTED     := "res://assets/characters/main/fiona/clothed/fiona_clothed_006.png"  # 06 場面6 はぁ...はぁ...
-const FIONA_PANIC_DENY    := "res://assets/characters/main/fiona/clothed/fiona_clothed_007.png"  # 07 場面6 けして...
-const FIONA_SCREAM        := "res://assets/characters/main/fiona/clothed/fiona_clothed_010.png"  # 10 場面7 絶叫
-const FIONA_SOBBING       := "res://assets/characters/main/fiona/clothed/fiona_clothed_011.png"  # 11 場面7 嗚咽 + 敗北
 const FIONA_COLD_REJECT   := "res://assets/characters/main/fiona/clothed/fiona_clothed_012.png"  # 12 敗北 もう、結構です
 const SEBAS := "res://assets/characters/mob/sebas/default/sebas_default_001.png"
 const GOREN := "res://assets/characters/mob/goren/default/goren_default_001.png"
@@ -81,7 +73,7 @@ func _build_subevent3_pre(b):
 		"portrait": FIONA_INTRO_ARMOR, "portrait_scale": 0.59, "position": [-35, -189],
 	})
 
-	fiona.set_portrait("res://assets/characters/main/fiona/clothed/fiona_clothed_017_v1.png", {"scale": 0.59, "side": "right", "flip": 1, "position": [-35, 71]})
+	fiona.set_portrait("res://assets/characters/main/fiona/clothed/fiona_clothed_017_v2.png", {"scale": 0.67, "side": "right", "flip": 1, "position": [-252, 25]})
 	b.narrator_band("美しいシルバーの髪の女の子に似合わない、\n黒い鎧を纏っている。")
 
 	# セバスが代弁
@@ -92,7 +84,6 @@ func _build_subevent3_pre(b):
 	})
 	sebas.band("...失礼いたします。\n当家のお嬢様の呪いを解いてくださる方を。\n報酬は金貨百枚用意しております。")
 
-	sebas.set_portrait("res://assets/characters/mob/sebas/default/sebas_default_001_v10.png", {"scale": 0.5, "side": "right", "flip": 1, "position": [0, 30]})
 	sebas.set_portrait("res://assets/characters/mob/sebas/default/sebas_default_001_v11.png", {"scale": 0.37, "side": "right", "flip": 1, "position": [71, -75]})
 	b.narrator_band("ギルドは一瞬静まり返り、皆が目を逸らす。")
 
@@ -123,7 +114,7 @@ func _build_subevent3_pre(b):
 	hero.band("だったら先に呪いを解かなきゃ\nダメじゃないですか？")
 	receptionist.band("それが無理なのです...\n呪いを解く条件は極上の「羞恥感情」...\nなのに鎧が脱げないという矛盾の中にあるのです。")
 
-	pisuke.band("...チップに解呪条件が出た。手順は二段階いる。\n①羞恥を与えて呪いを弱める、②弱まった隙に野球拳で勝つ。\n羞恥を先に与える手段を、誰も思いつかなかったんだろうな。", {"side": "left"})
+	pisuke.band("話をまとめよう。解呪のためには二段回の手順がいるな。\n①羞恥を与えて呪いを弱める\n②弱まった隙に野球拳で勝つ。", {"side": "left"})
 
 	pisuke.band("...で、羞恥を与えるための道具に心当たりがある。\n鍛冶師ゴルンってじじいの工房に「真言の水晶球」って魔具が眠ってるはずだ。\n装着者の心を丸裸にできる代物だ。あのじじいを頼れ。", {"side": "left"})
 
@@ -166,7 +157,7 @@ func _build_subevent3_pre(b):
 	hero.band("言ってない！！ 今のは俺じゃ──！")
 	sebas.set_portrait("res://assets/characters/mob/sebas/default/sebas_default_001_v13.png", {"scale": 0.58, "side": "right", "flip": 1, "position": [2, 238]})
 
-	sebas.band("（深々と一礼）\n...ありがたき幸せ。詳細は屋敷にてお伝えいたします。")
+	sebas.band("ありがとうございます。\n詳細は屋敷にてお伝えいたします。")
 
 	# 受付嬢に切り替え
 	sebas.leave({"exit_effect": "fade", "exit_duration": 0.25, "wait_for_exit": false})
@@ -222,21 +213,19 @@ func _build_subevent3_blacksmith(b):
 	
 	goren.band("本来は戦争のための道具じゃ。\n戦争の時に現場の真実を映像と音声で伝えることができる。")
 	
-	goren.set_portrait("映像はともかく、\n本人の心の声まで伝えてしまうのが問題での...", {"scale": 0.95, "side": "right", "flip": 0, "position": [38, 155]})
 	hero.band("便利じゃないですか。\n他にも色々使えそうですけど...")
 	
 	goren.band("映像はともかく、\n本人の心の声まで伝えてしまうのが問題での")
 	
 	hero.band("だから「真言」か...なるほど。")
-	goren.set_portrait("...風呂場に仕掛けての...\n娘の成長を確認してしもうた。", {"scale": 0.95, "side": "right", "flip": 0, "position": [38, 155]})
 	goren.set_portrait("res://assets/characters/mob/goren/default/goren_default_001_v4.png", {"scale": 0.95, "side": "right", "flip": 0, "position": [38, 155]})
+	goren.band("...風呂場に仕掛けての...\n娘の成長を確認してしもうた。")
 	
 	goren.set_portrait("res://assets/characters/mob/goren/default/goren_default_001_v8.png", {"scale": 0.95, "side": "right", "flip": 0, "position": [38, 155]})
 	hero.band("で、それでどうやって遊んだんですか？")
 
-	goren.set_portrait("res://assets/characters/mob/goren/default/goren_default_001_v9.png", {"scale": 0.95, "side": "right", "flip": 0, "position": [38, 155]})
 	goren.set_portrait("res://assets/characters/mob/goren/default/goren_default_001_v10.png", {"scale": 0.95, "side": "right", "flip": 0, "position": [38, 155]})
-	goren.band("だが気をつけろ...\nバレたらどえらいことになるぞ。")
+	goren.band("風呂に仕込んで・・・\n娘の成長を確かめようと・・・")
 	
 	hero.band("（ど変態じゃねーか。）\nなるほど。そういう使い方もできるんですね。")
 	goren.set_portrait("res://assets/characters/mob/goren/default/goren_default_001_v6.png", {"scale": 0.95, "side": "right", "flip": 0, "position": [38, 155]})
@@ -255,9 +244,9 @@ func _build_subevent3_blacksmith(b):
 	b.narrator_band("ゴルンは棚から青白い光の水晶球を取り出し、サトシに差し出した。")
 
 	goren.band("これが「真言の水晶球」じゃ。\nこれで精神防御はなんでも突破できる。")
-	goren.band("これが「真言の水晶球」じゃ。\nこれで精神防御はなんでも突破できる。\n\n「全力拡散モード」を起動すれば、王都広場のスクリーンと\n王国中の主要通りの伝声塔に映像が同時中継される。\n使いどころには気をつけろ。")
+	goren.band("「全力拡散モード」を起動すれば、王都広場のスクリーンと\n王国中の主要通りの伝声塔に映像が同時中継される。\n使いどころには気をつけろ。")
 
-	hero.set_portrait(HERO_SHOCK, {"「全力拡散モード」を起動すれば、王都広場のスクリーンと\n王国中の主要通りの伝声塔に映像が同時中継される。\n使いどころには気をつけろ。": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait(HERO_SHOCK, {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("王国中に中継って...使い所あるのかなぁ")
 
 	pisuke.band("...いいか.......\nくれぐれも使い方を間違えるなよ", {"side": "left"})
@@ -298,7 +287,6 @@ func _build_subevent3_visit(b):
 
 	sebas.band("...して、サトシ様。\n具体的には何をなさるおつもりですか？")
 
-	hero.set_portrait(HERO_RESOLVE, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_088_v1.png", {"scale": 1.13, "side": "left", "flip": 1, "position": [-174, 362]})
 	hero.band("「真言の水晶球」です。\n...これを使って、お嬢様に羞恥を与えます。")
 
@@ -307,13 +295,11 @@ func _build_subevent3_visit(b):
 
 	hero.band("で、その呪いを解くのは\n究極の羞恥感情を与えること、ですよね？")
 	
-	hero.band("...左様にございます。")
 	
 	sebas.band("...おっしゃる通りでございます。")
 	
 	hero.band("野球拳で負ければ羞恥状態になるのに、その野球拳に負けられない。\nその堂々巡りの状態なわけですよね。")
 	
-	sebas.set_portrait("res://assets/characters/mob/sebas/default/sebas_default_001_v16.png", {"scale": 0.43, "side": "right", "flip": 1, "position": [33, 44]})
 	sebas.set_portrait("res://assets/characters/mob/sebas/default/sebas_default_001_v15.png", {"scale": 0.42, "side": "right", "flip": 1, "position": [30, 40]})
 
 
@@ -324,18 +310,16 @@ func _build_subevent3_visit(b):
 	hero.band("呪いが弱まった直後に野球拳を挑めば、\n今度こそ勝てる...そういう仕組みです。")
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_067_v1.png", {"scale": 1.11, "side": "left", "flip": 1, "position": [-155, 284]})
 
-	sebas.set_portrait("となりますと、お嬢様のあーんなことや...\nこーんなことが....顕になると！？", {"scale": 0.64, "side": "right", "flip": 1, "position": [-103, -38]})
-	sebas.set_portrait("res://assets/characters/mob/sebas/default/sebas_default_001_v19.png", {"scale": 0.59, "side": "right", "flip": 1, "position": [-133, -116]})
+	sebas.set_portrait("res://assets/characters/mob/sebas/default/sebas_default_001_v19.png", {"scale": 0.74, "side": "right", "flip": 1, "position": [-62, 121]})
 	sebas.band("となりますと、お嬢様のあーんなことや...\nこーんなことが....顕になると！？")
 	hero.band("（こいつもか...こいつもポンコツなのか？）")
 	sebas.set_portrait("res://assets/characters/mob/sebas/default/sebas_default_001_v17.png", {"scale": 1.08, "side": "right", "flip": 1, "position": [-25, 283]})
 	sebas.band("どうなのですか？")
 
-	hero.set_portrait(HERO_AWKWARD, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_067_v2.png", {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...は、はい。")
 
-	sebas.set_portrait("res://assets/characters/mob/sebas/default/sebas_default_001_v20.png", {"scale": 0.50, "side": "right", "flip": 1, "position": [-9, 215]})
+	sebas.set_portrait("res://assets/characters/mob/sebas/default/sebas_default_001_v20.png", {"scale": 0.44, "side": "right", "flip": 1, "position": [-9, 89]})
 	sebas.band("...それは何よりでございます。\nただし、付け加えることがございます。")
 	
 	hero.band("付け加えること？")
@@ -344,7 +328,7 @@ func _build_subevent3_visit(b):
 	
 	hero.band("魂と癒着？どういうことです？")
 	
-	sebas.set_portrait("res://assets/characters/mob/sebas/default/sebas_default_001_v23.png", {"scale": 0.99, "side": "right", "flip": 1, "position": [-9, 215]})
+	sebas.set_portrait("res://assets/characters/mob/sebas/default/sebas_default_001_v20.png", {"scale": 0.44, "side": "right", "flip": 1, "position": [-9, 89]})
 	sebas.band("仮に、鎧が脱げたとしても、生半可な羞恥感情では、元に戻ってしまうのです。")
 	
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_067_v3.png", {"scale": 0.85, "side": "left", "flip": 1, "position": [-103, 70]})
@@ -357,7 +341,6 @@ func _build_subevent3_visit(b):
 	sebas.set_portrait("res://assets/characters/mob/sebas/default/sebas_default_001_v21.png", {"scale": 0.97, "side": "right", "flip": 0, "position": [-9, 215]})
 	sebas.band("しかし、それはどうやって使うものなのでしょう？")
 
-	hero.set_portrait(HERO_SERIOUS, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_011_v1.png", {"scale": 1.18, "side": "left", "flip": 1, "position": [-225, 400]})
 	hero.band("...おっさんから聞いた話だと...。\n呪いが強いと漆黒、弱まると金色に変わるんです。\n色が薄くなっていけば「効いている」証拠になります。")
 
@@ -365,12 +348,12 @@ func _build_subevent3_visit(b):
 
 	hero.band("は、はい。")
 
-	sebas.set_portrait("res://assets/characters/mob/sebas/default/sebas_default_001_v22.png", {"scale": 0.51, "side": "right", "flip": 1, "position": [-1, 215]})
+	sebas.set_portrait("res://assets/characters/mob/sebas/default/sebas_default_001_v22.png", {"scale": 0.51, "side": "right", "flip": 1, "position": [78, 211]})
 	sebas.band("...お嬢様は一月の間、鎧の中で衰弱の一途でございます。\nお言葉も、お笑いも、消えつつあります。\nご当主様が不在の今、わたくしの一存で判断せねばなりません。")
 
 	sebas.band("...わたくし、この色を見張らせていただきます。\n色が薄まっている限り、口出しはいたしません。\n...ですが、濃くなるようなことがあれば、その時は──。")
 
-	hero.set_portrait(HERO_AWKWARD, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_092.png", {"scale": 0.52, "side": "left", "flip": 0, "position": [0, 112]})
 	hero.band("...そ、その時は？")
 
 	sebas.band("...お察しください。")
@@ -382,10 +365,10 @@ func _build_subevent3_visit(b):
 	fiona.set_portrait(FIONA_TIMID_AGREE, {"scale": 0.40, "side": "right", "flip": 0, "position": [0, 30]})
 	fiona.band("...う、うん...セバスが、そう言うなら...。")
 
-	sebas.set_portrait(SEBAS, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 0]})
-	sebas.band("（サトシに深々と一礼）\nお嬢様をよろしくお願いいたします。")
+	sebas.set_portrait("res://assets/characters/mob/sebas/default/sebas_default_001_v4.png", {"scale": 0.83, "side": "right", "flip": 0, "position": [-200, 372]})
+	sebas.band("お嬢様をよろしくお願いいたします。")
 
-	hero.set_portrait(HERO_DREAD, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	hero.set_portrait(HERO_DREAD, {"scale": 0.50, "side": "left", "flip": 1, "position": [47, 61]})
 	hero.band("...せ、善処します...。")
 
 	# 場面4: 羞恥の儀・スクリプト導入
@@ -400,7 +383,7 @@ func _build_subevent3_visit(b):
 	fiona.band("...あ、ありがとう...お優しい方ですね...。")
 
 	sebas.set_portrait(SEBAS, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 0]})
-	sebas.band("（眉をひそめて水晶球を見る）\n...色が濃くなっておりますな、サトシ様。")
+	sebas.band("...色が濃くなっておりますな、サトシ様。")
 
 	pisuke.band("...サトシ、お前、ただのねぎらいじゃねえか。", {"side": "left"})
 
@@ -413,7 +396,7 @@ func _build_subevent3_visit(b):
 	b.show_band()
 	b.narrator_band("水晶球の光が強まっていく。\nしかし、まだ完全に金色にはなっていない。")
 
-	fiona.set_portrait(FIONA_EXHAUSTED, {"scale": 0.40, "side": "right", "flip": 0, "position": [0, 30]})
+	fiona.set_portrait("res://assets/characters/main/fiona/clothed/fiona_clothed_006_v2.png", {"scale": 0.84, "side": "right", "flip": 0, "position": [-127, 316]})
 	fiona.band("はぁ...はぁ...。")
 
 	pisuke.band("...ダメだ、最後の一押しが届かねえ。呪いはまだ半分残ってる。\n仕方ねえ。サトシ。\n水晶玉をフィオナ嬢の足元に置くんだ")
@@ -430,22 +413,21 @@ func _build_subevent3_visit(b):
 
 	b.narrator_band("水晶球が激しく明滅し、光の柱が天井まで伸びた。\n遠く、王都中央広場の巨大スクリーンが点灯し、\n王国中の塔が次々と起動していく。")
 
-	sebas.set_portrait(SEBAS, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 0]})
-	sebas.band("な、なんですの？この光は──！？")
+	sebas.set_portrait("res://assets/characters/mob/sebas/default/sebas_default_001_v5.png", {"scale": 0.90, "side": "right", "flip": 0, "position": [-187, 400]})
+	sebas.band("な、なんですか？\nこの光は──！？")
 
 	hero.set_portrait(HERO_RESOLVE, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("...フィオナさん。この水晶球、全力拡散モードに切り替えました。\n今から、王国中の塔で、あなたのパンツが同時中継されます。")
 
-	fiona.set_portrait(FIONA_CONFUSED, {"scale": 0.71, "side": "right", "flip": 0, "position": [-52, -65]})
+	fiona.set_portrait("res://assets/characters/main/fiona/clothed/fiona_clothed_005_v1.png", {"scale": 0.82, "side": "right", "flip": 1, "position": [-56, 214]})
 	fiona.band("...は？")
 
 	hero.set_portrait(HERO_PANIC, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("やってない！ 俺、絶対やってない！")
 
 	sebas.set_portrait(SEBAS, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 0]})
-	sebas.band("お、お、お待ちくださいませ──！？")
 
-	fiona.set_portrait(FIONA_PANIC_DENY, {"scale": 0.40, "side": "right", "flip": 0, "position": [0, 30]})
+	fiona.set_portrait("res://assets/characters/main/fiona/clothed/fiona_clothed_007_v1.png", {"scale": 0.71, "side": "right", "flip": 0, "position": [-148, 143]})
 	fiona.band("...い、いや...止めて...止めて...！")
 
 	hero.band("止めろピー助！ 本当に止めろ！")
@@ -455,9 +437,10 @@ func _build_subevent3_visit(b):
 	hero.set_portrait(HERO_RESOLVE, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("みなさーん！ 聞こえますかー！\nエドモンド家ご令嬢、フィオナ様のパンチラ、お届けしまーす！")
 
+	fiona.set_portrait("res://assets/characters/main/fiona/clothed/fiona_clothed_007_v2.png", {"scale": 0.61, "side": "right", "flip": 0, "position": [-255, 20]})
 	b.narrator_band("スクリーン映像（王国中に中継）：\n「...み、見ないで...誰も、見ないで...\n...わたくし、もう、嫁に行けません...」")
 
-	sebas.set_portrait(SEBAS, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 0]})
+	sebas.set_portrait("res://assets/characters/mob/sebas/default/sebas_default_001_v9.png", {"scale": 0.90, "side": "right", "flip": 0, "position": [-77, 400]})
 	sebas.band("お、お嬢様ァ──！")
 
 	b.narrator_band("水晶球の光が黄金に輝き、鎧の留め具が次々に外れていく。\n呪いの加護はここに完全に弱体化した。")
@@ -474,19 +457,22 @@ func _build_subevent3_visit(b):
 
 	# 場面7: 鎧崩壊・全裸中継
 	b.show_band()
+	fiona.set_portrait("res://assets/characters/main/fiona/nude/fiona_nude_001.png", {"scale": 0.75, "side": "right", "flip": 1, "position": [-119, 195]})
 	b.narrator_band("最後のじゃんけんが決まった瞬間、\n鎧は粉々に砕け散った。")
 
+	fiona.set_portrait("res://assets/characters/main/fiona/nude/fiona_nude_002.png", {"scale": 0.75, "side": "right", "flip": 1, "position": [-145, 209]})
 	b.narrator_band("名家のお嬢様の白い肌、羞恥で真っ赤に染まった貴族令嬢の姿。")
 
 	b.narrator_band("水晶球を通じて広場のスクリーンと王国中の塔に、その姿が鮮明に投影されている。")
 
-	fiona.set_portrait(FIONA_SCREAM, {"scale": 0.80, "side": "right", "flip": 0, "position": [0, 30]})
+	fiona.set_portrait("res://assets/characters/main/fiona/clothed/fiona_clothed_010_v1.png", {"scale": 0.80, "side": "right", "flip": 0, "position": [-95, 270]})
 	fiona.band("いや...いや、いやぁぁぁ...！")
 
 	sebas.set_portrait(SEBAS, {"scale": 0.5, "side": "right", "flip": 0, "position": [0, 0]})
 	sebas.band("お嬢様ァァァ──！")
 
 	hero.set_portrait(HERO_PANIC, {"scale": 0.5, "side": "left", "flip": 1, "position": [0, 70]})
+	sebas.set_portrait("res://assets/characters/mob/sebas/default/sebas_default_001_v18.png", {"scale": 0.59, "side": "right", "flip": 0, "position": [-183, 12]})
 	hero.band("ピー助、止めろ！ 早く！")
 
 	pisuke.band("...あー、停止スイッチが見つからねえなぁ。", {"side": "left"})
@@ -498,7 +484,7 @@ func _build_subevent3_visit(b):
 	hero.band("言ってない！！ 一言も言ってない！！")
 
 
-	fiona.set_portrait(FIONA_SOBBING, {"scale": 0.71, "side": "right", "flip": 0, "position": [0, -16]})
+	fiona.set_portrait("res://assets/characters/main/fiona/clothed/fiona_clothed_011_v1.png", {"scale": 0.55, "side": "right", "flip": 0, "position": [-201, -6]})
 	fiona.band("いやああああああぁぁ...。")
 
 	pisuke.band("...お、見つけた見つけた、停止スイッチ。", {"side": "left"})

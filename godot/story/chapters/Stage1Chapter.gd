@@ -42,7 +42,7 @@ func _build_stage1(b):
 	hero.band("（...あかん、思い出したらニヤけてまう。俺、やっぱりあっちの世界の単位より、こっちの世界の「徳」の方が向いてるのかも。）")
 
 	hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_036.png", {"scale": 0.53, "side": "left", "flip": 0, "position": [0, 70]})
-	hero.band("さて、まずは冒険者ギルドだな。この麻の服、ゴワゴワしてて痒いし、早く稼いでいい装備を買わないと。")
+	hero.band("さて、まずは冒険者ギルドだな。\nこの麻の服、ゴワゴワしてて痒いし、早く稼いでいい装備を買わないと。")
 
 	# ピー助登場
 	pisuke.appear({
@@ -68,7 +68,7 @@ func _build_stage1(b):
 	hero.band("聖霊...？ 見た目、完全にただのヨウムじゃないか。\nそれより「欠陥適合者」ってなんだよ。さっきから失礼な！")
 
 	pisuke.set_portrait("res://assets/characters/main/pisuke/default/pisuke_default_002.png", {"scale": 0.2, "side": "right", "flip": 1, "position": [0, -400]})
-	pisuke.band("普通の人間なら、この世界のチップを埋め込まれたら精神が同化しちまうんだ。だがお前は、脳の使い方が偏りすぎてて、チップと脳の間に「隙間」ができてる。")
+	pisuke.band("普通の人間なら、この世界のチップを埋め込まれたら精神が同化しちまうんだ。\nだがお前は、脳の使い方が偏りすぎてて、チップと脳の間に「隙間」ができてる。")
 	pisuke.band("いわば、システムが正常に認識できない「バグ」みたいな存在なんだよ。")
 
 	# バグ呼ばわりへのリアクション（出会いの締め）
@@ -124,7 +124,7 @@ func _build_stage1(b):
 	hero.band("ここに俺の「数理モデル」を流し込めば、システムの「予測演算」をこっちにバイパスできるはずだ。")
 
 	pisuke.set_portrait("res://assets/characters/main/pisuke/default/pisuke_default_006.png", {"scale": 0.2, "side": "right", "flip": 1, "position": [0, -200]})
-	pisuke.band("ゲコッ！？ お前、神が作ったシステムに「パッチ」を当てようってのか？面白そうじゃねえか！ やれ、サトシ！ 俺がポートをこじ開けてやる！")
+	pisuke.band("ゲコッ！？ お前、神が作ったシステムに「パッチ」を当てようってのか？\n面白そうじゃねえか！ やれ、サトシ！ 俺がポートをこじ開けてやる！")
 
 	# hero.set_portrait("res://assets/characters/main/satoshi/isekai/satoshi_isekai_023.png", {"scale": 0.53, "side": "left", "flip": 1, "position": [0, 70]})
 	hero.band("（...よし、数学科の意地を見せてやる。変数固定、ポインタを強制書き換え......エンター！）")
