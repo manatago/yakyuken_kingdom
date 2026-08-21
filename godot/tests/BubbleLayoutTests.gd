@@ -15,7 +15,6 @@ const BUBBLE_TSCN := "res://ui/SpeechBubble.tscn"
 const CHAPTER_DIR := "res://battle/chapters"
 
 # ラベルの内側マージンは BubbleFit を唯一の真実源とする（再宣言しない）
-const LINE_HEIGHT_EM := 1.4
 const VP := Vector2(1920, 1080)
 
 func get_name() -> String:
@@ -61,6 +60,7 @@ func _test_font_sync() -> bool:
 			return false
 	return expect_true(true)
 
+# 各スロットが画面内に収まり、幅・高さが正であること。
 func _test_on_screen() -> bool:
 	for key in BattleSceneScript.BUBBLE_SIDE_ANCHORS.keys():
 		var a: Dictionary = BattleSceneScript.BUBBLE_SIDE_ANCHORS[key]
@@ -86,29 +86,22 @@ func _test_edges() -> bool:
 	var mid: float = (float(c["l"]) + float(c["r"])) / 2.0
 	return expect_true(absf(mid - 0.5) < 0.02, "center が画面中央にない (mid=%.3f)" % mid)
 
-func _char_width_em(ch: String) -> float:
-	# CJK は約 1em、ASCII は約 0.5em
-	return 0.5 if ch.unicode_at(0) < 0x3000 else 1.0
-
-func _wrapped_lines(text: String, chars_per_line: float) -> int:
-	var n := 0
-	for row in text.split("\n"):
-		var w := 0.0
-		for i in range(row.length()):
-			w += _char_width_em(row[i])
-		n += maxi(1, int(ceil(w / chars_per_line)))
-	return n
-
 # 章に実在するセリフが、自動フィット後の枠に収まること。
-# 枠は BUBBLE_MAX_HEIGHT_RATIO まで伸びるので、原則すべて収まるはず。
-# 収まらないものが出たら、そのセリフが実機で切れる (clip_contents = true)。
+#
+# 判定は必ず実装 (BubbleFit.box_height -> Font.get_multiline_string_size) を通す。
+# テスト側で行数を近似して比べると「近似式が自分自身と一致するか」を見るだけの
+# 恒真式になり、実際のレイアウトを何も検証しない。
 func _test_fit() -> bool:
-	var font: float = float(BattleSceneScript.BUBBLE_FONT_SIZE)
+	var font: Font = ThemeDB.fallback_font
+	if not expect_true(font != null, "フォールバックフォントが取れない"):
+		return false
+	var default_font: int = BattleSceneScript.BUBBLE_FONT_SIZE
 	var d := DirAccess.open(CHAPTER_DIR)
 	if not d:
 		return fail("%s を開けない" % CHAPTER_DIR)
 	var total := 0
 	var over := 0
+	var worst := ""
 	for name in d.get_files():
 		if not name.ends_with(".gd"):
 			continue
@@ -121,23 +114,27 @@ func _test_fit() -> bool:
 					if not BattleSceneScript.BUBBLE_SIDE_ANCHORS.has(side):
 						side = "center"
 					var a: Dictionary = BattleSceneScript.BUBBLE_SIDE_ANCHORS[side]
-					var fs: float = font
-					var own: int = int(bub.get("font_size", 0))
-					if own > 0:
-						fs = float(own)
+					var fs: int = int(bub.get("font_size", 0))
+					if fs <= 0:
+						fs = default_font
 					var box_w: float = VP.x * (float(a["r"]) - float(a["l"]))
 					var min_h: float = VP.y * (float(a["b"]) - float(a["t"]))
 					var max_h: float = VP.y * float(BubbleFit.MAX_HEIGHT_RATIO)
-					# 自動フィット後の箱の高さで判定する
-					var need: float = float(_wrapped_lines(str(bub["text"]), box_w * BubbleFit.LABEL_W_RATIO / fs)) * fs * LINE_HEIGHT_EM
-					var box_h: float = clampf(need / BubbleFit.LABEL_H_RATIO, min_h, max_h)
-					if need > box_h * BubbleFit.LABEL_H_RATIO + 1.0:
+					var text: String = str(bub["text"])
+					# 実装が決める箱の高さ
+					var box_h: float = BubbleFit.box_height(text, font, fs, box_w, min_h, max_h)
+					# その箱でラベルに使える高さと、実際に必要な高さを突き合わせる
+					var label_h: float = box_h * BubbleFit.LABEL_H_RATIO
+					var need: float = font.get_multiline_string_size(
+						text, HORIZONTAL_ALIGNMENT_LEFT, box_w * BubbleFit.LABEL_W_RATIO, fs).y
+					if need > label_h + 1.0:
 						over += 1
+						if worst.is_empty():
+							worst = "%s: 「%s」(必要 %.0fpx / 枠 %.0fpx)" % [name, text.substr(0, 24).replace("\n", "/"), need, label_h]
 	if not expect_true(total > 100, "セリフ件数が少なすぎる (got %d)" % total):
 		return false
 	# 自動フィットが効いていれば 0 件。増えたら枠の伸縮が壊れている。
-	return expect_true(over == 0, "自動フィットしても収まらないセリフがある (%d/%d 件)" % [over, total])
-
+	return expect_true(over == 0, "自動フィットしても収まらないセリフがある (%d/%d 件) %s" % [over, total, worst])
 
 # 自動フィットは画面に収まる範囲までしか伸びないこと。
 func _test_fit_cap() -> bool:

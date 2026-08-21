@@ -1500,6 +1500,9 @@ func _connect_edit_to_battle(edit_panel: PanelContainer, battle_ref, encounter_d
 	_battle_edit_target_rect = null
 	_battle_edit_panel = edit_panel
 	_battle_edit_click_count = 0
+	# await 中にバトルが解放されると true のまま残り、次の編集で ◀/▶ が
+	# 効かなくなる（_battle_edit_cycle_target の早期 return に当たる）。
+	_battle_edit_advancing = false
 	_battle_edit_history_idx = -1
 	_battle_edit_last_log_size = 0
 	# battle 内 StoryScene の立ち絵履歴を有効化（set_portrait/appear ごとに記録される）
@@ -1542,9 +1545,13 @@ func _process(_delta: float):
 	if not _battle_edit_active:
 		return
 	if not is_instance_valid(_battle_edit_ref):
+		# 他の終了経路と同じ後始末をする。ここだけ抜けると、全画面の入力吸い込み層と
+		# files_dropped の購読が残る経路が生まれる。
+		_battle_edit_teardown()
 		_battle_edit_active = false
 		_battle_edit_target_rect = null
 		_battle_edit_panel = null
+		_battle_edit_advancing = false
 		return
 	# 対象未選択かつ表示中の rect があれば自動セット
 	if _battle_edit_target_rect == null or not is_instance_valid(_battle_edit_target_rect) or not _battle_edit_target_rect.visible:
@@ -1746,6 +1753,8 @@ func _battle_edit_teardown() -> void:
 func _battle_edit_teardown_drag_layer() -> void:
 	var layer := _battle_edit_drag_layer()
 	if layer:
+		# 名前引きで探すので、解放待ちの間ツリーに残さない（setup 側と同じ理由）
+		remove_child(layer)
 		layer.queue_free()
 	_battle_edit_selected_rect = null
 	_battle_edit_dragging = false
@@ -3709,7 +3718,35 @@ var _story_edit_current_seq_idx: int = -1
 # ドラッグ&ドロップで作る新規ファイルは現在の画像パスの隣に置かれるので、
 # 別キャラの絵を放り込みたいときは「キャラ変更 → ドロップ」の順にする。
 
+# 指定行を含む func ブロックの行範囲 [start, end) を 1 始まりで返す。
+# 見つからなければ [1, lines.size()+1)（＝ファイル全体）。
+static func _enclosing_func_range(lines: PackedStringArray, line_no: int) -> Array:
+	var start: int = 1
+	for i in range(min(line_no, lines.size()), 0, -1):
+		if _is_func_decl(lines[i - 1]):
+			start = i
+			break
+	var end: int = lines.size() + 1
+	for i in range(start + 1, lines.size() + 1):
+		if _is_func_decl(lines[i - 1]):
+			end = i
+			break
+	return [start, end]
+
+# func 宣言行か。インデント付きや static func も拾う。
+# ここを取りこぼすと関数の境界が伸びて別スコープのキャストまで同一視され、
+# スコープ判定が黙って無効化される。
+static func _is_func_decl(line: String) -> bool:
+	var t: String = line.strip_edges(true, false)
+	return t.begins_with("func ") or t.begins_with("static func ")
+
 # 章 .gd の `var X = b.character("Y")` からキャラ一覧を作り、現在のキャラを選択する。
+#
+# 走査範囲は「編集対象の行が属する func ブロック内」に限る。ファイル全体を見ると、
+# 別の関数で宣言されたキャラまで選べてしまい、選んだ瞬間にそのスコープでは未宣言の
+# 識別子（例: 鍛冶屋の場面に fiona）が書き込まれて章がパースエラーになる。
+# 章はビルダー関数ごとにキャストを宣言するので、この絞り込みが必須。
+# ビルダー引数名は章によって b / bt が混在するため、受け側は識別子一般で拾う。
 func _populate_portrait_char_selector(sel: OptionButton, current_char_id: String) -> void:
 	if not is_instance_valid(sel):
 		return
@@ -3717,31 +3754,116 @@ func _populate_portrait_char_selector(sel: OptionButton, current_char_id: String
 	var src_id: String = _find_nearest_source_id(_story_edit_entries, _story_edit_current_idx)
 	if src_id.is_empty() or not (":" in src_id):
 		return
-	var src_file: String = src_id.substr(0, src_id.rfind(":"))
+	var colon: int = src_id.rfind(":")
+	var src_file: String = src_id.substr(0, colon)
+	var line_no: int = int(src_id.substr(colon + 1))
 	var f := FileAccess.open(ProjectSettings.globalize_path(src_file), FileAccess.READ)
 	if not f:
 		return
-	var text: String = f.get_as_text()
+	var lines: PackedStringArray = f.get_as_text().split("\n")
 	f.close()
-	var re := RegEx.new()
-	re.compile('^\\s*var\\s+([A-Za-z_][A-Za-z0-9_]*)\\s*=\\s*b\\.character\\s*\\(\\s*"([^"]+)"\\s*\\)')
-	var seen := {}
 	var select_idx: int = -1
-	for line in text.split("\n"):
-		var m: RegExMatch = re.search(line)
-		if not m:
-			continue
-		var var_name: String = m.get_string(1)
-		var char_id: String = m.get_string(2)
-		if seen.has(char_id):
-			continue
-		seen[char_id] = true
-		sel.add_item("%s  (%s)" % [var_name, char_id])
-		sel.set_item_metadata(sel.item_count - 1, {"var": var_name, "id": char_id})
-		if char_id == current_char_id:
+	for entry in _chapter_characters_in_scope(lines, line_no):
+		if String(entry["id"]).is_empty():
+			continue  # ID を静的に解決できないキャストは選択肢にしない
+		sel.add_item("%s  (%s)" % [entry["var"], entry["id"]])
+		sel.set_item_metadata(sel.item_count - 1, entry)
+		if entry["id"] == current_char_id:
 			select_idx = sel.item_count - 1
 	if select_idx >= 0:
 		sel.select(select_idx)
+
+# line_no を含む func ブロック内で、line_no より前に宣言されているキャストを返す。
+# [{"var": ..., "id": ...}] 形式。
+#
+# キャラ ID は文字列リテラルとは限らない。章によっては
+#   var layla = bt.character(LAYLA_ID)           # 同ファイルの const
+#   var char_handle = bt.character(_opponent_id) # 実行時の変数
+# と書かれている。const は同ファイルの宣言から解決し、解決できないものは
+# id を空にしたうえで「宣言はされている」情報として返す。ここで取りこぼすと
+# 書き込み側のガードが正当な編集まで拒否する。
+func _chapter_characters_in_scope(lines: PackedStringArray, line_no: int) -> Array:
+	var span: Array = _enclosing_func_range(lines, line_no)
+	var re := RegEx.new()
+	re.compile('^\\s*var\\s+([A-Za-z_][A-Za-z0-9_]*)\\s*:?=\\s*[A-Za-z_][A-Za-z0-9_]*\\.character\\s*\\(\\s*("[^"]*"|[A-Za-z_][A-Za-z0-9_]*)\\s*\\)')
+	var out: Array = []
+	var seen := {}
+	# 編集地点から上へ遡り、囲んでいるブロックだけを見る。
+	# GDScript の var は関数ではなく「インデントブロック」のスコープなので、
+	#   if idx > 0:
+	#       var pisuke = bt.character("pisuke")
+	#   else:
+	#       pisuke.band("...")   # ← パースエラー
+	# のように、同じ関数内で自分より前にあってもスコープ外の宣言がある。
+	# 上へ辿りながら limit（今いるブロックのインデント）を下げていき、
+	# limit 以下のインデントの宣言だけを可視とみなす。
+	# 起点が空行/コメントだとインデント0になり、上のブロックを全部「閉じた内側」と
+	# 誤判定する。その場合は上限なしから始めて、最初の実行行に決めさせる。
+	var limit: int = 1 << 30
+	var anchor: String = lines[line_no - 1] if line_no >= 1 and line_no <= lines.size() else ""
+	if not (anchor.strip_edges().is_empty() or anchor.strip_edges().begins_with("#")):
+		limit = _line_indent(lines, line_no)
+	for i in range(min(line_no, lines.size() + 1) - 1, int(span[0]) - 1, -1):
+		var raw_line: String = lines[i - 1]
+		if raw_line.strip_edges().is_empty() or raw_line.strip_edges().begins_with("#"):
+			continue
+		var ind: int = _line_indent(lines, i)
+		if ind < limit:
+			limit = ind   # 一つ外のブロックへ出た
+		if ind > limit:
+			continue      # 既に閉じた内側ブロック
+		var m: RegExMatch = re.search(raw_line)
+		if not m:
+			continue
+		var raw: String = m.get_string(2)
+		var char_id: String = ""
+		if raw.begins_with('"'):
+			char_id = raw.substr(1, raw.length() - 2)
+		else:
+			char_id = _chapter_const_string(lines, raw)
+		# id 不明でも var は宣言済みなので、重複判定は var 名で行う
+		var key: String = char_id if not char_id.is_empty() else "var:" + m.get_string(1)
+		if seen.has(key):
+			continue
+		seen[key] = true
+		out.append({"var": m.get_string(1), "id": char_id})
+	return out
+
+# 行のインデント幅（タブは1文字として数える。章は全てタブ）。範囲外なら大きな値。
+static func _line_indent(lines: PackedStringArray, line_no: int) -> int:
+	if line_no <= 0 or line_no > lines.size():
+		return 0
+	var l: String = lines[line_no - 1]
+	var n: int = 0
+	while n < l.length() and (l[n] == "\t" or l[n] == " "):
+		n += 1
+	return n
+
+# line_no を含む func のビルダー引数名を返す（`func _build_x(b):` なら "b"）。
+# 章によって b / bt が混在するため、ナレーター行のように「キャストではなく
+# ビルダー自体」を書き出す箇所はここから取る。ハードコードすると bt 章へ
+# b.narrator_band(...) を書いて未宣言識別子になる。取れなければ "b"。
+func _chapter_builder_name(lines: PackedStringArray, line_no: int) -> String:
+	var span: Array = _enclosing_func_range(lines, line_no)
+	var idx: int = int(span[0]) - 1
+	if idx < 0 or idx >= lines.size():
+		return "b"
+	var re := RegEx.new()
+	re.compile('^\\s*(?:static\\s+)?func\\s+[A-Za-z_][A-Za-z0-9_]*\\s*\\(\\s*([A-Za-z_][A-Za-z0-9_]*)')
+	var m: RegExMatch = re.search(lines[idx])
+	# 読めなければ空を返す。"b" を返すと、ナレーター前置も "b" で組み立てるため
+	# ガードが「自分と一致するのでOK」と自己承認してしまう。
+	return m.get_string(1) if m else ""
+
+# 同ファイルの `const NAME := "文字列"` を解決する。見つからなければ空文字。
+func _chapter_const_string(lines: PackedStringArray, const_name: String) -> String:
+	var re := RegEx.new()
+	re.compile('^\\s*const\\s+' + const_name + '\\s*:?=\\s*"([^"]*)"')
+	for line in lines:
+		var m: RegExMatch = re.search(line)
+		if m:
+			return m.get_string(1)
+	return ""
 
 # キャラ ID から代表的な立ち絵パスを1つ返す。
 # assets/characters/{main,mob}/<id>/<衣装>/ 配下の、名前順で最初の画像。
@@ -3846,6 +3968,18 @@ func _on_story_edit_card_change_char(card: PanelContainer, root: Control) -> voi
 	# <indent><var>.set_portrait(<第1引数><残り>
 	# 第1引数は生パス文字列か定数トークンのみ許す。appear({...}) のような
 	# dict 始まりは対象外にして、壊すより何もしない方に倒す。
+	# UI 側でスコープを絞っているが、この関数は直接呼ばれうるので書き込み前に再確認する。
+	# 宣言の無いスコープへ書くと章がパースエラーになり、しかも保存後なので復旧が要る。
+	var in_scope := false
+	for entry in _chapter_characters_in_scope(lines, line_no):
+		if entry["var"] == new_var:
+			in_scope = true
+			break
+	if not in_scope:
+		var fn_span: Array = _enclosing_func_range(lines, line_no)
+		if info: info.text = "[キャラNG] %s はこの関数（%d行目〜）で宣言されていない" % [new_var, fn_span[0]]
+		print("[STORY_EDIT][CHAR] スコープ外のため中止: %s (%s:%d)" % [new_var, src_file.get_file(), line_no])
+		return
 	var re := RegEx.new()
 	re.compile('^(\\s*)([A-Za-z_][A-Za-z0-9_]*)\\.(set_portrait)\\s*\\(\\s*("[^"]*"|[A-Za-z_][A-Za-z0-9_]*)(.*)$')
 	var m: RegExMatch = re.search(lines[line_no - 1])
@@ -5133,9 +5267,13 @@ func _apply_edited_image(card: PanelContainer, rect: TextureRect, _target_abs: S
 		return
 	# Line/Band など: 直前の set_portrait を波及させるのでなく、そのセリフ直前に
 	# 新規 set_portrait を挿入する (このセリフだけの画像差し替えを実現)
+	var before_msg: String = info.text if is_instance_valid(info) else ""
 	var ok: bool = _story_edit_insert_new_portrait_before(card, cur_cmd, new_res, info)
 	if not ok:
-		if info: info.text = "[除去 NG] set_portrait 挿入失敗 (詳細はコンソール)"
+		# callee が理由を書いていればそれを残す。汎用文言で潰すと
+		# 「スコープ外で拒否された」等の原因が画面から消える。
+		if info and info.text == before_msg:
+			info.text = "[除去 NG] set_portrait 挿入失敗 (詳細はコンソール)"
 		return
 
 # セリフ (Line/Band) の直前に新規 set_portrait 呼び出しを .gd に挿入する。
@@ -5183,18 +5321,21 @@ func _story_edit_insert_new_portrait_before(card: PanelContainer, cur_cmd, new_p
 	if char_id.is_empty():
 		print("[STORY_EDIT][INSERT] このカードの表示キャラを特定できず (portrait_log 空?)")
 		return false
-	# --- var 名を .gd の `var X = b.character("id")` から探す ---
-	var var_re := RegEx.new()
-	var_re.compile('^\\s*var\\s+([A-Za-z_][A-Za-z0-9_]*)\\s*=\\s*b\\.character\\s*\\(\\s*"' + char_id.replace('"', '\\"') + '"\\s*\\)')
+	# --- var 名を「挿入先の関数内」の `var X = b.character("id")` から探す ---
+	# ファイル全体を走査すると、別のビルダー関数で宣言された var 名を拾ってしまい、
+	# 宣言の無いスコープへ <var>.set_portrait(...) を挿入して章がパースエラーになる。
+	# 「見つからなければ char_id をそのまま var 名に使う」フォールバックも、
+	# どこにも存在しない識別子を書き込みうるので採らない。
 	var var_name: String = ""
-	for line in lines:
-		var mv: RegExMatch = var_re.search(line)
-		if mv:
-			var_name = mv.get_string(1)
+	for entry in _chapter_characters_in_scope(lines, line_no):
+		if entry["id"] == char_id:
+			var_name = entry["var"]
 			break
 	if var_name.is_empty():
-		# フォールバック: 慣例で var 名 == character_id
-		var_name = char_id
+		var fn_span: Array = _enclosing_func_range(lines, line_no)
+		if info: info.text = "[挿入NG] %s はこの関数（%d行目〜）で宣言されていない" % [char_id, fn_span[0]]
+		print("[STORY_EDIT][INSERT] スコープ外のため中止: %s (%s:%d)" % [char_id, src_file.get_file(), line_no])
+		return false
 	# --- インデントは対象行から借用 (関数外/空行時は近傍から) ---
 	var indent: String = _story_edit_probe_indent(lines, line_no - 1)
 	# 現在の見た目 (slider + rect.flip_h) から挿入する dict の値を決定
@@ -5326,25 +5467,32 @@ func _populate_dialogue_char_selector(sel: OptionButton, cur_cmd, entries: Array
 	sel.set_item_metadata(1, {"kind": "narrator"})
 	# 章のソースファイルを近接する edit_source_id から推定
 	var src_id: String = _find_nearest_source_id(entries, _story_edit_current_idx)
-	if src_id.is_empty():
+	if src_id.is_empty() or not (":" in src_id):
 		return
 	var colon: int = src_id.rfind(":")
 	var src_file: String = src_id.substr(0, colon)
+	var line_no: int = int(src_id.substr(colon + 1))
 	var abs_path: String = ProjectSettings.globalize_path(src_file)
 	var f := FileAccess.open(abs_path, FileAccess.READ)
 	if not f: return
-	var text: String = f.get_as_text()
+	var lines: PackedStringArray = f.get_as_text().split("\n")
 	f.close()
-	var re := RegEx.new()
-	re.compile('^\\s*var\\s+([A-Za-z_][A-Za-z0-9_]*)\\s*=\\s*b\\.character\\s*\\(\\s*"([^"]+)"\\s*\\)')
-	for line in text.split("\n"):
-		var m: RegExMatch = re.search(line)
-		if m:
-			var var_name: String = m.get_string(1)
-			var char_id: String = m.get_string(2)
-			sel.add_item("%s  (%s)" % [var_name, char_id])
-			sel.set_item_metadata(sel.item_count - 1, {"kind": "char", "var": var_name, "id": char_id})
+	# 立ち絵側と同じく、編集対象の行が属する func ブロック内の宣言だけを出す。
+	# ファイル全体を見ると別関数のキャストを選べてしまい、選んだ瞬間に
+	# 未宣言の識別子で <var>.band(...) が書き込まれて章がパースエラーになる。
+	for entry in _chapter_characters_in_scope(lines, line_no):
+		if String(entry["id"]).is_empty():
+			continue  # ID を静的に解決できないキャストは選択肢にしない
+		sel.add_item("%s  (%s)" % [entry["var"], entry["id"]])
+		sel.set_item_metadata(sel.item_count - 1, {"kind": "char", "var": entry["var"], "id": entry["id"]})
 	sel.select(0)
+
+# <var> が line_no のスコープで宣言されているか。書き込み前の最終確認に使う。
+func _story_edit_var_in_scope(lines: PackedStringArray, line_no: int, var_name: String) -> bool:
+	for entry in _chapter_characters_in_scope(lines, line_no):
+		if entry["var"] == var_name:
+			return true
+	return false
 
 # entries[from] から近い順に edit_source_id を持つコマンドを探す。
 # 現在の停止が set_portrait/ShowCharacter などで edit_source_id を持たない場合の保険。
@@ -5427,7 +5575,7 @@ func _story_edit_change_current_speaker(root: Control) -> void:
 	var new_prefix: String
 	var new_speaker_id: String
 	if kind == "narrator":
-		new_prefix = "b.narrator_band"
+		new_prefix = ""  # ビルダー名は lines 読み込み後に決める（章によって b / bt）
 		new_speaker_id = "narrator"
 	elif kind == "char":
 		new_prefix = "%s.band" % meta.get("var", "")
@@ -5454,6 +5602,23 @@ func _story_edit_change_current_speaker(root: Control) -> void:
 	var m: RegExMatch = re.search(target_line)
 	if not m:
 		if info_lbl: info_lbl.text = "[話者NG] 行を解釈できず"
+		return
+	# 書き込む前にスコープを確認する。宣言の無い関数へ <var>.band(...) を
+	# 書き込むと章がパースエラーになり、しかも保存後なので復旧が要る。
+	# ナレーターは「キャストではなくビルダー自体」を書くので、章の関数シグネチャから取る。
+	# b 決め打ちだと bt 章へ b.narrator_band(...) を書いて未宣言識別子になる。
+	if kind == "narrator":
+		var builder: String = _chapter_builder_name(lines, line_no)
+		if builder.is_empty():
+			if info_lbl: info_lbl.text = "[話者NG] この行の関数のビルダー引数名を判別できない"
+			return
+		new_prefix = "%s.narrator_band" % builder
+	var prefix_token: String = new_prefix.get_slice(".", 0)
+	var token_ok: bool = _story_edit_var_in_scope(lines, line_no, prefix_token) \
+		or prefix_token == _chapter_builder_name(lines, line_no)
+	if not token_ok:
+		if info_lbl: info_lbl.text = "[話者NG] %s はこの行の関数で宣言されていない" % new_prefix.get_slice(".", 0)
+		print("[STORY_EDIT][SPEAKER] スコープ外のため中止: %s (%s:%d)" % [new_prefix, src_file.get_file(), line_no])
 		return
 	var indent: String = m.get_string(1)
 	var rest: String = m.get_string(4)
@@ -5677,10 +5842,17 @@ func _story_edit_insert_new_dialogue(root: Control) -> void:
 	var insert_line: String = ""
 	var new_speaker_id: String = ""
 	if meta and meta.get("kind", "") == "narrator":
-		insert_line = '%sb.narrator_band("%s")' % [indent, escaped]
+		insert_line = '%s%s.narrator_band("%s")' % [indent, _chapter_builder_name(lines, line_no), escaped]
 		new_speaker_id = "narrator"
 	elif meta and meta.get("kind", "") == "char":
-		insert_line = '%s%s.band("%s")' % [indent, meta.get("var", ""), escaped]
+		# 宣言の無い関数へ <var>.band(...) を挿入すると章がパースエラーになる。
+		# 一覧は関数スコープに絞ってあるが、この経路も直接呼ばれうるので再確認する。
+		var pick_var: String = str(meta.get("var", ""))
+		if not _story_edit_var_in_scope(lines, line_no, pick_var):
+			if info_lbl: info_lbl.text = "[追加NG] %s はこの行の関数で宣言されていない" % pick_var
+			print("[STORY_EDIT][INSERT] スコープ外のため中止: %s (%s:%d)" % [pick_var, src_file.get_file(), line_no])
+			return
+		insert_line = '%s%s.band("%s")' % [indent, pick_var, escaped]
 		new_speaker_id = meta.get("id", "")
 	else:
 		# 「現在と同じ」: 直前の Line/Band と同じ話者・記法で作る
@@ -5701,11 +5873,11 @@ func _story_edit_insert_new_dialogue(root: Control) -> void:
 				new_speaker_id = prev.speaker_id if "speaker_id" in prev else ""
 			else:
 				# パターン不明 → 変数不明。narrator にフォールバック
-				insert_line = '%sb.narrator_band("%s")' % [indent, escaped]
+				insert_line = '%s%s.narrator_band("%s")' % [indent, _chapter_builder_name(lines, line_no), escaped]
 				new_speaker_id = "narrator"
 		else:
 			# 停止が Line/Band でない (ShowCharacter 等) → narrator を既定
-			insert_line = '%sb.narrator_band("%s")' % [indent, escaped]
+			insert_line = '%s%s.narrator_band("%s")' % [indent, _chapter_builder_name(lines, line_no), escaped]
 			new_speaker_id = "narrator"
 	# 挿入位置: 現在のセリフの block_end の次の行 (下に追加)
 	var insert_at: int = block_end + 1  # 0-indexed の挿入位置
