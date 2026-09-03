@@ -77,6 +77,51 @@ simple background, plain white background
 - **farewell_win**: `(defeated kneeling, clutching head, cards scattered, shocked)`
 - **farewell_lose**: `(triumphant gar-gar laugh, fist raised, cards in hand, mocking)`
 
+#### Grok貼り付け用プロンプト（チンピラA・4枚）
+
+全4枚で、画風見本として `godot/assets/characters/random_battle/char003/clothed/char003_clothed_001.png` を添付する。`encounter` を最初に生成し、以後の3枚ではその出力も参照画像として添付する。参照画像を使う場合も、各プロンプト本文は省略しない。
+
+**1. encounter（遭遇時）**
+```
+Use the attached approved game character image as the strict drawing and proportion reference. Do not reinterpret it as modern cute anime art. Create a full-length standing character illustration for an adult fantasy game.
+One adult human man only, a rough street thug in his mid twenties. He must be unattractive and unglamorous: broad squared jaw, heavy brow, crooked nose, narrow deep-set mean brown eyes, uneven dark stubble, weathered tanned skin, unkempt short brown hair, a small scar through the left eyebrow. He has a bulky muscular adult build, wide shoulders, thick neck, and large hands. He wears a worn dark-brown leather vest over a dirty beige tunic, rough dark trousers, and worn boots.
+He is blocking a guild street, leaning forward with arms crossed, showing a hostile sneer. Rough low-class adventurer aesthetic, intimidating but not monstrous.
+Match the attached reference exactly: thick dark ink outlines, hard cel shading, muted earthy colors, detailed fabric creases, realistic adult facial proportions. Use an adult 7.5-head-tall body proportion: the head must be small relative to the torso and legs, never oversized. Not cute, not handsome, not youthful, not idol-like, no large eyes, no sparkling eyes, no soft rounded face, no pastel colors, no glossy skin, no chibi proportions, no modern anime style.
+Full body completely visible, standing pose, front three-quarter view, centered composition, neutral daylight, simple plain light-gray background, no scenery, no text, no UI, no frame.
+```
+
+**2. battle（戦闘中）**
+```
+Using the attached approved game style reference and the attached encounter image, create the same exact unattractive adult male thug. Preserve his broad squared jaw, heavy brow, crooked nose, narrow deep-set mean brown eyes, uneven stubble, left-eyebrow scar, bulky muscular build, wide shoulders, thick neck, and large hands. Do not make him handsome or youthful.
+Create a full-length standing battle illustration for an adult fantasy game. He takes a wide, aggressive battle stance with one fist clenched and raised slightly, the other hand ready at his side, wearing a hostile confident sneer. His worn dark-brown leather vest, dirty beige tunic, rough dark trousers, and boots must remain unchanged.
+Match the attached reference exactly: thick dark ink outlines, hard cel shading, muted earthy colors, detailed fabric creases, realistic adult facial proportions. Use an adult 7.5-head-tall body proportion: the head must be small relative to the torso and legs, never oversized. Not cute, not handsome, not youthful, not idol-like, no large eyes, no sparkling eyes, no soft rounded face, no pastel colors, no glossy skin, no chibi proportions, no modern anime style.
+Full body completely visible, front three-quarter view, centered composition, neutral daylight, simple plain light-gray background, no scenery, no text, no UI, no frame.
+```
+
+**3. farewell_win（プレイヤー勝利時・相手敗北）**
+```
+Using the attached approved game style reference and the attached encounter image, create the same exact unattractive adult male thug. Preserve his broad squared jaw, heavy brow, crooked nose, narrow deep-set mean brown eyes, uneven stubble, left-eyebrow scar, bulky muscular build, wide shoulders, thick neck, and large hands. Do not make him handsome or youthful.
+Create a full-length defeat reaction illustration for an adult fantasy game. He is kneeling on the ground in shock, one hand clutching his head, the other reaching toward scattered playing cards. His expression is humiliated disbelief. He is completely nude after losing his wager; censor the genital area with an opaque mosaic, with no visible genitals. Keep the image non-graphic and focused on the defeated pose and facial expression.
+Match the attached reference exactly: thick dark ink outlines, hard cel shading, muted earthy colors, realistic adult facial proportions. Use an adult 7.5-head-tall body proportion: the head must be small relative to the torso and legs, never oversized. Not cute, not handsome, not youthful, not idol-like, no large eyes, no sparkling eyes, no soft rounded face, no pastel colors, no glossy skin, no chibi proportions, no modern anime style.
+Full body completely visible, front three-quarter view, centered composition, neutral daylight, simple plain light-gray background, no scenery, no text, no UI, no frame.
+```
+
+**4. farewell_lose（プレイヤー敗北時・相手勝利）**
+```
+Using the attached approved game style reference and the attached encounter image, create the same exact unattractive adult male thug. Preserve his broad squared jaw, heavy brow, crooked nose, narrow deep-set mean brown eyes, uneven stubble, left-eyebrow scar, bulky muscular build, wide shoulders, thick neck, and large hands. Do not make him handsome or youthful.
+Create a full-length victory reaction illustration for an adult fantasy game. He stands triumphantly with one fist raised and a loud mocking laugh, holding several playing cards in his other hand. He wears the same worn dark-brown leather vest, dirty beige tunic, rough dark trousers, and boots. His expression is cruelly pleased but not exaggerated into comedy.
+Match the attached reference exactly: thick dark ink outlines, hard cel shading, muted earthy colors, detailed fabric creases, realistic adult facial proportions. Use an adult 7.5-head-tall body proportion: the head must be small relative to the torso and legs, never oversized. Not cute, not handsome, not youthful, not idol-like, no large eyes, no sparkling eyes, no soft rounded face, no pastel colors, no glossy skin, no chibi proportions, no modern anime style.
+Full body completely visible, front three-quarter view, centered composition, neutral daylight, simple plain light-gray background, no scenery, no text, no UI, no frame.
+```
+
+共通ネガティブプロンプト:
+```
+lowres, bad anatomy, bad hands, missing fingers, extra digits, cropped,
+worst quality, low quality, jpeg artifacts, signature, watermark, text,
+blurry, bad proportions, deformed, multiple characters, monster, animal,
+creature, beast, non-human
+```
+
 ### 2. thug_b（ゴロツキ）
 
 **属性**: 若年男性 / ならず者2
