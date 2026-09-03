@@ -221,3 +221,9 @@ This project uses Kiro-style specification workflow:
 - Code comments and variable names: English
 - User-facing text and markdown docs in specs: Japanese
 - Story dialogue content: Japanese
+
+<!-- AgentSkills Claude Rules: BEGIN -->
+## AgentSkills Claude Rules
+
+Read and follow `.agentskills/rules/CLAUDE.base.md` together with the project-root `AGENTS.md`.
+<!-- AgentSkills Claude Rules: END -->

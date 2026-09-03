@@ -23,6 +23,12 @@ playwright-report/
 # Claude Code internal data
 .claude/
 
+# Local AI agent state and workflow artifacts
+.agents/
+.agentskills
+SESSION_BRIEF.md
+.playwright-mcp/
+
 # Serena local project state
 .serena/
 
