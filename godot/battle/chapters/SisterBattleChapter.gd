@@ -18,16 +18,16 @@ func get_player_outfit_count() -> int:
 func get_opponent_hand() -> Array:
 	# シスター長: 心理戦型 — バランス + グレード混在
 	return [
-		{"hand": "rock", "grade": 1}, {"hand": "rock", "grade": 2},
-		{"hand": "scissors", "grade": 1}, {"hand": "scissors", "grade": 2},
+		{"hand": "rock", "grade": 1}, {"hand": "rock", "grade": 2}, {"hand": "rock", "grade": 2},
+		{"hand": "scissors", "grade": 1}, {"hand": "scissors", "grade": 2}, {"hand": "scissors", "grade": 2},
 		{"hand": "paper", "grade": 1}, {"hand": "paper", "grade": 1}, {"hand": "paper", "grade": 2},
 	]
 
 func get_opponent_deck_size() -> int:
-	return 7
+	return 9
 
 func get_player_deck_size() -> int:
-	return 7
+	return 9
 
 func has_bayes_eye() -> bool:
 	return true

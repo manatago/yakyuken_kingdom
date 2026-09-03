@@ -22,16 +22,16 @@ func get_player_outfit_count() -> int:
 
 func get_opponent_hand() -> Array:
 	return [
-		{"hand": "rock", "grade": 2}, {"hand": "rock", "grade": 2},
-		{"hand": "scissors", "grade": 2}, {"hand": "scissors", "grade": 2},
+		{"hand": "rock", "grade": 2}, {"hand": "rock", "grade": 2}, {"hand": "rock", "grade": 2},
+		{"hand": "scissors", "grade": 2}, {"hand": "scissors", "grade": 2}, {"hand": "scissors", "grade": 2},
 		{"hand": "paper", "grade": 2}, {"hand": "paper", "grade": 2}, {"hand": "paper", "grade": 3},
 	]
 
 func get_opponent_deck_size() -> int:
-	return 7
+	return 9
 
 func get_player_deck_size() -> int:
-	return 7
+	return 9
 
 func has_bayes_eye() -> bool:
 	return true
