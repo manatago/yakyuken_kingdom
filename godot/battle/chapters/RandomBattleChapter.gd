@@ -22,6 +22,13 @@ func setup_from_encounter(data: Dictionary):
 		Card.new("scissors", 1),
 		Card.new("paper", 1),
 	])
+	if data.get("randomize_opponent_grades", false):
+		var randomized_hand: Array = []
+		for card_data in _opponent_hand:
+			var randomized_card: Dictionary = card_data.duplicate()
+			randomized_card["grade"] = randi_range(1, 5)
+			randomized_hand.append(randomized_card)
+		_opponent_hand = randomized_hand
 
 # --- 必須オーバーライド ---
 

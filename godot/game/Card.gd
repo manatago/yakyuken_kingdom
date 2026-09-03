@@ -35,6 +35,8 @@ const GRADE_EFFECTS := {
 # じゃんけんの関係
 const LOSES_TO := {"rock": "scissors", "scissors": "paper", "paper": "rock"}
 const WINS_AGAINST := {"rock": "paper", "scissors": "rock", "paper": "scissors"}
+const HAND_NAMES := {"rock": "グー", "scissors": "チョキ", "paper": "パー"}
+const GRADE_NAMES := {1: "ノーマル", 2: "ブロンズ", 3: "シルバー", 4: "ゴールド", 5: "プラチナ"}
 
 func get_grade_effect() -> Dictionary:
 	return GRADE_EFFECTS.get(grade, GRADE_EFFECTS[1])
@@ -81,6 +83,16 @@ static func apply_grade_effect(player_hand: String, player_grade: int, base_prob
 			result[draw_hand] *= ratio
 
 	return result
+
+static func format_same_hand_grade_reason(hand_key: String, player_grade: int, opponent_grade: int) -> String:
+	var hand_name: String = HAND_NAMES.get(hand_key, hand_key)
+	var player_grade_name: String = GRADE_NAMES.get(player_grade, "G%d" % player_grade)
+	var opponent_grade_name: String = GRADE_NAMES.get(opponent_grade, "G%d" % opponent_grade)
+	if player_grade == opponent_grade:
+		return "同じ%s・同じ%s: 引き分け" % [hand_name, player_grade_name]
+	if player_grade > opponent_grade:
+		return "同じ%s: 自分の%s > 相手の%s" % [hand_name, player_grade_name, opponent_grade_name]
+	return "同じ%s: 相手の%s > 自分の%s" % [hand_name, opponent_grade_name, player_grade_name]
 
 func _to_string() -> String:
 	return "Card(%s, grade=%d)" % [hand, grade]

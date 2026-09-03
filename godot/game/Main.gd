@@ -2,6 +2,7 @@ extends Control
 
 const DefaultStoryScript := preload("res://story/DefaultStory.gd")
 const PortraitLayoutDB = preload("res://story/PortraitLayout.gd")
+const BattleSystemTestChapter := preload("res://battle/chapters/BattleSystemTestChapter.gd")
 const BgRemovalEditorScript := preload("res://game/BgRemovalEditor.gd")
 const SourceFileWriterScript := preload("res://game/SourceFileWriter.gd")
 const PortraitPickerScript := preload("res://game/PortraitPicker.gd")
@@ -309,41 +310,34 @@ func _on_edit_mode():
 	title_menu.visible = false
 	_show_edit_menu()
 
+func _create_edit_menu_button(label_text: String, pressed_action: Callable) -> Button:
+	var button := Button.new()
+	button.text = label_text
+	button.add_theme_font_size_override("font_size", 20)
+	button.pressed.connect(pressed_action)
+	return button
+
 func _show_edit_menu():
 	title_menu.visible = false
 	for child in jump_list.get_children():
 		child.queue_free()
-	# ランダムバトル編集ボタン
-	var edit_btn := Button.new()
-	edit_btn.text = "▶ ランダムバトル編集"
-	edit_btn.add_theme_font_size_override("font_size", 20)
-	edit_btn.add_theme_color_override("font_color", Color(0.3, 1.0, 0.5))
-	edit_btn.pressed.connect(_on_char_edit_mode)
-	jump_list.add_child(edit_btn)
-	# イベントバトル編集ボタン
-	var event_edit_btn := Button.new()
-	event_edit_btn.text = "▶ イベントバトル編集"
-	event_edit_btn.add_theme_font_size_override("font_size", 20)
-	event_edit_btn.add_theme_color_override("font_color", Color(1.0, 0.8, 0.3))
-	event_edit_btn.pressed.connect(_on_event_battle_edit_mode)
-	jump_list.add_child(event_edit_btn)
+	jump_list.add_child(_create_edit_menu_button("バトル立ち絵編集", _show_battle_portrait_edit_menu))
+	jump_list.add_child(_create_edit_menu_button("バトルシステム確認", _on_battle_system_test_mode))
+	jump_list.add_child(_create_edit_menu_button("紙芝居編集（敗北シーン）", _on_slideshow_edit_mode))
+	jump_list.add_child(_create_edit_menu_button("ストーリー編集", _on_story_edit_mode))
+	jump_menu.visible = true
 
-	# 紙芝居編集ボタン（敗北ごとの一枚絵スライド）
-	# バトル編集とは別枠。紙芝居は全画面背景＋セリフで、立ち絵の scale/position を
-	# 持たないため、バトル編集のスライダー UI がそのままでは意味を成さない。
-	var slideshow_edit_btn := Button.new()
-	slideshow_edit_btn.text = "▶ 紙芝居編集（敗北シーン）"
-	slideshow_edit_btn.add_theme_font_size_override("font_size", 20)
-	slideshow_edit_btn.add_theme_color_override("font_color", Color(1.0, 0.6, 0.8))
-	slideshow_edit_btn.pressed.connect(_on_slideshow_edit_mode)
-	jump_list.add_child(slideshow_edit_btn)
-	# ストーリー編集ボタン
-	var story_edit_btn := Button.new()
-	story_edit_btn.text = "▶ ストーリー編集"
-	story_edit_btn.add_theme_font_size_override("font_size", 20)
-	story_edit_btn.add_theme_color_override("font_color", Color(0.5, 0.8, 1.0))
-	story_edit_btn.pressed.connect(_on_story_edit_mode)
-	jump_list.add_child(story_edit_btn)
+func _show_battle_portrait_edit_menu():
+	for child in jump_list.get_children():
+		child.queue_free()
+	var title := Label.new()
+	title.text = "バトル立ち絵編集"
+	title.add_theme_font_size_override("font_size", 24)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	jump_list.add_child(title)
+	jump_list.add_child(_create_edit_menu_button("ランダムバトル", _on_char_edit_mode))
+	jump_list.add_child(_create_edit_menu_button("イベントバトル", _on_event_battle_edit_mode))
+	jump_list.add_child(_create_edit_menu_button("戻る", _show_edit_menu))
 	jump_menu.visible = true
 
 func _on_jump_selected(point: Dictionary):
@@ -461,6 +455,107 @@ func _on_jump_back():
 # --- ランダムバトル編集モード ---
 
 signal _char_edit_selected(char_id: String)
+signal _battle_system_test_selected(mode: String)
+signal _battle_system_random_selected(char_id: String)
+
+func _on_battle_system_test_mode():
+	jump_menu.visible = false
+	for child in jump_list.get_children():
+		child.queue_free()
+	var title := Label.new()
+	title.text = "バトルシステム確認"
+	title.add_theme_font_size_override("font_size", 24)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	jump_list.add_child(title)
+	var normal_btn := _create_edit_menu_button("通常バトル", func(): _battle_system_test_selected.emit("normal"))
+	normal_btn.tooltip_text = "固定デッキの相手と通常ルールで戦い、カードとアイテムを確認する"
+	jump_list.add_child(normal_btn)
+	var random_btn := _create_edit_menu_button("ランダムバトル", func(): _battle_system_test_selected.emit("random"))
+	random_btn.tooltip_text = "ランダムエンカウントの相手を選び、実際のデッキと傾向で戦う"
+	jump_list.add_child(random_btn)
+	var back_btn := _create_edit_menu_button("戻る", func(): _battle_system_test_selected.emit("back"))
+	jump_list.add_child(back_btn)
+	jump_menu.visible = true
+
+	var mode: String = await _battle_system_test_selected
+	if mode == "back":
+		_show_edit_menu()
+		return
+	jump_menu.visible = false
+	var saved_state := GameState.to_dict()
+	_prepare_battle_system_test_state()
+	if mode == "normal":
+		await _show_edit_equip_screen()
+		var normal_starting_money := GameState.money
+		var normal_chapter := BattleSystemTestChapter.new()
+		var normal_bg = load(normal_chapter.get_battle_background())
+		await _execute_battle(normal_chapter, normal_bg, true)
+		await _show_edit_result_screen(null, normal_starting_money)
+	elif mode == "random":
+		var encounter_data: Dictionary = await _show_battle_system_random_select()
+		if not encounter_data.is_empty():
+			await _show_edit_equip_screen()
+			var random_starting_money := GameState.money
+			var random_chapter := RandomBattleChapter.new()
+			var bg_path: String = await _show_edit_area_select(encounter_data)
+			encounter_data["battle_bg"] = bg_path
+			encounter_data["randomize_opponent_grades"] = true
+			random_chapter.setup_from_encounter(encounter_data)
+			var random_bg = load(bg_path)
+			var encounter_home: GuildHome = guild_home_scene.instantiate()
+			add_child(encounter_home)
+			encounter_home.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+			encounter_home.setup(random_bg, _current_town_map)
+			await _show_random_battle_encounter(encounter_home, encounter_data)
+			encounter_home.queue_free()
+			var battle_result: Dictionary = await _execute_battle(random_chapter, random_bg, true)
+			var farewell_home: GuildHome = guild_home_scene.instantiate()
+			add_child(farewell_home)
+			farewell_home.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+			farewell_home.setup(random_bg, _current_town_map)
+			await _show_random_battle_farewell(farewell_home, random_chapter, battle_result.result)
+			farewell_home.queue_free()
+			await _show_edit_result_screen(null, random_starting_money)
+	GameState.apply(saved_state)
+	_show_edit_menu()
+
+func _prepare_battle_system_test_state() -> void:
+	GameState.reset()
+	for hand_key in ["rock", "scissors", "paper"]:
+		for grade in range(1, 6):
+			GameState.add_card({"hand": hand_key, "grade": grade})
+	GameState.money = 1000
+	for item_data in ItemDatabase.get_all_consumables():
+		GameState.add_item({"id": item_data.id, "name": item_data.name, "count": 9})
+
+func _show_battle_system_random_select() -> Dictionary:
+	if not _current_town_map:
+		_current_town_map = Stage1TownMapScript.new()
+	var chars: Dictionary = _current_town_map.get_all_encounter_chars()
+	for child in jump_list.get_children():
+		child.queue_free()
+	var title := Label.new()
+	title.text = "ランダムバトル確認 - 相手選択"
+	title.add_theme_font_size_override("font_size", 22)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	jump_list.add_child(title)
+	for char_id in chars:
+		var char_data: Dictionary = chars[char_id]
+		var btn := Button.new()
+		btn.text = char_data.get("name", char_id)
+		btn.add_theme_font_size_override("font_size", 20)
+		var selected_id: String = char_id
+		btn.pressed.connect(func(): _battle_system_random_selected.emit(selected_id))
+		jump_list.add_child(btn)
+	var back_btn := Button.new()
+	back_btn.text = "← 戻る"
+	back_btn.add_theme_font_size_override("font_size", 20)
+	back_btn.pressed.connect(func(): _battle_system_random_selected.emit(""))
+	jump_list.add_child(back_btn)
+	jump_menu.visible = true
+	var selected_id: String = await _battle_system_random_selected
+	jump_menu.visible = false
+	return chars.get(selected_id, {})
 
 func _on_char_edit_mode():
 	print("[EDIT] _on_char_edit_mode called")
@@ -749,6 +844,11 @@ func _show_edit_area_select(encounter_data: Dictionary) -> String:
 	if char_areas.size() <= 1:
 		if char_areas.size() == 1:
 			return char_areas[0].bg
+		for area_id in _current_town_map.get_home_connections():
+			var fallback_area: Dictionary = areas.get(area_id, {})
+			var fallback_bg: String = fallback_area.get("bg", "")
+			if not fallback_bg.is_empty():
+				return fallback_bg
 		return _current_town_map.get_home_background()
 
 	# エリア選択UI
@@ -810,10 +910,11 @@ func _show_edit_equip_screen():
 	style.content_margin_right = 20
 	style.content_margin_bottom = 16
 	panel.add_theme_stylebox_override("panel", style)
-	panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
-	panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	panel.grow_vertical = Control.GROW_DIRECTION_BOTH
-	panel.custom_minimum_size = Vector2(550, 500)
+	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	panel.offset_left = 120.0
+	panel.offset_top = 48.0
+	panel.offset_right = -120.0
+	panel.offset_bottom = -48.0
 	add_child(panel)
 
 	var vbox := VBoxContainer.new()
@@ -821,45 +922,56 @@ func _show_edit_equip_screen():
 	panel.add_child(vbox)
 
 	var title := Label.new()
-	title.text = "装備・アイテム選択"
+	title.text = "装備選択"
 	title.add_theme_font_size_override("font_size", 28)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(title)
+
+	var selection_scroll := ScrollContainer.new()
+	selection_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	selection_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vbox.add_child(selection_scroll)
+
+	var selection_list := VBoxContainer.new()
+	selection_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	selection_list.add_theme_constant_override("separation", 6)
+	selection_scroll.add_child(selection_list)
 
 	# 装備品（着脱ボタン付き）
 	var equip_title := Label.new()
 	equip_title.text = "【装備品】クリックで着脱"
 	equip_title.add_theme_font_size_override("font_size", 20)
 	equip_title.add_theme_color_override("font_color", Color(0.3, 0.8, 1.0))
-	vbox.add_child(equip_title)
+	selection_list.add_child(equip_title)
 
 	var equip_container := VBoxContainer.new()
 	equip_container.name = "EquipList"
 	equip_container.add_theme_constant_override("separation", 4)
-	vbox.add_child(equip_container)
+	selection_list.add_child(equip_container)
 
-	# アイテム
-	var item_title := Label.new()
-	item_title.text = "【消耗品】"
-	item_title.add_theme_font_size_override("font_size", 20)
-	item_title.add_theme_color_override("font_color", Color(0.3, 1.0, 0.5))
-	vbox.add_child(item_title)
+	var action_row := HBoxContainer.new()
+	action_row.add_theme_constant_override("separation", 12)
+	vbox.add_child(action_row)
 
-	var item_container := VBoxContainer.new()
-	item_container.name = "ItemList"
-	item_container.add_theme_constant_override("separation", 4)
-	vbox.add_child(item_container)
+	var reset_btn := Button.new()
+	reset_btn.text = "装備を全て外す"
+	reset_btn.add_theme_font_size_override("font_size", 16)
+	reset_btn.pressed.connect(func():
+		_reset_battle_system_test_selection()
+		_refresh_equip_list(equip_container))
+	reset_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	action_row.add_child(reset_btn)
 
 	# バトルへ進むボタン
 	var start_btn := Button.new()
 	start_btn.text = "バトルへ進む"
 	start_btn.add_theme_font_size_override("font_size", 20)
 	start_btn.pressed.connect(func(): _edit_setup_done.emit())
-	vbox.add_child(start_btn)
+	start_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	action_row.add_child(start_btn)
 
-	# 装備品リストを描画
+	# 装備品リストを描画。消耗品は全種類を所持した状態でバトルへ渡す。
 	_refresh_equip_list(equip_container)
-	_refresh_item_list(item_container)
 
 	await _edit_setup_done
 	panel.queue_free()
@@ -878,6 +990,10 @@ func _refresh_equip_list(container: VBoxContainer):
 			btn.add_theme_color_override("font_color", Color(0.6, 0.6, 0.6))
 		btn.add_theme_font_size_override("font_size", 16)
 		btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		var equip_icon = load(equip_data.get("icon_path", ""))
+		if equip_icon:
+			btn.icon = equip_icon
+			btn.expand_icon = true
 		var eid: String = equip_data.id
 		btn.pressed.connect(func():
 			if GameState.has_equipment(eid):
@@ -887,26 +1003,18 @@ func _refresh_equip_list(container: VBoxContainer):
 			_refresh_equip_list(container))
 		container.add_child(btn)
 
-func _refresh_item_list(container: VBoxContainer):
-	for child in container.get_children():
-		child.queue_free()
-	for item in GameState.items:
-		var item_info: Dictionary = ItemDatabase.get_item(item.id)
-		if item_info.is_empty():
-			continue
-		var row := Label.new()
-		row.text = "  %s ×%d — %s" % [item.get("name", item.id), item.get("count", 1), item_info.get("description", "")]
-		row.add_theme_font_size_override("font_size", 16)
-		container.add_child(row)
+func _reset_battle_system_test_selection() -> void:
+	GameState.equipment.clear()
 
-func _show_edit_result_screen(home: GuildHome):
+func _show_edit_result_screen(home: GuildHome = null, starting_money: int = -1):
 	# バトル後のアイテム・装備品確認
-	home.narration_label.visible = false
-	home.nav_row.visible = false
-	home.encounter_portrait.visible = false
-	home.encounter_speaker.visible = false
-	home.encounter_right.visible = false
-	home.narration_band.visible = true
+	if home:
+		home.narration_label.visible = false
+		home.nav_row.visible = false
+		home.encounter_portrait.visible = false
+		home.encounter_speaker.visible = false
+		home.encounter_right.visible = false
+		home.narration_band.visible = true
 
 	var panel := PanelContainer.new()
 	var style := StyleBoxFlat.new()
@@ -920,10 +1028,11 @@ func _show_edit_result_screen(home: GuildHome):
 	style.content_margin_right = 20
 	style.content_margin_bottom = 16
 	panel.add_theme_stylebox_override("panel", style)
-	panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
-	panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	panel.grow_vertical = Control.GROW_DIRECTION_BOTH
-	panel.custom_minimum_size = Vector2(500, 450)
+	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	panel.offset_left = 180.0
+	panel.offset_top = 48.0
+	panel.offset_right = -180.0
+	panel.offset_bottom = -48.0
 	add_child(panel)
 
 	var vbox := VBoxContainer.new()
@@ -935,13 +1044,21 @@ func _show_edit_result_screen(home: GuildHome):
 	title.add_theme_font_size_override("font_size", 28)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	vbox.add_child(title)
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	vbox.add_child(scroll)
+	var content := VBoxContainer.new()
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_theme_constant_override("separation", 8)
+	scroll.add_child(content)
 
 	# カード内訳
 	var card_title := Label.new()
 	card_title.text = "【カード: %d枚】" % GameState.inventory.size()
 	card_title.add_theme_font_size_override("font_size", 20)
 	card_title.add_theme_color_override("font_color", Color(1.0, 0.85, 0.4))
-	vbox.add_child(card_title)
+	content.add_child(card_title)
 	var card_counts := {}
 	for card: Card in GameState.inventory:
 		var key := "%s_%d" % [card.hand, card.grade]
@@ -950,38 +1067,46 @@ func _show_edit_result_screen(home: GuildHome):
 	sorted_keys.sort()
 	for key in sorted_keys:
 		var parts: PackedStringArray = key.split("_")
-		vbox.add_child(GameState.create_card_label(parts[0], int(parts[1]), card_counts[key], 16, 22))
+		content.add_child(GameState.create_card_label(parts[0], int(parts[1]), card_counts[key], 16, 22))
 
 	# ゴールド
-	vbox.add_child(GameState.create_gold_label(GameState.money, 20, 26, "所持金: "))
+	content.add_child(GameState.create_gold_label(GameState.money, 20, 26, "所持金: "))
+	if starting_money >= 0:
+		var money_change := GameState.money - starting_money
+		var change_sign := "+" if money_change >= 0 else ""
+		var money_summary := Label.new()
+		money_summary.text = "開始: %dG -> 現在: %dG（%s%dG）" % [starting_money, GameState.money, change_sign, money_change]
+		money_summary.add_theme_font_size_override("font_size", 18)
+		money_summary.add_theme_color_override("font_color", Color(0.9, 0.75, 0.3) if money_change >= 0 else Color(1.0, 0.45, 0.45))
+		content.add_child(money_summary)
 
 	# 装備品
 	var equip_label := Label.new()
 	equip_label.text = "【装備品】"
 	equip_label.add_theme_font_size_override("font_size", 20)
 	equip_label.add_theme_color_override("font_color", Color(0.3, 0.8, 1.0))
-	vbox.add_child(equip_label)
+	content.add_child(equip_label)
 	for eq in GameState.equipment:
-		vbox.add_child(GameState.create_item_label(eq.get("name", eq.id), 1, 16, 22))
+		content.add_child(GameState.create_item_label(eq.get("name", eq.id), 1, 16, 22))
 	if GameState.equipment.is_empty():
 		var empty := Label.new()
 		empty.text = "  なし"
 		empty.add_theme_font_size_override("font_size", 16)
-		vbox.add_child(empty)
+		content.add_child(empty)
 
 	# アイテム残数
 	var item_label := Label.new()
 	item_label.text = "【アイテム残数】"
 	item_label.add_theme_font_size_override("font_size", 20)
 	item_label.add_theme_color_override("font_color", Color(0.3, 1.0, 0.5))
-	vbox.add_child(item_label)
+	content.add_child(item_label)
 	for item in GameState.items:
-		vbox.add_child(GameState.create_item_label(item.get("name", item.id), item.get("count", 1), 16, 22))
+		content.add_child(GameState.create_item_label(item.get("name", item.id), item.get("count", 1), 16, 22))
 	if GameState.items.is_empty():
 		var empty := Label.new()
 		empty.text = "  なし"
 		empty.add_theme_font_size_override("font_size", 16)
-		vbox.add_child(empty)
+		content.add_child(empty)
 
 	var close_btn := Button.new()
 	close_btn.text = "閉じる"
@@ -2485,32 +2610,60 @@ func _on_town_battle(area_id: String, chapter: BattleChapterBase, home: GuildHom
 	var result: String = battle_result.result
 	home.visible = true
 
-	# 去り際シーン（ランダムバトル用）
-	if chapter.has_method("get_encounter_farewell"):
-		var farewell_line: String = chapter.get_encounter_farewell(result)
-		if not farewell_line.is_empty():
-			var fw_key: String = "farewell_win" if result == "win" else "farewell_lose"
-			var fw_portrait: Dictionary = EncounterDatabase.get_portrait(chapter._data, fw_key) if chapter.has_method("get_encounter_farewell_portrait") else {}
-			var fw_path: String = fw_portrait.get("path", "")
-			if not fw_path.is_empty():
-				var fw_tex = load(fw_path)
-				if fw_tex:
-					home.encounter_portrait.texture = fw_tex
-					home._apply_encounter_portrait(fw_tex, fw_portrait)
-			home.encounter_portrait.visible = true
-			home.narration_label.visible = false
-			home.nav_row.visible = false
-			home.encounter_speaker.text = chapter.get_opponent_name()
-			home.encounter_speaker.visible = true
-			home.encounter_body.text = farewell_line
-			home.encounter_right.visible = true
-			home.narration_band.visible = true
-			home._waiting_for_click = true
-			await home._click_received
-			home._waiting_for_click = false
-			home._hide_encounter()
+	await _show_random_battle_farewell(home, chapter, result)
 
 	home.arrive_at(area_id)
+
+func _show_random_battle_farewell(home: GuildHome, chapter: BattleChapterBase, result: String) -> void:
+	if not chapter.has_method("get_encounter_farewell"):
+		return
+	var farewell_line: String = chapter.get_encounter_farewell(result)
+	if farewell_line.is_empty():
+		return
+	var farewell_portrait: Dictionary = chapter.get_encounter_farewell_portrait(result) if chapter.has_method("get_encounter_farewell_portrait") else {}
+	var farewell_path: String = farewell_portrait.get("path", "")
+	if not farewell_path.is_empty():
+		var farewell_texture = load(farewell_path)
+		if farewell_texture:
+			home.encounter_portrait.texture = farewell_texture
+			home._apply_encounter_portrait(farewell_texture, farewell_portrait)
+	home.encounter_portrait.visible = true
+	home.narration_label.visible = false
+	home.nav_row.visible = false
+	home.menu_bar.visible = false
+	home.encounter_speaker.text = chapter.get_opponent_name()
+	home.encounter_speaker.visible = true
+	home.encounter_body.text = farewell_line
+	home.encounter_right.visible = true
+	home.narration_band.visible = true
+	home._waiting_for_click = true
+	await home._click_received
+	home._waiting_for_click = false
+	home._hide_encounter()
+
+func _show_random_battle_encounter(home: GuildHome, encounter_data: Dictionary) -> void:
+	var encounter_portrait: Dictionary = EncounterDatabase.get_portrait(encounter_data, "encounter")
+	var encounter_path: String = encounter_portrait.get("path", "")
+	if encounter_path.is_empty():
+		return
+	var encounter_texture = load(encounter_path)
+	if not encounter_texture:
+		return
+	home.encounter_portrait.texture = encounter_texture
+	home._apply_encounter_portrait(encounter_texture, encounter_portrait)
+	home.encounter_portrait.visible = true
+	home.narration_label.visible = false
+	home.nav_row.visible = false
+	home.menu_bar.visible = false
+	home.encounter_speaker.text = encounter_data.get("name", "")
+	home.encounter_speaker.visible = true
+	home.encounter_body.text = EncounterDatabase.pick_line(encounter_data, "greetings")
+	home.encounter_right.visible = true
+	home.narration_band.visible = true
+	home._waiting_for_click = true
+	await home._click_received
+	home._waiting_for_click = false
+	home._hide_encounter()
 
 # --- サブイベント実行 ---
 

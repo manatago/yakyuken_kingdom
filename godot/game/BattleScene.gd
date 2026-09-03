@@ -56,10 +56,10 @@ const GRADE_COLORS := {
 @onready var opponent_hp_bar := $OpponentHPPanel/VBox/OpponentHPBarFrame/OpponentHPBar
 @onready var opponent_hp_bar_frame := $OpponentHPPanel/VBox/OpponentHPBarFrame
 @onready var opponent_hp_label := $OpponentHPPanel/VBox/OpponentHPLabel
-@onready var item_slots := $ItemPanel/ItemSlots
+@onready var item_slots := $ItemPanel/ItemScroll/ItemSlots
 @onready var item_panel := $ItemPanel
 @onready var hand_panel := $HandPanel
-@onready var hand_slots := $HandPanel/HandSlots
+@onready var hand_slots := $HandPanel/HandScroll/HandSlots
 @onready var bayes_eye_panel := $BayesEyePanel
 @onready var bayes_rock_bar := $BayesEyePanel/Rows/RockRow/Bar
 @onready var bayes_rock_pct := $BayesEyePanel/Rows/RockRow/Pct
@@ -73,6 +73,7 @@ const GRADE_COLORS := {
 @onready var overlay_player_card := $JankenOverlay/PlayerCard
 @onready var overlay_opponent_card := $JankenOverlay/OpponentCard
 @onready var overlay_result_image := $JankenOverlay/ResultImage
+@onready var overlay_result_reason := $JankenOverlay/ResultReason
 
 # --- State ---
 var _chapter: BattleChapterBase = null
@@ -99,7 +100,9 @@ var _captured_by_player: Array = [] # opponent's lost cards
 var _captured_by_opponent: Array = [] # player's lost cards
 
 # アイテム使用状態（ラウンドごとにリセット）
-var _round_item_effect: String = ""  # "protect_card", "protect_hp", "intimidate", ""
+var _round_item_effect: String = ""  # "protect_card", "protect_hp", "intimidate", "adjust_probability", ""
+var _round_probability_adjustment: Dictionary = {}
+var _round_item_id: String = ""
 
 # 結果強制モード（イベントバトル編集用）
 var force_result_mode := false
@@ -142,6 +145,19 @@ func setup(cast: Dictionary, bg_texture: Texture2D = null, inventory: Array = []
 	_initial_bg_texture = bg_texture
 	_player_inventory = inventory.duplicate(true)
 
+func _register_chapter_opponent() -> void:
+	if _chapter == null:
+		return
+	var opponent_id := _chapter.get_opponent_id()
+	var opponent_name := _chapter.get_opponent_name()
+	if opponent_id.is_empty() or opponent_name.is_empty() or _cast.has(opponent_id):
+		return
+	var opponent := StoryCharacter.new()
+	opponent.id = opponent_id
+	opponent.display_name = opponent_name
+	opponent.default_side = "right"
+	_cast[opponent_id] = opponent
+
 var _is_tutorial := false
 var _is_minigame := false
 
@@ -149,6 +165,7 @@ func start_battle(chapter: BattleChapterBase, is_tutorial := false, is_minigame 
 	_chapter = chapter
 	_is_tutorial = is_tutorial
 	_is_minigame = is_minigame
+	_register_chapter_opponent()
 	add_child(_chapter)
 	_dsl = Cmd.new(_cast)
 	_captured_by_player.clear()
@@ -302,17 +319,19 @@ func _refresh_inventory_display():
 		var slot := HBoxContainer.new()
 		slot.name = "HandSlot_" + key
 		slot.add_theme_constant_override("separation", 6)
+		slot.mouse_filter = Control.MOUSE_FILTER_STOP
+		slot.gui_input.connect(_on_inventory_slot_input.bind(hand_enum, grade))
 
 		var btn := TextureButton.new()
 		btn.custom_minimum_size = Vector2(42, 60)
 		btn.ignore_texture_size = true
 		btn.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 		btn.texture_normal = _card_textures.get(hand_enum)
+		btn.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		btn.modulate = GRADE_COLORS.get(grade, Color.WHITE)
 		btn.disabled = available <= 0
 		if available <= 0:
 			btn.modulate = Color(0.3, 0.3, 0.3, 0.5)
-		btn.pressed.connect(_on_inventory_card_pressed.bind(hand_enum, grade))
 		slot.add_child(btn)
 
 		var label := Label.new()
@@ -325,9 +344,14 @@ func _refresh_inventory_display():
 		ls.outline_size = 3
 		label.label_settings = ls
 		label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		slot.add_child(label)
 
 		hand_slots.add_child(slot)
+
+func _on_inventory_slot_input(event: InputEvent, hand: Hand, grade: int):
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		_on_inventory_card_pressed(hand, grade)
 
 func _on_inventory_card_pressed(hand: Hand, grade: int):
 	if not _deck_building:
@@ -360,11 +384,12 @@ func _refresh_deck_preview():
 	# Show deck cards in card_selection area
 	for child in card_selection.get_children():
 		child.queue_free()
+	var card_size := _get_card_slot_size(_player_deck.size())
 
 	for i in range(_player_deck.size()):
 		var dc = _player_deck[i]
 		var container := Control.new()
-		container.custom_minimum_size = Vector2(70, 100)
+		container.custom_minimum_size = card_size
 		container.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 
 		var btn := TextureButton.new()
@@ -377,6 +402,15 @@ func _refresh_deck_preview():
 		container.add_child(btn)
 
 		card_selection.add_child(container)
+
+func _get_card_slot_size(card_count: int) -> Vector2:
+	if card_count <= 0:
+		return Vector2(70, 100)
+	var horizontal_padding := 24.0
+	var total_spacing := float(maxi(card_count - 1, 0)) * 6.0
+	var available_width := get_viewport_rect().size.x - horizontal_padding - total_spacing
+	var card_width := clampf(available_width / card_count, 44.0, 70.0)
+	return Vector2(card_width, card_width * 10.0 / 7.0)
 
 func _on_deck_preview_pressed(index: int):
 	if not _deck_building:
@@ -631,7 +665,7 @@ func _position_battle_dialogue_band(raise_for_selection: bool):
 	var band: Control = _story_scene.dialogue_band
 	var band_h := 220.0  # DialogueBand の高さ（StoryScene.tscn 既定）
 	if raise_for_selection:
-		band.offset_bottom = -330.0  # ActionPrompt(anchor_top=0.7)の上端より上
+		band.offset_bottom = -390.0  # ActionPrompt(anchor_top=0.66)の上端より上
 	else:
 		band.offset_bottom = -150.0  # カードバー(150px)の上
 	band.offset_top = band.offset_bottom - band_h
@@ -639,6 +673,8 @@ func _position_battle_dialogue_band(raise_for_selection: bool):
 func select_hand() -> Dictionary:
 	await _flush_pending()
 	_round_item_effect = ""
+	_round_probability_adjustment.clear()
+	_round_item_id = ""
 	# 編集モード: カード選択UIを出さず、デッキのカードを自動消費して即返す
 	if force_result_mode:
 		return _edit_auto_pick_card()
@@ -705,11 +741,16 @@ func janken(selection: Dictionary, ai_opts: Dictionary = {}) -> String:
 
 	# 編集モードではじゃんけん演出（約十数秒のアニメーション）をスキップする
 	if not force_result_mode:
-		await _play_janken_overlay(player_hand, opponent_hand, result)
+		var grade_reason := ""
+		if player_hand == opponent_hand and _judge_with_grade(player_hand, player_grade, opponent_hand, opponent_grade) == result:
+			grade_reason = Card.format_same_hand_grade_reason(HAND_KEYS[player_hand], player_grade, opponent_grade)
+		await _play_janken_overlay(player_hand, opponent_hand, result, grade_reason)
 
 	if result == "win":
 		_opponent_outfit -= 1
 		_captured_by_player.append({"hand": HAND_KEYS[opponent_hand], "grade": opponent_grade})
+		if ItemDatabase.get_capture_count(GameState.equipment) > 1:
+			_capture_additional_opponent_card()
 	elif result == "lose":
 		# 鉄の盾: HPが減らない
 		if _round_item_effect != "protect_hp":
@@ -833,40 +874,98 @@ func _run_portrait_capture():
 
 func _show_item_buttons():
 	_clear_item_buttons()
+	if not _round_item_id.is_empty():
+		var selected_row := HBoxContainer.new()
+		var spacer := Control.new()
+		spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		selected_row.add_child(spacer)
+		var cancel_btn := Button.new()
+		cancel_btn.text = "リセット"
+		cancel_btn.add_theme_font_size_override("font_size", 14)
+		cancel_btn.pressed.connect(_cancel_round_item)
+		selected_row.add_child(cancel_btn)
+		item_slots.add_child(selected_row)
 	for item in GameState.items:
 		var item_info: Dictionary = ItemDatabase.get_item(item.id)
 		if item_info.is_empty() or item_info.type != ItemDatabase.ItemType.CONSUMABLE:
 			continue
 		var btn := Button.new()
+		var item_id: String = item.id
 		btn.text = "%s ×%d" % [item.get("name", item.id), item.get("count", 1)]
 		btn.add_theme_font_size_override("font_size", 14)
 		btn.tooltip_text = item_info.get("description", "")
-		var icon_tex = load(GameState.DEFAULT_ITEM_ICON_PATH)
+		var icon_tex = load(item_info.get("icon_path", GameState.DEFAULT_ITEM_ICON_PATH))
 		if icon_tex:
 			btn.icon = icon_tex
 			btn.expand_icon = true
-		var item_id: String = item.id
+		if not ItemDatabase.is_battle_usable(item_info):
+			btn.disabled = true
+			btn.add_theme_color_override("font_disabled_color", Color(0.55, 0.55, 0.55))
+		elif item_id == _round_item_id:
+			btn.text = "選択中: %s ×%d" % [item.get("name", item.id), item.get("count", 1)]
+			btn.add_theme_color_override("font_color", Color(1.0, 0.85, 0.35))
 		btn.pressed.connect(_on_item_used.bind(item_id, btn))
 		item_slots.add_child(btn)
+	if not GameState.equipment.is_empty():
+		var equipment_label := Label.new()
+		equipment_label.text = "装備中"
+		equipment_label.add_theme_font_size_override("font_size", 13)
+		equipment_label.add_theme_color_override("font_color", Color(0.45, 0.8, 1.0))
+		item_slots.add_child(equipment_label)
+		for equipment in GameState.equipment:
+			var equipment_info: Dictionary = ItemDatabase.get_item(equipment.get("id", ""))
+			if equipment_info.is_empty():
+				continue
+			var equipment_btn := Button.new()
+			equipment_btn.text = equipment_info.get("name", equipment.get("id", ""))
+			equipment_btn.tooltip_text = equipment_info.get("description", "")
+			equipment_btn.disabled = true
+			equipment_btn.add_theme_font_size_override("font_size", 14)
+			equipment_btn.add_theme_color_override("font_disabled_color", Color(0.65, 0.8, 1.0))
+			var equipment_icon = load(equipment_info.get("icon_path", ""))
+			if equipment_icon:
+				equipment_btn.icon = equipment_icon
+				equipment_btn.expand_icon = true
+			item_slots.add_child(equipment_btn)
 
 func _clear_item_buttons():
 	for child in item_slots.get_children():
 		child.queue_free()
 
-func _on_item_used(item_id: String, btn: Button):
-	if not _round_item_effect.is_empty():
-		return  # 1ラウンド1個まで
+func _on_item_used(item_id: String, _btn: Button):
+	if item_id == _round_item_id:
+		_cancel_round_item()
+		return
+	if not _round_item_id.is_empty():
+		_cancel_round_item()
 	var item_info: Dictionary = ItemDatabase.get_item(item_id)
 	if item_info.is_empty():
 		return
 	_round_item_effect = item_info.get("effect", "")
+	_round_item_id = item_id
+	_round_probability_adjustment.clear()
+	if _round_item_effect == "adjust_probability":
+		_round_probability_adjustment = {
+			"target_hand": item_info.get("target_hand", "rock"),
+			"delta": float(item_info.get("probability_delta", 0.0)),
+		}
 	GameState.remove_item(item_id, 1)
-	btn.disabled = true
-	btn.text = "使用済み"
-	# 威圧の札: ベイズアイを更新
-	if _round_item_effect == "intimidate":
+	# 確率操作アイテム: ベイズアイを更新
+	if _round_item_effect == "intimidate" or _round_item_effect == "adjust_probability":
 		_update_bayes_display()
 	# アイテムパネルを更新
+	_show_item_buttons()
+
+func _cancel_round_item():
+	if _round_item_id.is_empty():
+		return
+	var item_info: Dictionary = ItemDatabase.get_item(_round_item_id)
+	if not item_info.is_empty():
+		GameState.add_item({"id": _round_item_id, "name": item_info.get("name", _round_item_id), "count": 1})
+	_round_item_effect = ""
+	_round_item_id = ""
+	_round_probability_adjustment.clear()
+	_update_bayes_display()
 	_show_item_buttons()
 
 # --- 結果強制ボタン（イベントバトル編集用） ---
@@ -933,7 +1032,9 @@ var _lost_gold: int = 0
 signal _result_panel_closed
 
 func _show_reward_message():
-	_rolled_gold = _chapter.roll_gold() if _chapter else 0
+	var base_gold := _chapter.roll_gold() if _chapter else 0
+	var gold_bonus := ItemDatabase.get_gold_bonus(GameState.equipment)
+	_rolled_gold = base_gold + gold_bonus
 	var has_cards: bool = _chapter.can_gain_cards() and not _captured_by_player.is_empty()
 	if not has_cards and _rolled_gold <= 0:
 		return
@@ -943,6 +1044,12 @@ func _show_reward_message():
 		for card in _captured_by_player:
 			vbox.add_child(GameState.create_card_label(card.hand, int(card.grade), 1, 20, 28))
 	if _rolled_gold > 0:
+		if gold_bonus > 0:
+			var reward_breakdown := Label.new()
+			reward_breakdown.text = ItemDatabase.format_gold_reward_summary(base_gold, gold_bonus)
+			reward_breakdown.add_theme_font_size_override("font_size", 18)
+			reward_breakdown.add_theme_color_override("font_color", Color(0.9, 0.75, 0.3))
+			vbox.add_child(reward_breakdown)
 		vbox.add_child(GameState.create_gold_label(_rolled_gold, 20, 28))
 	_add_result_close_button(vbox)
 	await _result_panel_closed
@@ -1087,11 +1194,23 @@ func get_battle_rewards() -> Dictionary:
 		"captured_by_opponent": _captured_by_opponent.duplicate(true),
 	}
 
+func _capture_additional_opponent_card() -> void:
+	var available: Array = []
+	for entry in _opponent_deck:
+		if not entry.used:
+			available.append(entry)
+	if available.is_empty():
+		return
+	var extra = available.pick_random()
+	extra.used = true
+	_captured_by_player.append({"hand": HAND_KEYS[extra.hand], "grade": extra.grade})
+
 # --- Janken overlay animation ---
 
-func _play_janken_overlay(player_hand: Hand, opponent_hand: Hand, result: String):
+func _play_janken_overlay(player_hand: Hand, opponent_hand: Hand, result: String, grade_reason: String = ""):
 	janken_overlay.visible = true
 	overlay_result_image.visible = false
+	overlay_result_reason.visible = false
 
 	var vp_size := get_viewport_rect().size
 	var card_w := 200.0
@@ -1156,7 +1275,7 @@ func _play_janken_overlay(player_hand: Hand, opponent_hand: Hand, result: String
 	await flip_opp_show.finished
 
 	# Show result
-	_show_overlay_result(result)
+	_show_overlay_result(result, grade_reason)
 	await get_tree().create_timer(1.5).timeout
 
 	# Fade out overlay
@@ -1166,12 +1285,15 @@ func _play_janken_overlay(player_hand: Hand, opponent_hand: Hand, result: String
 	janken_overlay.visible = false
 	janken_overlay.modulate = Color.WHITE
 
-func _show_overlay_result(outcome: String):
+func _show_overlay_result(outcome: String, grade_reason: String = ""):
 	overlay_result_image.texture = _result_textures.get(outcome)
 	overlay_result_image.pivot_offset = overlay_result_image.size / 2.0
 	overlay_result_image.scale = Vector2(0.3, 0.3)
 	overlay_result_image.modulate = Color(1, 1, 1, 0)
 	overlay_result_image.visible = true
+	if not grade_reason.is_empty():
+		overlay_result_reason.text = grade_reason
+		overlay_result_reason.visible = true
 	var pop := create_tween()
 	pop.set_parallel(true)
 	pop.tween_property(overlay_result_image, "scale", Vector2.ONE, 0.4) \
@@ -1363,20 +1485,25 @@ func get_bayes_probability(with_grade_effect: bool = false) -> Dictionary:
 	if with_grade_effect and _round_item_effect == "intimidate" and _hand_selected:
 		var player_hand_key: String = HAND_KEYS.get(_selected_hand, "rock")
 		var lose_hand_key: String = Card.LOSES_TO[player_hand_key]
-		var lose_hand_enum: Hand = HAND_FROM_KEY.get(lose_hand_key, Hand.ROCK)
-		var old_lose: float = prob.get(lose_hand_enum, 0.0)
-		var new_lose: float = old_lose + 0.20
-		prob[lose_hand_enum] = new_lose
-		var remaining_old: float = 0.0
-		for h in prob:
-			if h != lose_hand_enum:
-				remaining_old += prob[h]
-		if remaining_old > 0.0:
-			var remaining_new: float = 1.0 - new_lose
-			var ratio: float = remaining_new / remaining_old
-			for h in prob:
-				if h != lose_hand_enum:
-					prob[h] *= ratio
+		var string_probabilities := {}
+		for hand in prob:
+			string_probabilities[HAND_KEYS.get(hand, "rock")] = prob[hand]
+		var adjusted := ItemDatabase.apply_probability_adjustment(string_probabilities, lose_hand_key, 0.20)
+		prob = {}
+		for hand in adjusted:
+			prob[HAND_FROM_KEY.get(hand, Hand.ROCK)] = adjusted[hand]
+
+	# 指定した手の確率を増減し、残り2手の比率は維持する。
+	if with_grade_effect and not _round_probability_adjustment.is_empty():
+		var target_key: String = _round_probability_adjustment.get("target_hand", "rock")
+		var delta: float = _round_probability_adjustment.get("delta", 0.0)
+		var string_probabilities := {}
+		for hand in prob:
+			string_probabilities[HAND_KEYS.get(hand, "rock")] = prob[hand]
+		var adjusted := ItemDatabase.apply_probability_adjustment(string_probabilities, target_key, delta)
+		prob = {}
+		for hand in adjusted:
+			prob[HAND_FROM_KEY.get(hand, Hand.ROCK)] = adjusted[hand]
 
 	# グレード補正（カード選択後のみ）
 	if with_grade_effect and _selected_grade > 1 and _hand_selected:
@@ -1405,8 +1532,8 @@ func _hide_bayes_eye_immediate():
 	bayes_eye_panel.visible = false
 
 func _update_bayes_display():
-	var with_grade: bool = _hand_selected and _selected_grade > 1
-	var prob := get_bayes_probability(with_grade)
+	var with_effects: bool = (_hand_selected and _selected_grade > 1) or not _round_item_effect.is_empty()
+	var prob := get_bayes_probability(with_effects)
 	var rock_pct: int = int(prob.get(Hand.ROCK, 0.0) * 100)
 	var scissors_pct: int = int(prob.get(Hand.SCISSORS, 0.0) * 100)
 	var paper_pct: int = int(prob.get(Hand.PAPER, 0.0) * 100)
@@ -1667,13 +1794,14 @@ func _build_deck_buttons():
 	for child in card_selection.get_children():
 		child.queue_free()
 	_deck_buttons.clear()
+	var card_size := _get_card_slot_size(_player_deck.size())
 
 	for card in _player_deck:
 		var hand: Hand = card.hand
 		var grade: int = card.grade
 
 		var container := Control.new()
-		container.custom_minimum_size = Vector2(70, 100)
+		container.custom_minimum_size = card_size
 		container.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 
 		var btn := TextureButton.new()
