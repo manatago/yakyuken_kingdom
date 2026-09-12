@@ -2136,9 +2136,10 @@ func _on_story_sequence_finished(_sequence_id):
 # --- Battle bridge ---
 
 func _on_battle_requested(cmd):
-	# chapter_path からチャプターをロード（b.battle() で path のみ指定の場合）
-	if cmd.chapter == null and not cmd.chapter_path.is_empty():
-		var script = load(cmd.chapter_path)
+	# チャプターは実戦開始時だけソースから再パースする。編集後の設定を、
+	# 同じアプリ起動中の通常バトルにも反映するため。
+	if not cmd.chapter_path.is_empty():
+		var script = _load_script_fresh(cmd.chapter_path)
 		if script:
 			cmd.chapter = script.new()
 	if cmd.chapter == null:
@@ -4982,16 +4983,80 @@ func _save_chapter_portrait(info: Label, new_scale: float, new_x: int, new_y: in
 	if not ("set_portrait" in line):
 		info.text = "[保存NG] %d行目が set_portrait でない" % line_no
 		return
-	if '"scale"' in line:
-		line = _battle_edit_scale_regex().sub(line, '"scale": %.2f' % new_scale)
-	if '"position"' in line:
-		line = _battle_edit_pos_regex().sub(line, '"position": [%d, %d]' % [new_x, new_y])
-	lines[li] = line
-	if not _write_source_file(abs_path, "\n".join(lines)):
+
+	# 通常の辞書指定と、共通レイアウト定数の両方を保存対象にする。
+	# 後者は以前、保存成功と表示しながら実際には何も更新していなかった。
+	var changed := false
+	var target_desc := "行%d" % line_no
+	if "{" in line:
+		var updated: Dictionary = _story_edit_apply_scale_pos_to_block(lines, li, new_scale, new_x, new_y)
+		lines = updated["lines"]
+		changed = updated["changed"]
+	else:
+		var layout_name := _battle_edit_layout_constant_name(line)
+		if layout_name.is_empty():
+			info.text = "[保存NG] %d行目のレイアウト形式を判別できない" % line_no
+			return
+		var layout_result := _battle_edit_update_layout_constant(lines, layout_name, new_scale, new_x, new_y)
+		if not layout_result["found"]:
+			info.text = "[保存NG] レイアウト定数 %s が見つからない" % layout_name
+			return
+		lines = layout_result["lines"]
+		changed = layout_result["changed"]
+		target_desc = "定数%s" % layout_name
+
+	if changed and not _write_source_file(abs_path, "\n".join(lines)):
 		info.text = "[保存NG] 書き込み不可"
 		return
-	info.text = "[保存] %s 行%d を更新" % [src_file.get_file(), line_no]
-	print("[BATTLE_EDIT] SAVED %s:%d scale=%.2f pos=[%d,%d]" % [src_file.get_file(), line_no, new_scale, new_x, new_y])
+	var note := "を更新" if changed else "は設定済み"
+	info.text = "[保存] %s %s%s" % [src_file.get_file(), target_desc, note]
+	print("[BATTLE_EDIT] SAVED %s:%s scale=%.2f pos=[%d,%d] changed=%s" % [src_file.get_file(), target_desc, new_scale, new_x, new_y, changed])
+
+# set_portrait(..., _COMMON_LAYOUT) の第2引数から定数名を取り出す。
+func _battle_edit_layout_constant_name(line: String) -> String:
+	var matcher := RegEx.new()
+	matcher.compile("set_portrait\\s*\\(\\s*[^,]+,\\s*([A-Za-z_][A-Za-z0-9_]*)\\s*\\)")
+	var found := matcher.search(line)
+	return found.get_string(1) if found else ""
+
+# 共通レイアウト定数の辞書を更新する。現在は1行辞書を正式形式としているが、
+# scale/position が別行でも同じ定数ブロック内なら更新できる。
+func _battle_edit_update_layout_constant(lines: PackedStringArray, layout_name: String, new_scale: float, new_x: int, new_y: int) -> Dictionary:
+	var start := -1
+	for i in range(lines.size()):
+		var candidate: String = lines[i].strip_edges()
+		if candidate.begins_with("const %s" % layout_name) and "{" in candidate:
+			start = i
+			break
+	if start < 0:
+		return {"found": false, "changed": false, "lines": lines}
+
+	var end := start
+	var brace_depth := 0
+	for i in range(start, lines.size()):
+		brace_depth += lines[i].count("{") - lines[i].count("}")
+		end = i
+		if brace_depth <= 0:
+			break
+
+	var changed := false
+	var has_scale := false
+	var has_position := false
+	for i in range(start, end + 1):
+		var original: String = lines[i]
+		var updated := original
+		if '"scale"' in updated:
+			updated = _battle_edit_scale_regex().sub(updated, '"scale": %.2f' % new_scale)
+			has_scale = true
+		if '"position"' in updated:
+			updated = _battle_edit_pos_regex().sub(updated, '"position": [%d, %d]' % [new_x, new_y])
+			has_position = true
+		if updated != original:
+			lines[i] = updated
+			changed = true
+	if not has_scale or not has_position:
+		return {"found": false, "changed": false, "lines": lines}
+	return {"found": true, "changed": changed, "lines": lines}
 
 # ランダムバトル: EncounterDatabase.gd の "<encounter_id>" → "<portrait_key>"
 # 立ち絵の scale/position を更新する（encounter_id と portrait_key でスコープ）。

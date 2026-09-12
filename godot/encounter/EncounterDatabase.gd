@@ -205,7 +205,7 @@ func _init():
 			"portraits": {
 				"encounter": {
 					"path": "res://assets/characters/random_battle/char002/clothed/char002_clothed_001.png",
-					"scale": 0.5, "side": "center", "position": [0, -50],
+					"scale": 0.50, "side": "center", "position": [0, 145],
 				},
 				"battle": {
 					"path": "res://assets/characters/random_battle/char002/clothed/char002_clothed_001.png",

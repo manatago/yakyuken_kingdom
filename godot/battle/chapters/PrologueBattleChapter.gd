@@ -64,7 +64,10 @@ func tutorial(bt):
 	matilda.band("右にあるのが手持ちカードだ。")
 	matilda.band("グー、チョキ、パーの3種類がある。", {"append": true})
 	matilda.band("カード自体にはグレードがある。", {"append": true})
+	matilda.band("右上の丸い印が、そのカードのグレードを表してる。", {"append": true})
+	matilda.band("Nはノーマル、Bはブロンズ、Sはシルバー、Gはゴールド、Pはプラチナだ。", {"append": true})
 	matilda.band("同じ手を出した時、グレードが高い方が勝つのさ。", {"append": true})
+	matilda.band("今回は練習だから、互いにNのカードだけを使う。", {"append": true})
 	bt.unhighlight()
 
 	# デッキ構築の説明

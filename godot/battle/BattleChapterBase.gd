@@ -46,9 +46,9 @@ func get_battle_background() -> String:
 
 func get_card_paths() -> Dictionary:
 	return {
-		"rock": "res://assets/battle/cards/rock.png",
-		"scissors": "res://assets/battle/cards/scissors.png",
-		"paper": "res://assets/battle/cards/paper.png",
+		"rock": "res://assets/battle/cards/rock_normal.png",
+		"scissors": "res://assets/battle/cards/scissors_normal.png",
+		"paper": "res://assets/battle/cards/paper_normal.png",
 	}
 
 func get_card_back() -> String:

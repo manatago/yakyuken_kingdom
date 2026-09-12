@@ -7,9 +7,16 @@ extends Node
 const GOLD_ICON_PATH := "res://assets/ui/icons/gold.png"
 const DEFAULT_ITEM_ICON_PATH := "res://assets/ui/icons/gold.png"  # アイテムアイコン仮
 const CARD_ICON_PATHS := {
-	"rock": "res://assets/battle/cards/rock.png",
-	"scissors": "res://assets/battle/cards/scissors.png",
-	"paper": "res://assets/battle/cards/paper.png",
+	"rock": "res://assets/battle/cards/rock_normal.png",
+	"scissors": "res://assets/battle/cards/scissors_normal.png",
+	"paper": "res://assets/battle/cards/paper_normal.png",
+}
+const CARD_GRADE_SUFFIXES := {
+	1: "normal",
+	2: "bronze",
+	3: "silver",
+	4: "gold",
+	5: "platinum",
 }
 const HAND_NAMES := {"rock": "グー", "scissors": "チョキ", "paper": "パー"}
 const GRADE_NAMES := {1: "ノーマル", 2: "ブロンズ", 3: "シルバー", 4: "ゴールド", 5: "プラチナ"}
@@ -47,7 +54,7 @@ static func create_gold_label(amount: int, font_size: int = 20, icon_size: int =
 
 # カード表示
 static func create_card_label(hand: String, grade: int, count: int = 1, font_size: int = 18, icon_size: int = 24) -> HBoxContainer:
-	var icon_path: String = CARD_ICON_PATHS.get(hand, CARD_ICON_PATHS["rock"])
+	var icon_path: String = get_card_icon_path(hand, grade)
 	var hand_name: String = HAND_NAMES.get(hand, hand)
 	var grade_name: String = GRADE_NAMES.get(grade, "G%d" % grade)
 	var grade_color: Color = GRADE_COLORS.get(grade, Color.WHITE)
@@ -55,6 +62,14 @@ static func create_card_label(hand: String, grade: int, count: int = 1, font_siz
 	if count > 1:
 		text += " × %d" % count
 	return _create_icon_row(icon_path, text, font_size, icon_size, Color.WHITE, grade_color)
+
+static func get_card_icon_path(hand: String, grade: int) -> String:
+	var hand_key: String = hand if CARD_ICON_PATHS.has(hand) else "rock"
+	var grade_suffix: String = CARD_GRADE_SUFFIXES.get(grade, "normal")
+	var grade_path := "res://assets/battle/cards/%s_%s.png" % [hand_key, grade_suffix]
+	if ResourceLoader.exists(grade_path):
+		return grade_path
+	return CARD_ICON_PATHS[hand_key]
 
 # アイテム表示（仮アイコン）
 static func create_item_label(item_name: String, count: int = 1, font_size: int = 18, icon_size: int = 24) -> HBoxContainer:

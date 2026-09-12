@@ -378,27 +378,18 @@ func battle(chapter_path: String, opts: Dictionary = {}):
 	entry.chapter_path = chapter_path
 	entry.lose_opponent = String(opts.get("lose_opponent", ""))
 	entry.lose_patterns = opts.get("lose_patterns", [])
-	var script = load(chapter_path)
-	if script:
-		entry.chapter = script.new()
 	return entry
 
 func tutorial(chapter_path: String):
 	var entry := Battle.new()
 	entry.chapter_path = chapter_path
 	entry.is_tutorial = true
-	var script = load(chapter_path)
-	if script:
-		entry.chapter = script.new()
 	return entry
 
 func minigame(chapter_path: String):
 	var entry := Battle.new()
 	entry.chapter_path = chapter_path
 	entry.is_minigame = true
-	var script = load(chapter_path)
-	if script:
-		entry.chapter = script.new()
 	return entry
 
 func label(name: String):

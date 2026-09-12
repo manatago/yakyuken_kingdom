@@ -282,8 +282,8 @@ func _test_main_chapter_path_loading() -> bool:
 	if source.is_empty():
 		return fail("Cannot read Main.gd")
 	return expect_true(
-		source.contains("cmd.chapter_path") and source.contains("load(cmd.chapter_path)"),
-		"_on_battle_requested must load chapter from chapter_path when cmd.chapter is null"
+		source.contains("cmd.chapter_path") and source.contains("_load_script_fresh(cmd.chapter_path)"),
+		"_on_battle_requested must load the latest chapter source from chapter_path"
 	)
 
 func _test_main_lose_guild_home_redirect() -> bool:

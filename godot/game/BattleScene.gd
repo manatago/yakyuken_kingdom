@@ -33,6 +33,13 @@ const GRADE_NAMES := {
 	Grade.GOLD: "ゴールド",
 	Grade.PLATINUM: "プラチナ",
 }
+const GRADE_BADGE_LABELS := {
+	Grade.NORMAL: "N",
+	Grade.BRONZE: "B",
+	Grade.SILVER: "S",
+	Grade.GOLD: "G",
+	Grade.PLATINUM: "P",
+}
 
 const GRADE_COLORS := {
 	Grade.NORMAL: Color.WHITE,
@@ -177,12 +184,7 @@ func start_battle(chapter: BattleChapterBase, is_tutorial := false, is_minigame 
 		_opponent_outfit = chapter.get_opponent_outfit_count()
 		_player_outfit = chapter.get_player_outfit_count()
 
-		# Load card textures
-		_card_textures = {
-			Hand.ROCK: load(_card_paths.get("rock", "res://assets/battle/cards/rock.png")),
-			Hand.SCISSORS: load(_card_paths.get("scissors", "res://assets/battle/cards/scissors.png")),
-			Hand.PAPER: load(_card_paths.get("paper", "res://assets/battle/cards/paper.png")),
-		}
+		_card_textures.clear()
 
 		# Parse opponent deck (built from hand randomly)
 		_opponent_deck.clear()
@@ -201,6 +203,7 @@ func start_battle(chapter: BattleChapterBase, is_tutorial := false, is_minigame 
 	story_layer.add_child(_story_scene)
 	_story_scene.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_story_scene.set_cast(_cast)
+
 	# 編集モード（force_result_mode）では setup_scene より前に立ち絵履歴を有効化。
 	# editor_capture を立て、set_portrait 等の呼び出し位置を記録させる。
 	StoryCommands.editor_capture = force_result_mode
@@ -243,6 +246,74 @@ func start_battle(chapter: BattleChapterBase, is_tutorial := false, is_minigame 
 		_build_deck_buttons()
 		_update_score()
 		_run_battle()
+
+func _get_card_texture(hand: Hand, grade: int) -> Texture2D:
+	var hand_key: String = HAND_KEYS.get(hand, "rock")
+	var grade_suffix: String = {
+		Grade.NORMAL: "normal",
+		Grade.BRONZE: "bronze",
+		Grade.SILVER: "silver",
+		Grade.GOLD: "gold",
+		Grade.PLATINUM: "platinum",
+	}.get(grade, "normal")
+	var cache_key := "%s_%s" % [hand_key, grade_suffix]
+	if _card_textures.has(cache_key):
+		return _card_textures[cache_key]
+
+	var grade_path := "res://assets/battle/cards/%s_%s.png" % [hand_key, grade_suffix]
+	var texture: Texture2D = null
+	if ResourceLoader.exists(grade_path):
+		texture = load(grade_path)
+	if texture == null:
+		var fallback_path: String = _card_paths.get(hand_key, "res://assets/battle/cards/%s_normal.png" % hand_key)
+		texture = load(fallback_path)
+	_card_textures[cache_key] = texture
+	return texture
+
+# デッキ・カードボックスでは、手の絵とグレード菱形を大きく見せる。
+# 元カードのタイトルと外枠は、勝負中の公開演出でのみ全体表示する。
+func _get_compact_card_texture(hand: Hand, grade: int) -> Texture2D:
+	var hand_key: String = HAND_KEYS.get(hand, "rock")
+	var cache_key := "compact_%s_%d" % [hand_key, grade]
+	if _card_textures.has(cache_key):
+		var cached_texture: Texture2D = _card_textures[cache_key]
+		return cached_texture
+
+	var compact_texture := AtlasTexture.new()
+	compact_texture.atlas = _get_card_texture(hand, grade)
+	# 全カード共通の848x1264素材から、手の絵と下部の菱形を2:3で切り出す。
+	compact_texture.region = Rect2(124, 250, 600, 900)
+	_card_textures[cache_key] = compact_texture
+	return compact_texture
+
+func _create_grade_badge(grade: int) -> PanelContainer:
+	var badge := PanelContainer.new()
+	badge.custom_minimum_size = Vector2(28, 28)
+	badge.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	badge.offset_left = -32.0
+	badge.offset_top = 4.0
+	badge.offset_right = -4.0
+	badge.offset_bottom = 32.0
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var style := StyleBoxFlat.new()
+	var grade_color: Color = GRADE_COLORS.get(grade, Color.WHITE)
+	style.bg_color = grade_color.darkened(0.12)
+	style.border_color = Color(0.08, 0.06, 0.12, 0.95)
+	style.set_border_width_all(2)
+	style.set_corner_radius_all(14)
+	badge.add_theme_stylebox_override("panel", style)
+
+	var numeral := Label.new()
+	numeral.text = GRADE_BADGE_LABELS.get(grade, "N")
+	numeral.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	numeral.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	numeral.add_theme_font_size_override("font_size", 16)
+	numeral.add_theme_color_override("font_color", Color(0.08, 0.06, 0.12))
+	numeral.add_theme_color_override("font_outline_color", Color(1, 1, 1, 0.55))
+	numeral.add_theme_constant_override("outline_size", 1)
+	badge.add_child(numeral)
+	return badge
 
 # ============================================================
 # Deck Building Phase
@@ -323,15 +394,17 @@ func _refresh_inventory_display():
 		slot.gui_input.connect(_on_inventory_slot_input.bind(hand_enum, grade))
 
 		var btn := TextureButton.new()
-		btn.custom_minimum_size = Vector2(42, 60)
+		# カード固有の手の絵と枠の意匠が読める大きさを確保する。
+		btn.custom_minimum_size = Vector2(72, 108)
 		btn.ignore_texture_size = true
 		btn.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-		btn.texture_normal = _card_textures.get(hand_enum)
+		btn.texture_normal = _get_compact_card_texture(hand_enum, grade)
 		btn.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		btn.modulate = GRADE_COLORS.get(grade, Color.WHITE)
+		btn.modulate = Color.WHITE
 		btn.disabled = available <= 0
 		if available <= 0:
 			btn.modulate = Color(0.3, 0.3, 0.3, 0.5)
+		btn.add_child(_create_grade_badge(grade))
 		slot.add_child(btn)
 
 		var label := Label.new()
@@ -396,10 +469,11 @@ func _refresh_deck_preview():
 		btn.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		btn.ignore_texture_size = true
 		btn.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-		btn.texture_normal = _card_textures.get(dc.hand)
-		btn.modulate = GRADE_COLORS.get(dc.grade, Color.WHITE)
+		btn.texture_normal = _get_compact_card_texture(dc.hand, dc.grade)
+		btn.modulate = Color.WHITE
 		btn.pressed.connect(_on_deck_preview_pressed.bind(i))
 		container.add_child(btn)
+		container.add_child(_create_grade_badge(dc.grade))
 
 		card_selection.add_child(container)
 
@@ -744,7 +818,7 @@ func janken(selection: Dictionary, ai_opts: Dictionary = {}) -> String:
 		var grade_reason := ""
 		if player_hand == opponent_hand and _judge_with_grade(player_hand, player_grade, opponent_hand, opponent_grade) == result:
 			grade_reason = Card.format_same_hand_grade_reason(HAND_KEYS[player_hand], player_grade, opponent_grade)
-		await _play_janken_overlay(player_hand, opponent_hand, result, grade_reason)
+		await _play_janken_overlay(player_hand, player_grade, opponent_hand, opponent_grade, result, grade_reason)
 
 	if result == "win":
 		_opponent_outfit -= 1
@@ -1207,14 +1281,16 @@ func _capture_additional_opponent_card() -> void:
 
 # --- Janken overlay animation ---
 
-func _play_janken_overlay(player_hand: Hand, opponent_hand: Hand, result: String, grade_reason: String = ""):
+func _play_janken_overlay(player_hand: Hand, player_grade: int, opponent_hand: Hand, opponent_grade: int, result: String, grade_reason: String = ""):
 	janken_overlay.visible = true
 	overlay_result_image.visible = false
 	overlay_result_reason.visible = false
 
 	var vp_size := get_viewport_rect().size
-	var card_w := 200.0
-	var card_h := 300.0
+	# 勝負中の表面はカードの手の絵まで読める大きさで表示する。
+	# 画面が小さい場合だけ高さに合わせて縮小する。
+	var card_h := minf(420.0, vp_size.y * 0.60)
+	var card_w := card_h * 2.0 / 3.0
 	var center_y := (vp_size.y - card_h) / 2.0 - 80.0
 	var player_end_x := vp_size.x / 2.0 - card_w - 30.0
 	var opponent_end_x := vp_size.x / 2.0 + 30.0
@@ -1251,12 +1327,10 @@ func _play_janken_overlay(player_hand: Hand, opponent_hand: Hand, result: String
 	await get_tree().create_timer(0.5).timeout
 
 	# 3. Player card flips first
-	var plr_tex_path: String = _card_paths.get(HAND_KEYS[player_hand], "")
 	var flip_plr_hide := create_tween()
 	flip_plr_hide.tween_property(overlay_player_card, "scale:x", 0.0, 0.3)
 	await flip_plr_hide.finished
-	if not plr_tex_path.is_empty():
-		overlay_player_card.texture = load(plr_tex_path)
+	overlay_player_card.texture = _get_card_texture(player_hand, player_grade)
 	var flip_plr_show := create_tween()
 	flip_plr_show.tween_property(overlay_player_card, "scale:x", 1.0, 0.3)
 	await flip_plr_show.finished
@@ -1264,12 +1338,10 @@ func _play_janken_overlay(player_hand: Hand, opponent_hand: Hand, result: String
 	await get_tree().create_timer(0.4).timeout
 
 	# 4. Opponent card flips last
-	var opp_tex_path: String = _card_paths.get(HAND_KEYS[opponent_hand], "")
 	var flip_opp_hide := create_tween()
 	flip_opp_hide.tween_property(overlay_opponent_card, "scale:x", 0.0, 0.3)
 	await flip_opp_hide.finished
-	if not opp_tex_path.is_empty():
-		overlay_opponent_card.texture = load(opp_tex_path)
+	overlay_opponent_card.texture = _get_card_texture(opponent_hand, opponent_grade)
 	var flip_opp_show := create_tween()
 	flip_opp_show.tween_property(overlay_opponent_card, "scale:x", 1.0, 0.3)
 	await flip_opp_show.finished
@@ -1808,27 +1880,14 @@ func _build_deck_buttons():
 		btn.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		btn.ignore_texture_size = true
 		btn.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-		btn.texture_normal = _card_textures.get(hand)
+		btn.texture_normal = _get_compact_card_texture(hand, grade)
 		btn.disabled = true
 		btn.pressed.connect(_on_card_button_pressed.bind(container, btn, hand, grade))
 		if grade > Grade.NORMAL:
 			btn.material = _create_grade_glow_material(grade)
 		container.add_child(btn)
 
-		# Grade label at bottom
-		if grade > Grade.NORMAL:
-			var grade_label := Label.new()
-			grade_label.text = GRADE_NAMES.get(grade, "")
-			var gls := LabelSettings.new()
-			gls.font_size = 10
-			gls.font_color = GRADE_COLORS.get(grade, Color.WHITE)
-			gls.outline_color = Color(0, 0, 0, 0.8)
-			gls.outline_size = 3
-			grade_label.label_settings = gls
-			grade_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
-			grade_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			grade_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			container.add_child(grade_label)
+		container.add_child(_create_grade_badge(grade))
 
 		var check := Label.new()
 		check.name = "CheckMark"

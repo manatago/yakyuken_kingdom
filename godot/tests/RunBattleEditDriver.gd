@@ -44,7 +44,7 @@ func _initialize():
 	printerr("[DRIVER] battle._story_scene now=%s" % battle._story_scene)
 
 	# Make center_char visible
-	var dummy_tex = load("res://assets/battle/cards/rock.png")
+	var dummy_tex = load("res://assets/battle/cards/rock_normal.png")
 	battle._story_scene.center_char.texture = dummy_tex
 	battle._story_scene.center_char.visible = true
 	printerr("[DRIVER] center visible=%s has_tex=%s" % [battle._story_scene.center_char.visible, battle._story_scene.center_char.texture != null])
