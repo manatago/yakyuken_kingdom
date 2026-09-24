@@ -17,18 +17,12 @@ func setup_from_encounter(data: Dictionary):
 	_tendency = data.get("tendency", {})
 	_bayes_eye = data.get("bayes_eye", true)
 	_battle_bg = data.get("battle_bg", "")
+	# grade は TownMap の grade_min/grade_max で適用済み
 	_opponent_hand = data.get("hand", [
 		Card.new("rock", 1),
 		Card.new("scissors", 1),
 		Card.new("paper", 1),
 	])
-	if data.get("randomize_opponent_grades", false):
-		var randomized_hand: Array = []
-		for card_data in _opponent_hand:
-			var randomized_card: Dictionary = card_data.duplicate()
-			randomized_card["grade"] = randi_range(1, 5)
-			randomized_hand.append(randomized_card)
-		_opponent_hand = randomized_hand
 
 # --- 必須オーバーライド ---
 

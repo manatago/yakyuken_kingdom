@@ -12,33 +12,35 @@ func get_home_connections() -> Array:
 func get_all_encounter_chars() -> Dictionary:
 	return _db.get_all_chars()
 
-# エリアごとの出現キャラ（weight = 出現重み）
+# エリアごとの出現キャラ（weight=出現重み、grade_min/grade_max=カードグレード範囲）
 var _area_encounters := {
 	"guild_street": [
-		{"char": "thug_a", "weight": 5},
-		{"char": "thug_b", "weight": 3},
+		{"char": "thug_a",    "weight": 1, "grade_min": 1, "grade_max": 1},
+		{"char": "merchant2", "weight": 1, "grade_min": 1, "grade_max": 1},
+		{"char": "thug_b",    "weight": 1, "grade_min": 1, "grade_max": 1},
 	],
 	"market": [
-		{"char": "merchant", "weight": 5},
-		{"char": "thug_a", "weight": 2},
+		{"char": "merchant",  "weight": 1, "grade_min": 1, "grade_max": 1},
+		{"char": "merchant2", "weight": 1, "grade_min": 1, "grade_max": 1},
+		{"char": "thug_a",    "weight": 1, "grade_min": 1, "grade_max": 1},
 	],
 	"tavern": [
-		{"char": "drunk", "weight": 5},
-		{"char": "thug_a", "weight": 3},
-		{"char": "thug_b", "weight": 2},
+		{"char": "drunk",  "weight": 5, "grade_min": 1, "grade_max": 1},
+		{"char": "thug_a", "weight": 3, "grade_min": 1, "grade_max": 1},
+		{"char": "thug_b", "weight": 2, "grade_min": 1, "grade_max": 1},
 	],
 	"slum": [
-		{"char": "thug_b", "weight": 5},
-		{"char": "thug_a", "weight": 4},
-		{"char": "bandit", "weight": 3},
+		{"char": "thug_b", "weight": 5, "grade_min": 1, "grade_max": 2},
+		{"char": "thug_a", "weight": 4, "grade_min": 1, "grade_max": 1},
+		{"char": "bandit", "weight": 3, "grade_min": 1, "grade_max": 2},
 	],
 	"outside": [
-		{"char": "bandit", "weight": 5},
-		{"char": "thug_b", "weight": 3},
+		{"char": "bandit", "weight": 5, "grade_min": 1, "grade_max": 2},
+		{"char": "thug_b", "weight": 3, "grade_min": 1, "grade_max": 2},
 	],
 	"port": [
-		{"char": "sailor", "weight": 5},
-		{"char": "merchant", "weight": 3},
+		{"char": "sailor",   "weight": 5, "grade_min": 1, "grade_max": 2},
+		{"char": "merchant", "weight": 3, "grade_min": 1, "grade_max": 1},
 	],
 }
 
@@ -49,9 +51,7 @@ func get_encounters(area_id: String) -> Array:
 		var char_data: Dictionary = _db.get_char(entry.char)
 		if char_data.is_empty():
 			continue
-		var combined := char_data.duplicate()
-		combined["weight"] = entry.weight
-		result.append(combined)
+		result.append(_build_encounter(char_data, entry))
 	return result
 
 func get_areas() -> Dictionary:

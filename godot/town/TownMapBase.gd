@@ -33,8 +33,24 @@ func get_all_encounter_chars() -> Dictionary:
 	return {}
 
 func get_encounters(_area_id: String) -> Array:
-	# エリアごとの出現キャラリスト
-	# [{ "id": キャラID, "name": 表示名, "weight": 出現重み,
-	#    "portrait": ポートレート画像パス, "greeting": 遭遇時セリフ,
-	#    "battle_chapter": バトルチャプターパス }, ...]
+	# エリアごとの出現キャラリスト。サブクラスで _area_encounters を定義し
+	# _build_encounter() を使って組み立てる。
 	return []
+
+# エンカウントエントリを組み立てる共通ヘルパー。
+# グーチョキパーとグレードをどちらもランダムに生成する。
+# grade_min / grade_max でグレードの上限・下限を指定する。
+func _build_encounter(char_data: Dictionary, entry: Dictionary) -> Dictionary:
+	var combined := char_data.duplicate(true)
+	combined["weight"] = entry.get("weight", 1)
+	var g_min: int = entry.get("grade_min", 1)
+	var g_max: int = entry.get("grade_max", g_min)
+	const HAND_TYPES := ["rock", "scissors", "paper"]
+	var random_hand: Array = []
+	for _i in range(EncounterDatabase.RANDOM_BATTLE_DECK_SIZE):
+		random_hand.append({
+			"hand": HAND_TYPES[randi() % HAND_TYPES.size()],
+			"grade": randi_range(g_min, g_max),
+		})
+	combined["hand"] = random_hand
+	return combined
