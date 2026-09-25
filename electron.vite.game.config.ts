@@ -12,7 +12,7 @@ export default defineConfig({
   preload: {
     build: {
       outDir: resolve('dist/game/preload'),
-      rollupOptions: { input: { index: resolve('electron/preload/index.ts') } }
+      rollupOptions: { input: { index: resolve('electron/preload/game.ts') } }
     }
   },
   renderer: {

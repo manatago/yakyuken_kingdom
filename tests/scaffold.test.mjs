@@ -32,6 +32,7 @@ test('game and editor build outputs are distinct', () => {
   assert.ok(existsSync(join(editor, 'main/index.js')))
   assert.ok(existsSync(join(editor, 'renderer/index.html')))
   assert.match(readTree(game), /Janken Kingdom/)
-  assert.doesNotMatch(readTree(game), /Janken Editor|Editor workspace/)
+  assert.doesNotMatch(readTree(game), /Janken Editor|Editor workspace|content:read|content:write|editor-content\.json/)
   assert.match(readTree(editor), /Janken Editor/)
+  assert.doesNotMatch(readTree(editor), /save:read|save:write|janken-save\.json/)
 })
