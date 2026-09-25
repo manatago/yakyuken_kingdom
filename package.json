@@ -13,7 +13,7 @@
     "build:editor": "electron-vite build --config electron.vite.editor.config.ts",
     "build": "npm run build:game && npm run build:editor",
     "typecheck": "tsc --noEmit",
-    "test": "npm run build && node --test tests/scaffold.test.mjs",
+    "test": "npm run build && node --test",
     "smoke:game": "npm run build:game && electron dist/game/main/index.js --smoke-test",
     "smoke:editor": "npm run build:editor && electron dist/editor/main/index.js --smoke-test"
   },
