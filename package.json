@@ -1,0 +1,34 @@
+{
+  "name": "janken-kingdom-electron",
+  "private": true,
+  "version": "0.1.0",
+  "main": "dist/game/main/index.js",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev:game": "electron-vite dev --config electron.vite.game.config.ts --entry dist/game/main/index.js",
+    "dev:editor": "electron-vite dev --config electron.vite.editor.config.ts --entry dist/editor/main/index.js",
+    "build:game": "electron-vite build --config electron.vite.game.config.ts",
+    "build:editor": "electron-vite build --config electron.vite.editor.config.ts",
+    "build": "npm run build:game && npm run build:editor",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run build && node --test tests/scaffold.test.mjs",
+    "smoke:game": "npm run build:game && electron dist/game/main/index.js --smoke-test",
+    "smoke:editor": "npm run build:editor && electron dist/editor/main/index.js --smoke-test"
+  },
+  "dependencies": {
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^5.2.0",
+    "electron": "^44.4.5",
+    "electron-vite": "^5.0.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.6"
+  }
+}
