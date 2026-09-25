@@ -6,7 +6,7 @@ These scenarios define observable Godot behavior that the Electron version must 
 
 ## Capture Method
 
-Run the following from a clean checkout of the `develop` commit used for the reference images. The script renders through Godot's viewport and writes 1920×1080 PNGs without relying on manual window placement. It requires the GUI renderer; Godot's `--headless` mode does not expose a capturable viewport texture. It also checks a save/load round trip using a uniquely named temporary file under `user://` and removes that file afterward.
+Run the following from a clean checkout of commit `3e29913`, which contains the generator. Its Godot game files match the `develop` commit `ae9abbd` used for the reference images; the generator and its UID are the only Godot files added afterward. The script renders through Godot's viewport and writes 1920×1080 PNGs without relying on manual window placement. It requires the GUI renderer; Godot's `--headless` mode does not expose a capturable viewport texture. It also checks a save/load round trip using a uniquely named temporary file under `user://` and removes that file afterward.
 
 ```sh
 "/path/to/Godot" --rendering-driver opengl3 --path godot --script res://tests/GenerateElectronBaselineImages.gd
