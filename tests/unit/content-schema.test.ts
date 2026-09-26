@@ -25,9 +25,9 @@ function example(): ContentPack {
         ...Array(3).fill('paper_normal')
       ],
       gold_reward: { min: 10, max: 30 }, transfer_cards: false,
-      rules: [
-        { kind: 'fixed_opponent_hand', hand: 'rock' },
-        { kind: 'player_win_rate', value: 0.8 }
+      phases: [
+        { id: 'phase.matilda.first', rules: [{ kind: 'fixed_opponent_hand', hand: 'rock' }] },
+        { id: 'phase.matilda.second', rules: [{ kind: 'player_win_rate', value: 0.8 }] }
       ]
     }],
     stories: [{
@@ -75,6 +75,33 @@ test('content validator reports duplicate IDs and broken references', () => {
   assert.ok(result.issues.some((issue) => issue.code === 'missing_reference' && issue.path.includes('options')))
 })
 
+test('battle rules are scoped to ordered phases with unique IDs', () => {
+  const document: any = example()
+  assert.deepEqual(document.battles[0].phases.map((phase: any) => phase.rules), [
+    [{ kind: 'fixed_opponent_hand', hand: 'rock' }],
+    [{ kind: 'player_win_rate', value: 0.8 }]
+  ])
+  document.battles[0].phases[1].rules.push({ kind: 'fixed_opponent_hand', hand: 'paper' })
+  assert.equal(validateContent(document, assetExists).valid, true)
+
+  document.battles[0].phases[1].rules.push({ kind: 'fixed_opponent_hand', hand: 'scissors' })
+  document.battles[0].phases[1].id = 'phase.matilda.first'
+  const result = validateContent(document, assetExists)
+  assert.equal(result.valid, false)
+  assert.ok(result.issues.some((issue) => issue.code === 'duplicate_id' && issue.path.endsWith('phases[1].id')))
+  assert.ok(result.issues.some((issue) => issue.code === 'invalid_value' && issue.path.endsWith('phases[1].rules[2]')))
+})
+
+test('battle requires phases and rejects unscoped rules', () => {
+  const document: any = example()
+  document.battles[0].rules = document.battles[0].phases[0].rules
+  document.battles[0].phases = []
+  const result = validateContent(document, assetExists)
+  assert.equal(result.valid, false)
+  assert.ok(result.issues.some((issue) => issue.path === '$.battles[0]' && issue.code === 'invalid_value'))
+  assert.ok(result.issues.some((issue) => issue.path === '$.battles[0].phases' && issue.code === 'invalid_value'))
+})
+
 test('content validator rejects missing or unsafe assets and invalid layouts', () => {
   const document: any = example()
   document.assets[1].path = 'godot/assets/characters/missing.png'
@@ -92,7 +119,7 @@ test('content validator rejects invalid decks, rewards and special rules', () =>
   document.battles[0].opponent_card_ids[0] = 'unknown_card'
   document.battles[0].opponent_card_ids.pop()
   document.battles[0].gold_reward.min = 50
-  document.battles[0].rules[1].value = 1.5
+  document.battles[0].phases[1].rules[0].value = 1.5
   const result = validateContent(document, assetExists)
   assert.equal(result.valid, false)
   assert.ok(result.issues.some((issue) => issue.code === 'invalid_deck'))

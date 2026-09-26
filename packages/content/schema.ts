@@ -17,6 +17,11 @@ export type BattleRule =
   | { kind: 'fixed_opponent_hand'; hand: Hand }
   | { kind: 'player_win_rate'; value: number }
 
+export interface BattlePhase {
+  id: string
+  rules: BattleRule[]
+}
+
 export interface BattleContent {
   id: string
   opponent_id: string
@@ -26,7 +31,7 @@ export interface BattleContent {
   opponent_card_ids: string[]
   gold_reward: { min: number; max: number }
   transfer_cards: boolean
-  rules: BattleRule[]
+  phases: BattlePhase[]
 }
 
 export type StoryStep =

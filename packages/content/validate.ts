@@ -143,7 +143,7 @@ export function validateContent(value: unknown, assetExists: (path: string) => b
     const path = `$.battles[${index}]`
     const battle = object(entry, path, [
       'id', 'opponent_id', 'background_asset_id', 'player_deck_size', 'opponent_deck_size',
-      'opponent_card_ids', 'gold_reward', 'transfer_cards', 'rules'
+      'opponent_card_ids', 'gold_reward', 'transfer_cards', 'phases'
     ])
     if (battle === null) return
     register(battle.id, `${path}.id`, 'battle')
@@ -172,27 +172,35 @@ export function validateContent(value: unknown, assetExists: (path: string) => b
     if (typeof battle.transfer_cards !== 'boolean') {
       issue(`${path}.transfer_cards`, 'invalid_value', 'Expected a boolean')
     }
-    const seenRules = new Set<string>()
-    array(battle.rules, `${path}.rules`).forEach((entry, ruleIndex) => {
-      const rulePath = `${path}.rules[${ruleIndex}]`
-      const rule = object(entry, rulePath, ['kind'], ['hand', 'value'])
-      if (rule === null) return
-      if (rule.kind !== 'fixed_opponent_hand' && rule.kind !== 'player_win_rate') {
-        issue(`${rulePath}.kind`, 'invalid_value', 'Unknown battle rule')
-        return
-      }
-      if (seenRules.has(rule.kind)) issue(rulePath, 'invalid_value', 'Duplicate battle rule')
-      seenRules.add(rule.kind)
-      if (rule.kind === 'fixed_opponent_hand') {
-        if (Object.hasOwn(rule, 'value') || !HANDS.includes(rule.hand as (typeof HANDS)[number])) {
-          issue(rulePath, 'invalid_value', 'Invalid fixed opponent hand')
+    const phases = array(battle.phases, `${path}.phases`)
+    if (phases.length === 0) issue(`${path}.phases`, 'invalid_value', 'Battle must contain a phase')
+    phases.forEach((entry, phaseIndex) => {
+      const phasePath = `${path}.phases[${phaseIndex}]`
+      const phase = object(entry, phasePath, ['id', 'rules'])
+      if (phase === null) return
+      register(phase.id, `${phasePath}.id`)
+      const seenRules = new Set<string>()
+      array(phase.rules, `${phasePath}.rules`).forEach((entry, ruleIndex) => {
+        const rulePath = `${phasePath}.rules[${ruleIndex}]`
+        const rule = object(entry, rulePath, ['kind'], ['hand', 'value'])
+        if (rule === null) return
+        if (rule.kind !== 'fixed_opponent_hand' && rule.kind !== 'player_win_rate') {
+          issue(`${rulePath}.kind`, 'invalid_value', 'Unknown battle rule')
+          return
         }
-      } else {
-        if (Object.hasOwn(rule, 'hand') || typeof rule.value !== 'number' ||
-            !Number.isFinite(rule.value) || rule.value < 0 || rule.value > 1) {
-          issue(rulePath, 'invalid_value', 'Player win rate must be between 0 and 1')
+        if (seenRules.has(rule.kind)) issue(rulePath, 'invalid_value', 'Duplicate battle rule')
+        seenRules.add(rule.kind)
+        if (rule.kind === 'fixed_opponent_hand') {
+          if (Object.hasOwn(rule, 'value') || !HANDS.includes(rule.hand as (typeof HANDS)[number])) {
+            issue(rulePath, 'invalid_value', 'Invalid fixed opponent hand')
+          }
+        } else {
+          if (Object.hasOwn(rule, 'hand') || typeof rule.value !== 'number' ||
+              !Number.isFinite(rule.value) || rule.value < 0 || rule.value > 1) {
+            issue(rulePath, 'invalid_value', 'Player win rate must be between 0 and 1')
+          }
         }
-      }
+      })
     })
   })
 
