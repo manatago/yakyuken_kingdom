@@ -80,6 +80,23 @@ test('draw leaves inventory and money unchanged', () => {
   assert.deepEqual(applyBattlePayout(state, 'draw', payout), state)
 })
 
+test('battle payout rejects invalid gold before changing state', () => {
+  const state = { inventory: [normal('rock')], money: 5 }
+  for (const gold of [-1, 1.5, Number.NaN, Number.POSITIVE_INFINITY]) {
+    for (const result of ['win', 'lose', 'draw'] as const) {
+      assert.throws(
+        () => applyBattlePayout(state, result, { cards: [normal('rock')], gold, canTransferCards: true }),
+        RangeError
+      )
+    }
+  }
+  assert.deepEqual(state, { inventory: [normal('rock')], money: 5 })
+  assert.deepEqual(
+    applyBattlePayout(state, 'win', { cards: [], gold: 0, canTransferCards: false }),
+    state
+  )
+})
+
 test('catalog maps all fifteen card IDs to existing images', () => {
   const root = fileURLToPath(new URL('../..', import.meta.url))
   assert.equal(CARD_CATALOG.length, 15)

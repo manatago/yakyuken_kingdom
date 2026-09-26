@@ -16,6 +16,9 @@ export function applyBattlePayout(
   result: BattleResult,
   payout: BattlePayout
 ): PlayerCardState {
+  if (!Number.isSafeInteger(payout.gold) || payout.gold < 0) {
+    throw new RangeError('Battle payout gold must be a non-negative safe integer')
+  }
   const inventory = state.inventory.map((card) => ({ ...card }))
   if (result === 'draw') return { inventory, money: state.money }
 
