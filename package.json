@@ -14,9 +14,9 @@
     "build": "npm run build:game && npm run build:editor",
     "typecheck": "tsc --noEmit",
     "test": "npm run test:unit && npm run test:integration",
-    "test:unit": "node --import tsx --test tests/unit/pure-typescript.test.ts",
-    "test:integration": "npm run build && node --test tests/scaffold.test.mjs tests/ipc-boundary.test.mjs",
-    "test:ui": "npm run build && node --test tests/ui/electron.test.mjs",
+    "test:unit": "node tests/run-tests.mjs unit",
+    "test:integration": "npm run build && node tests/run-tests.mjs integration",
+    "test:ui": "npm run build && node tests/run-tests.mjs ui",
     "smoke:game": "npm run build:game && electron dist/game/main/index.js --smoke-test",
     "smoke:editor": "npm run build:editor && electron dist/editor/main/index.js --smoke-test"
   },
