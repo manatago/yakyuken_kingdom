@@ -8,7 +8,7 @@ on:
       - 'package.json'
       - 'package-lock.json'
       - 'tsconfig.json'
-      - 'tests/scaffold.test.mjs'
+      - 'tests/**'
       - '.github/workflows/electron-scaffold.yml'
 
 jobs:
@@ -26,5 +26,6 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
+      - run: npm run test:ui
       - run: npm run smoke:game
       - run: npm run smoke:editor
