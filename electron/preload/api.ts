@@ -1,3 +1,5 @@
+import type { SaveData } from '../../packages/domain/save'
+
 export interface WindowControls {
   minimize(): Promise<void>
   toggleMaximize(): Promise<void>
@@ -9,9 +11,14 @@ export interface DocumentApi {
   write(document: unknown): Promise<void>
 }
 
+export interface SaveApi {
+  read(): Promise<SaveData | null>
+  write(document: SaveData): Promise<void>
+}
+
 export interface GameApi {
   windowControls: WindowControls
-  save: DocumentApi
+  save: SaveApi
 }
 
 export interface EditorApi {
