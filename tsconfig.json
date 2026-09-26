@@ -12,5 +12,5 @@
     "esModuleInterop": true,
     "resolveJsonModule": true
   },
-  "include": ["electron/**/*.ts", "electron/**/*.tsx", "electron.vite.*.config.ts"]
+  "include": ["electron/**/*.ts", "electron/**/*.tsx", "electron.vite.*.config.ts", "packages/**/*.ts"]
 }
