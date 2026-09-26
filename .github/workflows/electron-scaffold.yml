@@ -9,6 +9,8 @@ on:
       - 'package-lock.json'
       - 'tsconfig.json'
       - 'tests/**'
+      - 'packages/**'
+      - 'content/catalog/**'
       - '.github/workflows/electron-scaffold.yml'
 
 jobs:
