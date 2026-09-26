@@ -13,7 +13,10 @@
     "build:editor": "electron-vite build --config electron.vite.editor.config.ts",
     "build": "npm run build:game && npm run build:editor",
     "typecheck": "tsc --noEmit",
-    "test": "npm run build && node --test",
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "node --import tsx --test tests/unit/pure-typescript.test.ts",
+    "test:integration": "npm run build && node --test tests/scaffold.test.mjs tests/ipc-boundary.test.mjs",
+    "test:ui": "npm run build && node --test tests/ui/electron.test.mjs",
     "smoke:game": "npm run build:game && electron dist/game/main/index.js --smoke-test",
     "smoke:editor": "npm run build:editor && electron dist/editor/main/index.js --smoke-test"
   },
@@ -28,6 +31,8 @@
     "@vitejs/plugin-react": "^5.2.0",
     "electron": "^44.4.5",
     "electron-vite": "^5.0.0",
+    "playwright-core": "^1.63.0",
+    "tsx": "^4.23.15",
     "typescript": "^5.9.3",
     "vite": "^7.3.6"
   }
