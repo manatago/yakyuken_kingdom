@@ -24,6 +24,7 @@ main {
 h1 { font-size: clamp(2.5rem, 7vw, 5rem); font-weight: 500; margin: .4em 0; }
 
 .title-actions { display: grid; gap: 1rem; width: min(100%, 18rem); margin: 3rem auto 0; }
+.confirmation-actions { display: grid; gap: 1rem; }
 
 button {
   padding: .9rem 1.5rem;

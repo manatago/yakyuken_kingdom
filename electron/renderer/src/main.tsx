@@ -12,6 +12,8 @@ function GameScreen() {
   const [active, setActive] = useState<SaveData | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [readFailed, setReadFailed] = useState(false)
+  const [confirming, setConfirming] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -19,7 +21,10 @@ function GameScreen() {
     void game.save.read().then((save) => {
       if (mounted) setSaved(save)
     }).catch(() => {
-      if (mounted) setError('保存データを読み込めませんでした')
+      if (mounted) {
+        setReadFailed(true)
+        setError('保存データを読み込めませんでした。既存データを保護するため、新規開始を無効にしています。')
+      }
     }).finally(() => {
       if (mounted) setLoading(false)
     })
@@ -27,12 +32,14 @@ function GameScreen() {
   }, [])
 
   async function startNewGame() {
+    if (loading || saving || readFailed || (saved && !confirming)) return
     setSaving(true)
     setError('')
     const initial = createInitialGameSave()
     try {
       await game.save.write(initial)
       setSaved(initial)
+      setConfirming(false)
       setActive(initial)
     } catch {
       setError('保存に失敗しました')
@@ -59,8 +66,17 @@ function GameScreen() {
       <p className="eyebrow">A game of cards and fate</p>
       <h1>Janken Kingdom</h1>
       <div className="title-actions">
-        <button onClick={() => { void startNewGame() }} disabled={loading || saving}>はじめから</button>
-        <button onClick={() => { if (saved) setActive(saved) }} disabled={loading || saving || !saved}>つづきから</button>
+        {confirming ? <div role="alertdialog" aria-labelledby="overwrite-title" aria-describedby="overwrite-description">
+          <h2 id="overwrite-title">保存データを上書きしますか？</h2>
+          <p id="overwrite-description">現在の進行状況は失われます。この操作は取り消せません。</p>
+          <div className="confirmation-actions">
+            <button autoFocus onClick={() => setConfirming(false)} disabled={saving}>キャンセル</button>
+            <button onClick={() => { void startNewGame() }} disabled={saving}>保存を上書きして開始</button>
+          </div>
+        </div> : <>
+          <button onClick={() => { if (saved) setConfirming(true); else void startNewGame() }} disabled={loading || saving || readFailed}>はじめから</button>
+          <button onClick={() => { if (saved) setActive(saved) }} disabled={loading || saving || !saved}>つづきから</button>
+        </>}
       </div>
       {error && <p role="alert" className="error-message">{error}</p>}
     </div>

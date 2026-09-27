@@ -65,7 +65,6 @@ test('new game saves Matilda start and Continue restores it after restart', asyn
 
 test('failed save stays on title and shows an error', async () => {
   const userData = await mkdtemp(join(tmpdir(), 'janken-ui-save-error-'))
-  await mkdir(join(userData, 'janken-save.json'))
   const app = await electron.launch({
     executablePath,
     args: [join(root, 'dist/game/main/index.js'), `--user-data-dir=${userData}`]
@@ -73,11 +72,83 @@ test('failed save stays on title and shows an error', async () => {
   try {
     const page = await app.firstWindow()
     await page.getByRole('heading', { name: 'Janken Kingdom' }).waitFor()
+    await page.waitForFunction(() => !document.querySelector('.title-actions button')?.disabled)
+    // Reading succeeds first; the obstruction then isolates the write-failure path.
+    await mkdir(join(userData, 'janken-save.json'))
     await page.getByRole('button', { name: 'はじめから' }).click()
     await page.getByRole('alert').getByText('保存に失敗しました').waitFor()
     assert.equal(await page.getByRole('heading', { name: 'Janken Kingdom' }).isVisible(), true)
   } finally {
     await app.close()
+    await rm(userData, { recursive: true, force: true })
+  }
+})
+
+test('existing save requires explicit overwrite confirmation and cancel preserves it', async () => {
+  const userData = await mkdtemp(join(tmpdir(), 'janken-ui-confirm-'))
+  const target = join(userData, 'janken-save.json')
+  const original = JSON.stringify({
+    save_version: 1,
+    player: { inventory: [], deck: [], money: 73 },
+    progress: { checkpoint_id: 'chapter-two.start', flags: ['finished'] }
+  })
+  await writeFile(target, original)
+  let app
+  try {
+    app = await electron.launch({
+      executablePath,
+      args: [join(root, 'dist/game/main/index.js'), `--user-data-dir=${userData}`]
+    })
+    const page = await app.firstWindow()
+    await page.waitForFunction(() => !document.querySelector('.title-actions button')?.disabled)
+    if (process.env.JANKEN_UI_SCREENSHOT_DIR) {
+      await page.screenshot({ path: join(process.env.JANKEN_UI_SCREENSHOT_DIR, 'title.png') })
+    }
+    await page.getByRole('button', { name: 'はじめから' }).click()
+    await page.getByRole('alertdialog').waitFor()
+    assert.equal(await readFile(target, 'utf8'), original)
+    if (process.env.JANKEN_UI_SCREENSHOT_DIR) {
+      await page.screenshot({ path: join(process.env.JANKEN_UI_SCREENSHOT_DIR, 'overwrite-confirmation.png') })
+    }
+    await page.getByRole('button', { name: 'キャンセル' }).click()
+    assert.equal(await readFile(target, 'utf8'), original)
+    await page.getByRole('button', { name: 'つづきから' }).click()
+    await page.getByRole('heading', { name: '保存地点' }).waitFor()
+    await page.getByRole('button', { name: 'タイトルに戻る' }).click()
+    await page.getByRole('button', { name: 'はじめから' }).click()
+    await page.getByRole('button', { name: '保存を上書きして開始' }).click()
+    await page.getByRole('heading', { name: 'マチルダのチュートリアル' }).waitFor()
+    const replaced = JSON.parse(await readFile(target, 'utf8'))
+    assert.equal(replaced.progress.checkpoint_id, 'matilda.start')
+    assert.equal(replaced.player.money, 0)
+    assert.deepEqual(replaced.progress.flags, [])
+  } finally {
+    if (app) await app.close()
+    await rm(userData, { recursive: true, force: true })
+  }
+})
+
+test('unreadable save disables new game and preserves the file', async () => {
+  const userData = await mkdtemp(join(tmpdir(), 'janken-ui-read-error-'))
+  const target = join(userData, 'janken-save.json')
+  const original = '{invalid JSON'
+  await writeFile(target, original)
+  let app
+  try {
+    app = await electron.launch({
+      executablePath,
+      args: [join(root, 'dist/game/main/index.js'), `--user-data-dir=${userData}`]
+    })
+    const page = await app.firstWindow()
+    await page.getByRole('alert').waitFor()
+    assert.equal(await page.getByRole('button', { name: 'はじめから' }).isDisabled(), true)
+    assert.equal(await page.getByRole('button', { name: 'つづきから' }).isDisabled(), true)
+    // Native disabled controls must also reject direct DOM clicks.
+    await page.getByRole('button', { name: 'はじめから' }).evaluate((button) => button.click())
+    assert.equal(await readFile(target, 'utf8'), original)
+    assert.equal(await page.getByRole('heading', { name: 'Janken Kingdom' }).isVisible(), true)
+  } finally {
+    if (app) await app.close()
     await rm(userData, { recursive: true, force: true })
   }
 })
