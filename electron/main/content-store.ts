@@ -8,6 +8,7 @@ import { parseDocument, serializeDocument } from './json-document'
 export function createContentStore(directory: string, assetExists: (path: string) => boolean) {
   const target = join(directory, 'editor-content.json')
   const backup = `${target}.bak`
+  let pending: Promise<void> = Promise.resolve()
 
   const check = (document: unknown): ContentPack => {
     const result = validateContent(document, assetExists)
@@ -27,25 +28,29 @@ export function createContentStore(directory: string, assetExists: (path: string
     async write(value: unknown): Promise<void> {
       const serialized = serializeDocument(value)
       check(parseDocument(serialized))
-      await mkdir(directory, { recursive: true })
-      const temporary = join(directory, `.editor-content.${randomUUID()}.tmp`)
-      const backupTemporary = join(directory, `.editor-content.${randomUUID()}.bak.tmp`)
-      try {
-        await writeFile(temporary, serialized, { encoding: 'utf8', flag: 'wx', mode: 0o600 })
+      const operation = pending.then(async () => {
+        await mkdir(directory, { recursive: true })
+        const temporary = join(directory, `.editor-content.${randomUUID()}.tmp`)
+        const backupTemporary = join(directory, `.editor-content.${randomUUID()}.bak.tmp`)
         try {
-          await copyFile(target, backupTemporary)
-          await rename(backupTemporary, backup)
-        } catch (error) {
-          if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error
+          await writeFile(temporary, serialized, { encoding: 'utf8', flag: 'wx', mode: 0o600 })
+          try {
+            await copyFile(target, backupTemporary)
+            await rename(backupTemporary, backup)
+          } catch (error) {
+            if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error
+          }
+          await rename(temporary, target)
+        } finally {
+          for (const path of [temporary, backupTemporary]) {
+            await unlink(path).catch((error: NodeJS.ErrnoException) => {
+              if (error.code !== 'ENOENT') throw error
+            })
+          }
         }
-        await rename(temporary, target)
-      } finally {
-        for (const path of [temporary, backupTemporary]) {
-          await unlink(path).catch((error: NodeJS.ErrnoException) => {
-            if (error.code !== 'ENOENT') throw error
-          })
-        }
-      }
+      })
+      pending = operation.catch(() => {})
+      return operation
     }
   }
 }

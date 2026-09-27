@@ -100,3 +100,22 @@ test('content store validates writes and preserves a backup of the previous docu
     await rm(directory, { recursive: true, force: true })
   }
 })
+
+test('overlapping content writes keep call order and back up the preceding version', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'janken-content-concurrent-'))
+  try {
+    const store = createContentStore(directory, assetExists)
+    await store.write(example())
+    const updates = Array.from({ length: 20 }, (_, index) => {
+      const document = example()
+      document.layouts[0].x = index + 1
+      return document
+    })
+    await Promise.all(updates.map((document) => store.write(document)))
+    assert.equal((await store.read())?.layouts[0].x, 20)
+    const backup = JSON.parse(await readFile(join(directory, 'editor-content.json.bak'), 'utf8')) as ContentPack
+    assert.equal(backup.layouts[0].x, 19)
+  } finally {
+    await rm(directory, { recursive: true, force: true })
+  }
+})
