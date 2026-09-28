@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
-import { createInitialGameSave, MATILDA_START_CHECKPOINT } from '../../../packages/domain/new-game'
+import { createInitialGameSave } from '../../../packages/domain/new-game'
 import type { SaveData } from '../../../packages/domain/save'
 import type { GameApi } from '../../preload/api'
 import './style.css'
+import { isMatildaCheckpoint } from './matilda-content'
+import { StoryScreen } from './StoryScreen'
 
 const game = (globalThis as typeof globalThis & { janken: GameApi }).janken
 
@@ -49,11 +51,18 @@ function GameScreen() {
   }
 
   if (active) {
-    const isMatilda = active.progress.checkpoint_id === MATILDA_START_CHECKPOINT
+    if (isMatildaCheckpoint(active.progress.checkpoint_id)) {
+      return <StoryScreen save={active} onTitle={() => setActive(null)} onCheckpoint={async (checkpointId) => {
+        const nextSave: SaveData = { ...active, progress: { ...active.progress, checkpoint_id: checkpointId } }
+        await game.save.write(nextSave)
+        setSaved(nextSave)
+        setActive(nextSave)
+      }} />
+    }
     return <main className="game-screen">
       <div className="checkpoint-panel">
         <p className="eyebrow">Janken Kingdom</p>
-        <h1>{isMatilda ? 'マチルダのチュートリアル' : '保存地点'}</h1>
+        <h1>保存地点</h1>
         <p>会話・演出画面は次のタスクで実装します。</p>
         <p className="checkpoint-id" data-testid="checkpoint-id">{active.progress.checkpoint_id}</p>
         <button onClick={() => setActive(null)}>タイトルに戻る</button>

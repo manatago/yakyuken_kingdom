@@ -11,7 +11,11 @@ on:
       - 'tests/**'
       - 'packages/**'
       - 'content/catalog/**'
+      - 'content/stories/**'
+      - 'godot/assets/backgrounds/prologue/**'
+      - 'godot/assets/characters/mob/guard/default/**'
       - '.github/workflows/electron-scaffold.yml'
+      - '.github/scripts/lfs-credential.mjs'
 
 jobs:
   smoke:
@@ -25,6 +29,16 @@ jobs:
         with:
           node-version: '22.12.0'
           cache: npm
+      - name: Fetch tutorial images from Git LFS
+        shell: bash
+        env:
+          LFS_USERNAME: ${{ secrets.LFS_USERNAME }}
+          LFS_PASSWORD: ${{ secrets.LFS_PASSWORD }}
+          GIT_TERMINAL_PROMPT: '0'
+          GIT_ASKPASS: ''
+        run: |
+          node .github/scripts/lfs-credential.mjs check
+          git -c credential.helper= -c 'credential.helper=!node .github/scripts/lfs-credential.mjs' -c credential.useHttpPath=true lfs pull --include="godot/assets/backgrounds/prologue/bg05_prison_cell.png,godot/assets/characters/mob/guard/default/guard_default_024.png,godot/assets/characters/mob/guard/default/guard_default_007.png,godot/assets/characters/mob/guard/default/guard_default_008.png,godot/assets/characters/mob/guard/default/guard_default_009.png"
       - run: npm ci
       - run: npm run typecheck
       - run: npm test

@@ -35,7 +35,7 @@ export interface BattleContent {
 }
 
 export type StoryStep =
-  | { id: string; kind: 'line'; speaker_id?: string; text: string; next_id: string }
+  | { id: string; kind: 'line'; speaker_id?: string; text: string; append?: boolean; next_id: string }
   | { id: string; kind: 'background'; asset_id: string; next_id: string }
   | { id: string; kind: 'show_portrait'; slot_id: string; asset_id: string; layout_id: string; next_id: string }
   | { id: string; kind: 'hide_portrait'; slot_id: string; next_id: string }
