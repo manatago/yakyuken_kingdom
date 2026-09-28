@@ -1,5 +1,37 @@
 # Test results
 
+## 2026-09-28 13:51 JST — PR #22 Electron cold-install race resolution
+
+- `npm run typecheck`: passed.
+- `npm run test:unit`: 30 passed, 0 failed, 0 skipped.
+- `npm run test:integration`: 13 passed, 0 failed, 0 skipped.
+- `npm run test:ui`: 9 passed, 0 failed, 0 skipped.
+- Real cold Electron install in an isolated temporary dependency directory,
+  followed by the same UI runner: 9 passed, 0 failed, 0 skipped.
+- Coverage percentage: not measured; no coverage reporter is configured.
+
+Red regression evidence: two mock Electron consumers started their initial
+installation in parallel, causing an `EEXIST` directory-creation error. The UI
+runner now resolves Electron synchronously in its parent before starting workers.
+Three regression checks verify one parent install, reuse on subsequent runs,
+failure before workers start, and no Electron initialization for non-UI suites.
+The nested-runner fixture removes `NODE_TEST_CONTEXT` so its child runs an actual
+independent suite rather than inheriting the outer runner's worker context.
+
+Verification ran on macOS for Electron GUI support. All test player-data and the
+cold-install fixture were temporary and removed after use; existing Electron
+dependencies and actual player saves were not changed. No application logic or
+UI test expectations were changed. Windows verification of this code remains
+for CI after publishing.
+
+Separately, the existing local LFS credentials were validated against this
+repository's batch API and used to update its two Actions Secrets without
+displaying their values. CI run `36366999830`, attempt 2, then passed LFS image
+fetch, typecheck and unit/integration tests on both platforms, but failed Windows
+UI startup during concurrent Electron extraction; macOS UI was cancelled by
+matrix fail-fast. This entry records the local fix for that newly exposed issue,
+not a successful cross-platform CI result. HTTP transport remains unchanged.
+
 ## 2026-09-28 10:31 JST — PR #22 LFS CI authentication resolution
 
 - GitHub Secret names `LFS_USERNAME` and `LFS_PASSWORD`: confirmed registered;
