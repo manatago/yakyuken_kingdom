@@ -1,5 +1,35 @@
 # Test results
 
+## 2026-09-28 10:31 JST — PR #22 LFS CI authentication resolution
+
+- GitHub Secret names `LFS_USERNAME` and `LFS_PASSWORD`: confirmed registered;
+  their values were not retrieved.
+- `npm run typecheck`: passed.
+- `npm run test:unit`: 30 passed, 0 failed, 0 skipped.
+- `npm run test:integration`: 10 passed, 0 failed, 0 skipped (includes four new LFS checks).
+- `npm run test:ui`: 9 passed, 0 failed, 0 skipped.
+- Workflow YAML parse: passed using Ruby YAML.
+- Coverage percentage: not measured; no coverage reporter is configured.
+
+The image-fetch step now receives Secrets through step-scoped environment
+variables and uses a command-scoped Git credential helper. The helper only returns
+credentials for the existing repository LFS endpoint; store/erase are no-ops.
+Preflight rejects missing or invalid Secrets without printing their values.
+Node setup precedes the fetch step; all existing build/test steps remain.
+
+Regression checks use dummy credentials (including shell-special characters),
+test endpoint/path restrictions and missing/invalid credentials, exercise real
+`git credential fill` without any network calls, and assert workflow Secret wiring.
+Verification ran on macOS for the existing Electron GUI tests, using temporary
+save directories that are cleaned up after each scenario. No actual player saves,
+credential files, Git configuration, or LFS server settings were changed.
+
+Actual GitHub Secrets cannot be read back locally: authenticated LFS downloading
+and Windows execution must be confirmed by CI after publishing. HTTP transport
+remains unchanged per the chosen existing-account setup; communication with the
+LFS server is not encrypted. Fork and Dependabot PRs do not receive these Secrets
+and will stop at preflight rather than silently skipping image verification.
+
 ## 2026-09-28 09:11 JST — Task 3.2 Matilda dialogue and scene
 
 - `npm run typecheck`: passed.
