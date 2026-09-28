@@ -27,5 +27,5 @@ export function tutorialImage(assetId: string): string {
 }
 
 export function isMatildaCheckpoint(id: string): boolean {
-  return matildaContent.stories[0].steps.some((step) => step.id === id && (step.kind === 'line' || step.kind === 'end'))
+  return matildaContent.stories[0].steps.some((step) => step.id === id && (step.kind === 'line' || step.kind === 'battle' || step.kind === 'end'))
 }

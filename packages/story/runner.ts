@@ -1,14 +1,14 @@
 import type { ContentPack, StoryStep } from '../content/schema'
 
 export interface StoryFrame {
-  step: Extract<StoryStep, { kind: 'line' | 'end' }>
+  step: Extract<StoryStep, { kind: 'line' | 'battle' | 'end' }>
   text: string
   backgroundAssetId?: string
   portraits: Record<string, { assetId: string; layoutId: string }>
 }
 
 // Replay deterministic setup commands to reconstruct visuals and appended text.
-// Only displayed checkpoints are saved; choices and battles belong to later tasks.
+// Interactive battle checkpoints are resumed by their separate persisted ledger.
 export function startStory(pack: ContentPack, storyId: string, checkpointId?: string): StoryFrame {
   const story = pack.stories.find((entry) => entry.id === storyId)
   if (!story) throw new Error(`Unknown story: ${storyId}`)
@@ -42,6 +42,11 @@ export function startStory(pack: ContentPack, storyId: string, checkpointId?: st
       case 'end':
         if (!reached) throw new Error(`Unreachable checkpoint: ${checkpointId}`)
         return { step, text: '', backgroundAssetId, portraits }
+      case 'battle':
+        if (reached) return { step, text: '', backgroundAssetId, portraits }
+        text = ''
+        id = step.next_id
+        break
       default: throw new Error(`Unsupported interactive story command: ${step.kind}`)
     }
   }

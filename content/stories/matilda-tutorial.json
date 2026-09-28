@@ -10,7 +10,16 @@
     { "id": "layout.matilda.intro", "x": 960, "y": 440, "scale": 0.8, "flipped": false },
     { "id": "layout.matilda.explanation", "x": 960, "y": 410, "scale": 0.8, "flipped": false }
   ],
-  "battles": [],
+  "battles": [{
+    "id": "battle.matilda.practice", "opponent_id": "matilda", "background_asset_id": "background.prison",
+    "player_deck_size": 9, "opponent_deck_size": 9,
+    "opponent_card_ids": ["rock_normal", "rock_normal", "rock_normal", "scissors_normal", "scissors_normal", "scissors_normal", "paper_normal", "paper_normal", "paper_normal"],
+    "gold_reward": { "min": 0, "max": 0 }, "transfer_cards": false,
+    "phases": [
+      { "id": "phase.matilda.first", "rules": [{ "kind": "fixed_opponent_hand", "hand": "rock" }] },
+      { "id": "phase.matilda.second", "rules": [{ "kind": "player_win_rate", "value": 0.8 }] }
+    ]
+  }],
   "stories": [{
     "id": "story.matilda", "start_id": "matilda.setup.background",
     "steps": [
@@ -36,7 +45,9 @@
       { "id": "matilda.deck.remove", "kind": "line", "speaker_id": "matilda", "append": true, "text": "デッキのカードをクリックするとアイテムボックスに戻るんだ。", "next_id": "matilda.deck.auto" },
       { "id": "matilda.deck.auto", "kind": "line", "speaker_id": "matilda", "text": "面倒なら「自動」ボタンで一発だ。", "next_id": "matilda.deck.ready" },
       { "id": "matilda.deck.ready", "kind": "line", "speaker_id": "matilda", "append": true, "text": "「準備完了」をクリックすると、デッキが完成する。", "next_id": "matilda.await-deck" },
-      { "id": "matilda.await-deck", "kind": "end" }
+      { "id": "matilda.await-deck", "kind": "battle", "battle_id": "battle.matilda.practice", "next_id": "matilda.complete" },
+      { "id": "matilda.complete", "kind": "line", "speaker_id": "matilda", "text": "これがじゃんけんバトルの基本だ。\nカードの使い方、グレードの活かし方...\n勝つための戦略を考えるのが醍醐味さ。\nルールは理解したか？本番はもっと厳しいからな。", "next_id": "matilda.end" },
+      { "id": "matilda.end", "kind": "end" }
     ]
   }]
 }

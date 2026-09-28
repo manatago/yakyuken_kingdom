@@ -1,5 +1,75 @@
 # Test results
 
+## 2026-09-28 — Task 3.4 preparation-test input resolution
+
+- `npm run typecheck`: passed.
+- `npm test`: 36 unit and 13 integration tests passed, no failures/skips.
+- `JANKEN_UI_SCREENSHOT_DIR=test-results/tutorial npm run test:ui`: 12 passed,
+  no failures/skips.
+- `npm run smoke:game` / `npm run smoke:editor`: both passed (`SMOKE_OK`).
+- Coverage percentage not measured; Windows execution remains for CI.
+
+The invalid-deck tests now use the preparation checkpoint without a tutorial
+ledger. Both the eight-card and unowned-copy cases require the specific
+`Nine owned Normal cards required` error, preventing the already-prepared guard
+from satisfying these assertions. The separate wrong-checkpoint assertion remains.
+This resolution changes test input/expectations and this record only, not runtime
+behavior. The full suite reverified two-round practice, save failure/retry,
+restart and completion using temporary save directories cleaned in finally on
+the macOS host. Actual player saves and external services were not accessed.
+
+## 2026-09-28 — Task 3.4 UI counting resolution and full re-verification
+
+- `npm run typecheck`: passed.
+- `npm test`: 36 unit and 13 integration tests passed, no failures/skips.
+- `JANKEN_UI_SCREENSHOT_DIR=test-results/tutorial npm run test:ui`: 12 passed,
+  no failures/skips, including two-round practice and its restart/error paths.
+- `npm run smoke:game` / `npm run smoke:editor`: both passed (`SMOKE_OK`).
+  Rejected null IPC writes deliberately emit handler errors during these probes.
+- Coverage percentage not measured: the existing runner has no coverage reporter.
+
+The corrected UI check now requires three visible Paper entries, two enabled and
+one disabled after the first victory. Expected card consumption is unchanged;
+production behavior was not adjusted for this resolution. The test continued
+through second-round selection restart, failed save with no displayed result,
+successful retry, saved-result restart, completion flag/checkpoint and completion
+restart. Inventory and money remain unchanged.
+
+The resulting `test-results/tutorial/tutorial-result.png` screenshot was visually
+inspected: both full cards, HP, feedback, remaining deck and end-practice control
+are visible. Existing FHD/4:3/portrait card and dialogue tests also passed.
+All tests used host macOS GUI support and temporary player-data directories
+removed in finally. No actual saves, DB, services, Godot/assets, credentials,
+HTTPS configuration or dependencies were changed. Windows remains for CI.
+Temporary dependency symlink removed after verification; target retained.
+
+## 2026-09-28 — Task 3.4 initial implementation verification (incomplete)
+
+- `npm run typecheck`: passed.
+- `npm test`: 36 unit and 13 integration tests passed, none failed or skipped.
+- `JANKEN_UI_SCREENSHOT_DIR=test-results/tutorial npm run test:ui`: 11 passed,
+  1 failed, none skipped. Workflow stopped before review/staging/gate.
+- Smoke commands after the failing UI suite were not executed.
+- Coverage percentage not measured; existing runner has no coverage reporter.
+
+Red evidence before implementation: new unit test could not load the absent
+`packages/battle/tutorial` module; new UI test timed out waiting for the missing
+Auto button after launching the built app and loading the isolated preparation save.
+
+The new UI test then passed preparation, first fixed-rock victory, and result
+restart, but failed at `tutorial-battle.test.mjs:51` (`3 !== 2`). The locator counts
+all three visible Paper buttons, including the used, disabled copy. Production
+disables used entries (`TutorialBattle.tsx:68`), preserving the nine-slot display.
+Proposed correction: assert two enabled Paper buttons and one disabled copy,
+not change the expected consumption. No consecutive source/test fix was applied.
+Second-round save failure/retry, completion and completion restart remain unverified.
+
+Host macOS Electron was used because GUI support is required. Test saves lived
+in temporary directories removed by finally blocks; no actual player saves,
+DB/services, Godot sources, assets, credentials or HTTPS settings were modified.
+The temporary dependency symlink was removed; its target dependencies remain intact.
+Windows/macOS CI remains for publication after successful local verification.
+
 ## 2026-09-28 15:30 JST — Task 3.3 oversized-deck review resolution
 
 - `npm run typecheck`: passed.
