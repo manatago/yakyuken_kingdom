@@ -1,5 +1,50 @@
 # Test results
 
+## 2026-09-28 14:32 JST — PR #22 macOS resolution re-verification
+
+- `npm run typecheck`: passed.
+- `npm test`: 30 unit and 13 integration tests passed, none failed or skipped.
+- `npm run test:ui`: 9 passed, none failed or skipped.
+- The constrained native viewport was 800x568; all three controlled viewports
+  and the restored native viewport passed the fitting assertions.
+- Verification used the macOS host GUI and temporary player-data directories
+  cleaned up by the tests. No actual player saves or external services were used.
+- Coverage percentage: not measured; no coverage reporter is configured.
+
+Per the user's scope decision, HTTPS remediation is a separate work item and
+remains unresolved; it is not a completion criterion for this macOS-only fix.
+No LFS endpoint, credentials, CI workflow or server settings changed in this
+resolution. GitHub macOS and Windows verification remains pending publication.
+
+## 2026-09-28 14:19 JST — PR #22 macOS viewport regression resolution
+
+- `npm run typecheck`: passed.
+- `npm test`: 30 unit and 13 integration tests passed, none failed or skipped.
+- `node --test tests/ui/story.test.mjs`: 2 passed.
+- `JANKEN_UI_SCREENSHOT_DIR=test-results/story-viewport npm run test:ui`:
+  9 passed, none failed or skipped.
+- Coverage percentage: not measured; no coverage reporter is configured.
+
+Red evidence: constraining the native Electron window to 800x600 and requesting
+1920x1080 produced an actual content size of 800x568 on this macOS host. The
+original exact-size wait failed after 30 seconds, reproducing the CI failure mode.
+The corrected test verifies the actual constrained native viewport, then controls
+renderer dimensions through CDP to verify exact FHD, 4:3 and portrait dimensions,
+16:9 fitting and centered margins. It clears the override and verifies the native
+viewport again. No layout expectations or timeouts were relaxed.
+
+The three screenshots in the ignored `test-results/story-viewport/` directory
+were visually inspected. Verification used macOS host Electron GUI support and
+temporary player-data directories, removed after closing the apps. Actual player
+saves, production application code and source images were unchanged. Execution
+of this updated test on GitHub macOS and Windows runners remains pending.
+
+The separate HTTPS finding is unresolved. Anonymous, certificate-validating
+connection checks found an expired certificate on port 443 (expired May 17,
+2026) and a TLS protocol error on port 8080. No credentials were sent during
+these checks; no server settings, Secrets or LFS endpoint were changed. A valid
+HTTPS LFS endpoint or separately authorized server configuration is required.
+
 ## 2026-09-28 13:51 JST — PR #22 Electron cold-install race resolution
 
 - `npm run typecheck`: passed.
