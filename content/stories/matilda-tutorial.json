@@ -1,0 +1,42 @@
+{
+  "assets": [
+    { "id": "background.prison", "path": "godot/assets/backgrounds/prologue/bg05_prison_cell.png" },
+    { "id": "portrait.matilda.intro", "path": "godot/assets/characters/mob/guard/default/guard_default_024.png" },
+    { "id": "portrait.matilda.items", "path": "godot/assets/characters/mob/guard/default/guard_default_007.png" },
+    { "id": "portrait.matilda.cards", "path": "godot/assets/characters/mob/guard/default/guard_default_008.png" },
+    { "id": "portrait.matilda.deck", "path": "godot/assets/characters/mob/guard/default/guard_default_009.png" }
+  ],
+  "layouts": [
+    { "id": "layout.matilda.intro", "x": 960, "y": 440, "scale": 0.8, "flipped": false },
+    { "id": "layout.matilda.explanation", "x": 960, "y": 410, "scale": 0.8, "flipped": false }
+  ],
+  "battles": [],
+  "stories": [{
+    "id": "story.matilda", "start_id": "matilda.setup.background",
+    "steps": [
+      { "id": "matilda.setup.background", "kind": "background", "asset_id": "background.prison", "next_id": "matilda.setup.portrait" },
+      { "id": "matilda.setup.portrait", "kind": "show_portrait", "slot_id": "matilda", "asset_id": "portrait.matilda.intro", "layout_id": "layout.matilda.intro", "next_id": "matilda.start" },
+      { "id": "matilda.start", "kind": "line", "speaker_id": "matilda", "text": "周りの風景が変わっただろう。これがこの世界のバトルシステム「じゃんけん」だ。", "next_id": "matilda.items.portrait" },
+      { "id": "matilda.items.portrait", "kind": "show_portrait", "slot_id": "matilda", "asset_id": "portrait.matilda.items", "layout_id": "layout.matilda.explanation", "next_id": "matilda.items.box" },
+      { "id": "matilda.items.box", "kind": "line", "speaker_id": "matilda", "text": "左にあるのがアイテムボックスだ。", "next_id": "matilda.items.description" },
+      { "id": "matilda.items.description", "kind": "line", "speaker_id": "matilda", "append": true, "text": "バトル中に使えるアイテムがここに表示される。", "next_id": "matilda.items.chance" },
+      { "id": "matilda.items.chance", "kind": "line", "speaker_id": "matilda", "append": true, "text": "今は何もないけど、運が良ければ勝率をあげるアイテムなんかを手に入れることができる", "next_id": "matilda.items.legend" },
+      { "id": "matilda.items.legend", "kind": "line", "speaker_id": "matilda", "append": true, "text": "噂じゃ、伝説のアイテムなるものがあるみたいだが、、、眉唾もんだ。", "next_id": "matilda.cards.portrait" },
+      { "id": "matilda.cards.portrait", "kind": "show_portrait", "slot_id": "matilda", "asset_id": "portrait.matilda.cards", "layout_id": "layout.matilda.explanation", "next_id": "matilda.cards.box" },
+      { "id": "matilda.cards.box", "kind": "line", "speaker_id": "matilda", "text": "右にあるのが手持ちカードだ。", "next_id": "matilda.cards.hands" },
+      { "id": "matilda.cards.hands", "kind": "line", "speaker_id": "matilda", "append": true, "text": "グー、チョキ、パーの3種類がある。", "next_id": "matilda.grades.exists" },
+      { "id": "matilda.grades.exists", "kind": "line", "speaker_id": "matilda", "append": true, "text": "カード自体にはグレードがある。", "next_id": "matilda.grades.mark" },
+      { "id": "matilda.grades.mark", "kind": "line", "speaker_id": "matilda", "append": true, "text": "右上の丸い印が、そのカードのグレードを表してる。", "next_id": "matilda.grades.names" },
+      { "id": "matilda.grades.names", "kind": "line", "speaker_id": "matilda", "append": true, "text": "Nはノーマル、Bはブロンズ、Sはシルバー、Gはゴールド、Pはプラチナだ。", "next_id": "matilda.grades.comparison" },
+      { "id": "matilda.grades.comparison", "kind": "line", "speaker_id": "matilda", "append": true, "text": "同じ手を出した時、グレードが高い方が勝つのさ。", "next_id": "matilda.grades.normal-only" },
+      { "id": "matilda.grades.normal-only", "kind": "line", "speaker_id": "matilda", "append": true, "text": "今回は練習だから、互いにNのカードだけを使う。", "next_id": "matilda.deck.portrait" },
+      { "id": "matilda.deck.portrait", "kind": "show_portrait", "slot_id": "matilda", "asset_id": "portrait.matilda.deck", "layout_id": "layout.matilda.explanation", "next_id": "matilda.deck.nine" },
+      { "id": "matilda.deck.nine", "kind": "line", "speaker_id": "matilda", "text": "下のデッキに9枚セットしな。手持ちからカードを選んでデッキに入れるんだ。", "next_id": "matilda.deck.add" },
+      { "id": "matilda.deck.add", "kind": "line", "speaker_id": "matilda", "append": true, "text": "カードボックスのカードをクリックするとデッキに登録される。", "next_id": "matilda.deck.remove" },
+      { "id": "matilda.deck.remove", "kind": "line", "speaker_id": "matilda", "append": true, "text": "デッキのカードをクリックするとアイテムボックスに戻るんだ。", "next_id": "matilda.deck.auto" },
+      { "id": "matilda.deck.auto", "kind": "line", "speaker_id": "matilda", "text": "面倒なら「自動」ボタンで一発だ。", "next_id": "matilda.deck.ready" },
+      { "id": "matilda.deck.ready", "kind": "line", "speaker_id": "matilda", "append": true, "text": "「準備完了」をクリックすると、デッキが完成する。", "next_id": "matilda.await-deck" },
+      { "id": "matilda.await-deck", "kind": "end" }
+    ]
+  }]
+}

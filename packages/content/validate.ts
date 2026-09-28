@@ -215,7 +215,7 @@ export function validateContent(value: unknown, assetExists: (path: string) => b
     steps.forEach((entry, stepIndex) => {
       const stepPath = `${path}.steps[${stepIndex}]`
       const step = object(entry, stepPath, ['id', 'kind'], [
-        'speaker_id', 'text', 'next_id', 'asset_id', 'slot_id', 'layout_id',
+        'speaker_id', 'text', 'append', 'next_id', 'asset_id', 'slot_id', 'layout_id',
         'options', 'target_id', 'battle_id'
       ])
       if (step === null) return
@@ -223,7 +223,10 @@ export function validateContent(value: unknown, assetExists: (path: string) => b
       const next = () => reference(step.next_id, `${stepPath}.next_id`, 'step')
       switch (step.kind) {
         case 'line':
-          object(entry, stepPath, ['id', 'kind', 'text', 'next_id'], ['speaker_id'])
+          object(entry, stepPath, ['id', 'kind', 'text', 'next_id'], ['speaker_id', 'append'])
+          if (Object.hasOwn(step, 'append') && typeof step.append !== 'boolean') {
+            issue(`${stepPath}.append`, 'invalid_value', 'Append must be a boolean')
+          }
           if (typeof step.text !== 'string' || step.text.trim() === '') {
             issue(`${stepPath}.text`, 'invalid_value', 'Line text must not be empty')
           }

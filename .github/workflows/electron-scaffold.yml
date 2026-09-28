@@ -11,6 +11,9 @@ on:
       - 'tests/**'
       - 'packages/**'
       - 'content/catalog/**'
+      - 'content/stories/**'
+      - 'godot/assets/backgrounds/prologue/**'
+      - 'godot/assets/characters/mob/guard/default/**'
       - '.github/workflows/electron-scaffold.yml'
 
 jobs:
@@ -21,6 +24,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+      - name: Fetch tutorial images from Git LFS
+        run: >-
+          git lfs pull --include="godot/assets/backgrounds/prologue/bg05_prison_cell.png,godot/assets/characters/mob/guard/default/guard_default_024.png,godot/assets/characters/mob/guard/default/guard_default_007.png,godot/assets/characters/mob/guard/default/guard_default_008.png,godot/assets/characters/mob/guard/default/guard_default_009.png"
       - uses: actions/setup-node@v4
         with:
           node-version: '22.12.0'

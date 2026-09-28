@@ -41,3 +41,22 @@ button:hover:not(:disabled), button:focus-visible { background: #394c69; }
 button:disabled { opacity: .45; cursor: default; }
 .error-message { color: #ffc7bc; }
 .checkpoint-id { color: #d6b779; font-family: monospace; }
+
+.story-viewport { position: fixed; inset: 0; padding: 0; min-height: 0; background: #000; }
+.story-frame { position: relative; }
+.story-stage { position: absolute; width: 1920px; height: 1080px; transform-origin: 0 0; overflow: hidden; background: #111829; }
+.story-background { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.story-portrait { position: absolute; height: 1024px; width: auto; }
+.story-header { position: absolute; top: 24px; left: 40px; right: 40px; display: flex; align-items: center; gap: 24px; padding: 16px 24px; background: #111829d9; }
+.story-header h1 { font-size: 28px; margin: 0; }
+.story-checkpoint { font: 18px monospace; margin-left: auto; }
+.story-header button, .story-dialogue button { font-size: 28px; }
+.story-reserved { position: absolute; top: 240px; padding: 28px 16px; width: 290px; font-size: 26px; border: 1px solid #c7a66a; background: #111829db; }
+.story-reserved small { font-size: 20px; opacity: .7; }
+.story-items { left: 36px; }
+.story-cards { right: 36px; }
+.story-dialogue { position: absolute; left: 350px; right: 350px; bottom: 80px; padding: 24px 32px; text-align: left; border: 1px solid #c7a66a; background: #111829e8; }
+.story-speaker { margin: 0 0 12px; color: #d6b779; font-size: 28px; }
+.story-text { margin: 0 0 24px; min-height: 84px; font-size: 28px; line-height: 1.5; white-space: pre-wrap; }
+.story-dialogue h2 { font-size: 34px; }
+.story-dialogue > p:not(.story-text):not(.story-speaker) { font-size: 26px; }
