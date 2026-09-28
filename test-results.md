@@ -1,5 +1,54 @@
 # Test results
 
+## 2026-09-28 15:30 JST — Task 3.3 oversized-deck review resolution
+
+- `npm run typecheck`: passed.
+- `npm test`: 32 unit and 13 integration tests passed, none failed or skipped.
+- `JANKEN_UI_SCREENSHOT_DIR=test-results/cards npm run test:ui`: 11 passed,
+  none failed or skipped.
+- Coverage percentage: not measured; no coverage reporter is configured.
+
+Red regression evidence: the ten-card saved-deck fixture rendered ten grid slots,
+failing the new exact-nine assertion (`10 !== 9`). The deck grid now always has
+nine slots. Additional saved cards are exposed in a separately labelled, scrollable
+overflow panel with a saved-count heading, not silently discarded or rewritten.
+The regression checks nine and ten cards, overflow absence/presence, full preview
+of the tenth card and byte-for-byte unchanged saves after UI interaction.
+
+The overflow screenshot in ignored `test-results/cards/cards-overflow.png` was
+visually inspected. Verification used macOS host Electron GUI support with
+temporary player-data directories closed and removed by the tests. Actual saves,
+save schema, source assets, credentials and server configuration were not changed.
+Windows verification remains for CI after publishing; HTTPS remains separate.
+
+## 2026-09-28 15:00 JST — Task 3.3 Normal card displays
+
+- `npm run typecheck`: passed.
+- `npm test`: 32 unit and 13 integration tests passed, none failed or skipped.
+- `JANKEN_UI_SCREENSHOT_DIR=test-results/cards npm run test:ui`: 10 passed,
+  none failed or skipped.
+- Coverage percentage: not measured; no coverage reporter is configured.
+
+Red evidence: the new unit test failed because card presentation was missing.
+After building the existing app, the new UI test timed out waiting for the absent
+card box. An earlier UI attempt before the isolated worktree's first build timed
+out launching Electron; that harness-preparation error was not used as feature
+regression evidence. Its temporary data was removed by the test's finally block.
+
+Checks cover Normal hands and grade labels, the reference 2:3 crop, nine owned
+copies and nine empty deck slots, loaded compact/full images, a transient full
+preview without save mutation, partial saved-deck restart, and panel containment
+at exact FHD, 4:3 and portrait renderer sizes. Existing dialogue/save/UI regressions
+remain unchanged. Three card screenshots in ignored `test-results/cards/` were
+visually inspected. Source images were confirmed as 848x1264 and not modified.
+
+Verification used macOS host Electron GUI support, temporary player-data
+directories cleaned up after closing each app, and mocked credentials in existing
+integration tests. No actual player saves, DB, network LFS fetch or server changes
+were used. Windows execution remains for CI after publishing. HTTPS remains a
+separate unresolved work item; the existing endpoint/authentication is unchanged.
+No video/HTML player generated: the repository lacks `generate-player.ts`.
+
 ## 2026-09-28 14:32 JST — PR #22 macOS resolution re-verification
 
 - `npm run typecheck`: passed.

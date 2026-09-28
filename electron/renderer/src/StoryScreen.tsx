@@ -3,6 +3,7 @@ import type { SaveData } from '../../../packages/domain/save'
 import { advanceStory, startStory } from '../../../packages/story/runner'
 import { fitViewport } from '../../../packages/story/viewport'
 import { matildaContent, MATILDA_STORY_ID, tutorialImage } from './matilda-content'
+import { CardPanel } from './CardPanel'
 
 export function StoryScreen({ save, onCheckpoint, onTitle }: {
   save: SaveData
@@ -57,7 +58,7 @@ export function StoryScreen({ save, onCheckpoint, onTitle }: {
           <button onClick={onTitle} disabled={busy}>タイトルに戻る</button>
         </header>
         <aside className="story-reserved story-items">アイテムボックス<br /><small>表示機能は準備中</small></aside>
-        <aside className="story-reserved story-cards">カードボックス<br /><small>カード表示は次のタスク</small></aside>
+        <CardPanel player={save.player} />
         <section className="story-dialogue" aria-label="会話">
           {frame.step.kind === 'line' ? <>
             <p className="story-speaker">{frame.step.speaker_id === 'matilda' ? 'マチルダ' : frame.step.speaker_id ?? 'ナレーション'}</p>
