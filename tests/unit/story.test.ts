@@ -57,19 +57,22 @@ test('append is a validated optional boolean', () => {
   assert.equal(validateContent(invalid, () => true).valid, false)
 })
 
-test('Matilda tutorial JSON uses real assets and stops before card interaction', () => {
+test('Matilda tutorial JSON reaches its practice battle and closing dialogue', () => {
   const pack = JSON.parse(readFileSync(join(root, 'content/stories/matilda-tutorial.json'), 'utf8')) as ContentPack
   assert.deepEqual(validateContent(pack, (path) => existsSync(join(root, path))), { valid: true, issues: [] })
   let frame = startStory(pack, 'story.matilda', 'matilda.start')
   assert.match(frame.text, /周りの風景/)
   const text: string[] = []
-  while (frame.step.kind !== 'end') {
+  while (frame.step.kind === 'line') {
     text.push(frame.text)
     frame = advanceStory(pack, 'story.matilda', frame)
   }
   assert.ok(text.some((line) => line.includes('Nはノーマル、Bはブロンズ、Sはシルバー、Gはゴールド、Pはプラチナだ。')))
   assert.ok(text.some((line) => line.includes('今回は練習だから、互いにNのカードだけを使う。')))
   assert.equal(frame.step.id, 'matilda.await-deck')
+  assert.equal(frame.step.kind, 'battle')
+  assert.match(advanceStory(pack, 'story.matilda', frame).text, /これがじゃんけんバトルの基本/)
+  assert.equal(startStory(pack, 'story.matilda', 'matilda.complete').backgroundAssetId, 'background.prison')
 })
 
 test('FHD viewport scales uniformly and centers margins', () => {

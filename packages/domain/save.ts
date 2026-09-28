@@ -1,5 +1,6 @@
 import { GRADES, HANDS, type Card } from './card'
 import { validateDeck } from './deck'
+import { validateTutorialState, type TutorialLedger } from '../battle/tutorial'
 
 export const SAVE_VERSION = 1 as const
 
@@ -15,10 +16,11 @@ export interface SaveData {
   readonly progress: {
     readonly checkpoint_id: string
     readonly flags: readonly string[]
+    readonly tutorial?: TutorialLedger
   }
 }
 
-function record(value: unknown, fields: readonly string[]): Record<string, unknown> {
+function record(value: unknown, fields: readonly string[], optional: readonly string[] = []): Record<string, unknown> {
   if (value === null || typeof value !== 'object' || Array.isArray(value)) {
     throw new TypeError('Save field must be an object')
   }
@@ -27,7 +29,8 @@ function record(value: unknown, fields: readonly string[]): Record<string, unkno
     throw new TypeError('Save field must be a plain object')
   }
   const keys = Reflect.ownKeys(value)
-  if (keys.length !== fields.length || keys.some((key) => typeof key !== 'string' || !fields.includes(key))) {
+  if (fields.some((key) => !Object.hasOwn(value, key)) ||
+      keys.some((key) => typeof key !== 'string' || ![...fields, ...optional].includes(key))) {
     throw new TypeError('Save field has missing or unknown keys')
   }
   for (const key of keys) {
@@ -69,16 +72,30 @@ export function parseSave(value: unknown): SaveData {
     throw new RangeError('Save deck contains cards not owned by the player')
   }
 
-  const progress = record(root.progress, ['checkpoint_id', 'flags'])
+  const progress = record(root.progress, ['checkpoint_id', 'flags'], ['tutorial'])
   if (!Array.isArray(progress.flags)) throw new TypeError('Save flags must be an array')
   const flags = Array.from(progress.flags, identifier)
   if (new Set(flags).size !== flags.length) throw new TypeError('Save flags must be unique')
 
-  return {
+  let tutorial: TutorialLedger | undefined
+  if (Object.hasOwn(progress, 'tutorial')) {
+    const ledger = record(progress.tutorial, ['battle_id', 'rounds', 'acknowledged'])
+    if (!Array.isArray(ledger.rounds) || ledger.rounds.length > 2) throw new TypeError('Invalid tutorial rounds')
+    tutorial = {
+      battle_id: identifier(ledger.battle_id), acknowledged: ledger.acknowledged as number,
+      rounds: Array.from(ledger.rounds, (entry) => {
+        const round = record(entry, ['player_index', 'opponent_index'])
+        return { player_index: round.player_index as number, opponent_index: round.opponent_index as number }
+      })
+    }
+  }
+  const save: SaveData = {
     save_version: SAVE_VERSION,
     player: { inventory, deck, money: player.money as number },
-    progress: { checkpoint_id: identifier(progress.checkpoint_id), flags }
+    progress: { checkpoint_id: identifier(progress.checkpoint_id), flags, ...(tutorial ? { tutorial } : {}) }
   }
+  validateTutorialState(save)
+  return save
 }
 
 export function createNewSave(checkpointId: string, player: SavePlayer): SaveData {

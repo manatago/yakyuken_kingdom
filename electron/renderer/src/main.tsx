@@ -52,7 +52,11 @@ function GameScreen() {
 
   if (active) {
     if (isMatildaCheckpoint(active.progress.checkpoint_id)) {
-      return <StoryScreen save={active} onTitle={() => setActive(null)} onCheckpoint={async (checkpointId) => {
+      return <StoryScreen save={active} onTitle={() => setActive(null)} onSave={async (nextSave) => {
+        await game.save.write(nextSave)
+        setSaved(nextSave)
+        setActive(nextSave)
+      }} onCheckpoint={async (checkpointId) => {
         const nextSave: SaveData = { ...active, progress: { ...active.progress, checkpoint_id: checkpointId } }
         await game.save.write(nextSave)
         setSaved(nextSave)

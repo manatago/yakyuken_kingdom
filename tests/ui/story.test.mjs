@@ -89,7 +89,7 @@ test('Matilda scene displays real images, grades, scales and resumes its dialogu
     for (let count = 0; count < 10 && await page.getByRole('button', { name: '次へ', exact: true }).count(); count++) {
       await advanceDialogue(page)
     }
-    await page.getByText('カード操作は準備中です。').waitFor()
+    await page.getByRole('button', { name: '準備完了', exact: true }).waitFor()
     const save = JSON.parse(await readFile(join(userData, 'janken-save.json'), 'utf8'))
     assert.deepEqual(save.progress.flags, [])
     assert.equal(save.player.inventory.length, 9)
