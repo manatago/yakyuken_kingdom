@@ -65,6 +65,8 @@ test('Electron CI scopes LFS Secrets to image fetch and retains its verification
   assert.equal((workflow.match(/secrets\.LFS_PASSWORD/g) ?? []).length, 1)
   assert.ok(workflow.indexOf('actions/setup-node@') < workflow.indexOf('name: Fetch tutorial'))
   assert.ok(workflow.includes("- '.github/scripts/lfs-credential.mjs'"))
+  assert.ok(workflow.includes("- 'godot/assets/battle/cards/**'"))
+  for (const hand of ['rock', 'scissors', 'paper']) assert.ok(fetch.includes(`godot/assets/battle/cards/${hand}_normal.png`))
   for (const command of ['npm ci', 'npm run typecheck', 'npm test', 'npm run test:ui', 'npm run smoke:game', 'npm run smoke:editor']) {
     assert.ok(workflow.includes(`- run: ${command}`))
   }

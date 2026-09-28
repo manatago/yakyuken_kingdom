@@ -60,3 +60,31 @@ button:disabled { opacity: .45; cursor: default; }
 .story-text { margin: 0 0 24px; min-height: 84px; font-size: 28px; line-height: 1.5; white-space: pre-wrap; }
 .story-dialogue h2 { font-size: 34px; }
 .story-dialogue > p:not(.story-text):not(.story-speaker) { font-size: 26px; }
+
+.card-view { display: block; position: relative; width: 100%; overflow: hidden; background: #eee2c5; border-radius: 8px; }
+.card-compact { aspect-ratio: 2 / 3; }
+.card-full { aspect-ratio: 848 / 1264; }
+.card-view img { display: block; position: absolute; width: 100%; height: 100%; left: 0; top: 0; }
+.card-grade { position: absolute; right: 4px; top: 4px; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; background: #eee2c5; color: #211a2a; border: 2px solid #211a2a; font: bold 18px Arial, sans-serif; }
+.card-unavailable { color: #211a2a; font-size: 16px; }
+.card-button { padding: 0; border: 0; background: transparent; min-width: 0; border-radius: 8px; }
+.card-hand { display: block; font-size: 18px; padding: 2px; }
+.card-box, .deck-panel, .card-preview { position: absolute; background: #111829e8; border: 1px solid #c7a66a; padding: 12px; }
+.card-box h2, .deck-panel h2, .card-preview h2 { font-size: 22px; margin: 0 0 8px; }
+.card-box { right: 36px; top: 190px; width: 330px; height: 610px; }
+.card-box p { font-size: 16px; margin: 0 0 8px; }
+.card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; max-height: 525px; overflow-y: auto; }
+.deck-panel { left: 350px; right: 350px; bottom: 16px; height: 180px; }
+.deck-grid { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 12px; height: 126px; overflow: auto; }
+.deck-grid .card-button { width: 68px; justify-self: center; }
+.empty-deck-slot { display: grid; place-items: center; border: 1px dashed #c7a66a; width: 68px; height: 102px; justify-self: center; color: #c7a66a; }
+.deck-panel small { font-size: 16px; font-weight: normal; }
+.card-preview { left: 36px; top: 450px; width: 290px; min-height: 120px; }
+.card-preview .card-view { width: 230px; margin: 0 auto 8px; }
+.card-preview small { display: block; font-size: 14px; }
+.story-dialogue { bottom: 210px; left: 350px; right: 390px; }
+.deck-overflow { position: absolute; left: 36px; bottom: 16px; width: 290px; max-height: 154px; padding: 8px; overflow-y: auto; border: 1px solid #c7a66a; background: #111829e8; }
+.deck-overflow h2 { font-size: 18px; margin: 0 0 4px; }
+.deck-overflow p { font-size: 12px; margin: 0 0 4px; }
+.overflow-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.overflow-grid .card-button { width: 56px; }
