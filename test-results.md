@@ -1,5 +1,62 @@
 # Test results
 
+## 2026-09-28 — PR #26 Windows isolated-build path correction
+
+- Failure evidence: Windows job `109240419679`, run `36516678634`, passed
+  45 unit/13 integration tests but failed the new layout-reflection UI test
+  (14 UI passed, 1 failed). Vite rejected an HTML output name containing
+  `../../.../runneradmin/AppData/Local/Temp/...`; rebuilt game startup was not
+  reached and the later Windows smoke steps were skipped.
+- Correction: canonicalize the created temporary project with `realpath`
+  before deriving copy, editor, build and game paths. Keep the original
+  temporary-directory handle for cleanup even if canonicalization fails.
+  Add a canonical renderer-directory assertion; existing save/reflection
+  assertions and isolation are unchanged.
+- Local macOS also exposes an alias: `tmpdir()` uses `/var/folders/...`,
+  while its real path uses `/private/var/folders/...`. The corrected test
+  successfully builds and launches the canonical isolated project twice.
+- `npm run typecheck`: passed.
+- `npm test`: 45 unit and 13 integration tests passed, no failures/skips.
+- `npm run test:ui`: 15 passed, no failures/skips, including layout reflection.
+- `npm run smoke:game` / `npm run smoke:editor`: both `SMOKE_OK`.
+- Windows short-name/root mismatch remains the likely diagnosis, not a claim
+  of successful Windows execution. Publish the correction and confirm the
+  existing Windows/macOS CI before treating PR #26 as merge-ready.
+- Prevention: strengthened regression check for canonical renderer roots.
+  No separate review lesson is needed; the guard is linked directly to the test.
+
+Electron checks ran on host macOS with isolated project/player-data directories
+removed in finally. The temporary dependency link was removed without deleting
+its target. No real saves, source JSON, Godot/assets, dependencies, CI settings,
+credentials or PR state changed. Coverage percentage remains unmeasured.
+
+## 2026-09-28 — Task 3.6 Matilda journey verification
+
+- Red: `node --import tsx --test tests/unit/matilda-journey.test.ts` failed
+  because the new shared save-invariant helper did not exist. This was test-tool
+  implementation evidence, not a reproduced application defect.
+- Green: the helper contract and real-content journey both passed (2 tests).
+- `npm run typecheck`: passed.
+- `npm test`: 45 unit and 13 integration tests passed, no failures/skips.
+- `npm run test:ui`: 15 passed, no failures/skips, including the unseeded full
+  tutorial, restart at dialogue/preparation/selection/results/completion/end,
+  and editor save -> copied game rebuild -> new game/Continue reflection.
+- `npm run smoke:game` / `npm run smoke:editor`: both `SMOKE_OK`.
+  Rejected null IPC probes intentionally log errors.
+- FHD introduction, grades, preparation, result and closing images generated
+  under ignored `test-results/matilda/`; inspected alongside the Godot reference.
+  Background/panel/portrait/dialogue differences and clipped card captions are
+  recorded in `docs/plans/electron-rebuild-verification.md`, not silently approved.
+- Windows remains unexecuted locally; the existing two-OS CI discovers these
+  tests automatically after publication. Coverage percentage is not measured.
+
+Host macOS was used for Electron GUI checks. Temporary project/player-data
+directories were removed in finally, without changing real saves, original
+content/assets, Godot, credentials, services, dependencies or CI settings.
+No application implementation or existing test expectations changed.
+Task 3.5 is marked complete because PR #25 was merged. Task 3.6 remains unchecked
+pending final review/publication; this is not a full Godot-parity approval.
+
 ## 2026-09-28 — Task 3.5 concurrent-editor save protection
 
 - Red: independent stores both accepted the same expected layout (2 successes,
