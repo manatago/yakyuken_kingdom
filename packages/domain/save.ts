@@ -2,6 +2,7 @@ import { GRADES, HANDS, type Card } from './card'
 import { validateDeck } from './deck'
 import { validateTutorialState, type TutorialLedger } from '../battle/tutorial'
 import { validateFixedState, type FixedLedger } from '../battle/fixed'
+import { guildValidationSave } from '../guild/routes'
 
 export const SAVE_VERSION = 1 as const
 
@@ -20,6 +21,7 @@ export interface SaveData {
     readonly flags: readonly string[]
     readonly tutorial?: TutorialLedger
     readonly fixed_battle?: FixedLedger
+    readonly guild_return_checkpoint?: string
   }
 }
 
@@ -79,7 +81,7 @@ export function parseSave(value: unknown): SaveData {
     throw new RangeError('Save deck contains cards not owned by the player')
   }
 
-  const progress = record(root.progress, ['checkpoint_id', 'flags'], ['tutorial', 'fixed_battle'])
+  const progress = record(root.progress, ['checkpoint_id', 'flags'], ['tutorial', 'fixed_battle', 'guild_return_checkpoint'])
   if (!Array.isArray(progress.flags)) throw new TypeError('Save flags must be an array')
   const flags = Array.from(progress.flags, identifier)
   if (new Set(flags).size !== flags.length) throw new TypeError('Save flags must be unique')
@@ -114,10 +116,12 @@ export function parseSave(value: unknown): SaveData {
   const save: SaveData = {
     save_version: SAVE_VERSION,
     player: { inventory, deck, money: player.money as number, ...(prepared ? { prepared_deck: prepared } : {}) },
-    progress: { checkpoint_id: identifier(progress.checkpoint_id), flags, ...(tutorial ? { tutorial } : {}), ...(fixed ? { fixed_battle: fixed } : {}) }
+    progress: { checkpoint_id: identifier(progress.checkpoint_id), flags, ...(tutorial ? { tutorial } : {}), ...(fixed ? { fixed_battle: fixed } : {}),
+      ...(Object.hasOwn(progress, 'guild_return_checkpoint') ? { guild_return_checkpoint: identifier(progress.guild_return_checkpoint) } : {}) }
   }
-  validateTutorialState(save)
-  validateFixedState(save)
+  const validationSave = guildValidationSave(save)
+  validateTutorialState(validationSave)
+  validateFixedState(validationSave)
   return save
 }
 

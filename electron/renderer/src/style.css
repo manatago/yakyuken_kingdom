@@ -44,6 +44,13 @@ button:disabled { opacity: .45; cursor: default; }
 
 .story-viewport { position: fixed; inset: 0; padding: 0; min-height: 0; background: #000; }
 .story-frame { position: relative; }
+.guild-menu { position: absolute; left: 0; right: 0; bottom: 0; height: 90px; display: flex; gap: 8px; padding: 8px 24px; background: #111829d9; }
+.guild-menu button { flex: 1; padding: 8px; font-size: 24px; background: #594027; }
+.guild-menu small { display: block; font-size: 16px; }
+.guild-notice { position: absolute; left: 400px; right: 400px; bottom: 150px; padding: 20px; font-size: 25px; background: #111829e8; }
+.guild-close-cards { position: absolute; top: 130px; right: 40px; font-size: 24px; }
+.guild-stage .deck-overflow { bottom: 108px; }
+.guild-error { position: absolute; top: 130px; left: 400px; right: 400px; padding: 16px; font-size: 25px; background: #111829e8; }
 .story-stage { position: absolute; width: 1920px; height: 1080px; transform-origin: 0 0; overflow: hidden; background: #111829; }
 .story-background { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .story-portrait { position: absolute; height: 1024px; width: auto; }

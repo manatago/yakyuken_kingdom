@@ -28,7 +28,8 @@ test('editor JSON save survives an isolated game rebuild and restart', { timeout
     const target = join(project, 'content/stories/matilda-tutorial.json')
     const original = await readFile(target, 'utf8')
     const source = JSON.parse(original)
-    const paths = [...source.assets.map((asset) => asset.path),
+    const guildHome = JSON.parse(await readFile(join(project, 'content/screens/guild-home.json'), 'utf8'))
+    const paths = [...source.assets.map((asset) => asset.path), guildHome.background,
       ...['rock', 'scissors', 'paper'].flatMap((hand) => ['normal', 'bronze', 'silver', 'gold', 'platinum']
         .map((grade) => `godot/assets/battle/cards/${hand}_${grade}.png`))]
     for (const path of paths) {

@@ -1,5 +1,14 @@
 # Test results
 
+## 2026-09-29 — Guild home prerequisite (local verification complete)
+
+- Scope: existing Stage1 guild background/menu, confirmation-only navigation from tutorial/normal end, persistent home/return checkpoint, and existing card viewing/next-battle editing. Belka, quests, town, real story progression and other guild features remain unmigrated. No Godot/credentials/HTTPS changes.
+- RED: guild unit test failed MODULE_NOT_FOUND before implementation. On authorized continuation, added non-overlap assertions reproduced the layout defect at 1920x1080 from both confirmation origins before the layout correction. Final macOS typecheck, 59 unit tests, 14 integration tests, all 22 UI tests and both game/editor smoke checks passed with no failures/skips. Coverage percentage not measured; Windows/CI not run.
+- New isolated guild UI journeys both passed: entry/return atomic save failure safety, restart at home, title/continue, card-edit cancellation/failure/retry, unchanged historical records/inventory/money, disabled unmigrated menu and FHD/4:3/portrait letterboxing. Temporary player-data directories and Electron processes cleaned up.
+- Initial full UI suite: 21 passed / 1 failed. The isolated-build fixture omitted the new guild background; single-test reproduction confirmed Vite's missing-asset error. After user authorization, the fixture now copies the background referenced by the home JSON. All original rebuild/editor-save/restart assertions are retained; the test passes.
+- Initial visual verification found the default CardPanel top=884/bottom=auto overriding a CSS bottom adjustment and overlapping the menu. Corrected by supplying a guild-only JSON deck layout with y=800 to CardPanel and removing the ineffective CSS rule. Existing tutorial layouts/defaults are unchanged. The UI journeys assert deck bottom <= menu top at FHD, 4:3 and portrait viewport sizes; both pass. Updated FHD home/card screenshots were inspected and the complete deck is visible above the menu.
+- Failure analysis was completed before the user authorized these two bounded corrections. No real saves or external services used; test temporary directories/processes cleaned up. Temporary dependency symlink removed after verification. Task4.2 remains unchecked; Belka is not implemented. Unstaged diff inspection OK; no staging, gate, commit, push or PR.
+
 ## 2026-09-29 — Task 4.2 first stage: HP engine and Matilda normal battle
 
 - Scope: independent JSON normal-battle content and generic HP/probability/replay logic, saved prepared-deck snapshot, durable round confirmation/settlement, explicit retry after loss and return to representative dialogue. Other thirteen fixed chapters, three-card UI, transfers, full story/guild/minigames and Godot/CI/authentication/HTTPS changes are excluded; task4.2 stays unchecked.

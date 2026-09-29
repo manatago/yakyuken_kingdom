@@ -8,6 +8,8 @@ import { TutorialBattle } from './TutorialBattle'
 import { DeckEditor } from './DeckEditor'
 import { FixedBattle } from './FixedBattle'
 import type { ContentPack } from '../../../packages/content/schema'
+import { enterGuildHome } from '../../../packages/guild/home'
+import { canEnterGuildHome } from '../../../packages/guild/routes'
 
 export function StoryScreen({ save, onCheckpoint, onSave, onTitle, content = matildaContent, storyId = MATILDA_STORY_ID }: {
   save: SaveData
@@ -49,6 +51,16 @@ export function StoryScreen({ save, onCheckpoint, onSave, onTitle, content = mat
     }
   }
 
+  async function openGuild() {
+    if (pending.current || editing || !canEnterGuildHome(save)) return
+    pending.current = true
+    setBusy(true)
+    setError('')
+    try { await onSave(enterGuildHome(save)) }
+    catch { setError('保存に失敗しました。ギルドホームへは移動していません。') }
+    finally { pending.current = false; setBusy(false) }
+  }
+
   return <main ref={viewport} className="story-viewport">
     <div className="story-frame" data-testid="story-frame" style={{ width: fit.width, height: fit.height }}>
       <div className="story-stage" style={{ transform: `scale(${fit.scale})` }}>
@@ -84,6 +96,7 @@ export function StoryScreen({ save, onCheckpoint, onSave, onTitle, content = mat
             {storyId === MATILDA_STORY_ID
               ? <button disabled={busy} onClick={() => { void next('matilda.normal.start') }}>通常戦を試す</button>
               : <p>他の固定戦と本編への接続は後続段階で追加します。</p>}
+            {canEnterGuildHome(save) && <button disabled={busy || editing} onClick={() => { void openGuild() }}>ギルドホームを確認</button>}
           </>}
           {error && <p className="error-message" role="alert">{error}</p>}
         </section>}
