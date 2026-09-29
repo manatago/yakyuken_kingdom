@@ -5,9 +5,12 @@ import { validateDeck } from '../../../packages/domain/deck'
 import { acknowledgeTutorial, playTutorialRound, prepareTutorial, tutorialBattle, tutorialView } from '../../../packages/battle/tutorial'
 import { cardPresentation } from '../../../packages/cards/presentation'
 import { CardView } from './CardView'
+import type { ContentPack } from '../../../packages/content/schema'
+import { cardLayout, layoutStyle } from '../../../packages/content/layout'
 
-export function TutorialBattle({ save, onSave, onBusy }: {
+export function TutorialBattle({ save, onSave, onBusy, layouts = [] }: {
   save: SaveData; onSave: (save: SaveData) => Promise<void>; onBusy: (busy: boolean) => void
+  layouts?: ContentPack['layouts']
 }) {
   const [selected, setSelected] = useState<number | null>(null)
   const [busy, setBusy] = useState(false)
@@ -53,14 +56,16 @@ export function TutorialBattle({ save, onSave, onBusy }: {
   })
 
   return <>
-    <aside className="card-box" data-testid="card-box" aria-label="所持カード">
+    <aside className="card-box" data-testid="card-box" aria-label="所持カード" data-layout-id="layout.cards.box"
+      style={layoutStyle(cardLayout({ layouts }, 'layout.cards.box'))}>
       <h2>カードボックス</h2><p>所持 {save.player.inventory.length}枚（デッキ分を含む）</p>
       <div className="card-grid">{save.player.inventory.map((card, index) => !ledger
         ? <button key={index} className="card-button" aria-label={`追加 ${label(card)}`} disabled={busy || !available[index] || deck.length >= 9}
           onClick={() => { void saveDeck([...deck, card]) }}><CardView card={card} /><span className="card-hand">{label(card)}</span></button>
         : <span key={index}><CardView card={card} /><span className="card-hand">{label(card)}</span></span>)}</div>
     </aside>
-    <aside className="deck-panel" data-testid="deck-panel" aria-label="練習デッキ">
+    <aside className="deck-panel" data-testid="deck-panel" aria-label="練習デッキ" data-layout-id="layout.cards.deck"
+      style={{ ...layoutStyle(cardLayout({ layouts }, 'layout.cards.deck')), width: 1220 }}>
       <h2>{ledger ? `練習 ${ledger.acknowledged + 1}/2 ・残り ${deck.length - view.usedPlayer.length}枚` : `デッキ ${deck.length}/9`}</h2>
       <div className="deck-grid">{Array.from({ length: 9 }, (_, index) => deck[index]
         ? <button key={index} className={`card-button ${selected === index ? 'card-selected' : ''}`}
@@ -97,7 +102,8 @@ export function TutorialBattle({ save, onSave, onBusy }: {
       </div>}
       {error && <p className="error-message" role="alert">{error}</p>}
     </section>
-    {ledger && <section className="tutorial-showdown" aria-label="勝負カード">
+    {ledger && <section className="tutorial-showdown" aria-label="勝負カード" data-layout-id="layout.cards.showdown"
+      style={{ ...layoutStyle(cardLayout({ layouts }, 'layout.cards.showdown')), width: 1180 }}>
       {resultPending ? <>
         <div>あなた<CardView card={view.last!.player} compact={false} /></div>
         <div>マチルダ<CardView card={view.last!.opponent} compact={false} /></div>

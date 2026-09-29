@@ -1,5 +1,113 @@
 # Test results
 
+## 2026-09-28 — Task 3.5 concurrent-editor save protection
+
+- Red: independent stores both accepted the same expected layout (2 successes,
+  expected 1), and a separate Node process ignored a held project lock.
+  The subprocess harness first required CommonJS-compatible module loading;
+  after correcting that setup, both intended race checks failed before the fix.
+- Green: atomic project-directory lock encloses reread, target conflict check,
+  backup and replacement. A competing writer fails without touching the source;
+  success/error releases the lock. Stale crash locks fail closed, with manual
+  recovery documented; they are never expired automatically.
+- Focused project-store suite: all 5 passed. Independent-store overlap preserves
+  the winning record/backup, and a subsequent different-ID save retains it.
+  A child process cannot save under a held lock; retry works after release.
+- `npm run typecheck`: passed.
+- `npm test`: 43 unit and 13 integration tests passed, no failures/skips.
+- `JANKEN_UI_SCREENSHOT_DIR=test-results/layout npm run test:ui`: all 13 passed,
+  no failures/skips, including drag, failure/draft retention, save and reopen.
+- Both smoke targets passed. Deliberately rejected null IPC probes emit errors.
+- Isolated editor save -> copied game rebuild -> new game/Continue launches:
+  position/scale reflected both times; unrelated content, backup and player save
+  bytes retained. Build-isolation integration checks passed.
+- Screenshot checks retain a visible aspect-preserving preview with real art.
+- Coverage percentage unavailable; Windows execution remains for publication CI.
+
+All checks use host macOS and temporary project/player-data directories, cleaned
+in finally. No real saves, source edits through the app, Godot/images, services,
+credentials, dependencies, commits or PR writes. The two regression tests and
+project-wide locking address the prior concurrent-editor review finding.
+
+## 2026-09-28 — Task 3.5 preview-width resolution
+
+- Editor-only `align-items: stretch` restores workspace/preview width. Existing
+  drag coordinates and save expectations were not changed.
+- `npm run typecheck`: passed.
+- `npm test`: 41 unit and 13 integration tests passed, no failures/skips.
+- `JANKEN_UI_SCREENSHOT_DIR=test-results/layout npm run test:ui`: all 13 passed,
+  no failures/skips, including scaled drag, numeric preview, invalid input,
+  backup failure/draft retention, save, reload and editor reopen.
+- `npm run smoke:game` / `npm run smoke:editor`: both passed (`SMOKE_OK`).
+  Invalid null IPC writes deliberately emit handler errors during these probes.
+- Isolated source/assets copy: actual editor saved only card-box X=1510,
+  scale=0.9; other records and original-byte backup were preserved. Rebuilding
+  that copy's game and launching it twice (new game, then Continue) rendered
+  the saved position/scale both times and retained the player's save bytes.
+- Editor and game-reflection screenshots were visually inspected. Preview is
+  visible, aspect-preserving and displays real portraits/cards.
+- Coverage percentage is not measured; Windows execution remains for CI.
+
+Tests ran on host macOS with temporary project/player-data directories removed
+in finally. No actual player saves, source content through the app, Godot/assets,
+external services or credentials were changed. Build-isolation integration
+checks passed. Final review identified a remaining concurrent-editor write
+race: the write queue is instance-local and the byte recheck before rename does
+not serialize separate processes. Staging and Gate have not been performed;
+this is not a claim that Task 3.5 is complete. No follow-up code correction was
+made after that review finding.
+
+## 2026-09-28 — Task 3.5 import resolution (UI verification incomplete)
+
+- Six relative imports in LayoutEditor.tsx corrected, with no expectation changes.
+- `npm run typecheck`: passed.
+- `npm test`: 41 unit and 13 integration tests passed, no failures/skips.
+- `JANKEN_UI_SCREENSHOT_DIR=test-results/layout npm run test:ui`: 12 passed,
+  1 failed, none skipped. New layout UI failed its drag assertion at line 46.
+- Both smoke commands chained after UI, isolated game rebuild/restart reflection,
+  final review, staging and gate were not executed. Coverage is not measured.
+
+Read-only GUI diagnosis in a copied temporary project measured the card box and
+story stage at width/height 0. X remained 1554; stage.width/1920 was zero, so the
+expected drag coordinate was not finite. The diagnostic screenshot confirms an
+absent preview. Shared main CSS sets place-items:center; the editor flex root
+inherits centered alignment and its workspace shrinks around the 290px toolbar,
+leaving the preview no width. Proposed fix is editor-only stretch/width styling,
+not weaker drag expectations. No consecutive implementation fix was applied.
+
+New store/movement unit checks passed, including backup bytes, other-record
+preservation, stale/invalid writes, linked target and backup-error protection.
+Existing gameplay UI regressions passed. Saving/reopening the new editor remains
+unverified because its scenario stopped before those actions.
+
+All UI and diagnosis used host macOS and temporary project/player-data paths
+removed in finally. No real source JSON was written through the app and no real
+player saves, external services, Godot/assets or credentials were changed.
+The temporary dependency symlink was removed; the target dependencies remain.
+
+## 2026-09-28 — Task 3.5 initial implementation (verification incomplete)
+
+- Red: `node --import tsx --test tests/unit/layout.test.ts tests/unit/layout-store.test.ts`
+  failed because the new layout and project-layout-store modules did not exist.
+- Post-implementation `npm run typecheck` failed with TS2307 for six imports
+  in `electron/editor/src/LayoutEditor.tsx`, plus consequent TS7006 errors.
+- The chained focused unit run was not executed after typecheck failure.
+  Full unit/integration/UI suites, game rebuild/restart verification, screenshots,
+  both smoke targets, review, staging and gate have not been completed.
+- Coverage percentage is not measured; Windows verification remains for CI.
+
+The editor file uses four parent segments for root packages instead of three,
+and three for electron/preload instead of two. The referenced modules exist.
+Smallest proposed fix: correct those six relative imports, then typecheck and
+run the full verification plan. No consecutive code/test fix was applied after
+failure. SDD/TDD remains at Implement; this entry is not a completion claim.
+
+Node/Electron verification uses the macOS host, with new tests designed around
+temporary project and player-data directories cleaned in finally. Actual source
+content was not edited through the running editor, and actual player saves,
+Godot/assets, external services and credentials were not accessed. The temporary
+dependency symlink was removed after the failed check; its target is retained.
+
 ## 2026-09-28 — Task 3.4 preparation-test input resolution
 
 - `npm run typecheck`: passed.

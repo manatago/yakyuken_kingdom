@@ -1,3 +1,6 @@
 import { createRoot } from 'react-dom/client'
+import { LayoutEditor } from './LayoutEditor'
+import '../../renderer/src/style.css'
+import './style.css'
 
-createRoot(document.getElementById('root')!).render(<main><h1>Janken Editor</h1><p>Editor workspace</p></main>)
+createRoot(document.getElementById('root')!).render(<LayoutEditor />)

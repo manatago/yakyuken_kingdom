@@ -55,3 +55,8 @@ archives/
 # Chapter source backups written by the edit mode (see godot/game/SourceFileWriter.gd)
 *.gd.bak
 *.gd.tmp
+
+# Layout editor source-document backups and atomic-write temporaries
+content/stories/matilda-tutorial.json.bak
+content/stories/.matilda-layout.*.tmp*
+content/stories/.matilda-layout.lock/

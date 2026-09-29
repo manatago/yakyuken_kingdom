@@ -5,19 +5,21 @@ import { fitViewport } from '../../../packages/story/viewport'
 import { matildaContent, MATILDA_STORY_ID, tutorialImage } from './matilda-content'
 import { CardPanel } from './CardPanel'
 import { TutorialBattle } from './TutorialBattle'
+import type { ContentPack } from '../../../packages/content/schema'
 
-export function StoryScreen({ save, onCheckpoint, onSave, onTitle }: {
+export function StoryScreen({ save, onCheckpoint, onSave, onTitle, content = matildaContent }: {
   save: SaveData
   onCheckpoint: (checkpointId: string) => Promise<void>
   onSave: (save: SaveData) => Promise<void>
   onTitle: () => void
+  content?: ContentPack
 }) {
   const viewport = useRef<HTMLElement>(null)
   const pending = useRef(false)
   const [fit, setFit] = useState(() => fitViewport(0, 0))
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
-  const frame = useMemo(() => startStory(matildaContent, MATILDA_STORY_ID, save.progress.checkpoint_id), [save.progress.checkpoint_id])
+  const frame = useMemo(() => startStory(content, MATILDA_STORY_ID, save.progress.checkpoint_id), [content, save.progress.checkpoint_id])
 
   useLayoutEffect(() => {
     const element = viewport.current!
@@ -34,7 +36,7 @@ export function StoryScreen({ save, onCheckpoint, onSave, onTitle }: {
     setBusy(true)
     setError('')
     try {
-      const nextFrame = advanceStory(matildaContent, MATILDA_STORY_ID, frame)
+      const nextFrame = advanceStory(content, MATILDA_STORY_ID, frame)
       await onCheckpoint(nextFrame.step.id)
     } catch {
       setError('保存に失敗しました。会話は進んでいません。')
@@ -49,8 +51,9 @@ export function StoryScreen({ save, onCheckpoint, onSave, onTitle }: {
       <div className="story-stage" style={{ transform: `scale(${fit.scale})` }}>
         {frame.backgroundAssetId && <img className="story-background" alt="牢屋の背景" src={tutorialImage(frame.backgroundAssetId)} />}
         {Object.entries(frame.portraits).map(([slot, portrait]) => {
-          const layout = matildaContent.layouts.find((entry) => entry.id === portrait.layoutId)!
+          const layout = content.layouts.find((entry) => entry.id === portrait.layoutId)!
           return <img key={slot} className="story-portrait" data-testid="story-portrait" alt="マチルダの立ち絵"
+            data-layout-id={layout.id}
             src={tutorialImage(portrait.assetId)} style={{ left: layout.x, top: layout.y,
               transform: `translate(-50%, -50%) scale(${layout.flipped ? -layout.scale : layout.scale}, ${layout.scale})` }} />
         })}
@@ -61,8 +64,8 @@ export function StoryScreen({ save, onCheckpoint, onSave, onTitle }: {
         </header>
         <aside className="story-reserved story-items">アイテムボックス<br /><small>表示機能は準備中</small></aside>
         {frame.step.kind === 'battle'
-          ? <TutorialBattle save={save} onSave={onSave} onBusy={setBusy} />
-          : <CardPanel player={save.player} />}
+          ? <TutorialBattle save={save} onSave={onSave} onBusy={setBusy} layouts={content.layouts} />
+          : <CardPanel player={save.player} layouts={content.layouts} />}
         {frame.step.kind !== 'battle' &&
         <section className="story-dialogue" aria-label="会話">
           {frame.step.kind === 'line' ? <>
