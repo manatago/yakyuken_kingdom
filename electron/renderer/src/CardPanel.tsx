@@ -6,7 +6,7 @@ import { CardView } from './CardView'
 import type { ContentPack } from '../../../packages/content/schema'
 import { cardLayout, layoutStyle } from '../../../packages/content/layout'
 
-export function CardPanel({ player, layouts = [] }: { player: SavePlayer; layouts?: ContentPack['layouts'] }) {
+export function CardPanel({ player, layouts = [], onEdit }: { player: SavePlayer; layouts?: ContentPack['layouts']; onEdit?: () => void }) {
   const [preview, setPreview] = useState<Card | null>(null)
   const overflow = player.deck.slice(9)
   function cardButton(card: Card, index: number) {
@@ -37,6 +37,8 @@ export function CardPanel({ player, layouts = [] }: { player: SavePlayer; layout
       <h2>カード拡大表示</h2>
       {preview ? <CardView card={preview} compact={false} /> : <p>カードをクリックして確認</p>}
       <small>表示のみ・デッキや進行は変わりません</small>
+      {onEdit && <button className="edit-lineup" onClick={onEdit}>編成を編集</button>}
+      {player.prepared_deck && <p>次回用の編成：{player.prepared_deck.length}枚 保存済み</p>}
     </aside>
   </>
 }

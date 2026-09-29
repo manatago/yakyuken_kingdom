@@ -1,5 +1,38 @@
 # Test results
 
+## 2026-09-29 — Task 4.1 CI image selection correction
+
+- Expanded only the existing LFS `--include` selection to all 15 hand/grade card images. Previous background and portrait selections remain. Authentication helper, Secrets environment, credential options and endpoint/HTTPS configuration are unchanged.
+- Strengthened the existing integration test to require all fifteen exact card paths and reject extra card selections. Existing authentication isolation checks remain.
+- Passed on macOS: typecheck, 48 unit tests, 13 integration tests, 16 UI tests, game/editor smoke checks. Smoke logs include deliberately rejected malformed IPC payloads before both SMOKE_OK messages.
+- Existing Matilda journey, editor isolation and historical battle protection checks passed. Test saves were temporary and removed. FHD screenshot remains in ignored test-results/cards/deck-editor.png.
+- GitHub Windows/macOS CI and actual remote LFS retrieval will run after publication, not in this local verification. Coverage percentage is not measured.
+- Task4.1 implementation/local verification is complete; final review and gate are recorded by the workflow. No commit/push/PR creation in resolve.
+
+## 2026-09-29 — Task 4.1 fixture correction and local verification
+
+- Fixed only the invalid UI fixture: inventory now owns every copy in its recorded battle deck; battle ID comes from the real JSON. UI counts reflect the corrected inventory. Save validation and record-preservation expectations are unchanged.
+- Passed: `npm run typecheck`, 48 unit tests, 13 integration tests, 16 UI tests, `npm run smoke:game`, `npm run smoke:editor`.
+- Edited lineup persists through restart; cancel/read do not write the save; failed save retains its draft and previous file for retry. Inventory, money, historical battle deck and progress remain unchanged.
+- Viewed `test-results/cards/deck-editor.png` at FHD: all grades and selected lineup labels visible, status and actions readable. Disabled inventory cards are dimmed; scrollable inventory includes the extra Normal copies.
+- Isolated mkdtemp user-data removed in finally. No real saves or external services used. Existing dependency symlink is removed after verification; generated dist/screenshots remain ignored.
+- Windows execution and coverage percentage are not measured locally. No video/HTML player generator is available.
+- Remaining: CI LFS fetch includes only Normal images while the new UI requires every grade. CI change is awaiting permission and is not applied. Final review/gate and task4.1 completion remain pending.
+
+## 2026-09-29 14:27 JST — Task 4.1 verification stopped
+
+- Branch: `feature/electron-card-management`, based on develop `03f2487`.
+- RED: new deck-editing test failed because its domain module did not exist.
+- After implementation: typecheck passed; 48 unit and 13 integration tests passed.
+- UI: 15 passed, 1 failed. All existing tests passed. New editing test could not Continue from its fixture.
+- Diagnostic: fixture owns one Normal per hand but its recorded deck uses three per hand; parseSave rejects it with `Save deck contains cards not owned by the player`.
+- A separate diagnostic with sufficient inventory exposes its incorrect battle ID (`matilda.practice` instead of `battle.matilda.practice`), rejected with `Invalid tutorial progress`.
+- Correct only the fixture, not save validation or expected ownership/record preservation. No consecutive correction applied in this run.
+- Editing UI, all-grade image rendering, failed-save recovery and edited-lineup restart remain unverified; no new screenshot was produced.
+- CI currently fetches Normal images only. Expanding its LFS image selection is awaiting permission; credentials and HTTPS are out of scope.
+- UI used isolated mkdtemp saves and finally cleanup. No real user saves, external API or database used. Existing dependencies temporarily linked. Windows and coverage percentage not measured.
+- Review, staging, gate and task-list updates not completed. No commit or push.
+
 ## 2026-09-28 — PR #26 Windows isolated-build path correction
 
 - Failure evidence: Windows job `109240419679`, run `36516678634`, passed
