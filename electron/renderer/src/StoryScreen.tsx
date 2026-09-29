@@ -67,7 +67,8 @@ export function StoryScreen({ save, onCheckpoint, onSave, onTitle, content = mat
         <aside className="story-reserved story-items">アイテムボックス<br /><small>表示機能は準備中</small></aside>
         {frame.step.kind === 'battle'
           ? <TutorialBattle save={save} onSave={onSave} onBusy={setBusy} layouts={content.layouts} />
-          : <CardPanel player={save.player} layouts={content.layouts} onEdit={() => setEditing(true)} />}
+          : <CardPanel player={save.player} layouts={content.layouts} editDisabled={busy}
+            onEdit={() => { if (!pending.current) setEditing(true) }} />}
         {editing && <DeckEditor save={save} onSave={onSave} onClose={() => setEditing(false)} />}
         {frame.step.kind !== 'battle' &&
         <section className="story-dialogue" aria-label="会話">

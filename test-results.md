@@ -1,5 +1,28 @@
 # Test results
 
+## 2026-09-29 — PR #27 pending-save regression resolved
+
+- CardPanel disables lineup editing while StoryScreen saves a dialogue checkpoint; the editor-opening callback also checks the pending ref. Save schema, historical deck, domain logic, Godot assets, CI and authentication/HTTPS configuration are unchanged.
+- The two delayed-save UI cases hold the real atomic save before rename, assert the disabled editor cannot open and the existing file remains intact, then cover success/failure recovery and subsequent lineup persistence without changing progress or the historical deck. The test-only filesystem wrapper is restored and each isolated Electron process and user-data directory is cleaned up.
+- Corrected the test-only Electron evaluate callback to accept the supplied failure flag as its second argument. Expectations were not weakened. Both regressions reproduced the enabled-editor defect before the application correction and now pass.
+- Passed on macOS: `npm run typecheck`, 48 unit tests, 13 integration tests, 18 UI tests, `npm run smoke:game`, `npm run smoke:editor`. Both smoke checks deliberately reject malformed IPC requests and then print SMOKE_OK.
+- Temporary dependency symlink removed after verification. Windows execution for this revision awaits publication/CI; coverage percentage not measured. No real saves, external services, commits or pushes used. Final review and gate are reported separately by the workflow.
+
+## 2026-09-29 15:45 JST — PR #27 pending-save fix verification stopped
+
+- Replaced unsupported main-process `require` with `process.getBuiltinModule`. Both delayed-save regression cases then failed at the expected assertion: editor entry was enabled while the actual atomic save was held. This reproduced the reported defect before application changes.
+- CardPanel now accepts an edit-disabled flag; StoryScreen passes its saving state and guards editor opening with the pending ref. No save format, filesystem store, authentication or HTTPS settings changed.
+- Typecheck, unit and integration suites passed. Full UI suite: 17/18 passed. The new successful-save case failed with checkpoint `matilda.start` rather than `matilda.items.box`; the failed-save case and all existing UI cases passed. Smoke commands were not reached after UI failure.
+- Root cause: ElectronApplication.evaluate supplies the Electron module as its callback's first argument, with user input second. The release callback incorrectly used its first argument as the failure flag, so it injected failure in the success case as well. Proposed correction: accept `(_electron, fail)` in that callback, retaining the current assertions.
+- Stopped without a consecutive correction. Temporary test data/processes cleaned and dependency symlink removed. Review and gate remain pending; Windows verification and coverage measurement not performed in this run.
+
+## 2026-09-29 15:41 JST — PR #27 pending-save regression test setup failure
+
+- Added two UI regression scenarios for delayed dialogue saves: editor entry must be disabled until success/failure settles, then lineup saving must preserve the resulting checkpoint and historical deck.
+- Command: `node --test --test-name-pattern='dialogue save blocks' tests/ui/deck-editing.test.mjs`. Both scenarios failed in setup with `electronApplication.evaluate: ReferenceError: require is not defined` before the pending-save assertions ran. This is a test setup failure, not reproduction evidence for the application defect.
+- Proposed next correction: load the filesystem promises module using an ESM-compatible import inside the main-process evaluation. No application changes or consecutive test corrections were made after this failure.
+- Electron processes closed and temporary test save directories removed in finally; temporary dependency symlink removed. No real saves, authentication/HTTPS configuration, commits or pushes changed. Full verification, diff review and gate remain pending; coverage not measured.
+
 ## 2026-09-29 — Task 4.1 CI image selection correction
 
 - Expanded only the existing LFS `--include` selection to all 15 hand/grade card images. Previous background and portrait selections remain. Authentication helper, Secrets environment, credential options and endpoint/HTTPS configuration are unchanged.

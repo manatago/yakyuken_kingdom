@@ -10,6 +10,75 @@ import { _electron as electron } from 'playwright-core'
 const root = fileURLToPath(new URL('../..', import.meta.url))
 const executablePath = createRequire(import.meta.url)('electron')
 
+for (const fail of [false, true]) {
+  test(`dialogue save blocks lineup editing and restores it after ${fail ? 'failure' : 'success'}`, { timeout: 30_000 }, async () => {
+    const data = await mkdtemp(join(tmpdir(), 'janken-lineup-pending-'))
+    const target = join(data, 'janken-save.json')
+    const cards = ['rock', 'scissors', 'paper'].flatMap((hand) => Array.from({ length: 3 }, () => ({ hand, grade: 1 })))
+    const original = { save_version: 1, player: { inventory: cards, deck: cards, money: 0 },
+      progress: { checkpoint_id: 'matilda.start', flags: [] } }
+    const bytes = JSON.stringify(original)
+    let app
+    try {
+      await writeFile(target, bytes)
+      app = await electron.launch({ executablePath, args: [join(root, 'dist/game/main/index.js'), `--user-data-dir=${data}`] })
+      const page = await app.firstWindow()
+      await page.getByRole('button', { name: 'つづきから', exact: true }).click()
+      const edit = page.getByRole('button', { name: '編成を編集', exact: true })
+      await edit.waitFor()
+      // Hold the actual atomic save before rename, without changing the production IPC handler.
+      await app.evaluate(() => {
+        const fs = process.getBuiltinModule('node:fs/promises')
+        const rename = fs.rename
+        let started
+        globalThis.heldSaveStarted = new Promise((resolve) => { started = resolve })
+        const gate = new Promise((resolve) => { globalThis.releaseHeldSave = resolve })
+        fs.rename = async (...args) => {
+          try {
+            started()
+            const fail = await gate
+            if (fail) throw new Error('Injected delayed save failure')
+            return await rename(...args)
+          } finally {
+            fs.rename = rename
+          }
+        }
+      })
+      await page.getByRole('button', { name: '次へ', exact: true }).click()
+      await app.evaluate(async () => { await globalThis.heldSaveStarted })
+      assert.equal(await edit.isDisabled(), true)
+      await edit.evaluate((button) => button.click())
+      assert.equal(await page.getByRole('dialog').count(), 0)
+      assert.equal(await readFile(target, 'utf8'), bytes)
+      await app.evaluate((_electron, fail) => globalThis.releaseHeldSave(fail), fail)
+      await page.waitForFunction(() => !document.querySelector('.edit-lineup').disabled)
+      const checkpoint = fail ? 'matilda.start' : 'matilda.items.box'
+      assert.equal(await page.getByTestId('checkpoint-id').textContent(), checkpoint)
+      if (fail) {
+        await page.getByRole('alert').waitFor()
+        assert.equal(await readFile(target, 'utf8'), bytes)
+      }
+      await edit.click()
+      const dialog = page.getByRole('dialog')
+      await dialog.getByRole('button', { name: '編成から削除 グー N', exact: true }).first().click()
+      await dialog.getByRole('button', { name: '編成に追加 グー N', exact: true }).first().click()
+      await dialog.getByRole('button', { name: '編成を保存', exact: true }).click()
+      await dialog.waitFor({ state: 'detached' })
+      const saved = JSON.parse(await readFile(target, 'utf8'))
+      assert.deepEqual(saved.progress, { ...original.progress, checkpoint_id: checkpoint })
+      assert.deepEqual(saved.player.deck, cards)
+      assert.deepEqual(saved.player.prepared_deck, [...cards.slice(1), cards[0]])
+    } finally {
+      try {
+        if (app) {
+          await app.evaluate(() => globalThis.releaseHeldSave?.(false)).catch(() => {})
+          await app.close()
+        }
+      } finally { await rm(data, { recursive: true, force: true }) }
+    }
+  })
+}
+
 test('all grades edit, cancel, recover from failed save and resume without rewriting battle records', { timeout: 90_000 }, async () => {
   const data = await mkdtemp(join(tmpdir(), 'janken-lineup-'))
   const target = join(data, 'janken-save.json')
