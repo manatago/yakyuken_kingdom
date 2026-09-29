@@ -7,6 +7,7 @@ export const SAVE_VERSION = 1 as const
 export interface SavePlayer {
   readonly inventory: readonly Card[]
   readonly deck: readonly Card[]
+  readonly prepared_deck?: readonly Card[]
   readonly money: number
 }
 
@@ -62,9 +63,13 @@ export function parseSave(value: unknown): SaveData {
   const root = record(value, ['save_version', 'player', 'progress'])
   if (root.save_version !== SAVE_VERSION) throw new RangeError('Unsupported save version')
 
-  const player = record(root.player, ['inventory', 'deck', 'money'])
+  const player = record(root.player, ['inventory', 'deck', 'money'], ['prepared_deck'])
   const inventory = cards(player.inventory)
   const deck = cards(player.deck)
+  const prepared = Object.hasOwn(player, 'prepared_deck') ? cards(player.prepared_deck) : undefined
+  if (prepared && !validateDeck(inventory, prepared, 9).valid) {
+    throw new RangeError('Prepared deck must contain nine owned cards')
+  }
   if (!Number.isSafeInteger(player.money) || (player.money as number) < 0) {
     throw new RangeError('Save money must be a non-negative safe integer')
   }
@@ -91,7 +96,7 @@ export function parseSave(value: unknown): SaveData {
   }
   const save: SaveData = {
     save_version: SAVE_VERSION,
-    player: { inventory, deck, money: player.money as number },
+    player: { inventory, deck, money: player.money as number, ...(prepared ? { prepared_deck: prepared } : {}) },
     progress: { checkpoint_id: identifier(progress.checkpoint_id), flags, ...(tutorial ? { tutorial } : {}) }
   }
   validateTutorialState(save)

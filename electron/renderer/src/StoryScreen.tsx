@@ -5,6 +5,7 @@ import { fitViewport } from '../../../packages/story/viewport'
 import { matildaContent, MATILDA_STORY_ID, tutorialImage } from './matilda-content'
 import { CardPanel } from './CardPanel'
 import { TutorialBattle } from './TutorialBattle'
+import { DeckEditor } from './DeckEditor'
 import type { ContentPack } from '../../../packages/content/schema'
 
 export function StoryScreen({ save, onCheckpoint, onSave, onTitle, content = matildaContent }: {
@@ -19,6 +20,7 @@ export function StoryScreen({ save, onCheckpoint, onSave, onTitle, content = mat
   const [fit, setFit] = useState(() => fitViewport(0, 0))
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [editing, setEditing] = useState(false)
   const frame = useMemo(() => startStory(content, MATILDA_STORY_ID, save.progress.checkpoint_id), [content, save.progress.checkpoint_id])
 
   useLayoutEffect(() => {
@@ -65,7 +67,9 @@ export function StoryScreen({ save, onCheckpoint, onSave, onTitle, content = mat
         <aside className="story-reserved story-items">アイテムボックス<br /><small>表示機能は準備中</small></aside>
         {frame.step.kind === 'battle'
           ? <TutorialBattle save={save} onSave={onSave} onBusy={setBusy} layouts={content.layouts} />
-          : <CardPanel player={save.player} layouts={content.layouts} />}
+          : <CardPanel player={save.player} layouts={content.layouts} editDisabled={busy}
+            onEdit={() => { if (!pending.current) setEditing(true) }} />}
+        {editing && <DeckEditor save={save} onSave={onSave} onClose={() => setEditing(false)} />}
         {frame.step.kind !== 'battle' &&
         <section className="story-dialogue" aria-label="会話">
           {frame.step.kind === 'line' ? <>

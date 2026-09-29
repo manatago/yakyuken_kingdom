@@ -29,7 +29,8 @@ test('editor JSON save survives an isolated game rebuild and restart', { timeout
     const original = await readFile(target, 'utf8')
     const source = JSON.parse(original)
     const paths = [...source.assets.map((asset) => asset.path),
-      ...['rock', 'scissors', 'paper'].map((hand) => `godot/assets/battle/cards/${hand}_normal.png`)]
+      ...['rock', 'scissors', 'paper'].flatMap((hand) => ['normal', 'bronze', 'silver', 'gold', 'platinum']
+        .map((grade) => `godot/assets/battle/cards/${hand}_${grade}.png`))]
     for (const path of paths) {
       await mkdir(dirname(join(project, path)), { recursive: true })
       await cp(join(root, path), join(project, path))

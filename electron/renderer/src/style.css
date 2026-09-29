@@ -73,9 +73,9 @@ button:disabled { opacity: .45; cursor: default; }
 .card-box h2, .deck-panel h2, .card-preview h2 { font-size: 22px; margin: 0 0 8px; }
 .card-box { right: 36px; top: 190px; width: 330px; height: 610px; }
 .card-box p { font-size: 16px; margin: 0 0 8px; }
-.card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; max-height: 525px; overflow-y: auto; }
+.card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; flex: 1; min-height: 0; overflow-y: auto; }
 .deck-panel { left: 350px; right: 350px; bottom: 16px; height: 180px; }
-.deck-grid { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 12px; height: 126px; overflow: auto; }
+.deck-grid { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 12px; height: 132px; overflow: auto; }
 .deck-grid .card-button { width: 68px; justify-self: center; }
 .empty-deck-slot { display: grid; place-items: center; border: 1px dashed #c7a66a; width: 68px; height: 102px; justify-self: center; color: #c7a66a; }
 .deck-panel small { font-size: 16px; font-weight: normal; }
@@ -96,3 +96,12 @@ button:disabled { opacity: .45; cursor: default; }
 .tutorial-controls button { font-size: 25px; }
 .tutorial-showdown { position: absolute; left: 350px; right: 390px; top: 170px; display: flex; justify-content: center; gap: 60px; font-size: 26px; }
 .tutorial-showdown .card-view { width: 210px; }
+.card-box { display: flex; flex-direction: column; }
+.card-grid .card-button { align-self: start; }
+.edit-lineup { font-size: 18px; padding: 6px 12px; margin-bottom: 8px; }
+.deck-editor { width: min(1200px, 94vw); max-height: 92vh; padding: 24px; color: #f4e8d2; background: #111829; border: 2px solid #c7a66a; }
+.deck-editor::backdrop { background: #000b; }
+.deck-editor h2 { margin-top: 0; }
+.editor-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.editor-card-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; max-height: 52vh; overflow-y: auto; padding: 4px; }
+.editor-actions { display: flex; justify-content: flex-end; gap: 16px; }
