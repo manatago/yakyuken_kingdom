@@ -14,12 +14,16 @@ const executablePath = require('electron')
 const viteCli = join(dirname(require.resolve('electron-vite')), '../bin/electron-vite.js')
 
 test('editor JSON save survives an isolated game rebuild and restart', { timeout: 180_000 }, async () => {
-  const project = await mkdtemp(join(tmpdir(), 'janken-layout-reflection-'))
+  const temporary = await mkdtemp(join(tmpdir(), 'janken-layout-reflection-'))
   let app
   try {
+    // Vite resolves HTML inputs to real paths; Windows TEMP can use 8.3 aliases.
+    const project = await realpath(temporary)
     for (const path of ['electron', 'packages', 'content', 'package.json', 'tsconfig.json', 'electron.vite.game.config.ts']) {
       await cp(join(root, path), join(project, path), { recursive: true })
     }
+    const rendererRoot = join(project, 'electron/renderer')
+    assert.equal(rendererRoot, await realpath(rendererRoot))
     await symlink(await realpath(join(root, 'node_modules')), join(project, 'node_modules'), process.platform === 'win32' ? 'junction' : 'dir')
     const target = join(project, 'content/stories/matilda-tutorial.json')
     const original = await readFile(target, 'utf8')
@@ -73,7 +77,7 @@ test('editor JSON save survives an isolated game rebuild and restart', { timeout
     try {
       if (app) await app.close()
     } finally {
-      await rm(project, { recursive: true, force: true })
+      await rm(temporary, { recursive: true, force: true })
     }
   }
 })

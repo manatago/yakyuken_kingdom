@@ -1,5 +1,35 @@
 # Test results
 
+## 2026-09-28 — PR #26 Windows isolated-build path correction
+
+- Failure evidence: Windows job `109240419679`, run `36516678634`, passed
+  45 unit/13 integration tests but failed the new layout-reflection UI test
+  (14 UI passed, 1 failed). Vite rejected an HTML output name containing
+  `../../.../runneradmin/AppData/Local/Temp/...`; rebuilt game startup was not
+  reached and the later Windows smoke steps were skipped.
+- Correction: canonicalize the created temporary project with `realpath`
+  before deriving copy, editor, build and game paths. Keep the original
+  temporary-directory handle for cleanup even if canonicalization fails.
+  Add a canonical renderer-directory assertion; existing save/reflection
+  assertions and isolation are unchanged.
+- Local macOS also exposes an alias: `tmpdir()` uses `/var/folders/...`,
+  while its real path uses `/private/var/folders/...`. The corrected test
+  successfully builds and launches the canonical isolated project twice.
+- `npm run typecheck`: passed.
+- `npm test`: 45 unit and 13 integration tests passed, no failures/skips.
+- `npm run test:ui`: 15 passed, no failures/skips, including layout reflection.
+- `npm run smoke:game` / `npm run smoke:editor`: both `SMOKE_OK`.
+- Windows short-name/root mismatch remains the likely diagnosis, not a claim
+  of successful Windows execution. Publish the correction and confirm the
+  existing Windows/macOS CI before treating PR #26 as merge-ready.
+- Prevention: strengthened regression check for canonical renderer roots.
+  No separate review lesson is needed; the guard is linked directly to the test.
+
+Electron checks ran on host macOS with isolated project/player-data directories
+removed in finally. The temporary dependency link was removed without deleting
+its target. No real saves, source JSON, Godot/assets, dependencies, CI settings,
+credentials or PR state changed. Coverage percentage remains unmeasured.
+
 ## 2026-09-28 — Task 3.6 Matilda journey verification
 
 - Red: `node --import tsx --test tests/unit/matilda-journey.test.ts` failed
