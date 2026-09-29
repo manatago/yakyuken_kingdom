@@ -4,6 +4,7 @@ import { getCardDefinition } from '../domain/card-catalog'
 import { judgeCards, type Card, type BattleResult } from '../domain/card'
 import { validateDeck } from '../domain/deck'
 import type { SaveData } from '../domain/save'
+import { isFixedCheckpoint } from './fixed'
 
 export const tutorialBattle = content.battles[0] as BattleContent
 export const TUTORIAL_CHECKPOINT = 'matilda.await-deck'
@@ -48,7 +49,7 @@ export function tutorialView(save: SaveData) {
 export function validateTutorialState(save: SaveData) {
   const ledger = save.progress.tutorial
   const completed = save.progress.flags.includes(TUTORIAL_COMPLETE)
-  const completionCheckpoint = ['matilda.complete', 'matilda.end'].includes(save.progress.checkpoint_id)
+  const completionCheckpoint = ['matilda.complete', 'matilda.end'].includes(save.progress.checkpoint_id) || isFixedCheckpoint(save.progress.checkpoint_id)
   if (!ledger) {
     if (completed || completionCheckpoint) throw new Error('Missing tutorial completion ledger')
     return

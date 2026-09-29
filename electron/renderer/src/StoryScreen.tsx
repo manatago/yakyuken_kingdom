@@ -6,14 +6,16 @@ import { matildaContent, MATILDA_STORY_ID, tutorialImage } from './matilda-conte
 import { CardPanel } from './CardPanel'
 import { TutorialBattle } from './TutorialBattle'
 import { DeckEditor } from './DeckEditor'
+import { FixedBattle } from './FixedBattle'
 import type { ContentPack } from '../../../packages/content/schema'
 
-export function StoryScreen({ save, onCheckpoint, onSave, onTitle, content = matildaContent }: {
+export function StoryScreen({ save, onCheckpoint, onSave, onTitle, content = matildaContent, storyId = MATILDA_STORY_ID }: {
   save: SaveData
   onCheckpoint: (checkpointId: string) => Promise<void>
   onSave: (save: SaveData) => Promise<void>
   onTitle: () => void
   content?: ContentPack
+  storyId?: string
 }) {
   const viewport = useRef<HTMLElement>(null)
   const pending = useRef(false)
@@ -21,7 +23,7 @@ export function StoryScreen({ save, onCheckpoint, onSave, onTitle, content = mat
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [editing, setEditing] = useState(false)
-  const frame = useMemo(() => startStory(content, MATILDA_STORY_ID, save.progress.checkpoint_id), [content, save.progress.checkpoint_id])
+  const frame = useMemo(() => startStory(content, storyId, save.progress.checkpoint_id), [content, storyId, save.progress.checkpoint_id])
 
   useLayoutEffect(() => {
     const element = viewport.current!
@@ -32,14 +34,13 @@ export function StoryScreen({ save, onCheckpoint, onSave, onTitle, content = mat
     return () => observer.disconnect()
   }, [])
 
-  async function next() {
-    if (pending.current || frame.step.kind === 'end') return
+  async function next(checkpoint?: string) {
+    if (pending.current || frame.step.kind === 'end' && !checkpoint) return
     pending.current = true
     setBusy(true)
     setError('')
     try {
-      const nextFrame = advanceStory(content, MATILDA_STORY_ID, frame)
-      await onCheckpoint(nextFrame.step.id)
+      await onCheckpoint(checkpoint ?? advanceStory(content, storyId, frame).step.id)
     } catch {
       setError('保存に失敗しました。会話は進んでいません。')
     } finally {
@@ -60,13 +61,15 @@ export function StoryScreen({ save, onCheckpoint, onSave, onTitle, content = mat
               transform: `translate(-50%, -50%) scale(${layout.flipped ? -layout.scale : layout.scale}, ${layout.scale})` }} />
         })}
         <header className="story-header">
-          <h1>マチルダのチュートリアル</h1>
+          <h1>{storyId === MATILDA_STORY_ID ? 'マチルダのチュートリアル' : 'マチルダ通常戦'}</h1>
           <span className="story-checkpoint" data-testid="checkpoint-id">{frame.step.id}</span>
           <button onClick={onTitle} disabled={busy}>タイトルに戻る</button>
         </header>
         <aside className="story-reserved story-items">アイテムボックス<br /><small>表示機能は準備中</small></aside>
         {frame.step.kind === 'battle'
-          ? <TutorialBattle save={save} onSave={onSave} onBusy={setBusy} layouts={content.layouts} />
+          ? content.battles.find((battle) => frame.step.kind === 'battle' && battle.id === frame.step.battle_id)?.hp
+            ? <FixedBattle save={save} onSave={onSave} onBusy={setBusy} layouts={content.layouts} />
+            : <TutorialBattle save={save} onSave={onSave} onBusy={setBusy} layouts={content.layouts} />
           : <CardPanel player={save.player} layouts={content.layouts} editDisabled={busy}
             onEdit={() => { if (!pending.current) setEditing(true) }} />}
         {editing && <DeckEditor save={save} onSave={onSave} onClose={() => setEditing(false)} />}
@@ -77,8 +80,10 @@ export function StoryScreen({ save, onCheckpoint, onSave, onTitle, content = mat
             <p className="story-text" data-testid="story-text" aria-live="polite">{frame.text}</p>
             <button onClick={() => { void next() }} disabled={busy}>次へ</button>
           </> : <>
-            <h2>チュートリアル完了</h2>
-            <p>本番のバトルは後続タスクで実装します。</p>
+            <h2>{storyId === MATILDA_STORY_ID ? 'チュートリアル完了' : '通常戦の確認完了'}</h2>
+            {storyId === MATILDA_STORY_ID
+              ? <button disabled={busy} onClick={() => { void next('matilda.normal.start') }}>通常戦を試す</button>
+              : <p>他の固定戦と本編への接続は後続段階で追加します。</p>}
           </>}
           {error && <p className="error-message" role="alert">{error}</p>}
         </section>}
