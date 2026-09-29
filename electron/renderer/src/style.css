@@ -77,6 +77,8 @@ button:disabled { opacity: .45; cursor: default; }
 .deck-panel { left: 350px; right: 350px; bottom: 16px; height: 180px; }
 .deck-grid { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 12px; height: 132px; overflow: auto; }
 .deck-grid .card-button { width: 68px; justify-self: center; }
+.fixed-deck { height: 190px; }
+.fixed-deck .deck-grid .card-button { align-self: start; }
 .empty-deck-slot { display: grid; place-items: center; border: 1px dashed #c7a66a; width: 68px; height: 102px; justify-self: center; color: #c7a66a; }
 .deck-panel small { font-size: 16px; font-weight: normal; }
 .card-preview { left: 36px; top: 450px; width: 290px; min-height: 120px; }

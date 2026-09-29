@@ -4,7 +4,8 @@ import { createInitialGameSave } from '../../../packages/domain/new-game'
 import type { SaveData } from '../../../packages/domain/save'
 import type { GameApi } from '../../preload/api'
 import './style.css'
-import { isMatildaCheckpoint } from './matilda-content'
+import { isMatildaCheckpoint, normalContent, matildaContent, NORMAL_STORY_ID, MATILDA_STORY_ID } from './matilda-content'
+import { isFixedCheckpoint } from '../../../packages/battle/fixed'
 import { StoryScreen } from './StoryScreen'
 
 const game = (globalThis as typeof globalThis & { janken: GameApi }).janken
@@ -52,7 +53,9 @@ function GameScreen() {
 
   if (active) {
     if (isMatildaCheckpoint(active.progress.checkpoint_id)) {
-      return <StoryScreen save={active} onTitle={() => setActive(null)} onSave={async (nextSave) => {
+      const normal = isFixedCheckpoint(active.progress.checkpoint_id)
+      return <StoryScreen save={active} content={normal ? normalContent : matildaContent}
+        storyId={normal ? NORMAL_STORY_ID : MATILDA_STORY_ID} onTitle={() => setActive(null)} onSave={async (nextSave) => {
         await game.save.write(nextSave)
         setSaved(nextSave)
         setActive(nextSave)

@@ -144,7 +144,7 @@ export function validateContent(value: unknown, assetExists: (path: string) => b
     const battle = object(entry, path, [
       'id', 'opponent_id', 'background_asset_id', 'player_deck_size', 'opponent_deck_size',
       'opponent_card_ids', 'gold_reward', 'transfer_cards', 'phases'
-    ])
+    ], ['hp'])
     if (battle === null) return
     register(battle.id, `${path}.id`, 'battle')
     identifier(battle.opponent_id, `${path}.opponent_id`)
@@ -171,6 +171,18 @@ export function validateContent(value: unknown, assetExists: (path: string) => b
     }
     if (typeof battle.transfer_cards !== 'boolean') {
       issue(`${path}.transfer_cards`, 'invalid_value', 'Expected a boolean')
+    }
+    if (Object.hasOwn(battle, 'hp')) {
+      const hp = object(battle.hp, `${path}.hp`, ['player', 'opponent', 'first_hand', 'grade_effect_passes', 'lose_gold'])
+      if (hp) {
+        nonnegativeInteger(hp.player, `${path}.hp.player`, true)
+        nonnegativeInteger(hp.opponent, `${path}.hp.opponent`, true)
+        nonnegativeInteger(hp.lose_gold, `${path}.hp.lose_gold`)
+        const passes = nonnegativeInteger(hp.grade_effect_passes, `${path}.hp.grade_effect_passes`)
+        if (passes !== null && passes > 2) issue(`${path}.hp.grade_effect_passes`, 'invalid_value', 'At most two passes supported')
+        if (!HANDS.includes(hp.first_hand as (typeof HANDS)[number])) issue(`${path}.hp.first_hand`, 'invalid_value', 'Invalid first hand')
+        if (battle.transfer_cards !== false) issue(`${path}.transfer_cards`, 'invalid_value', 'HP battles do not yet support card transfers')
+      }
     }
     const phases = array(battle.phases, `${path}.phases`)
     if (phases.length === 0) issue(`${path}.phases`, 'invalid_value', 'Battle must contain a phase')

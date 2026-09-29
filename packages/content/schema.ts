@@ -32,6 +32,13 @@ export interface BattleContent {
   gold_reward: { min: number; max: number }
   transfer_cards: boolean
   phases: BattlePhase[]
+  hp?: {
+    player: number
+    opponent: number
+    first_hand: Hand
+    grade_effect_passes: number
+    lose_gold: number
+  }
 }
 
 export type StoryStep =

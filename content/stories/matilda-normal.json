@@ -1,0 +1,31 @@
+{
+  "assets": [
+    { "id": "background.prison", "path": "godot/assets/backgrounds/prologue/bg05_prison_cell.png" },
+    { "id": "portrait.matilda.intro", "path": "godot/assets/characters/mob/guard/default/guard_default_024.png" }
+  ],
+  "layouts": [
+    { "id": "layout.matilda.intro", "x": 960, "y": 440, "scale": 0.8, "flipped": false },
+    { "id": "layout.cards.box", "x": 1554, "y": 190, "scale": 1, "flipped": false },
+    { "id": "layout.cards.deck", "x": 350, "y": 884, "scale": 1, "flipped": false },
+    { "id": "layout.cards.showdown", "x": 350, "y": 170, "scale": 1, "flipped": false }
+  ],
+  "battles": [{
+    "id": "battle.matilda.normal", "opponent_id": "matilda", "background_asset_id": "background.prison",
+    "player_deck_size": 9, "opponent_deck_size": 9,
+    "opponent_card_ids": ["rock_normal", "rock_normal", "rock_normal", "scissors_normal", "scissors_normal", "scissors_normal", "paper_normal", "paper_normal", "paper_normal"],
+    "gold_reward": { "min": 10, "max": 30 }, "transfer_cards": false,
+    "hp": { "player": 3, "opponent": 3, "first_hand": "rock", "grade_effect_passes": 2, "lose_gold": 10 },
+    "phases": [{ "id": "phase.matilda.normal", "rules": [] }]
+  }],
+  "stories": [{
+    "id": "story.matilda.normal", "start_id": "matilda.normal.background",
+    "steps": [
+      { "id": "matilda.normal.background", "kind": "background", "asset_id": "background.prison", "next_id": "matilda.normal.portrait" },
+      { "id": "matilda.normal.portrait", "kind": "show_portrait", "slot_id": "matilda", "asset_id": "portrait.matilda.intro", "layout_id": "layout.matilda.intro", "next_id": "matilda.normal.start" },
+      { "id": "matilda.normal.start", "kind": "line", "speaker_id": "matilda", "text": "今度は通常戦を試そう。双方HPは3。保存した編成で挑みな。勝てば10〜30G、負ければ10G減る。カードは移動しない。", "next_id": "matilda.normal.await" },
+      { "id": "matilda.normal.await", "kind": "battle", "battle_id": "battle.matilda.normal", "next_id": "matilda.normal.complete" },
+      { "id": "matilda.normal.complete", "kind": "line", "speaker_id": "matilda", "text": "対戦の結果は保存した。編成とグレードの使い方を確かめられたかい？", "next_id": "matilda.normal.end" },
+      { "id": "matilda.normal.end", "kind": "end" }
+    ]
+  }]
+}

@@ -1,5 +1,14 @@
 # Test results
 
+## 2026-09-29 — Task 4.2 first stage: HP engine and Matilda normal battle
+
+- Scope: independent JSON normal-battle content and generic HP/probability/replay logic, saved prepared-deck snapshot, durable round confirmation/settlement, explicit retry after loss and return to representative dialogue. Other thirteen fixed chapters, three-card UI, transfers, full story/guild/minigames and Godot/CI/authentication/HTTPS changes are excluded; task4.2 stays unchecked.
+- RED: `node --import tsx --test tests/unit/fixed-battle.test.ts` failed with MODULE_NOT_FOUND for the unimplemented fixed-battle module before production edits. Initial six cases then passed; eight new unit cases in the final suite cover snapshots, draws, HP, exhausted decks, terminal state, legacy saves, invalid ledgers, JSON validation and the actual Godot double grade-effect probability path.
+- Final macOS verification passed: `npm run typecheck`; `npm test` (56 unit, 13 integration); `npm run test:ui` (20 UI); `npm run smoke:game`; `npm run smoke:editor`. No failures/skips. Smoke checks intentionally reject malformed IPC requests before both SMOKE_OK messages.
+- Two new UI journeys use mkdtemp player-data directories, the completed tutorial and a reversed saved lineup. They verify the entry from tutorial end, independent battle snapshot, unchanged inventory/historical deck/tutorial, restart at every round result, write failure preservation/retry, cached reward after failed settlement, no repeat payout after restart, victory dialogue/end and defeat retry. A failed retry disables the competing return action until the same proposal succeeds.
+- FHD screenshots viewed: `test-results/fixed-battle/win-selection.png`, `win-settled.png`; readable controls, settlement, full showdown cards and N badges. Normal deck panel is slightly taller with top-aligned cards so labels fit. Existing tutorial layout is unchanged. UI tests check loaded images before capture; other existing journeys/editor isolation also passed.
+- Each Electron app and temporary save directory is cleaned in finally. Temporary dependency symlink removed after verification without deleting its target. Real saves and external services were not used. Screenshots/build outputs remain ignored. No video/player generator available; coverage percentage not measured. Windows execution awaits existing CI after publication. Review/gate outcomes are reported separately; no commit/push/PR creation in this workflow.
+
 ## 2026-09-29 — PR #27 pending-save regression resolved
 
 - CardPanel disables lineup editing while StoryScreen saves a dialogue checkpoint; the editor-opening callback also checks the pending ref. Save schema, historical deck, domain logic, Godot assets, CI and authentication/HTTPS configuration are unchanged.
