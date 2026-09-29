@@ -1,12 +1,12 @@
-import { app, ipcMain } from 'electron'
-import { existsSync } from 'node:fs'
-import { join } from 'node:path'
-import { createContentStore } from './content-store'
+import { ipcMain } from 'electron'
+import { resolve } from 'node:path'
+import { createProjectLayoutStore } from './project-layout-store'
 import { assertWindowRequest, registerWindowHandlers } from './window-ipc'
 import { startWindow } from './window'
 
 registerWindowHandlers()
-const contentStore = createContentStore(app.getPath('userData'), (path) => existsSync(join(app.getAppPath(), path)))
+const rootArgument = process.argv.find((argument) => argument.startsWith('--content-root='))
+const contentStore = createProjectLayoutStore(rootArgument?.slice('--content-root='.length) ?? resolve(__dirname, '../../..'))
 ipcMain.handle('content:read', (event, ...args: unknown[]) => {
   assertWindowRequest(event, args, 0)
   return contentStore.read()
