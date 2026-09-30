@@ -36,10 +36,15 @@ function opponents(battle: BattleContent): Card[] {
 }
 
 // Preserve the actual Godot probability path, including its two grade-effect passes.
-export function opponentProbabilities(remaining: readonly Card[], player: Card, passes: number): Record<Hand, number> {
+export function opponentProbabilities(remaining: readonly Card[], player: Card, passes: number,
+  tendency: Partial<Record<Hand, number>> = {}): Record<Hand, number> {
   if (!remaining.length || !Number.isInteger(passes) || passes < 0 || passes > 2) throw new Error('Invalid probability input')
   const probability = Object.fromEntries(HANDS.map((hand) => [hand,
     remaining.filter((card) => card.hand === hand).length / remaining.length])) as Record<Hand, number>
+  for (const hand of HANDS) probability[hand] = Math.max(0, probability[hand] + (tendency[hand] ?? 0))
+  const total = HANDS.reduce((sum, hand) => sum + probability[hand], 0)
+  if (total <= 0) throw new Error('Invalid opponent tendency')
+  for (const hand of HANDS) probability[hand] /= total
   const loseHand: Record<Hand, Hand> = { rock: 'scissors', scissors: 'paper', paper: 'rock' }
   const winHand: Record<Hand, Hand> = { rock: 'paper', scissors: 'rock', paper: 'scissors' }
   const lose = loseHand[player.hand], win = winHand[player.hand], draw = player.hand

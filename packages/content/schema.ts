@@ -35,10 +35,13 @@ export interface BattleContent {
   hp?: {
     player: number
     opponent: number
-    first_hand: Hand
+    first_hand?: Hand
     grade_effect_passes: number
     lose_gold: number
   }
+  opponent_tendency?: Partial<Record<Hand, number>>
+  bayes_eye?: boolean
+  result_route?: 'guild_home'
 }
 
 export type StoryStep =

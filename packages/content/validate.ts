@@ -144,7 +144,7 @@ export function validateContent(value: unknown, assetExists: (path: string) => b
     const battle = object(entry, path, [
       'id', 'opponent_id', 'background_asset_id', 'player_deck_size', 'opponent_deck_size',
       'opponent_card_ids', 'gold_reward', 'transfer_cards', 'phases'
-    ], ['hp'])
+    ], ['hp', 'opponent_tendency', 'bayes_eye', 'result_route'])
     if (battle === null) return
     register(battle.id, `${path}.id`, 'battle')
     identifier(battle.opponent_id, `${path}.opponent_id`)
@@ -173,17 +173,30 @@ export function validateContent(value: unknown, assetExists: (path: string) => b
       issue(`${path}.transfer_cards`, 'invalid_value', 'Expected a boolean')
     }
     if (Object.hasOwn(battle, 'hp')) {
-      const hp = object(battle.hp, `${path}.hp`, ['player', 'opponent', 'first_hand', 'grade_effect_passes', 'lose_gold'])
+      const hp = object(battle.hp, `${path}.hp`, ['player', 'opponent', 'grade_effect_passes', 'lose_gold'], ['first_hand'])
       if (hp) {
         nonnegativeInteger(hp.player, `${path}.hp.player`, true)
         nonnegativeInteger(hp.opponent, `${path}.hp.opponent`, true)
         nonnegativeInteger(hp.lose_gold, `${path}.hp.lose_gold`)
         const passes = nonnegativeInteger(hp.grade_effect_passes, `${path}.hp.grade_effect_passes`)
         if (passes !== null && passes > 2) issue(`${path}.hp.grade_effect_passes`, 'invalid_value', 'At most two passes supported')
-        if (!HANDS.includes(hp.first_hand as (typeof HANDS)[number])) issue(`${path}.hp.first_hand`, 'invalid_value', 'Invalid first hand')
+        if (Object.hasOwn(hp, 'first_hand') && !HANDS.includes(hp.first_hand as (typeof HANDS)[number])) {
+          issue(`${path}.hp.first_hand`, 'invalid_value', 'Invalid first hand')
+        }
         if (battle.transfer_cards !== false) issue(`${path}.transfer_cards`, 'invalid_value', 'HP battles do not yet support card transfers')
       }
     }
+    if (Object.hasOwn(battle, 'opponent_tendency')) {
+      const tendency = object(battle.opponent_tendency, `${path}.opponent_tendency`, [], [...HANDS])
+      if (tendency) for (const [hand, bias] of Object.entries(tendency)) {
+        if (!HANDS.includes(hand as (typeof HANDS)[number]) || typeof bias !== 'number' || !Number.isFinite(bias) || bias < 0 || bias > 1) {
+          issue(`${path}.opponent_tendency.${hand}`, 'invalid_value', 'Opponent tendency must be a known hand and finite 0–1 value')
+        }
+      }
+      if (!Object.hasOwn(battle, 'hp')) issue(`${path}.opponent_tendency`, 'invalid_value', 'Opponent tendency requires an HP battle')
+    }
+    if (Object.hasOwn(battle, 'bayes_eye') && typeof battle.bayes_eye !== 'boolean') issue(`${path}.bayes_eye`, 'invalid_value', 'Expected a boolean')
+    if (Object.hasOwn(battle, 'result_route') && battle.result_route !== 'guild_home') issue(`${path}.result_route`, 'invalid_value', 'Unknown result route')
     const phases = array(battle.phases, `${path}.phases`)
     if (phases.length === 0) issue(`${path}.phases`, 'invalid_value', 'Battle must contain a phase')
     phases.forEach((entry, phaseIndex) => {
