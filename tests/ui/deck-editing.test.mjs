@@ -104,6 +104,8 @@ test('all grades edit, cancel, recover from failed save and resume without rewri
   try {
     await writeFile(target, bytes)
     await open()
+    const session = await page.context().newCDPSession(page)
+    await session.send('Emulation.setDeviceMetricsOverride', { width: 1920, height: 1080, deviceScaleFactor: 1, mobile: false })
     const box = page.getByTestId('card-box')
     assert.equal(await box.locator('.card-grade').count(), owned.length)
     await page.waitForFunction(() => [...document.querySelectorAll('.card-box img')].every((img) => img.complete && img.naturalWidth > 0))
@@ -127,8 +129,6 @@ test('all grades edit, cancel, recover from failed save and resume without rewri
     for (const grade of ['N', 'B', 'S', 'G']) await dialog.getByRole('button', { name: `編成に追加 チョキ ${grade}`, exact: true }).first().click()
     assert.equal(await dialog.getByRole('button', { name: '編成に追加 パー P', exact: true }).isDisabled(), true)
     await mkdir(join(root, 'test-results/cards'), { recursive: true })
-    const session = await page.context().newCDPSession(page)
-    await session.send('Emulation.setDeviceMetricsOverride', { width: 1920, height: 1080, deviceScaleFactor: 1, mobile: false })
     await page.screenshot({ path: join(root, 'test-results/cards/deck-editor.png') })
     await session.detach()
     await rename(target, join(data, 'held.json'))

@@ -1,5 +1,11 @@
 # Test results
 
+## 2026-09-29 — PR #29 CI deck-editing UI timeout resolution
+
+- PR CI at head `dc8f5a8`: macOS Electron job passed typecheck, 59 unit and 14 integration tests; existing `tests/ui/deck-editing.test.mjs` timed out while Playwright waited for the located グー S button to become actionable. Windows job was cancelled during UI tests by CI fail-fast; Godot CI passed. The macOS runner reported native 800×568 while this deck-editor journey previously switched to FHD only immediately before the screenshot.
+- Changed only the existing UI test: establish its 1920×1080 CDP viewport immediately after opening the game, before all grade-editing interactions. The later screenshot reuses that viewport/session. All original card-choice, disabled-state, cancellation, failed-save, restart, and historical-record assertions remain unchanged. No production/game, CI, credential, HTTPS, or Godot changes.
+- Isolated `node --test tests/ui/deck-editing.test.mjs`: 3 passed / 0 failed. Full local macOS verification: typecheck, 59 unit, 14 integration, 22 UI, game smoke and editor smoke all passed. Tests use temporary user-data dirs and clean their Electron processes. Coverage percentage not measured. Fresh Windows/macOS CI at the updated PR head remains to be confirmed after separate `::publish`.
+
 ## 2026-09-29 — Guild home prerequisite (local verification complete)
 
 - Scope: existing Stage1 guild background/menu, confirmation-only navigation from tutorial/normal end, persistent home/return checkpoint, and existing card viewing/next-battle editing. Belka, quests, town, real story progression and other guild features remain unmigrated. No Godot/credentials/HTTPS changes.
