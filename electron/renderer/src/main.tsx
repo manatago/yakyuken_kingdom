@@ -9,6 +9,8 @@ import { isFixedCheckpoint } from '../../../packages/battle/fixed'
 import { StoryScreen } from './StoryScreen'
 import { GuildHome } from './GuildHome'
 import { GUILD_CHECKPOINT } from '../../../packages/guild/routes'
+import { BELKA_CHECKPOINT } from '../../../packages/battle/belka'
+import { BelkaScreen } from './BelkaScreen'
 
 const game = (globalThis as typeof globalThis & { janken: GameApi }).janken
 
@@ -54,6 +56,13 @@ function GameScreen() {
   }
 
   if (active) {
+    if (active.progress.checkpoint_id === BELKA_CHECKPOINT) {
+      return <BelkaScreen save={active} onTitle={() => setActive(null)} onSave={async (nextSave) => {
+        await game.save.write(nextSave)
+        setSaved(nextSave)
+        setActive(nextSave)
+      }} />
+    }
     if (active.progress.checkpoint_id === GUILD_CHECKPOINT) {
       return <GuildHome save={active} onTitle={() => setActive(null)} onSave={async (nextSave) => {
         await game.save.write(nextSave)

@@ -2,6 +2,7 @@ import { GRADES, HANDS, type Card } from './card'
 import { validateDeck } from './deck'
 import { validateTutorialState, type TutorialLedger } from '../battle/tutorial'
 import { validateFixedState, type FixedLedger } from '../battle/fixed'
+import { BELKA_CHECKPOINT, validateBelkaState, type BelkaLedger } from '../battle/belka'
 import { guildValidationSave } from '../guild/routes'
 
 export const SAVE_VERSION = 1 as const
@@ -21,6 +22,7 @@ export interface SaveData {
     readonly flags: readonly string[]
     readonly tutorial?: TutorialLedger
     readonly fixed_battle?: FixedLedger
+    readonly belka_battle?: BelkaLedger
     readonly guild_return_checkpoint?: string
   }
 }
@@ -81,7 +83,7 @@ export function parseSave(value: unknown): SaveData {
     throw new RangeError('Save deck contains cards not owned by the player')
   }
 
-  const progress = record(root.progress, ['checkpoint_id', 'flags'], ['tutorial', 'fixed_battle', 'guild_return_checkpoint'])
+  const progress = record(root.progress, ['checkpoint_id', 'flags'], ['tutorial', 'fixed_battle', 'belka_battle', 'guild_return_checkpoint'])
   if (!Array.isArray(progress.flags)) throw new TypeError('Save flags must be an array')
   const flags = Array.from(progress.flags, identifier)
   if (new Set(flags).size !== flags.length) throw new TypeError('Save flags must be unique')
@@ -113,15 +115,37 @@ export function parseSave(value: unknown): SaveData {
       })
     }
   }
+  let belka: BelkaLedger | undefined
+  if (Object.hasOwn(progress, 'belka_battle')) {
+    const ledger = record(progress.belka_battle, ['battle_id', 'origin_checkpoint', 'player_deck', 'rounds', 'acknowledged', 'settled', 'balance_before'], ['gold_delta'])
+    if (!Array.isArray(ledger.rounds)) throw new TypeError('Invalid Belka rounds')
+    belka = {
+      battle_id: identifier(ledger.battle_id), origin_checkpoint: identifier(ledger.origin_checkpoint) as BelkaLedger['origin_checkpoint'],
+      player_deck: cards(ledger.player_deck), acknowledged: ledger.acknowledged as number,
+      settled: ledger.settled as boolean, balance_before: ledger.balance_before as number,
+      ...(Object.hasOwn(ledger, 'gold_delta') ? { gold_delta: ledger.gold_delta as number } : {}),
+      rounds: Array.from(ledger.rounds, (entry) => {
+        const round = record(entry, ['player_index', 'opponent_index'])
+        return { player_index: round.player_index as number, opponent_index: round.opponent_index as number }
+      })
+    }
+  }
   const save: SaveData = {
     save_version: SAVE_VERSION,
     player: { inventory, deck, money: player.money as number, ...(prepared ? { prepared_deck: prepared } : {}) },
     progress: { checkpoint_id: identifier(progress.checkpoint_id), flags, ...(tutorial ? { tutorial } : {}), ...(fixed ? { fixed_battle: fixed } : {}),
+      ...(belka ? { belka_battle: belka } : {}),
       ...(Object.hasOwn(progress, 'guild_return_checkpoint') ? { guild_return_checkpoint: identifier(progress.guild_return_checkpoint) } : {}) }
   }
-  const validationSave = guildValidationSave(save)
+  const historicalCheckpoint = save.progress.checkpoint_id === BELKA_CHECKPOINT
+    ? { ...save, progress: { ...save.progress, checkpoint_id: 'matilda.normal.end' } }
+    : guildValidationSave(save)
+  const validationSave = belka
+    ? { ...historicalCheckpoint, player: { ...historicalCheckpoint.player, money: belka.balance_before } }
+    : historicalCheckpoint
   validateTutorialState(validationSave)
   validateFixedState(validationSave)
+  validateBelkaState(save)
   return save
 }
 

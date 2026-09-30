@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import type { SaveData } from '../../../packages/domain/save'
 import { leaveGuildHome } from '../../../packages/guild/home'
+import { canStartBelka, startBelka } from '../../../packages/battle/belka'
 import { guildHomeContent } from '../../../packages/guild/routes'
 import { fitViewport } from '../../../packages/story/viewport'
 import guildBackground from '../../../godot/assets/backgrounds/stage1/bg07_st1_001.png?url'
@@ -42,6 +43,16 @@ export function GuildHome({ save, onSave, onTitle }: {
     finally { pending.current = false; setBusy(false) }
   }
 
+  async function openBelka() {
+    if (pending.current || editing || !canStartBelka(save)) return
+    pending.current = true
+    setBusy(true)
+    setError('')
+    try { await onSave(startBelka(save)) }
+    catch { setError('保存に失敗しました。ベルカ戦は開始していません。') }
+    finally { pending.current = false; setBusy(false) }
+  }
+
   return <main ref={viewport} className="story-viewport" aria-label="ギルドホーム">
     <div className="story-frame" data-testid="guild-frame" style={{ width: fit.width, height: fit.height }}>
       <div className="story-stage guild-stage" style={{ transform: `scale(${fit.scale})` }}>
@@ -58,6 +69,8 @@ export function GuildHome({ save, onSave, onTitle }: {
         </> : <section className="guild-notice">
           <p>ギルドホーム移植の確認用画面です。</p>
           <p>カードの確認・編成編集ができます。クエスト・街・次の章などは未移植です。</p>
+          {canStartBelka(save) && <button disabled={busy} onClick={() => { void openBelka() }}>ベルカ戦を確認</button>}
+          {save.progress.belka_battle?.settled && <p>ベルカ戦の結果は保存済みです。本編と再戦は後続段階で接続します。</p>}
         </section>}
         {error && <p role="alert" className="guild-error error-message">{error}</p>}
         <nav className="guild-menu" aria-label="ギルドメニュー">

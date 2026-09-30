@@ -1,5 +1,11 @@
 # Test results
 
+## 2026-09-29 — Task 4.2 Belka verification battle
+
+- Scope: only the verification route from eligible guild home to Belka's independent JSON-defined nine-card, HP3 battle and back. Save/reload, Bayesian tendency display, existing Godot two-pass grade behavior for actual selection, win/loss settlement, and preservation of Matilda history are covered. Full Belka story, rematches, other fixed battles, minigames, Godot edits, credentials and HTTPS are excluded; task 4.2 remains unchecked.
+- RED was recorded before implementation. Final macOS checks: typecheck, 63 unit, 15 integration and 23 UI tests passed; game and editor smoke checks printed SMOKE_OK. Smoke tests deliberately log rejection of malformed IPC requests. Isolated Belka UI test also passed after adding round-save and settlement-save failure retries, confirming that neither the opponent draw nor reward is rerolled. Coverage percentage was not measured; Windows/CI are pending publication.
+- FHD screenshot `test-results/belka/battle.png` was inspected: arena background, Bayesian panel, controls and nine cards are visible. UI test checks FHD, 4:3 and portrait centering. Each Electron process and temporary save directory is cleaned up; no real save was used. No commit, push or PR in this workflow.
+
 ## 2026-09-29 — PR #29 CI deck-editing UI timeout resolution
 
 - PR CI at head `dc8f5a8`: macOS Electron job passed typecheck, 59 unit and 14 integration tests; existing `tests/ui/deck-editing.test.mjs` timed out while Playwright waited for the located グー S button to become actionable. Windows job was cancelled during UI tests by CI fail-fast; Godot CI passed. The macOS runner reported native 800×568 while this deck-editor journey previously switched to FHD only immediately before the screenshot.

@@ -51,6 +51,12 @@ button:disabled { opacity: .45; cursor: default; }
 .guild-close-cards { position: absolute; top: 130px; right: 40px; font-size: 24px; }
 .guild-stage .deck-overflow { bottom: 108px; }
 .guild-error { position: absolute; top: 130px; left: 400px; right: 400px; padding: 16px; font-size: 25px; background: #111829e8; }
+.belka-bayes { position: absolute; left: 36px; top: 190px; width: 290px; padding: 18px; font-size: 20px; background: #111829e8; border: 1px solid #c7a66a; text-align: left; }
+.belka-bayes h2 { margin: 0; font-size: 25px; }
+.belka-controls { position: absolute; left: 350px; right: 350px; top: 470px; min-height: 250px; padding: 24px; background: #111829f2; border: 1px solid #c7a66a; font-size: 26px; }
+.belka-controls h2 { margin: 0 0 12px; }
+.belka-showdown { position: absolute; left: 640px; right: 640px; top: 170px; display: flex; justify-content: center; gap: 60px; font-size: 24px; }
+.belka-showdown .card-view { width: 160px; }
 .story-stage { position: absolute; width: 1920px; height: 1080px; transform-origin: 0 0; overflow: hidden; background: #111829; }
 .story-background { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .story-portrait { position: absolute; height: 1024px; width: auto; }
