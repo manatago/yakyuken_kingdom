@@ -74,6 +74,7 @@ test('guild verification Belka battle saves each round, settles once and returns
         await page.evaluate(() => { Math.random = () => 0.99 })
         await page.getByRole('button', { name: '勝負！', exact: true }).click()
       }
+      await page.getByTestId('belka-result').waitFor()
       assert.equal((await read()).progress.belka_battle.rounds.length, round + 1)
       if (round === 0) assert.equal((await read()).progress.belka_battle.rounds[0].opponent_index, 0)
       if (round === 0) {
@@ -91,6 +92,7 @@ test('guild verification Belka battle saves each round, settles once and returns
         await page.getByRole('button', { name: '結果を確定', exact: true }).click()
       }
     }
+    await page.getByTestId('belka-settled').waitFor()
     const settled = await read()
     assert.equal(settled.progress.belka_battle.settled, true)
     assert.equal(settled.player.money, 70)
