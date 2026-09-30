@@ -7,6 +7,8 @@ import './style.css'
 import { isMatildaCheckpoint, normalContent, matildaContent, NORMAL_STORY_ID, MATILDA_STORY_ID } from './matilda-content'
 import { isFixedCheckpoint } from '../../../packages/battle/fixed'
 import { StoryScreen } from './StoryScreen'
+import { GuildHome } from './GuildHome'
+import { GUILD_CHECKPOINT } from '../../../packages/guild/routes'
 
 const game = (globalThis as typeof globalThis & { janken: GameApi }).janken
 
@@ -52,6 +54,13 @@ function GameScreen() {
   }
 
   if (active) {
+    if (active.progress.checkpoint_id === GUILD_CHECKPOINT) {
+      return <GuildHome save={active} onTitle={() => setActive(null)} onSave={async (nextSave) => {
+        await game.save.write(nextSave)
+        setSaved(nextSave)
+        setActive(nextSave)
+      }} />
+    }
     if (isMatildaCheckpoint(active.progress.checkpoint_id)) {
       const normal = isFixedCheckpoint(active.progress.checkpoint_id)
       return <StoryScreen save={active} content={normal ? normalContent : matildaContent}

@@ -1,0 +1,20 @@
+{
+  "id": "screen.guild.home",
+  "checkpoint_id": "guild.home",
+  "title": "ギルドホーム",
+  "background": "godot/assets/backgrounds/stage1/bg07_st1_001.png",
+  "layouts": [
+    { "id": "layout.cards.deck", "x": 350, "y": 800, "scale": 1, "flipped": false }
+  ],
+  "menu": [
+    { "action": "quests", "label": "クエスト" },
+    { "action": "cards", "label": "カード" },
+    { "action": "items", "label": "アイテム" },
+    { "action": "equipment", "label": "装備" },
+    { "action": "shop", "label": "ショップ" },
+    { "action": "status", "label": "ステータス" },
+    { "action": "town", "label": "街に出る" },
+    { "action": "story", "label": "次の章へ" },
+    { "action": "title", "label": "終了" }
+  ]
+}
