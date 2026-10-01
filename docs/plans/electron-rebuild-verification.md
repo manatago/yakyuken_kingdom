@@ -70,12 +70,12 @@ PNGは無視対象の生成物で、基準画像を上書きしない。
 
 ## 固定戦タスク4.2 第3段階（確認用ジン戦）
 
-実行環境：macOS、Electron 44、Node 22。Windowsでの実行結果はPR後のCIで確認する。
+実行環境：ローカルはmacOS、Electron 44、Node 22。GitHub Actionsのheadless project and item tests、macOS/Windows smoke testsはいずれも成功。
 
 - `npm run typecheck`：成功。
-- `npm test`：Unit 68件、Integration 15件が成功。セーブv1の読み込み、ジンの3枚順序付き選択、相手の傾向、引分後の手札再利用、勝利捕獲、敗北時のカード損失と所持金下限、履歴台帳、ベルカ／ジン両順序を含む。
+- `npm test`：Unit 69件、Integration 15件が成功。セーブv1の読み込み、ジンの3枚順序付き選択、相手の傾向、引分後の手札再利用、勝利捕獲、敗北時のカード損失と所持金下限、履歴台帳、ベルカ／ジン両順序、0Gでの連続敗北を含む。
 - `npm run test:ui`：UI 24件が成功。ジン用3枚選択の保存・再起動、保存失敗後の再試行、対戦結果の再起動復元、カード移動、ギルド復帰を確認。1920×1080、1024×768、600×1000で縦横比と余白を検証。
 - `npm run smoke:game` と `npm run smoke:editor`：成功。
 - 目視素材：`test-results/jin/battle.png`。1920×1080でカード画像、HP、結果、所持カードの表示を確認。
 
-この段階は確認用ジン戦のみで、マイルストーン4.2全体は未完了。物語への接続、他の3枚戦、Windows CIは別途確認する。
+この段階は確認用ジン戦のみで、マイルストーン4.2全体は未完了。物語への接続と他の3枚戦は別途確認する。
