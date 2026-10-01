@@ -24,6 +24,22 @@ function guild(): SaveData {
   return enterGuildHome(parseSave({ ...save, progress: { ...save.progress, checkpoint_id: 'matilda.normal.end' } }))
 }
 
+function zeroMoneyGuild(): SaveData {
+  const initial = createInitialGameSave()
+  let save = prepareTutorial({ ...initial, progress: { ...initial.progress, checkpoint_id: 'matilda.await-deck' } }, initial.player.inventory)
+  save = acknowledgeTutorial(playTutorialRound(save, 6, 0))
+  save = acknowledgeTutorial(playTutorialRound(save, 0, 0))
+  save = prepareFixedBattle({ ...save, progress: { ...save.progress, checkpoint_id: 'matilda.normal.await' } })
+  for (const index of [3, 4, 5]) {
+    save = playFixedRound(save, index, 0)
+    if (!fixedView(save).outcome) save = acknowledgeFixedRound(save)
+  }
+  assert.equal(fixedView(save).outcome, 'lose')
+  save = settleFixedBattle(save, 0)
+  assert.equal(save.player.money, 0)
+  return enterGuildHome(parseSave({ ...save, progress: { ...save.progress, checkpoint_id: 'matilda.normal.end' } }))
+}
+
 function winBelka(save: SaveData): SaveData {
   let current = startBelka(save)
   for (const index of [6, 7, 8]) {
@@ -31,6 +47,16 @@ function winBelka(save: SaveData): SaveData {
     if (!belkaView(current).outcome) current = acknowledgeBelkaRound(current)
   }
   assert.equal(belkaView(current).outcome, 'win')
+  return returnBelkaToGuild(settleBelka(current, 0))
+}
+
+function loseBelka(save: SaveData): SaveData {
+  let current = startBelka(save)
+  for (const index of [3, 4, 5]) {
+    current = playBelkaRound(current, index, 0)
+    if (!belkaView(current).outcome) current = acknowledgeBelkaRound(current)
+  }
+  assert.equal(belkaView(current).outcome, 'lose')
   return returnBelkaToGuild(settleBelka(current, 0))
 }
 
@@ -65,6 +91,7 @@ test('Jin saves a three-card ordered draft, applies the opponent tendency and re
 test('Jin victory captures one card and settles once; draw consumes neither hand nor inventory', () => {
   const source = guild(), deck = [source.player.inventory[6], source.player.inventory[7], source.player.inventory[8]]
   const started = startJin(source, deck)
+  assert.equal(started.progress.jin_battle?.belka_preceded_jin, false)
   const pending = playJinRound(started, 0, 0)
   const settled = settleJin(pending, 0)
   assert.equal(settled.player.inventory.length, source.player.inventory.length + 1)
@@ -104,6 +131,7 @@ test('Jin loss removes one played card while preserving historical Matilda save 
 test('Jin and Belka ledgers remain valid in either encounter order', () => {
   const priorBelka = winBelka(guild())
   const jinAfterBelka = startJin(priorBelka, priorBelka.player.inventory.slice(6, 9))
+  assert.equal(jinAfterBelka.progress.jin_battle?.belka_preceded_jin, true)
   const settledJinAfterBelka = settleJin(playJinRound(jinAfterBelka, 0, 0), 0)
   assert.deepEqual(parseSave(JSON.parse(JSON.stringify(settledJinAfterBelka))), settledJinAfterBelka)
 
@@ -111,4 +139,21 @@ test('Jin and Belka ledgers remain valid in either encounter order', () => {
   const settledJin = settleJin(playJinRound(startedJin, 0, 0), 0)
   const belkaAfterJin = winBelka(returnJinToGuild(settledJin))
   assert.deepEqual(parseSave(JSON.parse(JSON.stringify(belkaAfterJin))), belkaAfterJin)
+})
+
+test('Belka loss at zero gold remains the earlier encounter when Jin also loses at zero gold', () => {
+  const afterBelka = loseBelka(zeroMoneyGuild())
+  assert.ok(afterBelka.progress.belka_battle?.gold_delta === 0)
+  const startedJin = startJin(afterBelka, afterBelka.player.inventory.slice(3, 6))
+  assert.equal(startedJin.progress.jin_battle?.belka_preceded_jin, true)
+  const pending = playJinRound(startedJin, 0, 0)
+  assert.equal(jinView(pending).last?.result, 'lose')
+
+  const settledJin = settleJin(pending, 0)
+  assert.ok(settledJin.progress.jin_battle?.gold_delta === 0)
+  assert.equal(settledJin.player.inventory.length, startedJin.player.inventory.length - 1)
+  const reloaded = parseSave(JSON.parse(JSON.stringify(settledJin)))
+  assert.deepEqual(reloaded.player.inventory, settledJin.player.inventory)
+  assert.equal(reloaded.player.money, 0)
+  assert.ok(reloaded.progress.jin_battle?.gold_delta === 0)
 })

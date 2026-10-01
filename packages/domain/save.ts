@@ -136,11 +136,12 @@ export function parseSave(value: unknown): SaveData {
   const jinDraft = Object.hasOwn(progress, 'jin_draft') ? cards(progress.jin_draft) : undefined
   let jin: JinLedger | undefined
   if (Object.hasOwn(progress, 'jin_battle')) {
-    const ledger = record(progress.jin_battle, ['battle_id', 'origin_checkpoint', 'player_deck', 'inventory_before', 'historical_deck', 'rounds', 'acknowledged', 'settled', 'balance_before'], ['gold_delta'])
+    const ledger = record(progress.jin_battle, ['battle_id', 'origin_checkpoint', 'player_deck', 'inventory_before', 'historical_deck', 'belka_preceded_jin', 'rounds', 'acknowledged', 'settled', 'balance_before'], ['gold_delta'])
     if (!Array.isArray(ledger.rounds)) throw new TypeError('Invalid Jin rounds')
     jin = {
       battle_id: identifier(ledger.battle_id), origin_checkpoint: identifier(ledger.origin_checkpoint) as JinLedger['origin_checkpoint'],
       player_deck: cards(ledger.player_deck), inventory_before: cards(ledger.inventory_before), historical_deck: cards(ledger.historical_deck),
+      belka_preceded_jin: ledger.belka_preceded_jin as boolean,
       acknowledged: ledger.acknowledged as number, settled: ledger.settled as boolean,
       balance_before: ledger.balance_before as number,
       ...(Object.hasOwn(ledger, 'gold_delta') ? { gold_delta: ledger.gold_delta as number } : {}),
@@ -169,7 +170,7 @@ export function parseSave(value: unknown): SaveData {
       money: fixedBalance ?? (belka?.balance_before ?? save.player.money) } }
   validateTutorialState(validationSave)
   validateFixedState(validationSave)
-  const jinPrecededBelka = !!(jin?.settled && belka && belka.balance_before === jin.balance_before + (jin.gold_delta ?? 0))
+  const jinPrecededBelka = !!(jin && belka && !jin.belka_preceded_jin)
   const belkaProjection = belka && (jin || save.progress.checkpoint_id === JIN_CHECKPOINT)
     ? { ...save, progress: { ...save.progress, checkpoint_id: belka.settled ? 'guild.home' : BELKA_CHECKPOINT,
       ...(belka.settled ? { guild_return_checkpoint: 'matilda.normal.end' } : { guild_return_checkpoint: undefined }) },

@@ -17,6 +17,7 @@ export interface JinLedger extends FixedLedger {
   readonly origin_checkpoint: typeof ORIGIN
   readonly inventory_before: readonly Card[]
   readonly historical_deck: readonly Card[]
+  readonly belka_preceded_jin: boolean
 }
 
 function opponentDeck(): Card[] {
@@ -46,6 +47,7 @@ export function startJin(save: SaveData, deck = save.progress.jin_draft ?? []): 
   return parseSave({ ...save, progress: { ...progress, checkpoint_id: JIN_CHECKPOINT,
     jin_battle: { battle_id: battle.id, origin_checkpoint: ORIGIN, player_deck: deck.map((card) => ({ ...card })),
       inventory_before: save.player.inventory.map((card) => ({ ...card })), historical_deck: save.player.deck.map((card) => ({ ...card })), rounds: [], acknowledged: 0,
+      belka_preceded_jin: !!save.progress.belka_battle?.settled,
       settled: false, balance_before: save.player.money } } })
 }
 
@@ -134,11 +136,19 @@ export function validateJinState(save: SaveData): void {
     return
   }
   if (save.progress.jin_draft || ledger.battle_id !== battle.id || ledger.origin_checkpoint !== ORIGIN ||
+    typeof ledger.belka_preceded_jin !== 'boolean' ||
     !validateDeck(ledger.inventory_before, ledger.player_deck, 3).valid ||
     !validateDeck(ledger.inventory_before, ledger.historical_deck, ledger.historical_deck.length).valid ||
     !Number.isSafeInteger(ledger.acknowledged) || ledger.acknowledged < 0 || ledger.acknowledged > ledger.rounds.length ||
     ledger.rounds.length - ledger.acknowledged > 1 || typeof ledger.settled !== 'boolean' ||
     !Number.isSafeInteger(ledger.balance_before) || ledger.balance_before < 0) throw new Error('Invalid Jin ledger')
+  const belka = save.progress.belka_battle
+  const laterBelka = !!belka && !ledger.belka_preceded_jin
+  if (ledger.belka_preceded_jin
+    ? !belka?.settled || belka.balance_before + (belka.gold_delta ?? 0) !== ledger.balance_before
+    : !!belka && (!ledger.settled || belka.balance_before !== ledger.balance_before + (ledger.gold_delta ?? 0))) {
+    throw new Error('Invalid Jin/Belka encounter order')
+  }
   const view = jinView(save)
   if (!ledger.settled) {
     if (checkpoint !== JIN_CHECKPOINT || ledger.gold_delta !== undefined || save.player.money !== ledger.balance_before ||
@@ -156,8 +166,7 @@ export function validateJinState(save: SaveData): void {
     if (index < 0) throw new Error('Invalid lost Jin card')
     expected.splice(index, 1)
   }
-  const laterBelka = !!save.progress.belka_battle && save.progress.belka_battle.balance_before === ledger.balance_before + delta
-  const expectedMoney = laterBelka ? save.progress.belka_battle!.balance_before + (save.progress.belka_battle!.gold_delta ?? 0) : ledger.balance_before + delta
+  const expectedMoney = laterBelka ? belka!.balance_before + (belka!.settled ? (belka!.gold_delta ?? 0) : 0) : ledger.balance_before + delta
   if (view.outcome === 'win' && (delta < battle.gold_reward.min || delta > battle.gold_reward.max) ||
     view.outcome === 'lose' && delta !== -Math.min(ledger.balance_before, battle.hp.lose_gold) || view.outcome === 'draw' && delta !== 0 ||
     expectedMoney !== save.player.money || JSON.stringify(expected) !== JSON.stringify(save.player.inventory) ||
