@@ -3,7 +3,7 @@ import { validateDeck } from './deck'
 import { validateTutorialState, type TutorialLedger } from '../battle/tutorial'
 import { validateFixedState, type FixedLedger } from '../battle/fixed'
 import { BELKA_CHECKPOINT, validateBelkaState, type BelkaLedger } from '../battle/belka'
-import { JIN_CHECKPOINT, validateJinState, type JinLedger } from '../battle/jin'
+import { JIN_CHECKPOINT, SUBEVENT1_JIN_BATTLE_ID, SUBEVENT1_JIN_CHECKPOINT, isSubevent1JinStoryCheckpoint, validateJinState, type JinLedger } from '../battle/jin'
 import { guildValidationSave } from '../guild/routes'
 
 export const SAVE_VERSION = 1 as const
@@ -26,6 +26,7 @@ export interface SaveData {
     readonly belka_battle?: BelkaLedger
     readonly jin_draft?: readonly Card[]
     readonly jin_battle?: JinLedger
+    readonly subevent1_jin_battle?: JinLedger
     readonly guild_return_checkpoint?: string
   }
 }
@@ -68,6 +69,23 @@ function cards(value: unknown): Card[] {
   })
 }
 
+function jinLedger(value: unknown): JinLedger {
+  const ledger = record(value, ['battle_id', 'origin_checkpoint', 'player_deck', 'inventory_before', 'historical_deck', 'belka_preceded_jin', 'rounds', 'acknowledged', 'settled', 'balance_before'], ['gold_delta'])
+  if (!Array.isArray(ledger.rounds)) throw new TypeError('Invalid Jin rounds')
+  return {
+    battle_id: identifier(ledger.battle_id), origin_checkpoint: identifier(ledger.origin_checkpoint) as JinLedger['origin_checkpoint'],
+    player_deck: cards(ledger.player_deck), inventory_before: cards(ledger.inventory_before), historical_deck: cards(ledger.historical_deck),
+    belka_preceded_jin: ledger.belka_preceded_jin as boolean,
+    acknowledged: ledger.acknowledged as number, settled: ledger.settled as boolean,
+    balance_before: ledger.balance_before as number,
+    ...(Object.hasOwn(ledger, 'gold_delta') ? { gold_delta: ledger.gold_delta as number } : {}),
+    rounds: Array.from(ledger.rounds, (entry) => {
+      const round = record(entry, ['player_index', 'opponent_index'])
+      return { player_index: round.player_index as number, opponent_index: round.opponent_index as number }
+    })
+  }
+}
+
 export function parseSave(value: unknown): SaveData {
   const root = record(value, ['save_version', 'player', 'progress'])
   if (root.save_version !== SAVE_VERSION) throw new RangeError('Unsupported save version')
@@ -86,7 +104,7 @@ export function parseSave(value: unknown): SaveData {
     throw new RangeError('Save deck contains cards not owned by the player')
   }
 
-  const progress = record(root.progress, ['checkpoint_id', 'flags'], ['tutorial', 'fixed_battle', 'belka_battle', 'jin_draft', 'jin_battle', 'guild_return_checkpoint'])
+  const progress = record(root.progress, ['checkpoint_id', 'flags'], ['tutorial', 'fixed_battle', 'belka_battle', 'jin_draft', 'jin_battle', 'subevent1_jin_battle', 'guild_return_checkpoint'])
   if (!Array.isArray(progress.flags)) throw new TypeError('Save flags must be an array')
   const flags = Array.from(progress.flags, identifier)
   if (new Set(flags).size !== flags.length) throw new TypeError('Save flags must be unique')
@@ -134,22 +152,12 @@ export function parseSave(value: unknown): SaveData {
     }
   }
   const jinDraft = Object.hasOwn(progress, 'jin_draft') ? cards(progress.jin_draft) : undefined
-  let jin: JinLedger | undefined
-  if (Object.hasOwn(progress, 'jin_battle')) {
-    const ledger = record(progress.jin_battle, ['battle_id', 'origin_checkpoint', 'player_deck', 'inventory_before', 'historical_deck', 'belka_preceded_jin', 'rounds', 'acknowledged', 'settled', 'balance_before'], ['gold_delta'])
-    if (!Array.isArray(ledger.rounds)) throw new TypeError('Invalid Jin rounds')
-    jin = {
-      battle_id: identifier(ledger.battle_id), origin_checkpoint: identifier(ledger.origin_checkpoint) as JinLedger['origin_checkpoint'],
-      player_deck: cards(ledger.player_deck), inventory_before: cards(ledger.inventory_before), historical_deck: cards(ledger.historical_deck),
-      belka_preceded_jin: ledger.belka_preceded_jin as boolean,
-      acknowledged: ledger.acknowledged as number, settled: ledger.settled as boolean,
-      balance_before: ledger.balance_before as number,
-      ...(Object.hasOwn(ledger, 'gold_delta') ? { gold_delta: ledger.gold_delta as number } : {}),
-      rounds: Array.from(ledger.rounds, (entry) => {
-        const round = record(entry, ['player_index', 'opponent_index'])
-        return { player_index: round.player_index as number, opponent_index: round.opponent_index as number }
-      })
-    }
+  let jin = Object.hasOwn(progress, 'jin_battle') ? jinLedger(progress.jin_battle) : undefined
+  let subevent1Jin = Object.hasOwn(progress, 'subevent1_jin_battle') ? jinLedger(progress.subevent1_jin_battle) : undefined
+  if (jin?.battle_id === SUBEVENT1_JIN_BATTLE_ID) {
+    if (subevent1Jin) throw new TypeError('Duplicate Subevent 1 Jin ledger')
+    subevent1Jin = jin
+    jin = undefined
   }
   const save: SaveData = {
     save_version: SAVE_VERSION,
@@ -157,21 +165,24 @@ export function parseSave(value: unknown): SaveData {
     progress: { checkpoint_id: identifier(progress.checkpoint_id), flags, ...(tutorial ? { tutorial } : {}), ...(fixed ? { fixed_battle: fixed } : {}),
       ...(belka ? { belka_battle: belka } : {}),
       ...(jinDraft ? { jin_draft: jinDraft } : {}), ...(jin ? { jin_battle: jin } : {}),
+      ...(subevent1Jin ? { subevent1_jin_battle: subevent1Jin } : {}),
       ...(Object.hasOwn(progress, 'guild_return_checkpoint') ? { guild_return_checkpoint: identifier(progress.guild_return_checkpoint) } : {}) }
   }
-  const historicalCheckpoint = [BELKA_CHECKPOINT, JIN_CHECKPOINT].includes(save.progress.checkpoint_id)
+  const historicalCheckpoint = [BELKA_CHECKPOINT, JIN_CHECKPOINT, SUBEVENT1_JIN_CHECKPOINT].includes(save.progress.checkpoint_id) ||
+    isSubevent1JinStoryCheckpoint(save.progress.checkpoint_id)
     ? { ...save, progress: { ...save.progress, checkpoint_id: 'matilda.normal.end' } }
     : guildValidationSave(save)
-  const historicInventory = jin?.inventory_before ?? save.player.inventory
-  const historicDeck = jin?.historical_deck ?? save.player.deck
+  const latestJin = subevent1Jin ?? jin
+  const historicInventory = jin?.inventory_before ?? subevent1Jin?.inventory_before ?? save.player.inventory
+  const historicDeck = jin?.historical_deck ?? subevent1Jin?.historical_deck ?? save.player.deck
   const fixedBalance = fixed?.settled ? fixed.balance_before + (fixed.gold_delta ?? 0) : fixed?.balance_before
   const validationSave = { ...historicalCheckpoint,
     player: { ...historicalCheckpoint.player, inventory: historicInventory, deck: historicDeck,
       money: fixedBalance ?? (belka?.balance_before ?? save.player.money) } }
   validateTutorialState(validationSave)
   validateFixedState(validationSave)
-  const jinPrecededBelka = !!(jin && belka && !jin.belka_preceded_jin)
-  const belkaProjection = belka && (jin || save.progress.checkpoint_id === JIN_CHECKPOINT)
+  const jinPrecededBelka = !!(latestJin && belka && !latestJin.belka_preceded_jin)
+  const belkaProjection = belka && (latestJin || save.progress.checkpoint_id === JIN_CHECKPOINT || save.progress.checkpoint_id === SUBEVENT1_JIN_CHECKPOINT)
     ? { ...save, progress: { ...save.progress, checkpoint_id: belka.settled ? 'guild.home' : BELKA_CHECKPOINT,
       ...(belka.settled ? { guild_return_checkpoint: 'matilda.normal.end' } : { guild_return_checkpoint: undefined }) },
       player: { ...save.player, inventory: jinPrecededBelka ? save.player.inventory : historicInventory,

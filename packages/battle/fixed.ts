@@ -102,6 +102,7 @@ export function replayFixedBattle(battle: BattleContent & { hp: NonNullable<Batt
     else if (usedPlayer.length === ledger.player_deck.length && usedOpponent.length === opponentDeck.length) outcome = 'draw'
     else if (usedPlayer.length === ledger.player_deck.length) outcome = 'lose'
     else if (usedOpponent.length === opponentDeck.length) outcome = 'win'
+    else if (battle.round_limit !== undefined && ledger.rounds.length >= battle.round_limit) outcome = result
   }
   return { playerHp, opponentHp, usedPlayer, usedOpponent, outcome, last }
 }

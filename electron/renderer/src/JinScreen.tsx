@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import type { SaveData } from '../../../packages/domain/save'
-import { acknowledgeJinRound, jinContent, jinProbabilities, jinView, playJinRound, returnJinToGuild, settleJin } from '../../../packages/battle/jin'
+import { acknowledgeJinRound, activeJinLedger, continueSubevent1Jin, jinContent, jinProbabilities, jinView, playJinRound,
+  returnJinToGuild, settleJin, subevent1JinContent } from '../../../packages/battle/jin'
 import { validateContent } from '../../../packages/content/validate'
 import { fitViewport } from '../../../packages/story/viewport'
 import { cardPresentation } from '../../../packages/cards/presentation'
@@ -18,7 +19,8 @@ export function JinScreen({ save, onSave, onTitle }: {
   const proposalAction = useRef<string | null>(null)
   const [fit, setFit] = useState(() => fitViewport(0, 0))
   const [selected, setSelected] = useState<number | null>(null), [busy, setBusy] = useState(false), [error, setError] = useState('')
-  const ledger = save.progress.jin_battle!, view = jinView(save)
+  const ledger = activeJinLedger(save)!, view = jinView(save)
+  const storyBattle = ledger.battle_id === subevent1JinContent.battles[0].id
   const resultPending = ledger.rounds.length > ledger.acknowledged
   const probabilities = jinProbabilities(save, selected === null ? undefined : ledger.player_deck[selected])
   const disabled = (action: string) => busy || proposalAction.current !== null && proposalAction.current !== action
@@ -45,7 +47,7 @@ export function JinScreen({ save, onSave, onTitle }: {
     <div className="story-frame" data-testid="jin-frame" style={{ width: fit.width, height: fit.height }}>
       <div className="story-stage" style={{ transform: `scale(${fit.scale})` }}>
         <img className="story-background" alt="ジン戦の闘技場" src={arena} />
-        <header className="story-header"><h1>ジン戦（確認用）</h1><span>所持金 {save.player.money} G</span>
+        <header className="story-header"><h1>{storyBattle ? '盗賊ジン戦' : 'ジン戦（確認用）'}</h1><span>所持金 {save.player.money} G</span>
           <span className="story-checkpoint" data-testid="checkpoint-id">{save.progress.checkpoint_id}</span>
           <button disabled={busy} onClick={onTitle}>タイトルに戻る</button></header>
         <aside className="belka-bayes" aria-label="相手の手の傾向"><h2>相手の手の目安</h2>
@@ -67,7 +69,8 @@ export function JinScreen({ save, onSave, onTitle }: {
           {ledger.settled ? <div data-testid="jin-settled">
             <h2>{view.outcome === 'win' ? 'ジンに勝利' : view.outcome === 'lose' ? 'ジンに敗北' : '引き分け'}</h2>
             <p>精算済み：{ledger.gold_delta! >= 0 ? '+' : ''}{ledger.gold_delta}G ・所持 {save.player.money}G</p>
-            <button disabled={disabled('return')} onClick={() => { void commit('return', () => returnJinToGuild(save)) }}>ギルドホームに戻る</button>
+            <button disabled={disabled('return')} onClick={() => { void commit('return', () => storyBattle && view.outcome === 'win'
+              ? continueSubevent1Jin(save) : returnJinToGuild(save)) }}>{storyBattle && view.outcome === 'win' ? '物語を続ける' : 'ギルドホームに戻る'}</button>
           </div> : resultPending ? <div data-testid="jin-result">
             <h2>{view.last!.result === 'win' ? '勝ち' : view.last!.result === 'lose' ? '負け' : '引き分け'}</h2>
             <p>ジンHP {view.opponentHp}/1 ・あなたのHP {view.playerHp}/1</p>

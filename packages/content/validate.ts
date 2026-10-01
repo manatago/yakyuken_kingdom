@@ -144,13 +144,18 @@ export function validateContent(value: unknown, assetExists: (path: string) => b
     const battle = object(entry, path, [
       'id', 'opponent_id', 'background_asset_id', 'player_deck_size', 'opponent_deck_size',
       'opponent_card_ids', 'gold_reward', 'transfer_cards', 'phases'
-    ], ['hp', 'opponent_tendency', 'bayes_eye', 'result_route'])
+    ], ['hp', 'opponent_tendency', 'bayes_eye', 'result_route', 'round_limit'])
     if (battle === null) return
     register(battle.id, `${path}.id`, 'battle')
     identifier(battle.opponent_id, `${path}.opponent_id`)
     reference(battle.background_asset_id, `${path}.background_asset_id`, 'asset')
     nonnegativeInteger(battle.player_deck_size, `${path}.player_deck_size`, true)
     const opponentDeckSize = nonnegativeInteger(battle.opponent_deck_size, `${path}.opponent_deck_size`, true)
+    const roundLimit = Object.hasOwn(battle, 'round_limit')
+      ? nonnegativeInteger(battle.round_limit, `${path}.round_limit`, true) : null
+    if (roundLimit !== null && opponentDeckSize !== null && roundLimit > opponentDeckSize) {
+      issue(`${path}.round_limit`, 'invalid_value', 'Round limit exceeds the opponent deck size')
+    }
     const cards = array(battle.opponent_card_ids, `${path}.opponent_card_ids`)
     if (cards.length === 0) issue(`${path}.opponent_card_ids`, 'invalid_deck', 'Opponent deck must not be empty')
     if (opponentDeckSize !== null && cards.length !== opponentDeckSize) {
