@@ -1,11 +1,11 @@
 import data from '../../content/stories/belka-verification.json'
 import type { BattleContent, ContentPack } from '../content/schema'
 import { getCardDefinition } from '../domain/card-catalog'
-import { HANDS, judgeCards, type BattleResult, type Card, type Hand } from '../domain/card'
+import type { Card, Hand } from '../domain/card'
 import { validateDeck } from '../domain/deck'
 import { parseSave, type SaveData } from '../domain/save'
 import { GUILD_CHECKPOINT } from '../guild/routes'
-import { opponentProbabilities, type FixedLedger } from './fixed'
+import { battleGoldDelta, opponentProbabilities, replayFixedBattle, selectOpponent, type FixedLedger } from './fixed'
 
 export const belkaContent = data as ContentPack
 export const BELKA_CHECKPOINT = 'belka.await'
@@ -30,31 +30,7 @@ function opponentDeck(): Card[] {
 }
 
 function replay(ledger: BelkaLedger) {
-  const opponents = opponentDeck()
-  const usedPlayer: number[] = [], usedOpponent: number[] = []
-  let playerHp = battle.hp.player, opponentHp = battle.hp.opponent
-  let outcome: BattleResult | undefined
-  let last: { player: Card; opponent: Card; result: BattleResult } | undefined
-  for (const round of ledger.rounds) {
-    const player = ledger.player_deck[round.player_index], opponent = opponents[round.opponent_index]
-    if (outcome || !Number.isSafeInteger(round.player_index) || !Number.isSafeInteger(round.opponent_index) ||
-      !player || !opponent || usedPlayer.includes(round.player_index) || usedOpponent.includes(round.opponent_index)) {
-      throw new Error('Invalid Belka round')
-    }
-    const first = opponents.findIndex((card, index) => !usedOpponent.includes(index) && card.hand === opponent.hand)
-    if (first !== round.opponent_index) throw new Error('Belka cards must be consumed in order')
-    const result = judgeCards(player, opponent)
-    if (result !== 'draw') { usedPlayer.push(round.player_index); usedOpponent.push(round.opponent_index) }
-    if (result === 'win') opponentHp--
-    if (result === 'lose') playerHp--
-    last = { player, opponent, result }
-    if (opponentHp <= 0) outcome = 'win'
-    else if (playerHp <= 0) outcome = 'lose'
-    else if (usedPlayer.length === ledger.player_deck.length && usedOpponent.length === opponents.length) outcome = 'draw'
-    else if (usedPlayer.length === ledger.player_deck.length) outcome = 'lose'
-    else if (usedOpponent.length === opponents.length) outcome = 'win'
-  }
-  return { playerHp, opponentHp, usedPlayer, usedOpponent, outcome, last }
+  return replayFixedBattle(battle, ledger)
 }
 
 export function belkaView(save: SaveData) {
@@ -127,19 +103,7 @@ export function playBelkaRound(save: SaveData, playerIndex: number, roll: number
   const ledger = save.progress.belka_battle
   if (!ledger || ledger.settled || save.progress.checkpoint_id !== BELKA_CHECKPOINT ||
     ledger.rounds.length !== ledger.acknowledged) throw new Error('Not selecting a Belka card')
-  const view = replay(ledger), player = ledger.player_deck[playerIndex]
-  if (view.outcome || !Number.isSafeInteger(playerIndex) || !player || view.usedPlayer.includes(playerIndex)) {
-    throw new Error('Invalid Belka selection')
-  }
-  const probabilities = belkaProbabilities(save, player)
-  let cumulative = 0, hand: Hand = 'rock'
-  for (const candidate of HANDS) {
-    cumulative += probabilities[candidate]
-    if (roll <= cumulative) { hand = candidate; break }
-  }
-  const opponents = opponentDeck()
-  const available = opponents.map((card, index) => ({ card, index })).filter(({ index }) => !view.usedOpponent.includes(index))
-  const opponentIndex = (available.find(({ card }) => card.hand === hand) ?? available[0]).index
+  const opponentIndex = selectOpponent(battle, ledger, playerIndex, roll)
   return { ...save, progress: { ...save.progress, belka_battle: { ...ledger,
     rounds: [...ledger.rounds, { player_index: playerIndex, opponent_index: opponentIndex }] } } }
 }
@@ -158,8 +122,7 @@ export function settleBelka(save: SaveData, roll: number): SaveData {
   const ledger = save.progress.belka_battle
   const outcome = belkaView(save).outcome
   if (!ledger || ledger.settled || !outcome) throw new Error('No terminal Belka result')
-  const delta = outcome === 'win' ? battle.gold_reward.min + Math.floor(roll * (battle.gold_reward.max - battle.gold_reward.min + 1))
-    : outcome === 'lose' ? -Math.min(save.player.money, battle.hp.lose_gold) : 0
+  const delta = battleGoldDelta(battle, outcome, ledger.balance_before, roll)
   if (!Number.isSafeInteger(save.player.money + delta)) throw new Error('Money overflow')
   return { ...save, player: { ...save.player, money: save.player.money + delta }, progress: { ...save.progress,
     belka_battle: { ...ledger, acknowledged: ledger.rounds.length, settled: true, gold_delta: delta } } }

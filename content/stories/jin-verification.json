@@ -1,0 +1,20 @@
+{
+  "assets": [{ "id": "background.jin.arena", "path": "godot/assets/backgrounds/prologue/bg06_prison_arena.png" }],
+  "layouts": [
+    { "id": "layout.jin.deck", "x": 350, "y": 800, "scale": 1, "flipped": false },
+    { "id": "layout.jin.showdown", "x": 350, "y": 170, "scale": 1, "flipped": false }
+  ],
+  "battles": [{
+    "id": "battle.thief_jin", "opponent_id": "thief_jin", "background_asset_id": "background.jin.arena",
+    "player_deck_size": 3, "opponent_deck_size": 3,
+    "opponent_card_ids": ["scissors_normal", "scissors_normal", "rock_normal"],
+    "gold_reward": { "min": 3, "max": 8 }, "transfer_cards": true,
+    "hp": { "player": 1, "opponent": 1, "grade_effect_passes": 2, "lose_gold": 2 },
+    "opponent_tendency": { "scissors": 2 }, "bayes_eye": true, "result_route": "guild_home",
+    "phases": [{ "id": "phase.jin", "rules": [] }]
+  }],
+  "stories": [{ "id": "story.jin.verification", "start_id": "jin.await", "steps": [
+    { "id": "jin.await", "kind": "battle", "battle_id": "battle.thief_jin", "next_id": "jin.end" },
+    { "id": "jin.end", "kind": "end" }
+  ] }]
+}

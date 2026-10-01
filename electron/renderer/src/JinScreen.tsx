@@ -1,0 +1,88 @@
+import { useLayoutEffect, useRef, useState } from 'react'
+import type { SaveData } from '../../../packages/domain/save'
+import { acknowledgeJinRound, jinContent, jinProbabilities, jinView, playJinRound, returnJinToGuild, settleJin } from '../../../packages/battle/jin'
+import { validateContent } from '../../../packages/content/validate'
+import { fitViewport } from '../../../packages/story/viewport'
+import { cardPresentation } from '../../../packages/cards/presentation'
+import { CardView } from './CardView'
+import arena from '../../../godot/assets/backgrounds/prologue/bg06_prison_arena.png?url'
+
+const arenaPath = 'godot/assets/backgrounds/prologue/bg06_prison_arena.png'
+const validation = validateContent(jinContent, (path) => path === arenaPath)
+if (!validation.valid) throw new Error(`Invalid Jin content: ${JSON.stringify(validation.issues)}`)
+
+export function JinScreen({ save, onSave, onTitle }: {
+  save: SaveData; onSave: (save: SaveData) => Promise<void>; onTitle: () => void
+}) {
+  const viewport = useRef<HTMLElement>(null), pending = useRef(false), proposal = useRef<SaveData | null>(null)
+  const proposalAction = useRef<string | null>(null)
+  const [fit, setFit] = useState(() => fitViewport(0, 0))
+  const [selected, setSelected] = useState<number | null>(null), [busy, setBusy] = useState(false), [error, setError] = useState('')
+  const ledger = save.progress.jin_battle!, view = jinView(save)
+  const resultPending = ledger.rounds.length > ledger.acknowledged
+  const probabilities = jinProbabilities(save, selected === null ? undefined : ledger.player_deck[selected])
+  const disabled = (action: string) => busy || proposalAction.current !== null && proposalAction.current !== action
+
+  useLayoutEffect(() => {
+    const element = viewport.current!
+    const resize = () => setFit(fitViewport(element.clientWidth, element.clientHeight))
+    resize(); const observer = new ResizeObserver(resize); observer.observe(element)
+    return () => observer.disconnect()
+  }, [])
+
+  async function commit(action: string, makeSave: () => SaveData) {
+    if (pending.current || disabled(action)) return
+    pending.current = true; setBusy(true); setError('')
+    try {
+      proposal.current ??= makeSave(); proposalAction.current = action
+      await onSave(proposal.current)
+      proposal.current = null; proposalAction.current = null; setSelected(null)
+    } catch { setError('保存に失敗しました。進行は変わっていません。同じ操作で再試行してください。') }
+    finally { pending.current = false; setBusy(false) }
+  }
+
+  return <main ref={viewport} className="story-viewport" aria-label="ジン戦">
+    <div className="story-frame" data-testid="jin-frame" style={{ width: fit.width, height: fit.height }}>
+      <div className="story-stage" style={{ transform: `scale(${fit.scale})` }}>
+        <img className="story-background" alt="ジン戦の闘技場" src={arena} />
+        <header className="story-header"><h1>ジン戦（確認用）</h1><span>所持金 {save.player.money} G</span>
+          <span className="story-checkpoint" data-testid="checkpoint-id">{save.progress.checkpoint_id}</span>
+          <button disabled={busy} onClick={onTitle}>タイトルに戻る</button></header>
+        <aside className="belka-bayes" aria-label="相手の手の傾向"><h2>相手の手の目安</h2>
+          <p>グー {Math.round(probabilities.rock * 100)}% ／ チョキ {Math.round(probabilities.scissors * 100)}% ／ パー {Math.round(probabilities.paper * 100)}%</p></aside>
+        <aside className="deck-panel fixed-deck" aria-label="ジン戦デッキ" data-testid="jin-deck"
+          style={{ left: 350, top: 800, right: 'auto', bottom: 'auto', width: 1220 }}>
+          <h2>選択カード ・残り {ledger.player_deck.length - view.usedPlayer.length}枚</h2>
+          <div className="deck-grid">{ledger.player_deck.map((card, index) => {
+            const presentation = cardPresentation(card)
+            return <button key={index} className={`card-button ${selected === index ? 'card-selected' : ''}`}
+              aria-label={`選択 ${presentation.handLabel} ${presentation.gradeLabel}`} aria-pressed={selected === index}
+              disabled={busy || resultPending || !!view.outcome || !!proposal.current || view.usedPlayer.includes(index)}
+              onClick={() => { if (!pending.current && !proposal.current) setSelected(index) }}>
+              <CardView card={card} /><span className="card-hand">{presentation.handLabel} {presentation.gradeLabel}</span>
+            </button>
+          })}</div>
+        </aside>
+        <section className="belka-controls" aria-label="ジン戦の進行">
+          {ledger.settled ? <div data-testid="jin-settled">
+            <h2>{view.outcome === 'win' ? 'ジンに勝利' : view.outcome === 'lose' ? 'ジンに敗北' : '引き分け'}</h2>
+            <p>精算済み：{ledger.gold_delta! >= 0 ? '+' : ''}{ledger.gold_delta}G ・所持 {save.player.money}G</p>
+            <button disabled={disabled('return')} onClick={() => { void commit('return', () => returnJinToGuild(save)) }}>ギルドホームに戻る</button>
+          </div> : resultPending ? <div data-testid="jin-result">
+            <h2>{view.last!.result === 'win' ? '勝ち' : view.last!.result === 'lose' ? '負け' : '引き分け'}</h2>
+            <p>ジンHP {view.opponentHp}/1 ・あなたのHP {view.playerHp}/1</p>
+            <button disabled={disabled('result')} onClick={() => { void commit('result', () => view.outcome
+              ? settleJin(save, Math.random()) : acknowledgeJinRound(save)) }}>{view.outcome ? '結果を確定' : '次の勝負へ'}</button>
+          </div> : <>
+            <h2>カードを選択してください</h2><p>ジンHP {view.opponentHp}/1 ・あなたのHP {view.playerHp}/1</p>
+            <button disabled={disabled('round') || selected === null} onClick={() => { void commit('round', () => playJinRound(save, selected!, Math.random())) }}>勝負！</button>
+          </>}
+          {error && <p role="alert" className="error-message">{error}</p>}
+        </section>
+        {view.last && (resultPending || ledger.settled) && <section className="belka-showdown" aria-label="勝負カード">
+          <div>あなた<CardView card={view.last.player} compact={false} /></div><div>ジン<CardView card={view.last.opponent} compact={false} /></div>
+        </section>}
+      </div>
+    </div>
+  </main>
+}

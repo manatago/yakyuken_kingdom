@@ -183,14 +183,16 @@ export function validateContent(value: unknown, assetExists: (path: string) => b
         if (Object.hasOwn(hp, 'first_hand') && !HANDS.includes(hp.first_hand as (typeof HANDS)[number])) {
           issue(`${path}.hp.first_hand`, 'invalid_value', 'Invalid first hand')
         }
-        if (battle.transfer_cards !== false) issue(`${path}.transfer_cards`, 'invalid_value', 'HP battles do not yet support card transfers')
+        if (battle.transfer_cards === true && (hp.player !== 1 || hp.opponent !== 1)) {
+          issue(`${path}.transfer_cards`, 'invalid_value', 'Card transfers require a one-hit-point battle')
+        }
       }
     }
     if (Object.hasOwn(battle, 'opponent_tendency')) {
       const tendency = object(battle.opponent_tendency, `${path}.opponent_tendency`, [], [...HANDS])
       if (tendency) for (const [hand, bias] of Object.entries(tendency)) {
-        if (!HANDS.includes(hand as (typeof HANDS)[number]) || typeof bias !== 'number' || !Number.isFinite(bias) || bias < 0 || bias > 1) {
-          issue(`${path}.opponent_tendency.${hand}`, 'invalid_value', 'Opponent tendency must be a known hand and finite 0–1 value')
+        if (!HANDS.includes(hand as (typeof HANDS)[number]) || typeof bias !== 'number' || !Number.isFinite(bias) || bias < 0 || bias > 2) {
+          issue(`${path}.opponent_tendency.${hand}`, 'invalid_value', 'Opponent tendency must be a known hand and finite 0–2 value')
         }
       }
       if (!Object.hasOwn(battle, 'hp')) issue(`${path}.opponent_tendency`, 'invalid_value', 'Opponent tendency requires an HP battle')
