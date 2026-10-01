@@ -27,7 +27,7 @@ function definition(save: SaveData): BattleContent & { hp: NonNullable<BattleCon
   return battle as BattleContent & { hp: NonNullable<BattleContent['hp']> }
 }
 
-function opponents(battle: BattleContent): Card[] {
+export function opponents(battle: BattleContent): Card[] {
   return battle.opponent_card_ids.map((id) => {
     const card = getCardDefinition(id)
     if (!card) throw new Error('Unknown opponent card')
@@ -88,7 +88,7 @@ export function replayFixedBattle(battle: BattleContent & { hp: NonNullable<Batt
         !player || !opponent || usedPlayer.includes(round.player_index) || usedOpponent.includes(round.opponent_index)) {
       throw new Error('Invalid or reused battle card')
     }
-    if (index === 0 && opponent.hand !== battle.hp.first_hand) throw new Error('First hand mismatch')
+    if (index === 0 && battle.hp.first_hand && opponent.hand !== battle.hp.first_hand) throw new Error('First hand mismatch')
     if (opponentDeck.findIndex((card, i) => !usedOpponent.includes(i) && card.hand === opponent.hand) !== round.opponent_index) {
       throw new Error('Opponent cards must be consumed in order')
     }
@@ -104,6 +104,36 @@ export function replayFixedBattle(battle: BattleContent & { hp: NonNullable<Batt
     else if (usedOpponent.length === opponentDeck.length) outcome = 'win'
   }
   return { playerHp, opponentHp, usedPlayer, usedOpponent, outcome, last }
+}
+
+export function selectOpponent(battle: BattleContent & { hp: NonNullable<BattleContent['hp']> },
+  ledger: FixedLedger, playerIndex: number, roll: number): number {
+  rollCheck(roll)
+  const view = replayFixedBattle(battle, ledger), player = ledger.player_deck[playerIndex]
+  if (view.outcome || !Number.isSafeInteger(playerIndex) || !player || view.usedPlayer.includes(playerIndex)) {
+    throw new Error('Invalid battle selection')
+  }
+  const available = opponents(battle).map((card, index) => ({ card, index }))
+    .filter((entry) => !view.usedOpponent.includes(entry.index))
+  let hand = battle.hp.first_hand
+  if (ledger.rounds.length > 0 || !hand) {
+    const probability = opponentProbabilities(available.map((entry) => entry.card), player,
+      battle.hp.grade_effect_passes, battle.opponent_tendency)
+    let cumulative = 0
+    hand = 'rock'
+    for (const candidate of HANDS) {
+      cumulative += probability[candidate]
+      if (roll <= cumulative) { hand = candidate; break }
+    }
+  }
+  return (available.find((entry) => entry.card.hand === hand) ?? available[0]).index
+}
+
+export function battleGoldDelta(battle: BattleContent & { hp: NonNullable<BattleContent['hp']> },
+  outcome: BattleResult, balance: number, roll: number): number {
+  rollCheck(roll)
+  return outcome === 'win' ? battle.gold_reward.min + Math.floor(roll * (battle.gold_reward.max - battle.gold_reward.min + 1))
+    : outcome === 'lose' ? -Math.min(balance, battle.hp.lose_gold) : 0
 }
 
 export function validateFixedState(save: SaveData): void {
@@ -160,21 +190,7 @@ export function playFixedRound(save: SaveData, playerIndex: number, roll: number
   validateFixedState(save); rollCheck(roll)
   const ledger = save.progress.fixed_battle
   if (!ledger || ledger.settled || ledger.rounds.length !== ledger.acknowledged) throw new Error('Not selecting a card')
-  const view = fixedView(save), player = ledger.player_deck[playerIndex], battle = definition(save)
-  if (view.outcome || !Number.isSafeInteger(playerIndex) || !player || view.usedPlayer.includes(playerIndex)) throw new Error('Invalid battle selection')
-  const deck = opponents(battle)
-  const available = deck.map((card, index) => ({ card, index })).filter((entry) => !view.usedOpponent.includes(entry.index))
-  let hand = battle.hp.first_hand
-  if (ledger.rounds.length > 0) {
-    const probability = opponentProbabilities(available.map((entry) => entry.card), player, battle.hp.grade_effect_passes)
-    let cumulative = 0
-    hand = 'rock'
-    for (const candidate of HANDS) {
-      cumulative += probability[candidate]
-      if (roll <= cumulative) { hand = candidate; break }
-    }
-  }
-  const opponentIndex = (available.find((entry) => entry.card.hand === hand) ?? available[0]).index
+  const opponentIndex = selectOpponent(definition(save), ledger, playerIndex, roll)
   return { ...save, progress: { ...save.progress, fixed_battle: { ...ledger,
     rounds: [...ledger.rounds, { player_index: playerIndex, opponent_index: opponentIndex }] } } }
 }
@@ -189,10 +205,10 @@ export function acknowledgeFixedRound(save: SaveData): SaveData {
 export function settleFixedBattle(save: SaveData, roll: number): SaveData {
   validateFixedState(save); rollCheck(roll)
   const ledger = save.progress.fixed_battle
-  if (!ledger || ledger.settled || !fixedView(save).outcome) throw new Error('No terminal result to settle')
+  if (!ledger || ledger.settled) throw new Error('No terminal result to settle')
   const battle = definition(save), outcome = fixedView(save).outcome
-  const delta = outcome === 'win' ? battle.gold_reward.min + Math.floor(roll * (battle.gold_reward.max - battle.gold_reward.min + 1))
-    : outcome === 'lose' ? -Math.min(save.player.money, battle.hp.lose_gold) : 0
+  if (!outcome) throw new Error('No terminal result to settle')
+  const delta = battleGoldDelta(battle, outcome, save.player.money, roll)
   if (!Number.isSafeInteger(save.player.money + delta)) throw new Error('Money overflow')
   return { ...save, player: { ...save.player, money: save.player.money + delta }, progress: { ...save.progress,
     fixed_battle: { ...ledger, acknowledged: ledger.rounds.length, settled: true, gold_delta: delta } } }
