@@ -27,6 +27,7 @@ export interface SaveData {
     readonly jin_draft?: readonly Card[]
     readonly jin_battle?: JinLedger
     readonly subevent1_jin_battle?: JinLedger
+    readonly last_jin_battle_id?: string
     readonly guild_return_checkpoint?: string
   }
 }
@@ -104,7 +105,7 @@ export function parseSave(value: unknown): SaveData {
     throw new RangeError('Save deck contains cards not owned by the player')
   }
 
-  const progress = record(root.progress, ['checkpoint_id', 'flags'], ['tutorial', 'fixed_battle', 'belka_battle', 'jin_draft', 'jin_battle', 'subevent1_jin_battle', 'guild_return_checkpoint'])
+  const progress = record(root.progress, ['checkpoint_id', 'flags'], ['tutorial', 'fixed_battle', 'belka_battle', 'jin_draft', 'jin_battle', 'subevent1_jin_battle', 'last_jin_battle_id', 'guild_return_checkpoint'])
   if (!Array.isArray(progress.flags)) throw new TypeError('Save flags must be an array')
   const flags = Array.from(progress.flags, identifier)
   if (new Set(flags).size !== flags.length) throw new TypeError('Save flags must be unique')
@@ -166,6 +167,7 @@ export function parseSave(value: unknown): SaveData {
       ...(belka ? { belka_battle: belka } : {}),
       ...(jinDraft ? { jin_draft: jinDraft } : {}), ...(jin ? { jin_battle: jin } : {}),
       ...(subevent1Jin ? { subevent1_jin_battle: subevent1Jin } : {}),
+      ...(Object.hasOwn(progress, 'last_jin_battle_id') ? { last_jin_battle_id: identifier(progress.last_jin_battle_id) } : {}),
       ...(Object.hasOwn(progress, 'guild_return_checkpoint') ? { guild_return_checkpoint: identifier(progress.guild_return_checkpoint) } : {}) }
   }
   const historicalCheckpoint = [BELKA_CHECKPOINT, JIN_CHECKPOINT, SUBEVENT1_JIN_CHECKPOINT].includes(save.progress.checkpoint_id) ||

@@ -2,7 +2,8 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { createInitialGameSave } from '../../packages/domain/new-game'
 import { startJin, jinContent, jinProbabilities, jinView, playJinRound, returnJinToGuild,
-  startSubevent1JinStory, prepareSubevent1Jin,
+  startSubevent1JinStory, prepareSubevent1Jin, continueSubevent1Jin, returnSubevent1JinToGuild,
+  activeJinLedger, canStartJin,
   setJinDraft, settleJin, validateJinState } from '../../packages/battle/jin'
 import { prepareTutorial, playTutorialRound, acknowledgeTutorial } from '../../packages/battle/tutorial'
 import { prepareFixedBattle, playFixedRound, acknowledgeFixedRound, settleFixedBattle, fixedView } from '../../packages/battle/fixed'
@@ -149,6 +150,29 @@ test('Subevent 1 Jin can follow the verification Jin battle without overwriting 
   assert.equal(migrated.progress.jin_battle, undefined)
   const pending = playJinRound(prepared, 0, 0)
   assert.deepEqual(parseSave(JSON.parse(JSON.stringify(pending))), pending)
+})
+
+test('verification Jin can follow completed Subevent 1 Jin while retaining both ledgers', () => {
+  const original = guild()
+  const story = startSubevent1JinStory(original, original.player.inventory.slice(0, 3))
+  const challenge = parseSave({ ...story, progress: { ...story.progress, checkpoint_id: 'subevent1.jin.challenge' } })
+  const prepared = prepareSubevent1Jin(challenge)
+  const storyResult = settleJin(playJinRound(prepared, 0, .5), 0)
+  assert.equal(jinView(storyResult).outcome, 'win')
+  const after = continueSubevent1Jin(storyResult)
+  const end = parseSave({ ...after, progress: { ...after.progress, checkpoint_id: 'subevent1.jin.end' } })
+  const home = returnSubevent1JinToGuild(end)
+
+  assert.equal(canStartJin(home), true)
+  const verification = startJin(home, home.player.inventory.slice(0, 3))
+  assert.equal(activeJinLedger(verification)?.battle_id, jinContent.battles[0].id)
+  assert.deepEqual(verification.progress.subevent1_jin_battle, home.progress.subevent1_jin_battle)
+  const verificationResult = settleJin(playJinRound(verification, 0, .5), 0)
+  assert.equal(jinView(verificationResult).outcome, 'win')
+  assert.deepEqual(parseSave(JSON.parse(JSON.stringify(verificationResult))), verificationResult)
+  const returned = returnJinToGuild(verificationResult)
+  assert.equal(returned.progress.checkpoint_id, 'guild.home')
+  assert.deepEqual(returned.progress.subevent1_jin_battle, home.progress.subevent1_jin_battle)
 })
 
 test('Jin and Belka ledgers remain valid in either encounter order', () => {

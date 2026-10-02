@@ -32,7 +32,12 @@ export interface JinLedger extends FixedLedger {
 type JinLedgerKey = 'jin_battle' | 'subevent1_jin_battle'
 
 export function activeJinLedger(save: SaveData): JinLedger | undefined {
-  return save.progress.subevent1_jin_battle ?? save.progress.jin_battle
+  const checkpoint = save.progress.checkpoint_id
+  if (checkpoint === JIN_CHECKPOINT) return save.progress.jin_battle ?? save.progress.subevent1_jin_battle
+  if (isSubevent1JinStoryCheckpoint(checkpoint)) return save.progress.subevent1_jin_battle
+  const lastBattleId = save.progress.last_jin_battle_id
+  return [save.progress.jin_battle, save.progress.subevent1_jin_battle]
+    .find((ledger) => ledger?.battle_id === lastBattleId) ?? save.progress.subevent1_jin_battle ?? save.progress.jin_battle
 }
 
 function ledgerKey(ledger: JinLedger): JinLedgerKey {
@@ -85,6 +90,7 @@ export function prepareSubevent1Jin(save: SaveData): SaveData {
       !validateDeck(save.player.inventory, deck, 3).valid) throw new Error('Invalid Subevent 1 Jin setup')
   const { jin_draft: _draft, ...progress } = save.progress
   return parseSave({ ...save, progress: { ...progress, checkpoint_id: SUBEVENT1_JIN_CHECKPOINT,
+    last_jin_battle_id: storyBattle.id,
     subevent1_jin_battle: { battle_id: storyBattle.id, origin_checkpoint: ORIGIN, player_deck: deck.map((card) => ({ ...card })),
       inventory_before: save.player.inventory.map((card) => ({ ...card })), historical_deck: save.player.deck.map((card) => ({ ...card })),
       belka_preceded_jin: !!save.progress.belka_battle?.settled, rounds: [], acknowledged: 0, settled: false, balance_before: save.player.money }
@@ -103,6 +109,7 @@ export function startJin(save: SaveData, deck = save.progress.jin_draft ?? []): 
   if (!canStartJin(save) || !validateDeck(save.player.inventory, deck, 3).valid) throw new Error('Three owned Jin cards required')
   const { jin_draft: _draft, ...progress } = save.progress
   return parseSave({ ...save, progress: { ...progress, checkpoint_id: JIN_CHECKPOINT,
+    last_jin_battle_id: verificationBattle.id,
     jin_battle: { battle_id: verificationBattle.id, origin_checkpoint: ORIGIN, player_deck: deck.map((card) => ({ ...card })),
       inventory_before: save.player.inventory.map((card) => ({ ...card })), historical_deck: save.player.deck.map((card) => ({ ...card })), rounds: [], acknowledged: 0,
       belka_preceded_jin: !!save.progress.belka_battle?.settled,
@@ -208,9 +215,11 @@ export function returnSubevent1JinToGuild(save: SaveData): SaveData {
 export function validateJinState(save: SaveData): void {
   const { jin_battle: verification, subevent1_jin_battle: story } = save.progress
   const checkpoint = save.progress.checkpoint_id
-  const storyFlow = isSubevent1JinStoryCheckpoint(checkpoint) || !!story
-  const active = storyFlow ? story : verification
+  const active = activeJinLedger(save)
   if (!verification && !story && [JIN_CHECKPOINT, SUBEVENT1_JIN_CHECKPOINT].includes(checkpoint)) throw new Error('Missing Jin ledger')
+  if (save.progress.last_jin_battle_id && ![verification?.battle_id, story?.battle_id].includes(save.progress.last_jin_battle_id)) {
+    throw new Error('Unknown last Jin battle')
+  }
   if (save.progress.jin_draft && (!(canStartSubevent1Jin(save) || canStartJin(save) || isSubevent1JinStoryCheckpoint(checkpoint)) ||
     save.progress.jin_draft.length > 3 || save.progress.jin_draft.length > 0 &&
     !validateDeck(save.player.inventory, save.progress.jin_draft, save.progress.jin_draft.length).valid)) throw new Error('Invalid Jin draft')
