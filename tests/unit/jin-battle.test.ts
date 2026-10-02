@@ -2,6 +2,8 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { createInitialGameSave } from '../../packages/domain/new-game'
 import { startJin, jinContent, jinProbabilities, jinView, playJinRound, returnJinToGuild,
+  startSubevent1JinStory, prepareSubevent1Jin, continueSubevent1Jin, returnSubevent1JinToGuild,
+  activeJinLedger, canStartJin,
   setJinDraft, settleJin, validateJinState } from '../../packages/battle/jin'
 import { prepareTutorial, playTutorialRound, acknowledgeTutorial } from '../../packages/battle/tutorial'
 import { prepareFixedBattle, playFixedRound, acknowledgeFixedRound, settleFixedBattle, fixedView } from '../../packages/battle/fixed'
@@ -126,6 +128,51 @@ test('Jin loss removes one played card while preserving historical Matilda save 
   forged.player.inventory.push({ hand: 'paper', grade: 1 })
   assert.throws(() => validateJinState(forged))
   assert.throws(() => parseSave(forged))
+})
+
+test('Subevent 1 Jin can follow the verification Jin battle without overwriting its ledger', () => {
+  const original = guild(), verificationDeck = original.player.inventory.slice(6, 9)
+  const verification = settleJin(playJinRound(startJin(original, verificationDeck), 0, 0), 0)
+  const home = returnJinToGuild(verification)
+  const eventDeck = home.player.inventory.slice(0, 3)
+  const story = startSubevent1JinStory(home, eventDeck)
+  const challenge = parseSave({ ...story, progress: { ...story.progress, checkpoint_id: 'subevent1.jin.challenge' } })
+  const prepared = prepareSubevent1Jin(challenge)
+
+  assert.deepEqual(prepared.progress.jin_battle, verification.progress.jin_battle)
+  assert.equal(prepared.progress.subevent1_jin_battle?.battle_id, 'battle.subevent1.jin')
+  assert.deepEqual(parseSave(JSON.parse(JSON.stringify(prepared))), prepared)
+  const legacy = structuredClone(prepared) as any
+  legacy.progress.jin_battle = legacy.progress.subevent1_jin_battle
+  delete legacy.progress.subevent1_jin_battle
+  const migrated = parseSave(legacy)
+  assert.equal(migrated.progress.subevent1_jin_battle?.battle_id, 'battle.subevent1.jin')
+  assert.equal(migrated.progress.jin_battle, undefined)
+  const pending = playJinRound(prepared, 0, 0)
+  assert.deepEqual(parseSave(JSON.parse(JSON.stringify(pending))), pending)
+})
+
+test('verification Jin can follow completed Subevent 1 Jin while retaining both ledgers', () => {
+  const original = guild()
+  const story = startSubevent1JinStory(original, original.player.inventory.slice(0, 3))
+  const challenge = parseSave({ ...story, progress: { ...story.progress, checkpoint_id: 'subevent1.jin.challenge' } })
+  const prepared = prepareSubevent1Jin(challenge)
+  const storyResult = settleJin(playJinRound(prepared, 0, .5), 0)
+  assert.equal(jinView(storyResult).outcome, 'win')
+  const after = continueSubevent1Jin(storyResult)
+  const end = parseSave({ ...after, progress: { ...after.progress, checkpoint_id: 'subevent1.jin.end' } })
+  const home = returnSubevent1JinToGuild(end)
+
+  assert.equal(canStartJin(home), true)
+  const verification = startJin(home, home.player.inventory.slice(0, 3))
+  assert.equal(activeJinLedger(verification)?.battle_id, jinContent.battles[0].id)
+  assert.deepEqual(verification.progress.subevent1_jin_battle, home.progress.subevent1_jin_battle)
+  const verificationResult = settleJin(playJinRound(verification, 0, .5), 0)
+  assert.equal(jinView(verificationResult).outcome, 'win')
+  assert.deepEqual(parseSave(JSON.parse(JSON.stringify(verificationResult))), verificationResult)
+  const returned = returnJinToGuild(verificationResult)
+  assert.equal(returned.progress.checkpoint_id, 'guild.home')
+  assert.deepEqual(returned.progress.subevent1_jin_battle, home.progress.subevent1_jin_battle)
 })
 
 test('Jin and Belka ledgers remain valid in either encounter order', () => {

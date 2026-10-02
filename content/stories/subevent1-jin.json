@@ -1,0 +1,35 @@
+{
+  "assets": [
+    { "id": "background.subevent1.jin", "path": "godot/assets/backgrounds/prologue/bg06_prison_arena.png" }
+  ],
+  "layouts": [],
+  "battles": [{
+    "id": "battle.subevent1.jin",
+    "opponent_id": "jin",
+    "background_asset_id": "background.subevent1.jin",
+    "player_deck_size": 3,
+    "opponent_deck_size": 3,
+    "opponent_card_ids": ["scissors_normal", "scissors_normal", "rock_normal"],
+    "gold_reward": { "min": 3, "max": 8 },
+    "transfer_cards": true,
+    "round_limit": 1,
+    "hp": { "player": 1, "opponent": 1, "grade_effect_passes": 2, "lose_gold": 2 },
+    "opponent_tendency": { "scissors": 2 },
+    "bayes_eye": true,
+    "result_route": "guild_home",
+    "phases": [{ "id": "phase.subevent1.jin", "rules": [] }]
+  }],
+  "stories": [{
+    "id": "story.subevent1.jin",
+    "start_id": "subevent1.jin.background",
+    "steps": [
+      { "id": "subevent1.jin.background", "kind": "background", "asset_id": "background.subevent1.jin", "next_id": "subevent1.jin.intro" },
+      { "id": "subevent1.jin.intro", "kind": "line", "speaker_id": "ジン", "text": "へっ、来たな冒険者。アジトの場所を嗅ぎつけるとは、やるじゃねえか。だが、ここから先は通さねえぜ。", "next_id": "subevent1.jin.warning" },
+      { "id": "subevent1.jin.warning", "kind": "line", "speaker_id": "ピー助", "text": "こいつのデッキ、スキャンしたぞ。チョキに偏ってる典型的なスピード型だ。グーで押せば楽勝だ。", "next_id": "subevent1.jin.challenge" },
+      { "id": "subevent1.jin.challenge", "kind": "line", "speaker_id": "ジン", "text": "余裕ぶってんじゃねえぞ！ 俺の「疾風のハサミ」を食らいな！", "next_id": "subevent1.jin.await" },
+      { "id": "subevent1.jin.await", "kind": "battle", "battle_id": "battle.subevent1.jin", "next_id": "subevent1.jin.after" },
+      { "id": "subevent1.jin.after", "kind": "line", "speaker_id": "サトシ", "text": "だからチョキばっかりだって言ったのに。", "next_id": "subevent1.jin.end" },
+      { "id": "subevent1.jin.end", "kind": "end" }
+    ]
+  }]
+}

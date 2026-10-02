@@ -7,7 +7,7 @@ import { fitViewport } from '../../../packages/story/viewport'
 import guildBackground from '../../../godot/assets/backgrounds/stage1/bg07_st1_001.png?url'
 import { CardPanel } from './CardPanel'
 import { DeckEditor } from './DeckEditor'
-import { canStartJin, setJinDraft, startJin } from '../../../packages/battle/jin'
+import { canStartJin, canStartSubevent1Jin, setJinDraft, startJin, startSubevent1JinStory } from '../../../packages/battle/jin'
 import { cardPresentation } from '../../../packages/cards/presentation'
 
 const backgrounds: Record<string, string> = {
@@ -81,6 +81,14 @@ export function GuildHome({ save, onSave, onTitle }: {
     finally { pending.current = false; setBusy(false) }
   }
 
+  async function launchSubevent1() {
+    if (pending.current || editing || jinDraft.length !== 3 || !canStartSubevent1Jin(save)) return
+    pending.current = true; setBusy(true); setError('')
+    try { await onSave(startSubevent1JinStory(save, jinDraft)) }
+    catch { setError('保存に失敗しました。サブイベント1は開始していません。') }
+    finally { pending.current = false; setBusy(false) }
+  }
+
   return <main ref={viewport} className="story-viewport" aria-label="ギルドホーム">
     <div className="story-frame" data-testid="guild-frame" style={{ width: fit.width, height: fit.height }}>
       <div className="story-stage guild-stage" style={{ transform: `scale(${fit.scale})` }}>
@@ -111,6 +119,8 @@ export function GuildHome({ save, onSave, onTitle }: {
             })}</div>
             <button disabled={busy || jinDraft.length === 0} onClick={() => { void saveJinDraft(jinDraft.slice(0, -1)) }}>最後のカードを外す</button>
             <button disabled={busy || jinDraft.length !== 3} onClick={() => { void launchJin() }}>3枚でジン戦を開始</button>
+            <button disabled={busy || jinDraft.length !== 3 || !canStartSubevent1Jin(save)}
+              onClick={() => { void launchSubevent1() }}>サブイベント1を開始（解放条件なし）</button>
           </section>}
           {save.progress.belka_battle?.settled && <p>ベルカ戦の結果は保存済みです。本編と再戦は後続段階で接続します。</p>}
         </section>}

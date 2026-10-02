@@ -1,6 +1,7 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { SaveData } from '../../../packages/domain/save'
 import { advanceStory, startStory } from '../../../packages/story/runner'
+import { SUBEVENT1_JIN_STORY_ID } from '../../../packages/battle/jin'
 import { fitViewport } from '../../../packages/story/viewport'
 import { matildaContent, MATILDA_STORY_ID, tutorialImage } from './matilda-content'
 import { CardPanel } from './CardPanel'
@@ -11,11 +12,12 @@ import type { ContentPack } from '../../../packages/content/schema'
 import { enterGuildHome } from '../../../packages/guild/home'
 import { canEnterGuildHome } from '../../../packages/guild/routes'
 
-export function StoryScreen({ save, onCheckpoint, onSave, onTitle, content = matildaContent, storyId = MATILDA_STORY_ID }: {
+export function StoryScreen({ save, onCheckpoint, onSave, onTitle, onEnd, content = matildaContent, storyId = MATILDA_STORY_ID }: {
   save: SaveData
   onCheckpoint: (checkpointId: string) => Promise<void>
   onSave: (save: SaveData) => Promise<void>
   onTitle: () => void
+  onEnd?: () => void
   content?: ContentPack
   storyId?: string
 }) {
@@ -73,7 +75,8 @@ export function StoryScreen({ save, onCheckpoint, onSave, onTitle, content = mat
               transform: `translate(-50%, -50%) scale(${layout.flipped ? -layout.scale : layout.scale}, ${layout.scale})` }} />
         })}
         <header className="story-header">
-          <h1>{storyId === MATILDA_STORY_ID ? 'マチルダのチュートリアル' : 'マチルダ通常戦'}</h1>
+          <h1>{storyId === MATILDA_STORY_ID ? 'マチルダのチュートリアル'
+            : storyId === SUBEVENT1_JIN_STORY_ID ? 'サブイベント1：盗賊団討伐' : 'マチルダ通常戦'}</h1>
           <span className="story-checkpoint" data-testid="checkpoint-id">{frame.step.id}</span>
           <button onClick={onTitle} disabled={busy}>タイトルに戻る</button>
         </header>
@@ -92,10 +95,15 @@ export function StoryScreen({ save, onCheckpoint, onSave, onTitle, content = mat
             <p className="story-text" data-testid="story-text" aria-live="polite">{frame.text}</p>
             <button onClick={() => { void next() }} disabled={busy}>次へ</button>
           </> : <>
-            <h2>{storyId === MATILDA_STORY_ID ? 'チュートリアル完了' : '通常戦の確認完了'}</h2>
-            {storyId === MATILDA_STORY_ID
-              ? <button disabled={busy} onClick={() => { void next('matilda.normal.start') }}>通常戦を試す</button>
-              : <p>他の固定戦と本編への接続は後続段階で追加します。</p>}
+            {onEnd ? <>
+              <h2>ジン戦パート終了</h2>
+              <button disabled={busy} onClick={onEnd}>ギルドホームへ戻る</button>
+            </> : <>
+              <h2>{storyId === MATILDA_STORY_ID ? 'チュートリアル完了' : '通常戦の確認完了'}</h2>
+              {storyId === MATILDA_STORY_ID
+                ? <button disabled={busy} onClick={() => { void next('matilda.normal.start') }}>通常戦を試す</button>
+                : <p>他の固定戦と本編への接続は後続段階で追加します。</p>}
+            </>}
             {canEnterGuildHome(save) && <button disabled={busy || editing} onClick={() => { void openGuild() }}>ギルドホームを確認</button>}
           </>}
           {error && <p className="error-message" role="alert">{error}</p>}

@@ -11,7 +11,8 @@ import { GuildHome } from './GuildHome'
 import { GUILD_CHECKPOINT } from '../../../packages/guild/routes'
 import { BELKA_CHECKPOINT } from '../../../packages/battle/belka'
 import { BelkaScreen } from './BelkaScreen'
-import { JIN_CHECKPOINT } from '../../../packages/battle/jin'
+import { JIN_CHECKPOINT, SUBEVENT1_JIN_CHECKPOINT, SUBEVENT1_JIN_STORY_ID,
+  isSubevent1JinStoryCheckpoint, prepareSubevent1Jin, returnSubevent1JinToGuild, subevent1JinContent } from '../../../packages/battle/jin'
 import { JinScreen } from './JinScreen'
 
 const game = (globalThis as typeof globalThis & { janken: GameApi }).janken
@@ -58,7 +59,7 @@ function GameScreen() {
   }
 
   if (active) {
-    if (active.progress.checkpoint_id === JIN_CHECKPOINT) {
+    if (active.progress.checkpoint_id === JIN_CHECKPOINT || active.progress.checkpoint_id === SUBEVENT1_JIN_CHECKPOINT) {
       return <JinScreen save={active} onTitle={() => setActive(null)} onSave={async (nextSave) => {
         await game.save.write(nextSave)
         setSaved(nextSave)
@@ -92,6 +93,26 @@ function GameScreen() {
         setSaved(nextSave)
         setActive(nextSave)
       }} />
+    }
+    if (isSubevent1JinStoryCheckpoint(active.progress.checkpoint_id)) {
+      return <StoryScreen save={active} content={subevent1JinContent} storyId={SUBEVENT1_JIN_STORY_ID}
+        onTitle={() => setActive(null)} onSave={async (nextSave) => {
+          await game.save.write(nextSave)
+          setSaved(nextSave)
+          setActive(nextSave)
+        }} onCheckpoint={async (checkpointId) => {
+          const nextSave = checkpointId === SUBEVENT1_JIN_CHECKPOINT
+            ? prepareSubevent1Jin(active)
+            : { ...active, progress: { ...active.progress, checkpoint_id: checkpointId } }
+          await game.save.write(nextSave)
+          setSaved(nextSave)
+          setActive(nextSave)
+        }} onEnd={async () => {
+          const nextSave = returnSubevent1JinToGuild(active)
+          await game.save.write(nextSave)
+          setSaved(nextSave)
+          setActive(nextSave)
+        }} />
     }
     return <main className="game-screen">
       <div className="checkpoint-panel">

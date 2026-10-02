@@ -28,6 +28,7 @@ export interface BattleContent {
   background_asset_id: string
   player_deck_size: number
   opponent_deck_size: number
+  round_limit?: number
   opponent_card_ids: string[]
   gold_reward: { min: number; max: number }
   transfer_cards: boolean
