@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import type { SaveData } from '../../../packages/domain/save'
-import { acknowledgeJinRound, activeJinLedger, continueSubevent1Jin, jinContent, jinProbabilities, jinView, playJinRound,
-  returnJinToGuild, settleJin, subevent1JinContent } from '../../../packages/battle/jin'
+import { acknowledgeJinRound, activeJinLedger, continueSubevent1Jin, continueSubevent1Marco, jinContent, jinProbabilities, jinView, playJinRound,
+  returnJinToGuild, settleJin, SUBEVENT1_JIN_BATTLE_ID, SUBEVENT1_MARCO_BATTLE_ID, subevent1JinContent } from '../../../packages/battle/jin'
 import { validateContent } from '../../../packages/content/validate'
 import { fitViewport } from '../../../packages/story/viewport'
 import { cardPresentation } from '../../../packages/cards/presentation'
@@ -20,7 +20,9 @@ export function JinScreen({ save, onSave, onTitle }: {
   const [fit, setFit] = useState(() => fitViewport(0, 0))
   const [selected, setSelected] = useState<number | null>(null), [busy, setBusy] = useState(false), [error, setError] = useState('')
   const ledger = activeJinLedger(save)!, view = jinView(save)
-  const storyBattle = ledger.battle_id === subevent1JinContent.battles[0].id
+  const marcoBattle = ledger.battle_id === SUBEVENT1_MARCO_BATTLE_ID
+  const storyBattle = ledger.battle_id === SUBEVENT1_JIN_BATTLE_ID || marcoBattle
+  const opponentName = marcoBattle ? 'マルコ' : 'ジン'
   const resultPending = ledger.rounds.length > ledger.acknowledged
   const probabilities = jinProbabilities(save, selected === null ? undefined : ledger.player_deck[selected])
   const disabled = (action: string) => busy || proposalAction.current !== null && proposalAction.current !== action
@@ -43,16 +45,16 @@ export function JinScreen({ save, onSave, onTitle }: {
     finally { pending.current = false; setBusy(false) }
   }
 
-  return <main ref={viewport} className="story-viewport" aria-label="ジン戦">
+  return <main ref={viewport} className="story-viewport" aria-label={`${opponentName}戦`}>
     <div className="story-frame" data-testid="jin-frame" style={{ width: fit.width, height: fit.height }}>
       <div className="story-stage" style={{ transform: `scale(${fit.scale})` }}>
-        <img className="story-background" alt="ジン戦の闘技場" src={arena} />
-        <header className="story-header"><h1>{storyBattle ? '盗賊ジン戦' : 'ジン戦（確認用）'}</h1><span>所持金 {save.player.money} G</span>
+        <img className="story-background" alt={`${opponentName}戦の闘技場`} src={arena} />
+        <header className="story-header"><h1>{storyBattle ? `盗賊${opponentName}戦` : 'ジン戦（確認用）'}</h1><span>所持金 {save.player.money} G</span>
           <span className="story-checkpoint" data-testid="checkpoint-id">{save.progress.checkpoint_id}</span>
           <button disabled={busy} onClick={onTitle}>タイトルに戻る</button></header>
         <aside className="belka-bayes" aria-label="相手の手の傾向"><h2>相手の手の目安</h2>
           <p>グー {Math.round(probabilities.rock * 100)}% ／ チョキ {Math.round(probabilities.scissors * 100)}% ／ パー {Math.round(probabilities.paper * 100)}%</p></aside>
-        <aside className="deck-panel fixed-deck" aria-label="ジン戦デッキ" data-testid="jin-deck"
+        <aside className="deck-panel fixed-deck" aria-label={`${opponentName}戦デッキ`} data-testid="jin-deck"
           style={{ left: 350, top: 800, right: 'auto', bottom: 'auto', width: 1220 }}>
           <h2>選択カード ・残り {ledger.player_deck.length - view.usedPlayer.length}枚</h2>
           <div className="deck-grid">{ledger.player_deck.map((card, index) => {
@@ -65,25 +67,26 @@ export function JinScreen({ save, onSave, onTitle }: {
             </button>
           })}</div>
         </aside>
-        <section className="belka-controls" aria-label="ジン戦の進行">
+        <section className="belka-controls" aria-label={`${opponentName}戦の進行`}>
           {ledger.settled ? <div data-testid="jin-settled">
-            <h2>{view.outcome === 'win' ? 'ジンに勝利' : view.outcome === 'lose' ? 'ジンに敗北' : '引き分け'}</h2>
+            <h2>{view.outcome === 'win' ? `${opponentName}に勝利` : view.outcome === 'lose' ? `${opponentName}に敗北` : '引き分け'}</h2>
             <p>精算済み：{ledger.gold_delta! >= 0 ? '+' : ''}{ledger.gold_delta}G ・所持 {save.player.money}G</p>
             <button disabled={disabled('return')} onClick={() => { void commit('return', () => storyBattle && view.outcome === 'win'
-              ? continueSubevent1Jin(save) : returnJinToGuild(save)) }}>{storyBattle && view.outcome === 'win' ? '物語を続ける' : 'ギルドホームに戻る'}</button>
+              ? marcoBattle ? continueSubevent1Marco(save) : continueSubevent1Jin(save) : returnJinToGuild(save)) }}>
+              {storyBattle && view.outcome === 'win' ? '物語を続ける' : 'ギルドホームに戻る'}</button>
           </div> : resultPending ? <div data-testid="jin-result">
             <h2>{view.last!.result === 'win' ? '勝ち' : view.last!.result === 'lose' ? '負け' : '引き分け'}</h2>
-            <p>ジンHP {view.opponentHp}/1 ・あなたのHP {view.playerHp}/1</p>
+            <p>{opponentName}HP {view.opponentHp}/1 ・あなたのHP {view.playerHp}/1</p>
             <button disabled={disabled('result')} onClick={() => { void commit('result', () => view.outcome
               ? settleJin(save, Math.random()) : acknowledgeJinRound(save)) }}>{view.outcome ? '結果を確定' : '次の勝負へ'}</button>
           </div> : <>
-            <h2>カードを選択してください</h2><p>ジンHP {view.opponentHp}/1 ・あなたのHP {view.playerHp}/1</p>
+            <h2>カードを選択してください</h2><p>{opponentName}HP {view.opponentHp}/1 ・あなたのHP {view.playerHp}/1</p>
             <button disabled={disabled('round') || selected === null} onClick={() => { void commit('round', () => playJinRound(save, selected!, Math.random())) }}>勝負！</button>
           </>}
           {error && <p role="alert" className="error-message">{error}</p>}
         </section>
         {view.last && (resultPending || ledger.settled) && <section className="belka-showdown" aria-label="勝負カード">
-          <div>あなた<CardView card={view.last.player} compact={false} /></div><div>ジン<CardView card={view.last.opponent} compact={false} /></div>
+          <div>あなた<CardView card={view.last.player} compact={false} /></div><div>{opponentName}<CardView card={view.last.opponent} compact={false} /></div>
         </section>}
       </div>
     </div>
