@@ -60,6 +60,10 @@ test('story Belka victory settles captured cards, gold and items without mutatin
   assert.equal(terminal.player.inventory.length, original.player.inventory.length + 3)
   assert.deepEqual(terminal.player.items, ['greed_ring', 'rock_attract_crimson'])
   assert.equal(original.player.money >= 100, true)
+  assert.throws(() => parseSave({ ...terminal, player: { ...terminal.player, inventory: terminal.player.inventory.slice(0, -1) } }),
+    /Invalid Subevent 1 Belka settlement/)
+  assert.throws(() => parseSave({ ...terminal, player: { ...terminal.player, items: ['greed_ring'] } }),
+    /Invalid Subevent 1 Belka settlement/)
   terminal = continueSubevent1Belka(terminal)
   const atReport = parseSave({ ...terminal, progress: { ...terminal.progress, checkpoint_id: 'subevent1.belka.report' } })
   const atEnd = parseSave({ ...atReport, progress: { ...atReport.progress, checkpoint_id: 'subevent1.belka.end' } })

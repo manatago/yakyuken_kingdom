@@ -45,6 +45,27 @@ function checkRoll(roll: number) {
   if (!Number.isFinite(roll) || roll < 0 || roll >= 1) throw new Error('Invalid random roll')
 }
 
+function settledInventory(ledger: Subevent1BelkaLedger, outcome: NonNullable<ReturnType<typeof view>['outcome']>): Card[] {
+  const inventory = [...ledger.inventory_before]
+  for (const round of ledger.rounds) {
+    const player = ledger.player_deck[round.player_index]!, opponent = opponentDeck()[round.opponent_index]!
+    const result = judgeCards(player, opponent)
+    if (outcome === 'win' && result === 'win') inventory.push(opponent)
+    if (outcome === 'lose' && result === 'lose') {
+      const index = inventory.findIndex((card) => card.hand === player.hand && card.grade === player.grade)
+      if (index < 0) throw new Error('Lost Belka card is not in inventory')
+      inventory.splice(index, 1)
+    }
+  }
+  return inventory
+}
+
+function settledItems(ledger: Subevent1BelkaLedger, outcome: NonNullable<ReturnType<typeof view>['outcome']>): ItemId[] {
+  return outcome === 'win'
+    ? [...ledger.items_before, ...(battle.item_reward_ids ?? []).filter((id) => !ledger.items_before.includes(id as ItemId)) as ItemId[]]
+    : [...ledger.items_before]
+}
+
 export function startSubevent1Belka(save: SaveData): SaveData {
   parseSave(save)
   const checkpoint = save.progress.checkpoint_id
@@ -81,20 +102,8 @@ export function settleSubevent1Belka(save: SaveData, roll: number): SaveData {
   if (ledger.settled || !outcome) throw new Error('No terminal Belka result')
   const delta = battleGoldDelta(battle, outcome, ledger.balance_before, roll)
   if (!Number.isSafeInteger(save.player.money + delta)) throw new Error('Money overflow')
-  const inventory = [...ledger.inventory_before]
-  for (const round of ledger.rounds) {
-    const player = ledger.player_deck[round.player_index]!, opponent = opponentDeck()[round.opponent_index]!
-    const result = judgeCards(player, opponent)
-    if (outcome === 'win' && result === 'win') inventory.push(opponent)
-    if (outcome === 'lose' && result === 'lose') {
-      const index = inventory.findIndex((card) => card.hand === player.hand && card.grade === player.grade)
-      if (index < 0) throw new Error('Lost Belka card is not in inventory')
-      inventory.splice(index, 1)
-    }
-  }
-  const items = outcome === 'win'
-    ? [...(save.player.items ?? []), ...(battle.item_reward_ids ?? []).filter((id) => !(save.player.items ?? []).includes(id as ItemId))]
-    : save.player.items ?? []
+  const inventory = settledInventory(ledger, outcome)
+  const items = settledItems(ledger, outcome)
   const counts = new Map<string, number>()
   for (const card of inventory) { const key = `${card.hand}:${card.grade}`; counts.set(key, (counts.get(key) ?? 0) + 1) }
   const deck = save.player.deck.filter((card) => {
@@ -143,7 +152,8 @@ export function validateSubevent1BelkaState(save: SaveData): void {
   const state = view(ledger)
   if (!ledger.settled) {
     if (!active || ledger.gold_delta !== undefined || save.player.money !== ledger.balance_before ||
-        JSON.stringify(save.player.inventory) !== JSON.stringify(ledger.inventory_before) || state.outcome && ledger.acknowledged === ledger.rounds.length) {
+        JSON.stringify(save.player.inventory) !== JSON.stringify(ledger.inventory_before) ||
+        JSON.stringify(save.player.items ?? []) !== JSON.stringify(ledger.items_before) || state.outcome && ledger.acknowledged === ledger.rounds.length) {
       throw new Error('Unsettled Subevent 1 Belka checkpoint mismatch')
     }
     return
@@ -153,5 +163,9 @@ export function validateSubevent1BelkaState(save: SaveData): void {
       state.outcome === 'lose' && ledger.gold_delta !== -Math.min(ledger.balance_before, battle.hp.lose_gold) ||
       state.outcome === 'draw' && ledger.gold_delta !== 0 || ![SUBEVENT1_BELKA_CHECKPOINT, SUBEVENT1_BELKA_AFTER_CHECKPOINT,
         'subevent1.belka.report', 'subevent1.belka.end', GUILD_CHECKPOINT].includes(checkpoint) ||
-      save.player.money !== ledger.balance_before + ledger.gold_delta!) throw new Error('Invalid Subevent 1 Belka settlement route')
+      save.player.money !== ledger.balance_before + ledger.gold_delta! ||
+      JSON.stringify(save.player.inventory) !== JSON.stringify(settledInventory(ledger, state.outcome)) ||
+      JSON.stringify(save.player.items ?? []) !== JSON.stringify(settledItems(ledger, state.outcome))) {
+    throw new Error('Invalid Subevent 1 Belka settlement')
+  }
 }
