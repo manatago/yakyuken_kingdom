@@ -8,6 +8,7 @@ export function createInitialGameSave(): SaveData {
     inventory: HANDS.flatMap((hand) =>
       Array.from({ length: 3 }, () => ({ hand, grade: 1 as const }))
     ),
+    items: [],
     deck: [],
     money: 0
   })

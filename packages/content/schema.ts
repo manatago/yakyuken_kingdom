@@ -30,6 +30,7 @@ export interface BattleContent {
   opponent_deck_size: number
   round_limit?: number
   opponent_card_ids: string[]
+  item_reward_ids?: string[]
   gold_reward: { min: number; max: number }
   transfer_cards: boolean
   phases: BattlePhase[]
