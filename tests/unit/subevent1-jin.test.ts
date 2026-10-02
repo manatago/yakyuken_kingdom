@@ -83,3 +83,27 @@ test('Subevent 1 continues from Marco to Gald with the configured battle and ite
   assert.deepEqual(battle.opponent_tendency, { rock: 2 })
   assert.equal(battle.bayes_eye, true)
 })
+
+test('Subevent 1 continues from Gald to the story Belka boss and returns after the aftermath', () => {
+  const content = JSON.parse(readFileSync(join(root, 'content/stories/subevent1-jin.json'), 'utf8')) as ContentPack
+  const steps = content.stories[0].steps
+  const galdReport = steps.find((step) => step.id === 'subevent1.gald.report')
+  assert.equal(galdReport?.kind, 'line')
+  if (galdReport?.kind !== 'line') throw new Error('Missing Gald aftermath')
+  assert.equal(galdReport.next_id, 'subevent1.belka.approach')
+  assert.equal(steps.find((step) => step.id === 'subevent1.belka.await')?.kind, 'battle')
+  assert.equal(steps.find((step) => step.id === 'subevent1.belka.after')?.kind, 'line')
+  assert.equal(steps.find((step) => step.id === 'subevent1.belka.end')?.kind, 'end')
+
+  const battle = content.battles.find((entry) => entry.id === 'battle.subevent1.belka')
+  assert.ok(battle)
+  assert.equal(battle.opponent_id, 'belka')
+  assert.equal(battle.player_deck_size, 9)
+  assert.equal(battle.opponent_deck_size, 9)
+  assert.equal(battle.transfer_cards, true)
+  assert.equal(battle.bayes_eye, true)
+  assert.deepEqual(battle.hp && [battle.hp.player, battle.hp.opponent, battle.hp.lose_gold], [3, 3, 25])
+  assert.deepEqual(battle.opponent_tendency, { paper: 0.4 })
+  assert.deepEqual([battle.gold_reward.min, battle.gold_reward.max], [40, 60])
+  assert.deepEqual(battle.item_reward_ids, ['greed_ring', 'rock_attract_crimson'])
+})

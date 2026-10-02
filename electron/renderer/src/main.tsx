@@ -11,6 +11,8 @@ import { GuildHome } from './GuildHome'
 import { GUILD_CHECKPOINT } from '../../../packages/guild/routes'
 import { BELKA_CHECKPOINT } from '../../../packages/battle/belka'
 import { BelkaScreen } from './BelkaScreen'
+import { Subevent1BelkaScreen } from './Subevent1BelkaScreen'
+import { SUBEVENT1_BELKA_CHECKPOINT, returnSubevent1BelkaToGuild, startSubevent1Belka } from '../../../packages/battle/subevent1-belka'
 import { JIN_CHECKPOINT, SUBEVENT1_JIN_CHECKPOINT, SUBEVENT1_MARCO_CHECKPOINT, SUBEVENT1_GALD_CHECKPOINT, SUBEVENT1_JIN_STORY_ID,
   isSubevent1JinStoryCheckpoint, prepareSubevent1Jin, prepareSubevent1Marco, prepareSubevent1Gald,
   returnSubevent1JinToGuild, returnSubevent1GaldToGuild, subevent1JinContent } from '../../../packages/battle/jin'
@@ -60,6 +62,13 @@ function GameScreen() {
   }
 
   if (active) {
+    if (active.progress.checkpoint_id === SUBEVENT1_BELKA_CHECKPOINT) {
+      return <Subevent1BelkaScreen save={active} onTitle={() => setActive(null)} onSave={async (nextSave) => {
+        await game.save.write(nextSave)
+        setSaved(nextSave)
+        setActive(nextSave)
+      }} />
+    }
     if (active.progress.checkpoint_id === JIN_CHECKPOINT || active.progress.checkpoint_id === SUBEVENT1_JIN_CHECKPOINT ||
         active.progress.checkpoint_id === SUBEVENT1_MARCO_CHECKPOINT || active.progress.checkpoint_id === SUBEVENT1_GALD_CHECKPOINT) {
       return <JinScreen save={active} onTitle={() => setActive(null)} onSave={async (nextSave) => {
@@ -109,12 +118,16 @@ function GameScreen() {
               ? prepareSubevent1Marco(active)
               : checkpointId === SUBEVENT1_GALD_CHECKPOINT
                 ? prepareSubevent1Gald(active)
+                : checkpointId === SUBEVENT1_BELKA_CHECKPOINT
+                  ? startSubevent1Belka(active)
             : { ...active, progress: { ...active.progress, checkpoint_id: checkpointId } }
           await game.save.write(nextSave)
           setSaved(nextSave)
           setActive(nextSave)
         }} onEnd={async () => {
-          const nextSave = active.progress.subevent1_gald_battle?.settled
+          const nextSave = active.progress.subevent1_belka_battle?.settled
+            ? returnSubevent1BelkaToGuild(active)
+            : active.progress.subevent1_gald_battle?.settled
             ? returnSubevent1GaldToGuild(active) : returnSubevent1JinToGuild(active)
           await game.save.write(nextSave)
           setSaved(nextSave)
