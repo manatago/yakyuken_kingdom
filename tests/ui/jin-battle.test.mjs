@@ -49,6 +49,7 @@ test('guild Jin verification persists a three-card draft, retries failed saves, 
     await page.getByRole('button', { name: 'ジン戦に追加 パー N 7', exact: true }).click()
     await page.getByRole('button', { name: 'ジン戦に追加 パー N 8', exact: true }).click()
     await page.getByRole('button', { name: 'ジン戦に追加 パー N 9', exact: true }).click()
+    await page.getByTestId('jin-draft').locator('p').filter({ hasText: '選択済み 3/3' }).waitFor()
     assert.equal((await read()).progress.jin_draft.length, 3)
     await app.close(); app = undefined
     await open()
