@@ -1,6 +1,8 @@
 export const ITEM_CATALOG = [
   { id: 'scissors_attract_white', name: '刃招きの珠・白紋' },
-  { id: 'paper_seal_white', name: '紙封じの栞・白紋' }
+  { id: 'paper_seal_white', name: '紙封じの栞・白紋' },
+  { id: 'greed_ring', name: '強欲の指輪' },
+  { id: 'rock_attract_crimson', name: '岩寄せの玉・朱紋' }
 ] as const
 
 export type ItemId = (typeof ITEM_CATALOG)[number]['id']

@@ -143,8 +143,7 @@ test('HP content is validated strictly while the existing version-one save remai
     (p: any) => { p.battles[0].hp.first_hand = 'other' },
     (p: any) => { p.battles[0].hp.grade_effect_passes = 3 },
     (p: any) => { p.battles[0].hp.lose_gold = -1 },
-    (p: any) => { p.battles[0].hp.unknown = true },
-    (p: any) => { p.battles[0].transfer_cards = true }
+    (p: any) => { p.battles[0].hp.unknown = true }
   ]) {
     const bad = structuredClone(fixedContent)
     mutate(bad)

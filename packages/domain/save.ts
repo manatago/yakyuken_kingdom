@@ -6,8 +6,15 @@ import { validateFixedState, type FixedLedger } from '../battle/fixed'
 import { BELKA_CHECKPOINT, validateBelkaState, type BelkaLedger } from '../battle/belka'
 import { JIN_CHECKPOINT, SUBEVENT1_JIN_BATTLE_ID, SUBEVENT1_JIN_CHECKPOINT, isSubevent1JinStoryCheckpoint, validateJinState, type JinLedger } from '../battle/jin'
 import { guildValidationSave } from '../guild/routes'
+import { validateSubevent1BelkaState } from '../battle/subevent1-belka'
 
 export const SAVE_VERSION = 1 as const
+
+export interface Subevent1BelkaLedger extends FixedLedger {
+  readonly inventory_before: readonly Card[]
+  readonly historical_deck: readonly Card[]
+  readonly items_before: readonly ItemId[]
+}
 
 export interface SavePlayer {
   readonly inventory: readonly Card[]
@@ -31,6 +38,7 @@ export interface SaveData {
     readonly subevent1_jin_battle?: JinLedger
     readonly subevent1_marco_battle?: JinLedger
     readonly subevent1_gald_battle?: JinLedger
+    readonly subevent1_belka_battle?: Subevent1BelkaLedger
     readonly last_battle_id?: string
     readonly last_jin_battle_id?: string
     readonly guild_return_checkpoint?: string
@@ -120,7 +128,7 @@ export function parseSave(value: unknown): SaveData {
     throw new RangeError('Save deck contains cards not owned by the player')
   }
 
-  const progress = record(root.progress, ['checkpoint_id', 'flags'], ['tutorial', 'fixed_battle', 'belka_battle', 'jin_draft', 'jin_battle', 'subevent1_jin_battle', 'subevent1_marco_battle', 'subevent1_gald_battle', 'last_battle_id', 'last_jin_battle_id', 'guild_return_checkpoint'])
+  const progress = record(root.progress, ['checkpoint_id', 'flags'], ['tutorial', 'fixed_battle', 'belka_battle', 'jin_draft', 'jin_battle', 'subevent1_jin_battle', 'subevent1_marco_battle', 'subevent1_gald_battle', 'subevent1_belka_battle', 'last_battle_id', 'last_jin_battle_id', 'guild_return_checkpoint'])
   if (!Array.isArray(progress.flags)) throw new TypeError('Save flags must be an array')
   const flags = Array.from(progress.flags, identifier)
   if (new Set(flags).size !== flags.length) throw new TypeError('Save flags must be unique')
@@ -172,6 +180,22 @@ export function parseSave(value: unknown): SaveData {
   let subevent1Jin = Object.hasOwn(progress, 'subevent1_jin_battle') ? jinLedger(progress.subevent1_jin_battle) : undefined
   const subevent1Marco = Object.hasOwn(progress, 'subevent1_marco_battle') ? jinLedger(progress.subevent1_marco_battle) : undefined
   const subevent1Gald = Object.hasOwn(progress, 'subevent1_gald_battle') ? jinLedger(progress.subevent1_gald_battle) : undefined
+  let subevent1Belka: Subevent1BelkaLedger | undefined
+  if (Object.hasOwn(progress, 'subevent1_belka_battle')) {
+    const ledger = record(progress.subevent1_belka_battle, ['battle_id', 'player_deck', 'inventory_before', 'historical_deck', 'items_before', 'rounds', 'acknowledged', 'settled', 'balance_before'], ['gold_delta'])
+    if (!Array.isArray(ledger.rounds)) throw new TypeError('Invalid Subevent 1 Belka rounds')
+    subevent1Belka = {
+      battle_id: identifier(ledger.battle_id), player_deck: cards(ledger.player_deck), inventory_before: cards(ledger.inventory_before),
+      historical_deck: cards(ledger.historical_deck),
+      items_before: items(ledger.items_before), acknowledged: ledger.acknowledged as number, settled: ledger.settled as boolean,
+      balance_before: ledger.balance_before as number,
+      ...(Object.hasOwn(ledger, 'gold_delta') ? { gold_delta: ledger.gold_delta as number } : {}),
+      rounds: Array.from(ledger.rounds, (entry) => {
+        const round = record(entry, ['player_index', 'opponent_index'])
+        return { player_index: round.player_index as number, opponent_index: round.opponent_index as number }
+      })
+    }
+  }
   if (jin?.battle_id === SUBEVENT1_JIN_BATTLE_ID) {
     if (subevent1Jin) throw new TypeError('Duplicate Subevent 1 Jin ledger')
     subevent1Jin = jin
@@ -187,6 +211,7 @@ export function parseSave(value: unknown): SaveData {
       ...(subevent1Jin ? { subevent1_jin_battle: subevent1Jin } : {}),
       ...(subevent1Marco ? { subevent1_marco_battle: subevent1Marco } : {}),
       ...(subevent1Gald ? { subevent1_gald_battle: subevent1Gald } : {}),
+      ...(subevent1Belka ? { subevent1_belka_battle: subevent1Belka } : {}),
       ...(Object.hasOwn(progress, 'last_battle_id') ? { last_battle_id: identifier(progress.last_battle_id) } : {}),
       ...(Object.hasOwn(progress, 'last_jin_battle_id') ? { last_jin_battle_id: identifier(progress.last_jin_battle_id) } : {}),
       ...(Object.hasOwn(progress, 'guild_return_checkpoint') ? { guild_return_checkpoint: identifier(progress.guild_return_checkpoint) } : {}) }
@@ -198,8 +223,9 @@ export function parseSave(value: unknown): SaveData {
   const lastBattleId = save.progress.last_battle_id ?? save.progress.last_jin_battle_id
   const latestJin = [jin, subevent1Jin, subevent1Marco, subevent1Gald]
     .find((ledger) => ledger?.battle_id === lastBattleId) ?? subevent1Gald ?? subevent1Marco ?? subevent1Jin ?? jin
-  const historicInventory = latestJin?.inventory_before ?? save.player.inventory
-  const historicDeck = latestJin?.historical_deck ?? save.player.deck
+  const subeventBelka = subevent1Belka
+  const historicInventory = subeventBelka?.inventory_before ?? latestJin?.inventory_before ?? save.player.inventory
+  const historicDeck = subeventBelka?.historical_deck ?? latestJin?.historical_deck ?? save.player.deck
   const fixedBalance = fixed?.settled ? fixed.balance_before + (fixed.gold_delta ?? 0) : fixed?.balance_before
   const validationSave = { ...historicalCheckpoint,
     player: { ...historicalCheckpoint.player, inventory: historicInventory, deck: historicDeck,
@@ -214,7 +240,13 @@ export function parseSave(value: unknown): SaveData {
         money: belka.balance_before + (belka.settled ? (belka.gold_delta ?? 0) : 0) } }
     : save
   validateBelkaState(belkaProjection)
-  validateJinState(save)
+  const jinHistoryProjection = subeventBelka
+    ? { ...save, progress: { ...save.progress, checkpoint_id: 'subevent1.gald.end' },
+      player: { ...save.player, inventory: subeventBelka.inventory_before, deck: subeventBelka.historical_deck,
+        money: subeventBelka.balance_before, items: subeventBelka.items_before } }
+    : save
+  validateJinState(jinHistoryProjection)
+  validateSubevent1BelkaState(save)
   return save
 }
 
