@@ -18,9 +18,14 @@ export const SUBEVENT1_JIN_STORY_ID = 'story.subevent1.jin'
 export const SUBEVENT1_JIN_START_CHECKPOINT = 'subevent1.jin.intro'
 export const SUBEVENT1_JIN_AFTER_CHECKPOINT = 'subevent1.jin.after'
 export const SUBEVENT1_JIN_END_CHECKPOINT = 'subevent1.jin.end'
+export const SUBEVENT1_MARCO_CHECKPOINT = 'subevent1.marco.await'
+export const SUBEVENT1_MARCO_BATTLE_ID = 'battle.subevent1.marco'
+export const SUBEVENT1_MARCO_AFTER_CHECKPOINT = 'subevent1.marco.after'
+export const SUBEVENT1_MARCO_END_CHECKPOINT = 'subevent1.marco.end'
 const ORIGIN = 'matilda.normal.end'
 const verificationBattle = jinContent.battles[0] as BattleContent & { hp: NonNullable<BattleContent['hp']> }
 const storyBattle = subevent1JinContent.battles.find((battle) => battle.id === SUBEVENT1_JIN_BATTLE_ID) as BattleContent & { hp: NonNullable<BattleContent['hp']> }
+const marcoBattle = subevent1JinContent.battles.find((battle) => battle.id === SUBEVENT1_MARCO_BATTLE_ID) as BattleContent & { hp: NonNullable<BattleContent['hp']> }
 
 export interface JinLedger extends FixedLedger {
   readonly origin_checkpoint: typeof ORIGIN
@@ -29,24 +34,28 @@ export interface JinLedger extends FixedLedger {
   readonly belka_preceded_jin: boolean
 }
 
-type JinLedgerKey = 'jin_battle' | 'subevent1_jin_battle'
+type JinLedgerKey = 'jin_battle' | 'subevent1_jin_battle' | 'subevent1_marco_battle'
 
 export function activeJinLedger(save: SaveData): JinLedger | undefined {
   const checkpoint = save.progress.checkpoint_id
-  if (checkpoint === JIN_CHECKPOINT) return save.progress.jin_battle ?? save.progress.subevent1_jin_battle
-  if (isSubevent1JinStoryCheckpoint(checkpoint)) return save.progress.subevent1_jin_battle
-  const lastBattleId = save.progress.last_jin_battle_id
-  return [save.progress.jin_battle, save.progress.subevent1_jin_battle]
-    .find((ledger) => ledger?.battle_id === lastBattleId) ?? save.progress.subevent1_jin_battle ?? save.progress.jin_battle
+  if (checkpoint === JIN_CHECKPOINT) return save.progress.jin_battle
+  if (checkpoint === SUBEVENT1_JIN_CHECKPOINT) return save.progress.subevent1_jin_battle
+  if (checkpoint === SUBEVENT1_MARCO_CHECKPOINT) return save.progress.subevent1_marco_battle
+  const lastBattleId = save.progress.last_battle_id ?? save.progress.last_jin_battle_id
+  return [save.progress.jin_battle, save.progress.subevent1_jin_battle, save.progress.subevent1_marco_battle]
+    .find((ledger) => ledger?.battle_id === lastBattleId) ?? save.progress.subevent1_marco_battle ??
+    save.progress.subevent1_jin_battle ?? save.progress.jin_battle
 }
 
 function ledgerKey(ledger: JinLedger): JinLedgerKey {
-  return ledger.battle_id === storyBattle.id ? 'subevent1_jin_battle' : 'jin_battle'
+  if (ledger.battle_id === storyBattle.id) return 'subevent1_jin_battle'
+  if (ledger.battle_id === marcoBattle.id) return 'subevent1_marco_battle'
+  return 'jin_battle'
 }
 
 function battleFor(save: SaveData, ledger = activeJinLedger(save)): BattleContent & { hp: NonNullable<BattleContent['hp']> } {
   const id = ledger?.battle_id
-  const found = [verificationBattle, storyBattle].find((entry) => entry.id === id)
+  const found = [verificationBattle, storyBattle, marcoBattle].find((entry) => entry.id === id)
   if (!found) throw new Error('Unknown Jin battle')
   return found
 }
@@ -90,7 +99,7 @@ export function prepareSubevent1Jin(save: SaveData): SaveData {
       !validateDeck(save.player.inventory, deck, 3).valid) throw new Error('Invalid Subevent 1 Jin setup')
   const { jin_draft: _draft, ...progress } = save.progress
   return parseSave({ ...save, progress: { ...progress, checkpoint_id: SUBEVENT1_JIN_CHECKPOINT,
-    last_jin_battle_id: storyBattle.id,
+    last_battle_id: storyBattle.id,
     subevent1_jin_battle: { battle_id: storyBattle.id, origin_checkpoint: ORIGIN, player_deck: deck.map((card) => ({ ...card })),
       inventory_before: save.player.inventory.map((card) => ({ ...card })), historical_deck: save.player.deck.map((card) => ({ ...card })),
       belka_preceded_jin: !!save.progress.belka_battle?.settled, rounds: [], acknowledged: 0, settled: false, balance_before: save.player.money }
@@ -109,11 +118,26 @@ export function startJin(save: SaveData, deck = save.progress.jin_draft ?? []): 
   if (!canStartJin(save) || !validateDeck(save.player.inventory, deck, 3).valid) throw new Error('Three owned Jin cards required')
   const { jin_draft: _draft, ...progress } = save.progress
   return parseSave({ ...save, progress: { ...progress, checkpoint_id: JIN_CHECKPOINT,
-    last_jin_battle_id: verificationBattle.id,
+    last_battle_id: verificationBattle.id,
     jin_battle: { battle_id: verificationBattle.id, origin_checkpoint: ORIGIN, player_deck: deck.map((card) => ({ ...card })),
       inventory_before: save.player.inventory.map((card) => ({ ...card })), historical_deck: save.player.deck.map((card) => ({ ...card })), rounds: [], acknowledged: 0,
       belka_preceded_jin: !!save.progress.belka_battle?.settled,
       settled: false, balance_before: save.player.money } } })
+}
+
+export function prepareSubevent1Marco(save: SaveData): SaveData {
+  parseSave(save)
+  const jin = save.progress.subevent1_jin_battle
+  const deck = jin?.player_deck ?? []
+  if (save.progress.checkpoint_id !== 'subevent1.marco.challenge' || save.progress.subevent1_marco_battle ||
+      !jin?.settled || jin.battle_id !== storyBattle.id || jinView(save).outcome !== 'win' ||
+      !validateDeck(save.player.inventory, deck, 3).valid) throw new Error('Invalid Subevent 1 Marco setup')
+  return parseSave({ ...save, progress: { ...save.progress, checkpoint_id: SUBEVENT1_MARCO_CHECKPOINT,
+    last_battle_id: marcoBattle.id,
+    subevent1_marco_battle: { battle_id: marcoBattle.id, origin_checkpoint: ORIGIN, player_deck: deck.map((card) => ({ ...card })),
+      inventory_before: save.player.inventory.map((card) => ({ ...card })), historical_deck: save.player.deck.map((card) => ({ ...card })),
+      belka_preceded_jin: !!save.progress.belka_battle?.settled, rounds: [], acknowledged: 0, settled: false, balance_before: save.player.money }
+  } })
 }
 
 export function jinView(save: SaveData) {
@@ -190,10 +214,19 @@ export function settleJin(save: SaveData, roll: number): SaveData {
 export function returnJinToGuild(save: SaveData): SaveData {
   validateJinState(save)
   const ledger = activeJinLedger(save)
-  if (!ledger?.settled || ![JIN_CHECKPOINT, SUBEVENT1_JIN_CHECKPOINT].includes(save.progress.checkpoint_id)) {
+  if (!ledger?.settled || ![JIN_CHECKPOINT, SUBEVENT1_JIN_CHECKPOINT, SUBEVENT1_MARCO_CHECKPOINT].includes(save.progress.checkpoint_id)) {
     throw new Error('Jin result not settled')
   }
   return parseSave({ ...save, progress: { ...save.progress, checkpoint_id: GUILD_CHECKPOINT, guild_return_checkpoint: ORIGIN } })
+}
+
+export function continueSubevent1Marco(save: SaveData): SaveData {
+  validateJinState(save)
+  if (save.progress.subevent1_marco_battle?.battle_id !== marcoBattle.id || !save.progress.subevent1_marco_battle.settled ||
+      jinView(save).outcome !== 'win' || save.progress.checkpoint_id !== SUBEVENT1_MARCO_CHECKPOINT) {
+    throw new Error('Subevent 1 Marco victory is not ready to continue')
+  }
+  return parseSave({ ...save, progress: { ...save.progress, checkpoint_id: SUBEVENT1_MARCO_AFTER_CHECKPOINT } })
 }
 
 export function continueSubevent1Jin(save: SaveData): SaveData {
@@ -207,28 +240,38 @@ export function continueSubevent1Jin(save: SaveData): SaveData {
 
 export function returnSubevent1JinToGuild(save: SaveData): SaveData {
   validateJinState(save)
-  if (save.progress.subevent1_jin_battle?.battle_id !== storyBattle.id || !save.progress.subevent1_jin_battle.settled ||
-      save.progress.checkpoint_id !== SUBEVENT1_JIN_END_CHECKPOINT) throw new Error('Subevent 1 Jin story is not complete')
+  const legacyEnd = save.progress.checkpoint_id === SUBEVENT1_JIN_END_CHECKPOINT && save.progress.subevent1_jin_battle?.settled
+  const marcoEnd = save.progress.checkpoint_id === SUBEVENT1_MARCO_END_CHECKPOINT && save.progress.subevent1_marco_battle?.settled &&
+    jinView(save).outcome === 'win'
+  if (!legacyEnd && !marcoEnd) throw new Error('Subevent 1 story is not complete')
   return parseSave({ ...save, progress: { ...save.progress, checkpoint_id: GUILD_CHECKPOINT, guild_return_checkpoint: ORIGIN } })
 }
 
 export function validateJinState(save: SaveData): void {
-  const { jin_battle: verification, subevent1_jin_battle: story } = save.progress
+  const { jin_battle: verification, subevent1_jin_battle: story, subevent1_marco_battle: marco } = save.progress
   const checkpoint = save.progress.checkpoint_id
   const active = activeJinLedger(save)
-  if (!verification && !story && [JIN_CHECKPOINT, SUBEVENT1_JIN_CHECKPOINT].includes(checkpoint)) throw new Error('Missing Jin ledger')
-  if (save.progress.last_jin_battle_id && ![verification?.battle_id, story?.battle_id].includes(save.progress.last_jin_battle_id)) {
+  if (checkpoint === JIN_CHECKPOINT && !verification || checkpoint === SUBEVENT1_JIN_CHECKPOINT && !story ||
+      checkpoint === SUBEVENT1_MARCO_CHECKPOINT && !marco) {
+    throw new Error('Missing Jin ledger')
+  }
+  const ledgers = [verification, story, marco]
+  const knownIds = [verificationBattle.id, storyBattle.id, marcoBattle.id]
+  if (save.progress.last_jin_battle_id && !knownIds.includes(save.progress.last_jin_battle_id) ||
+      save.progress.last_battle_id && !knownIds.includes(save.progress.last_battle_id) ||
+      [save.progress.last_jin_battle_id, save.progress.last_battle_id].some((id) => id && !ledgers.some((ledger) => ledger?.battle_id === id))) {
     throw new Error('Unknown last Jin battle')
   }
   if (save.progress.jin_draft && (!(canStartSubevent1Jin(save) || canStartJin(save) || isSubevent1JinStoryCheckpoint(checkpoint)) ||
     save.progress.jin_draft.length > 3 || save.progress.jin_draft.length > 0 &&
     !validateDeck(save.player.inventory, save.progress.jin_draft, save.progress.jin_draft.length).valid)) throw new Error('Invalid Jin draft')
 
-  for (const ledger of [verification, story]) {
+  for (const ledger of ledgers) {
     if (!ledger) continue
     const isActive = ledger === active
     const battle = battleFor(save, ledger)
-    if (ledger.battle_id === storyBattle.id !== (ledger === story) || ledger.origin_checkpoint !== ORIGIN ||
+    if ((ledger === verification && ledger.battle_id !== verificationBattle.id) || (ledger === story && ledger.battle_id !== storyBattle.id) ||
+      (ledger === marco && ledger.battle_id !== marcoBattle.id) || ledger.origin_checkpoint !== ORIGIN ||
       typeof ledger.belka_preceded_jin !== 'boolean' || !validateDeck(ledger.inventory_before, ledger.player_deck, 3).valid ||
       !validateDeck(ledger.inventory_before, ledger.historical_deck, ledger.historical_deck.length).valid ||
       !Number.isSafeInteger(ledger.acknowledged) || ledger.acknowledged < 0 || ledger.acknowledged > ledger.rounds.length ||
@@ -236,7 +279,7 @@ export function validateJinState(save: SaveData): void {
       !Number.isSafeInteger(ledger.balance_before) || ledger.balance_before < 0) throw new Error('Invalid Jin ledger')
     const view = replayFixedBattle(battle, ledger)
     if (!ledger.settled) {
-      const expectedCheckpoint = ledger === story ? SUBEVENT1_JIN_CHECKPOINT : JIN_CHECKPOINT
+      const expectedCheckpoint = ledger === story ? SUBEVENT1_JIN_CHECKPOINT : ledger === marco ? SUBEVENT1_MARCO_CHECKPOINT : JIN_CHECKPOINT
       if (!isActive || checkpoint !== expectedCheckpoint || ledger.gold_delta !== undefined || save.player.money !== ledger.balance_before ||
         JSON.stringify(save.player.inventory) !== JSON.stringify(ledger.inventory_before) || view.outcome && ledger.acknowledged === ledger.rounds.length) {
         throw new Error('Unsettled Jin checkpoint mismatch')
@@ -265,7 +308,10 @@ export function validateJinState(save: SaveData): void {
       const expectedMoney = laterBelka ? belka!.balance_before + (belka!.settled ? (belka!.gold_delta ?? 0) : 0) : ledger.balance_before + delta
       if (expectedMoney !== save.player.money || JSON.stringify(expected) !== JSON.stringify(save.player.inventory) ||
         ![JIN_CHECKPOINT, SUBEVENT1_JIN_CHECKPOINT, SUBEVENT1_JIN_AFTER_CHECKPOINT, SUBEVENT1_JIN_END_CHECKPOINT,
-          GUILD_CHECKPOINT, BELKA_CHECKPOINT].includes(checkpoint)) throw new Error('Invalid Jin settlement')
+          SUBEVENT1_MARCO_CHECKPOINT, SUBEVENT1_MARCO_AFTER_CHECKPOINT, SUBEVENT1_MARCO_END_CHECKPOINT,
+          GUILD_CHECKPOINT, BELKA_CHECKPOINT].includes(checkpoint) && !isSubevent1JinStoryCheckpoint(checkpoint)) {
+        throw new Error('Invalid Jin settlement')
+      }
     }
   }
 }

@@ -96,7 +96,7 @@ export function StoryScreen({ save, onCheckpoint, onSave, onTitle, onEnd, conten
             <button onClick={() => { void next() }} disabled={busy}>次へ</button>
           </> : <>
             {onEnd ? <>
-              <h2>ジン戦パート終了</h2>
+              <h2>サブイベント1 前半終了</h2>
               <button disabled={busy} onClick={onEnd}>ギルドホームへ戻る</button>
             </> : <>
               <h2>{storyId === MATILDA_STORY_ID ? 'チュートリアル完了' : '通常戦の確認完了'}</h2>

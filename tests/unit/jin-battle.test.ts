@@ -3,6 +3,7 @@ import test from 'node:test'
 import { createInitialGameSave } from '../../packages/domain/new-game'
 import { startJin, jinContent, jinProbabilities, jinView, playJinRound, returnJinToGuild,
   startSubevent1JinStory, prepareSubevent1Jin, continueSubevent1Jin, returnSubevent1JinToGuild,
+  prepareSubevent1Marco, continueSubevent1Marco, SUBEVENT1_MARCO_CHECKPOINT,
   activeJinLedger, canStartJin,
   setJinDraft, settleJin, validateJinState } from '../../packages/battle/jin'
 import { prepareTutorial, playTutorialRound, acknowledgeTutorial } from '../../packages/battle/tutorial'
@@ -173,6 +174,68 @@ test('verification Jin can follow completed Subevent 1 Jin while retaining both 
   const returned = returnJinToGuild(verificationResult)
   assert.equal(returned.progress.checkpoint_id, 'guild.home')
   assert.deepEqual(returned.progress.subevent1_jin_battle, home.progress.subevent1_jin_battle)
+})
+
+test('Subevent 1 continues through Marco, preserving and resuming both settled battle ledgers', () => {
+  const source = guild()
+  const story = startSubevent1JinStory(source, source.player.inventory.slice(0, 3))
+  const jinChallenge = parseSave({ ...story, progress: { ...story.progress, checkpoint_id: 'subevent1.jin.challenge' } })
+  const jinStarted = prepareSubevent1Jin(jinChallenge)
+  const jinWon = settleJin(playJinRound(jinStarted, 0, .5), 0)
+  assert.equal(jinView(jinWon).outcome, 'win')
+  const afterJin = continueSubevent1Jin(jinWon)
+  const marcoChallenge = parseSave({ ...afterJin, progress: { ...afterJin.progress, checkpoint_id: 'subevent1.marco.challenge' } })
+  const marcoStarted = prepareSubevent1Marco(marcoChallenge)
+
+  assert.equal(marcoStarted.progress.checkpoint_id, SUBEVENT1_MARCO_CHECKPOINT)
+  assert.deepEqual(marcoStarted.progress.subevent1_jin_battle, jinWon.progress.subevent1_jin_battle)
+  assert.equal(activeJinLedger(marcoStarted)?.battle_id, 'battle.subevent1.marco')
+  assert.deepEqual(jinProbabilities(marcoStarted), { rock: 1 / 3, scissors: 1 / 3, paper: 1 / 3 })
+  assert.deepEqual(parseSave(JSON.parse(JSON.stringify(marcoStarted))), marcoStarted)
+
+  const marcoWon = settleJin(playJinRound(marcoStarted, 0, .5), 0)
+  assert.equal(jinView(marcoWon).outcome, 'win')
+  assert.equal(marcoWon.progress.subevent1_marco_battle?.gold_delta, 5)
+  assert.deepEqual(parseSave(JSON.parse(JSON.stringify(marcoWon))), marcoWon)
+  const afterMarco = continueSubevent1Marco(marcoWon)
+  const end = parseSave({ ...afterMarco, progress: { ...afterMarco.progress, checkpoint_id: 'subevent1.marco.end' } })
+  const home = returnSubevent1JinToGuild(end)
+  assert.equal(home.progress.checkpoint_id, 'guild.home')
+  assert.deepEqual(home.progress.subevent1_jin_battle, jinWon.progress.subevent1_jin_battle)
+  assert.deepEqual(home.progress.subevent1_marco_battle, marcoWon.progress.subevent1_marco_battle)
+})
+
+test('Marco battle checkpoint rejects a save that has only the completed Jin ledger', () => {
+  const source = guild()
+  const story = startSubevent1JinStory(source, source.player.inventory.slice(0, 3))
+  const jinStarted = prepareSubevent1Jin(parseSave({ ...story, progress: { ...story.progress, checkpoint_id: 'subevent1.jin.challenge' } }))
+  const jinWon = settleJin(playJinRound(jinStarted, 0, .5), 0)
+  const forged = structuredClone(jinWon)
+  forged.progress.checkpoint_id = SUBEVENT1_MARCO_CHECKPOINT
+
+  assert.throws(() => parseSave(forged))
+})
+
+test('Subevent 1 Marco loss removes the played card and deducts up to 3G', () => {
+  const source = zeroMoneyGuild()
+  const story = startSubevent1JinStory(source, source.player.inventory.slice(0, 3))
+  const jinStarted = prepareSubevent1Jin(parseSave({ ...story, progress: { ...story.progress, checkpoint_id: 'subevent1.jin.challenge' } }))
+  const jinWon = settleJin(playJinRound(jinStarted, 0, .5), 0)
+  const afterJin = continueSubevent1Jin(jinWon)
+  const marcoStarted = prepareSubevent1Marco(parseSave({ ...afterJin, progress: { ...afterJin.progress, checkpoint_id: 'subevent1.marco.challenge' } }))
+  const lostCard = activeJinLedger(marcoStarted)!.player_deck[0]
+  const beforeCount = marcoStarted.player.inventory.filter((card) => card.hand === lostCard.hand && card.grade === lostCard.grade).length
+  const marcoLost = settleJin(playJinRound(marcoStarted, 0, .99), 0)
+
+  assert.equal(jinView(marcoLost).outcome, 'lose')
+  assert.equal(marcoLost.player.money, 0)
+  assert.equal(marcoLost.player.inventory.length, marcoStarted.player.inventory.length - 1)
+  assert.equal(marcoLost.player.inventory.filter((card) => card.hand === lostCard.hand && card.grade === lostCard.grade).length, beforeCount - 1)
+  assert.deepEqual(parseSave(JSON.parse(JSON.stringify(marcoLost))).progress.subevent1_marco_battle,
+    marcoLost.progress.subevent1_marco_battle)
+  const returned = returnJinToGuild(marcoLost)
+  assert.equal(returned.progress.checkpoint_id, 'guild.home')
+  assert.equal(returned.progress.guild_return_checkpoint, 'matilda.normal.end')
 })
 
 test('Jin and Belka ledgers remain valid in either encounter order', () => {

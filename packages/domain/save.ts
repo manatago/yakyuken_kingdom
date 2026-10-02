@@ -27,6 +27,8 @@ export interface SaveData {
     readonly jin_draft?: readonly Card[]
     readonly jin_battle?: JinLedger
     readonly subevent1_jin_battle?: JinLedger
+    readonly subevent1_marco_battle?: JinLedger
+    readonly last_battle_id?: string
     readonly last_jin_battle_id?: string
     readonly guild_return_checkpoint?: string
   }
@@ -105,7 +107,7 @@ export function parseSave(value: unknown): SaveData {
     throw new RangeError('Save deck contains cards not owned by the player')
   }
 
-  const progress = record(root.progress, ['checkpoint_id', 'flags'], ['tutorial', 'fixed_battle', 'belka_battle', 'jin_draft', 'jin_battle', 'subevent1_jin_battle', 'last_jin_battle_id', 'guild_return_checkpoint'])
+  const progress = record(root.progress, ['checkpoint_id', 'flags'], ['tutorial', 'fixed_battle', 'belka_battle', 'jin_draft', 'jin_battle', 'subevent1_jin_battle', 'subevent1_marco_battle', 'last_battle_id', 'last_jin_battle_id', 'guild_return_checkpoint'])
   if (!Array.isArray(progress.flags)) throw new TypeError('Save flags must be an array')
   const flags = Array.from(progress.flags, identifier)
   if (new Set(flags).size !== flags.length) throw new TypeError('Save flags must be unique')
@@ -155,6 +157,7 @@ export function parseSave(value: unknown): SaveData {
   const jinDraft = Object.hasOwn(progress, 'jin_draft') ? cards(progress.jin_draft) : undefined
   let jin = Object.hasOwn(progress, 'jin_battle') ? jinLedger(progress.jin_battle) : undefined
   let subevent1Jin = Object.hasOwn(progress, 'subevent1_jin_battle') ? jinLedger(progress.subevent1_jin_battle) : undefined
+  const subevent1Marco = Object.hasOwn(progress, 'subevent1_marco_battle') ? jinLedger(progress.subevent1_marco_battle) : undefined
   if (jin?.battle_id === SUBEVENT1_JIN_BATTLE_ID) {
     if (subevent1Jin) throw new TypeError('Duplicate Subevent 1 Jin ledger')
     subevent1Jin = jin
@@ -167,6 +170,8 @@ export function parseSave(value: unknown): SaveData {
       ...(belka ? { belka_battle: belka } : {}),
       ...(jinDraft ? { jin_draft: jinDraft } : {}), ...(jin ? { jin_battle: jin } : {}),
       ...(subevent1Jin ? { subevent1_jin_battle: subevent1Jin } : {}),
+      ...(subevent1Marco ? { subevent1_marco_battle: subevent1Marco } : {}),
+      ...(Object.hasOwn(progress, 'last_battle_id') ? { last_battle_id: identifier(progress.last_battle_id) } : {}),
       ...(Object.hasOwn(progress, 'last_jin_battle_id') ? { last_jin_battle_id: identifier(progress.last_jin_battle_id) } : {}),
       ...(Object.hasOwn(progress, 'guild_return_checkpoint') ? { guild_return_checkpoint: identifier(progress.guild_return_checkpoint) } : {}) }
   }
@@ -174,9 +179,11 @@ export function parseSave(value: unknown): SaveData {
     isSubevent1JinStoryCheckpoint(save.progress.checkpoint_id)
     ? { ...save, progress: { ...save.progress, checkpoint_id: 'matilda.normal.end' } }
     : guildValidationSave(save)
-  const latestJin = subevent1Jin ?? jin
-  const historicInventory = jin?.inventory_before ?? subevent1Jin?.inventory_before ?? save.player.inventory
-  const historicDeck = jin?.historical_deck ?? subevent1Jin?.historical_deck ?? save.player.deck
+  const lastBattleId = save.progress.last_battle_id ?? save.progress.last_jin_battle_id
+  const latestJin = [jin, subevent1Jin, subevent1Marco]
+    .find((ledger) => ledger?.battle_id === lastBattleId) ?? subevent1Marco ?? subevent1Jin ?? jin
+  const historicInventory = latestJin?.inventory_before ?? save.player.inventory
+  const historicDeck = latestJin?.historical_deck ?? save.player.deck
   const fixedBalance = fixed?.settled ? fixed.balance_before + (fixed.gold_delta ?? 0) : fixed?.balance_before
   const validationSave = { ...historicalCheckpoint,
     player: { ...historicalCheckpoint.player, inventory: historicInventory, deck: historicDeck,

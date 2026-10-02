@@ -18,6 +18,21 @@
     "bayes_eye": true,
     "result_route": "guild_home",
     "phases": [{ "id": "phase.subevent1.jin", "rules": [] }]
+  }, {
+    "id": "battle.subevent1.marco",
+    "opponent_id": "marco",
+    "background_asset_id": "background.subevent1.jin",
+    "player_deck_size": 3,
+    "opponent_deck_size": 3,
+    "opponent_card_ids": ["rock_normal", "scissors_normal", "paper_normal"],
+    "gold_reward": { "min": 5, "max": 10 },
+    "transfer_cards": true,
+    "round_limit": 1,
+    "hp": { "player": 1, "opponent": 1, "grade_effect_passes": 2, "lose_gold": 3 },
+    "opponent_tendency": {},
+    "bayes_eye": true,
+    "result_route": "guild_home",
+    "phases": [{ "id": "phase.subevent1.marco", "rules": [] }]
   }],
   "stories": [{
     "id": "story.subevent1.jin",
@@ -28,7 +43,15 @@
       { "id": "subevent1.jin.warning", "kind": "line", "speaker_id": "ピー助", "text": "こいつのデッキ、スキャンしたぞ。チョキに偏ってる典型的なスピード型だ。グーで押せば楽勝だ。", "next_id": "subevent1.jin.challenge" },
       { "id": "subevent1.jin.challenge", "kind": "line", "speaker_id": "ジン", "text": "余裕ぶってんじゃねえぞ！ 俺の「疾風のハサミ」を食らいな！", "next_id": "subevent1.jin.await" },
       { "id": "subevent1.jin.await", "kind": "battle", "battle_id": "battle.subevent1.jin", "next_id": "subevent1.jin.after" },
-      { "id": "subevent1.jin.after", "kind": "line", "speaker_id": "サトシ", "text": "だからチョキばっかりだって言ったのに。", "next_id": "subevent1.jin.end" },
+      { "id": "subevent1.jin.after", "kind": "line", "speaker_id": "サトシ", "text": "だからチョキばっかりだって言ったのに。", "next_id": "subevent1.marco.approach" },
+      { "id": "subevent1.marco.approach", "kind": "line", "speaker_id": "ピー助", "text": "ゲコッ。もう1人いるぞ。この先の角だ。...今度はさっきより手強い。", "next_id": "subevent1.marco.silent" },
+      { "id": "subevent1.marco.silent", "kind": "line", "speaker_id": "マルコ", "text": "......。", "next_id": "subevent1.marco.warning" },
+      { "id": "subevent1.marco.warning", "kind": "line", "speaker_id": "ピー助", "text": "こいつ、さっきのとは違うぞ。デッキのバランスがいい。グー・チョキ・パーが均等に入ってる。...偏りがないから、ベイズ・アイでも読みにくい。慎重にいけ。", "next_id": "subevent1.marco.challenge" },
+      { "id": "subevent1.marco.challenge", "kind": "line", "speaker_id": "サトシ", "text": "...行くぞ。", "next_id": "subevent1.marco.await" },
+      { "id": "subevent1.marco.await", "kind": "battle", "battle_id": "battle.subevent1.marco", "next_id": "subevent1.marco.after" },
+      { "id": "subevent1.marco.after", "kind": "line", "speaker_id": "サトシ", "text": "なんか、言えよ。ていうか、前を隠せよ...", "next_id": "subevent1.marco.report" },
+      { "id": "subevent1.marco.report", "kind": "line", "speaker_id": "ピー助", "text": "2人片付けた。あとはアジトの中だ。...残り2人と、首領だな。気を引き締めろ。", "next_id": "subevent1.marco.end" },
+      { "id": "subevent1.marco.end", "kind": "end" },
       { "id": "subevent1.jin.end", "kind": "end" }
     ]
   }]
