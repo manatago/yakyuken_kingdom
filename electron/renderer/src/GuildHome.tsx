@@ -9,6 +9,7 @@ import { CardPanel } from './CardPanel'
 import { DeckEditor } from './DeckEditor'
 import { canStartJin, canStartSubevent1Jin, setJinDraft, startJin, startSubevent1JinStory } from '../../../packages/battle/jin'
 import { cardPresentation } from '../../../packages/cards/presentation'
+import { getItemDefinition } from '../../../packages/domain/item-catalog'
 
 const backgrounds: Record<string, string> = {
   'godot/assets/backgrounds/stage1/bg07_st1_001.png': guildBackground
@@ -106,6 +107,10 @@ export function GuildHome({ save, onSave, onTitle }: {
           <p>ギルドホーム移植の確認用画面です。</p>
           <p>カードの確認・編成編集ができます。クエスト・街・次の章などは未移植です。</p>
           {canStartBelka(save) && <button disabled={busy} onClick={() => { void openBelka() }}>ベルカ戦を確認</button>}
+          {(save.player.items ?? []).length > 0 && <section aria-label="所持アイテム" data-testid="item-inventory">
+            <h2>所持アイテム</h2>
+            <ul>{(save.player.items ?? []).map((id, index) => <li key={`${id}-${index}`}>{getItemDefinition(id)?.name ?? id}</li>)}</ul>
+          </section>}
           {canStartJin(save) && <section aria-label="ジン戦カード選択" data-testid="jin-draft">
             <h2>ジン戦（確認用）</h2>
             <p>所持カードから3枚を選び、順番を決めます。選択済み {jinDraft.length}/3</p>

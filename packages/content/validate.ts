@@ -1,5 +1,6 @@
 import { HANDS } from '../domain/card'
 import { getCardDefinition } from '../domain/card-catalog'
+import { getItemDefinition } from '../domain/item-catalog'
 
 export type ContentIssueCode =
   | 'invalid_value'
@@ -144,7 +145,7 @@ export function validateContent(value: unknown, assetExists: (path: string) => b
     const battle = object(entry, path, [
       'id', 'opponent_id', 'background_asset_id', 'player_deck_size', 'opponent_deck_size',
       'opponent_card_ids', 'gold_reward', 'transfer_cards', 'phases'
-    ], ['hp', 'opponent_tendency', 'bayes_eye', 'result_route', 'round_limit'])
+    ], ['hp', 'opponent_tendency', 'bayes_eye', 'result_route', 'round_limit', 'item_reward_ids'])
     if (battle === null) return
     register(battle.id, `${path}.id`, 'battle')
     identifier(battle.opponent_id, `${path}.opponent_id`)
@@ -166,6 +167,20 @@ export function validateContent(value: unknown, assetExists: (path: string) => b
         issue(`${path}.opponent_card_ids[${cardIndex}]`, 'invalid_deck', 'Unknown card ID')
       }
     })
+    if (Object.hasOwn(battle, 'item_reward_ids')) {
+      const itemIds = array(battle.item_reward_ids, `${path}.item_reward_ids`)
+      const seenItems = new Set<string>()
+      itemIds.forEach((itemId, itemIndex) => {
+        const itemPath = `${path}.item_reward_ids[${itemIndex}]`
+        if (typeof itemId !== 'string' || !getItemDefinition(itemId)) {
+          issue(itemPath, 'invalid_value', 'Unknown item reward ID')
+        } else if (seenItems.has(itemId)) {
+          issue(itemPath, 'invalid_value', 'Duplicate item reward ID')
+        } else {
+          seenItems.add(itemId)
+        }
+      })
+    }
     const reward = object(battle.gold_reward, `${path}.gold_reward`, ['min', 'max'])
     if (reward !== null) {
       const min = nonnegativeInteger(reward.min, `${path}.gold_reward.min`)

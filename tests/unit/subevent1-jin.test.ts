@@ -65,3 +65,21 @@ test('Subevent 1 continues from Jin into the one-match balanced Marco encounter'
   const legacyEnd = steps.find((step) => step.id === 'subevent1.jin.end')
   assert.equal(legacyEnd?.kind, 'end')
 })
+
+test('Subevent 1 continues from Marco to Gald with the configured battle and item rewards', () => {
+  const content = JSON.parse(readFileSync(join(root, 'content/stories/subevent1-jin.json'), 'utf8')) as any
+  const marcoReport = content.stories[0].steps.find((step: any) => step.id === 'subevent1.marco.report')
+  assert.equal(marcoReport?.next_id, 'subevent1.gald.approach')
+
+  const battle = content.battles.find((entry: any) => entry.id === 'battle.subevent1.gald')
+  assert.ok(battle)
+  assert.equal(battle.opponent_id, 'gald')
+  assert.equal(battle.player_deck_size, 3)
+  assert.equal(battle.opponent_deck_size, 3)
+  assert.equal(battle.round_limit, 1)
+  assert.deepEqual(battle.opponent_card_ids, ['rock_bronze', 'rock_normal', 'scissors_normal'])
+  assert.deepEqual(battle.item_reward_ids, ['scissors_attract_white', 'paper_seal_white'])
+  assert.deepEqual([battle.gold_reward.min, battle.gold_reward.max], [8, 15])
+  assert.deepEqual(battle.opponent_tendency, { rock: 2 })
+  assert.equal(battle.bayes_eye, true)
+})

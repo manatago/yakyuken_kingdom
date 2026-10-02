@@ -33,6 +33,22 @@
     "bayes_eye": true,
     "result_route": "guild_home",
     "phases": [{ "id": "phase.subevent1.marco", "rules": [] }]
+  }, {
+    "id": "battle.subevent1.gald",
+    "opponent_id": "gald",
+    "background_asset_id": "background.subevent1.jin",
+    "player_deck_size": 3,
+    "opponent_deck_size": 3,
+    "opponent_card_ids": ["rock_bronze", "rock_normal", "scissors_normal"],
+    "item_reward_ids": ["scissors_attract_white", "paper_seal_white"],
+    "gold_reward": { "min": 8, "max": 15 },
+    "transfer_cards": true,
+    "round_limit": 1,
+    "hp": { "player": 1, "opponent": 1, "grade_effect_passes": 2, "lose_gold": 5 },
+    "opponent_tendency": { "rock": 2 },
+    "bayes_eye": true,
+    "result_route": "guild_home",
+    "phases": [{ "id": "phase.subevent1.gald", "rules": [] }]
   }],
   "stories": [{
     "id": "story.subevent1.jin",
@@ -50,7 +66,15 @@
       { "id": "subevent1.marco.challenge", "kind": "line", "speaker_id": "サトシ", "text": "...行くぞ。", "next_id": "subevent1.marco.await" },
       { "id": "subevent1.marco.await", "kind": "battle", "battle_id": "battle.subevent1.marco", "next_id": "subevent1.marco.after" },
       { "id": "subevent1.marco.after", "kind": "line", "speaker_id": "サトシ", "text": "なんか、言えよ。ていうか、前を隠せよ...", "next_id": "subevent1.marco.report" },
-      { "id": "subevent1.marco.report", "kind": "line", "speaker_id": "ピー助", "text": "2人片付けた。あとはアジトの中だ。...残り2人と、首領だな。気を引き締めろ。", "next_id": "subevent1.marco.end" },
+      { "id": "subevent1.marco.report", "kind": "line", "speaker_id": "ピー助", "text": "2人片付けた。あとはアジトの中だ。...残り2人と、首領だな。気を引き締めろ。", "next_id": "subevent1.gald.approach" },
+      { "id": "subevent1.gald.approach", "kind": "line", "speaker_id": "ピー助", "text": "中に3人だ。副首領のガルドと、もう1人の構成員。それと首領。...正面から行くのか？", "next_id": "subevent1.gald.expose" },
+      { "id": "subevent1.gald.expose", "kind": "line", "speaker_id": "サトシ", "text": "おーい！ シルキーファングのド変態ども！ 天下のサトシ様が来てやったぞ！ パンツ返してもらおうか！", "next_id": "subevent1.gald.challenge" },
+      { "id": "subevent1.gald.challenge", "kind": "line", "speaker_id": "ガルド", "text": "「ド変態」だと？ 俺たちは「美学の追求者」だ！ パンツは芸術だろうが！！ ここで俺と勝負しろ！", "next_id": "subevent1.gald.warning" },
+      { "id": "subevent1.gald.warning", "kind": "line", "speaker_id": "ピー助", "text": "...芸術って言い張るタイプか。面倒くせえ。デッキはグーに偏ってる。ベイズ・アイで見極めろ。", "next_id": "subevent1.gald.await" },
+      { "id": "subevent1.gald.await", "kind": "battle", "battle_id": "battle.subevent1.gald", "next_id": "subevent1.gald.after" },
+      { "id": "subevent1.gald.after", "kind": "line", "speaker_id": "ガルド", "text": "バカな...俺の手が全部読まれてる...。お、お頭ぁ！", "next_id": "subevent1.gald.report" },
+      { "id": "subevent1.gald.report", "kind": "line", "speaker_id": "ピー助", "text": "ガルドを退けた。今回はここまでだ。アイテムを確認して、次に備えよう。", "next_id": "subevent1.gald.end" },
+      { "id": "subevent1.gald.end", "kind": "end" },
       { "id": "subevent1.marco.end", "kind": "end" },
       { "id": "subevent1.jin.end", "kind": "end" }
     ]

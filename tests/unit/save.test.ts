@@ -14,7 +14,7 @@ test('new Electron game state has a version and resumes without losing state', (
   const save = createNewSave('matilda.start', initial)
   assert.deepEqual(save, {
     save_version: 1,
-    player: initial,
+    player: { ...initial, items: [] },
     progress: { checkpoint_id: 'matilda.start', flags: [] }
   })
   assert.deepEqual(parseSave(JSON.parse(JSON.stringify(save))), save)
@@ -41,6 +41,19 @@ test('save schema rejects unsupported versions and invalid game state', () => {
   ]
   for (const value of invalid) assert.throws(() => parseSave(value))
   assert.throws(() => createNewSave('', { inventory: [], deck: [], money: 0 }))
+})
+
+test('item inventory defaults for existing saves, validates IDs, and survives serialization', () => {
+  const save = createNewSave('matilda.start', { inventory: [rock], deck: [rock], money: 15 })
+  assert.deepEqual(save.player.items, [])
+
+  const legacy = structuredClone(save) as any
+  delete legacy.player.items
+  assert.deepEqual(parseSave(legacy).player.items, [])
+
+  const rewarded = { ...save, player: { ...save.player, items: ['scissors_attract_white', 'paper_seal_white'] } }
+  assert.deepEqual(parseSave(JSON.parse(JSON.stringify(rewarded))), rewarded)
+  assert.throws(() => parseSave({ ...save, player: { ...save.player, items: ['unknown_item'] } }))
 })
 
 test('Electron save store reloads a save and preserves old data on invalid writes', async () => {

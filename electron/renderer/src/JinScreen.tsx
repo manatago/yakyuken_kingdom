@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef, useState } from 'react'
 import type { SaveData } from '../../../packages/domain/save'
 import { acknowledgeJinRound, activeJinLedger, continueSubevent1Jin, continueSubevent1Marco, jinContent, jinProbabilities, jinView, playJinRound,
   returnJinToGuild, settleJin, SUBEVENT1_JIN_BATTLE_ID, SUBEVENT1_MARCO_BATTLE_ID, subevent1JinContent } from '../../../packages/battle/jin'
+import { continueSubevent1Gald, returnSubevent1GaldToGuild, SUBEVENT1_GALD_BATTLE_ID } from '../../../packages/battle/gald'
 import { validateContent } from '../../../packages/content/validate'
 import { fitViewport } from '../../../packages/story/viewport'
 import { cardPresentation } from '../../../packages/cards/presentation'
@@ -21,8 +22,9 @@ export function JinScreen({ save, onSave, onTitle }: {
   const [selected, setSelected] = useState<number | null>(null), [busy, setBusy] = useState(false), [error, setError] = useState('')
   const ledger = activeJinLedger(save)!, view = jinView(save)
   const marcoBattle = ledger.battle_id === SUBEVENT1_MARCO_BATTLE_ID
-  const storyBattle = ledger.battle_id === SUBEVENT1_JIN_BATTLE_ID || marcoBattle
-  const opponentName = marcoBattle ? 'マルコ' : 'ジン'
+  const galdBattle = ledger.battle_id === SUBEVENT1_GALD_BATTLE_ID
+  const storyBattle = ledger.battle_id === SUBEVENT1_JIN_BATTLE_ID || marcoBattle || galdBattle
+  const opponentName = galdBattle ? 'ガルド' : marcoBattle ? 'マルコ' : 'ジン'
   const resultPending = ledger.rounds.length > ledger.acknowledged
   const probabilities = jinProbabilities(save, selected === null ? undefined : ledger.player_deck[selected])
   const disabled = (action: string) => busy || proposalAction.current !== null && proposalAction.current !== action
@@ -72,7 +74,8 @@ export function JinScreen({ save, onSave, onTitle }: {
             <h2>{view.outcome === 'win' ? `${opponentName}に勝利` : view.outcome === 'lose' ? `${opponentName}に敗北` : '引き分け'}</h2>
             <p>精算済み：{ledger.gold_delta! >= 0 ? '+' : ''}{ledger.gold_delta}G ・所持 {save.player.money}G</p>
             <button disabled={disabled('return')} onClick={() => { void commit('return', () => storyBattle && view.outcome === 'win'
-              ? marcoBattle ? continueSubevent1Marco(save) : continueSubevent1Jin(save) : returnJinToGuild(save)) }}>
+              ? galdBattle ? continueSubevent1Gald(save) : marcoBattle ? continueSubevent1Marco(save) : continueSubevent1Jin(save)
+              : galdBattle ? returnSubevent1GaldToGuild(save) : returnJinToGuild(save)) }}>
               {storyBattle && view.outcome === 'win' ? '物語を続ける' : 'ギルドホームに戻る'}</button>
           </div> : resultPending ? <div data-testid="jin-result">
             <h2>{view.last!.result === 'win' ? '勝ち' : view.last!.result === 'lose' ? '負け' : '引き分け'}</h2>
