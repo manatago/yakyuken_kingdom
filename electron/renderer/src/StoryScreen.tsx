@@ -66,7 +66,7 @@ export function StoryScreen({ save, onCheckpoint, onSave, onTitle, onEnd, conten
   return <main ref={viewport} className="story-viewport">
     <div className="story-frame" data-testid="story-frame" style={{ width: fit.width, height: fit.height }}>
       <div className="story-stage" style={{ transform: `scale(${fit.scale})` }}>
-        {frame.backgroundAssetId && <img className="story-background" alt="牢屋の背景" src={tutorialImage(frame.backgroundAssetId)} />}
+        {frame.backgroundAssetId && <img className="story-background" alt="ストーリー背景" src={tutorialImage(frame.backgroundAssetId)} />}
         {Object.entries(frame.portraits).map(([slot, portrait]) => {
           const layout = content.layouts.find((entry) => entry.id === portrait.layoutId)!
           return <img key={slot} className="story-portrait" data-testid="story-portrait" alt="マチルダの立ち絵"
