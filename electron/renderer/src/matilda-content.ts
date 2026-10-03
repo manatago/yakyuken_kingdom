@@ -9,6 +9,7 @@ import items from '../../../godot/assets/characters/mob/guard/default/guard_defa
 import cards from '../../../godot/assets/characters/mob/guard/default/guard_default_008.png?url'
 import deck from '../../../godot/assets/characters/mob/guard/default/guard_default_009.png?url'
 import jinArena from '../../../godot/assets/backgrounds/prologue/bg06_prison_arena.png?url'
+import guild from '../../../godot/assets/backgrounds/stage1/bg07_st1_001.png?url'
 
 const images: Record<string, string> = {
   'godot/assets/backgrounds/prologue/bg05_prison_cell.png': prison,
@@ -16,7 +17,8 @@ const images: Record<string, string> = {
   'godot/assets/characters/mob/guard/default/guard_default_007.png': items,
   'godot/assets/characters/mob/guard/default/guard_default_008.png': cards,
   'godot/assets/characters/mob/guard/default/guard_default_009.png': deck,
-  'godot/assets/backgrounds/prologue/bg06_prison_arena.png': jinArena
+  'godot/assets/backgrounds/prologue/bg06_prison_arena.png': jinArena,
+  'godot/assets/backgrounds/stage1/bg07_st1_001.png': guild
 }
 
 const validation = validateContent(data, (path) => Object.hasOwn(images, path))

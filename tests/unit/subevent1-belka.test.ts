@@ -49,24 +49,38 @@ test('Subevent 1 Belka content is valid and independent from verification conten
     subevent1BelkaContent.battles.find((entry) => entry.id === 'battle.belka'))
 })
 
-test('story Belka victory settles captured cards, gold and items without mutating the input save', () => {
+test('story Belka victory waits through the guard scene and settles once at the receptionist', () => {
   const original = readySave(), started = startSubevent1Belka(original)
   assert.equal(started.progress.checkpoint_id, 'subevent1.belka.await')
   assert.equal(started.progress.subevent1_belka_battle?.player_deck.length, 9)
   let terminal = playToEnd(started, 3, 0.8)
   assert.equal(subevent1BelkaView(terminal).outcome, 'win')
-  terminal = settleSubevent1Belka(terminal, 0.5)
+
+  let aftermath = continueSubevent1Belka(terminal)
+  assert.equal(aftermath.progress.checkpoint_id, 'subevent1.belka.after')
+  assert.equal(aftermath.progress.subevent1_belka_battle?.settled, false)
+  assert.equal(aftermath.player.money, started.player.money)
+  assert.deepEqual(aftermath.player.inventory, started.player.inventory)
+  assert.deepEqual(aftermath.player.items, started.player.items)
+  assert.throws(() => settleSubevent1Belka(terminal, 0.5), /designated checkpoint/)
+
+  for (const checkpoint_id of ['subevent1.belka.disband', 'subevent1.belka.guard-arrives',
+    'subevent1.belka.guard-recognizes', 'subevent1.belka.guard-report']) {
+    aftermath = parseSave({ ...aftermath, progress: { ...aftermath.progress, checkpoint_id } })
+  }
+  assert.throws(() => parseSave({ ...aftermath,
+    progress: { ...aftermath.progress, checkpoint_id: 'subevent1.belka.reception-background' } }))
+  const atReception = parseSave({ ...aftermath, progress: { ...aftermath.progress, checkpoint_id: 'subevent1.belka.report' } })
+  terminal = settleSubevent1Belka(atReception, 0.5)
   assert.equal(terminal.player.money, original.player.money + 50)
   assert.equal(terminal.player.inventory.length, original.player.inventory.length + 3)
   assert.deepEqual(terminal.player.items, ['greed_ring', 'rock_attract_crimson'])
-  assert.equal(original.player.money >= 100, true)
+  assert.throws(() => settleSubevent1Belka(terminal, 0.5), /terminal Belka result/)
   assert.throws(() => parseSave({ ...terminal, player: { ...terminal.player, inventory: terminal.player.inventory.slice(0, -1) } }),
     /Invalid Subevent 1 Belka settlement/)
   assert.throws(() => parseSave({ ...terminal, player: { ...terminal.player, items: ['greed_ring'] } }),
     /Invalid Subevent 1 Belka settlement/)
-  terminal = continueSubevent1Belka(terminal)
-  const atReport = parseSave({ ...terminal, progress: { ...terminal.progress, checkpoint_id: 'subevent1.belka.report' } })
-  const atEnd = parseSave({ ...atReport, progress: { ...atReport.progress, checkpoint_id: 'subevent1.belka.end' } })
+  const atEnd = parseSave({ ...terminal, progress: { ...terminal.progress, checkpoint_id: 'subevent1.belka.end' } })
   assert.equal(returnSubevent1BelkaToGuild(atEnd).progress.checkpoint_id, 'guild.home')
 })
 
@@ -79,4 +93,15 @@ test('story Belka defeat removes lost cards, deducts the configured gold and ret
   assert.equal(terminal.player.inventory.length, original.player.inventory.length - 3)
   assert.deepEqual(terminal.player.items, [])
   assert.equal(returnSubevent1BelkaToGuild(terminal).progress.checkpoint_id, 'guild.home')
+})
+
+test('Subevent 1 aftermath content includes the guard scene and receptionist payment', () => {
+  const steps = subevent1BelkaContent.stories[0]!.steps
+  const report = steps.find((step) => step.id === 'subevent1.belka.report')
+  const close = steps.find((step) => step.id === 'subevent1.belka.reception-close')
+  assert.equal(steps.find((step) => step.id === 'subevent1.belka.guard-arrives')?.kind, 'line')
+  assert.equal(report?.kind, 'line')
+  assert.match(report?.kind === 'line' ? report.text : '', /金貨\{\{belkaRewardGold\}\}枚/)
+  assert.match(close?.kind === 'line' ? close.text : '', /金貨\{\{belkaRewardGold\}\}枚/)
+  assert.equal(steps.find((step) => step.id === 'subevent1.belka.reception-background')?.kind, 'background')
 })

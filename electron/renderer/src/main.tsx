@@ -12,7 +12,8 @@ import { GUILD_CHECKPOINT } from '../../../packages/guild/routes'
 import { BELKA_CHECKPOINT } from '../../../packages/battle/belka'
 import { BelkaScreen } from './BelkaScreen'
 import { Subevent1BelkaScreen } from './Subevent1BelkaScreen'
-import { SUBEVENT1_BELKA_CHECKPOINT, returnSubevent1BelkaToGuild, startSubevent1Belka } from '../../../packages/battle/subevent1-belka'
+import { SUBEVENT1_BELKA_CHECKPOINT, SUBEVENT1_BELKA_REPORT_CHECKPOINT, returnSubevent1BelkaToGuild,
+  settleSubevent1Belka, startSubevent1Belka } from '../../../packages/battle/subevent1-belka'
 import { JIN_CHECKPOINT, SUBEVENT1_JIN_CHECKPOINT, SUBEVENT1_MARCO_CHECKPOINT, SUBEVENT1_GALD_CHECKPOINT, SUBEVENT1_JIN_STORY_ID,
   isSubevent1JinStoryCheckpoint, prepareSubevent1Jin, prepareSubevent1Marco, prepareSubevent1Gald,
   returnSubevent1JinToGuild, returnSubevent1GaldToGuild, subevent1JinContent } from '../../../packages/battle/jin'
@@ -107,12 +108,14 @@ function GameScreen() {
     }
     if (isSubevent1JinStoryCheckpoint(active.progress.checkpoint_id)) {
       return <StoryScreen save={active} content={subevent1JinContent} storyId={SUBEVENT1_JIN_STORY_ID}
+        textVariables={active.progress.subevent1_belka_battle?.gold_delta === undefined ? {}
+          : { belkaRewardGold: active.progress.subevent1_belka_battle.gold_delta }}
         onTitle={() => setActive(null)} onSave={async (nextSave) => {
           await game.save.write(nextSave)
           setSaved(nextSave)
           setActive(nextSave)
         }} onCheckpoint={async (checkpointId) => {
-          const nextSave = checkpointId === SUBEVENT1_JIN_CHECKPOINT
+          let nextSave = checkpointId === SUBEVENT1_JIN_CHECKPOINT
             ? prepareSubevent1Jin(active)
             : checkpointId === SUBEVENT1_MARCO_CHECKPOINT
               ? prepareSubevent1Marco(active)
@@ -121,6 +124,9 @@ function GameScreen() {
                 : checkpointId === SUBEVENT1_BELKA_CHECKPOINT
                   ? startSubevent1Belka(active)
             : { ...active, progress: { ...active.progress, checkpoint_id: checkpointId } }
+          if (checkpointId === SUBEVENT1_BELKA_REPORT_CHECKPOINT && !nextSave.progress.subevent1_belka_battle?.settled) {
+            nextSave = settleSubevent1Belka(nextSave, Math.random())
+          }
           await game.save.write(nextSave)
           setSaved(nextSave)
           setActive(nextSave)
