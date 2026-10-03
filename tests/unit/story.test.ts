@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 import test from 'node:test'
 import type { ContentPack } from '../../packages/content/schema'
 import { validateContent } from '../../packages/content/validate'
-import { advanceStory, startStory } from '../../packages/story/runner'
+import { advanceStory, nextStoryCheckpoint, startStory } from '../../packages/story/runner'
 import { fitViewport } from '../../packages/story/viewport'
 
 const root = fileURLToPath(new URL('../..', import.meta.url))
@@ -39,6 +39,19 @@ test('story advances visual commands and restores accumulated text without mutat
   assert.equal(advanceStory(pack, 'story', three).step.kind, 'end')
   assert.deepEqual(pack, before)
   assert.equal(one.text, '最初')
+})
+
+test('story text variables are interpolated on resume and advancement', () => {
+  const pack = fixture()
+  pack.stories[0]!.steps[3] = { id: 'two', kind: 'line', text: '報酬は金貨{{rewardGold}}枚', append: true, next_id: 'hide' }
+  const variables = { rewardGold: 58 }
+  const one = startStory(pack, 'story')
+  assert.equal(nextStoryCheckpoint(pack, 'story', one), 'two')
+  const two = advanceStory(pack, 'story', one, variables)
+  assert.equal(two.text, '最初\n報酬は金貨58枚')
+  assert.equal(startStory(pack, 'story', 'two', variables).text, two.text)
+  assert.throws(() => advanceStory(pack, 'story', one), /Missing story text variable: rewardGold/)
+  assert.equal(advanceStory(pack, 'story', two, variables).text, '新しい文章')
 })
 
 test('invalid checkpoints and automatic-command loops fail instead of hanging', () => {

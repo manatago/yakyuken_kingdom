@@ -1,6 +1,6 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { SaveData } from '../../../packages/domain/save'
-import { advanceStory, startStory } from '../../../packages/story/runner'
+import { nextStoryCheckpoint, startStory } from '../../../packages/story/runner'
 import { SUBEVENT1_JIN_STORY_ID } from '../../../packages/battle/jin'
 import { fitViewport } from '../../../packages/story/viewport'
 import { matildaContent, MATILDA_STORY_ID, tutorialImage } from './matilda-content'
@@ -11,8 +11,10 @@ import { FixedBattle } from './FixedBattle'
 import type { ContentPack } from '../../../packages/content/schema'
 import { enterGuildHome } from '../../../packages/guild/home'
 import { canEnterGuildHome } from '../../../packages/guild/routes'
+import type { StoryTextVariables } from '../../../packages/story/runner'
 
-export function StoryScreen({ save, onCheckpoint, onSave, onTitle, onEnd, content = matildaContent, storyId = MATILDA_STORY_ID }: {
+export function StoryScreen({ save, onCheckpoint, onSave, onTitle, onEnd, content = matildaContent, storyId = MATILDA_STORY_ID,
+  textVariables = {} }: {
   save: SaveData
   onCheckpoint: (checkpointId: string) => Promise<void>
   onSave: (save: SaveData) => Promise<void>
@@ -20,6 +22,7 @@ export function StoryScreen({ save, onCheckpoint, onSave, onTitle, onEnd, conten
   onEnd?: () => void
   content?: ContentPack
   storyId?: string
+  textVariables?: StoryTextVariables
 }) {
   const viewport = useRef<HTMLElement>(null)
   const pending = useRef(false)
@@ -27,7 +30,8 @@ export function StoryScreen({ save, onCheckpoint, onSave, onTitle, onEnd, conten
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [editing, setEditing] = useState(false)
-  const frame = useMemo(() => startStory(content, storyId, save.progress.checkpoint_id), [content, storyId, save.progress.checkpoint_id])
+  const frame = useMemo(() => startStory(content, storyId, save.progress.checkpoint_id, textVariables),
+    [content, storyId, save.progress.checkpoint_id, textVariables])
 
   useLayoutEffect(() => {
     const element = viewport.current!
@@ -44,7 +48,7 @@ export function StoryScreen({ save, onCheckpoint, onSave, onTitle, onEnd, conten
     setBusy(true)
     setError('')
     try {
-      await onCheckpoint(checkpoint ?? advanceStory(content, storyId, frame).step.id)
+      await onCheckpoint(checkpoint ?? nextStoryCheckpoint(content, storyId, frame))
     } catch {
       setError('保存に失敗しました。会話は進んでいません。')
     } finally {

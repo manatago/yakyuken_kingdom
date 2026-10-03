@@ -98,8 +98,10 @@ test('story Belka defeat removes lost cards, deducts the configured gold and ret
 test('Subevent 1 aftermath content includes the guard scene and receptionist payment', () => {
   const steps = subevent1BelkaContent.stories[0]!.steps
   const report = steps.find((step) => step.id === 'subevent1.belka.report')
+  const close = steps.find((step) => step.id === 'subevent1.belka.reception-close')
   assert.equal(steps.find((step) => step.id === 'subevent1.belka.guard-arrives')?.kind, 'line')
   assert.equal(report?.kind, 'line')
-  assert.match(report?.kind === 'line' ? report.text : '', /金貨50枚/)
+  assert.match(report?.kind === 'line' ? report.text : '', /金貨\{\{belkaRewardGold\}\}枚/)
+  assert.match(close?.kind === 'line' ? close.text : '', /金貨\{\{belkaRewardGold\}\}枚/)
   assert.equal(steps.find((step) => step.id === 'subevent1.belka.reception-background')?.kind, 'background')
 })

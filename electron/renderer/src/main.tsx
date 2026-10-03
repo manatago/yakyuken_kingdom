@@ -108,6 +108,8 @@ function GameScreen() {
     }
     if (isSubevent1JinStoryCheckpoint(active.progress.checkpoint_id)) {
       return <StoryScreen save={active} content={subevent1JinContent} storyId={SUBEVENT1_JIN_STORY_ID}
+        textVariables={active.progress.subevent1_belka_battle?.gold_delta === undefined ? {}
+          : { belkaRewardGold: active.progress.subevent1_belka_battle.gold_delta }}
         onTitle={() => setActive(null)} onSave={async (nextSave) => {
           await game.save.write(nextSave)
           setSaved(nextSave)
