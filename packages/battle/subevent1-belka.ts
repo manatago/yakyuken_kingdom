@@ -12,6 +12,17 @@ export const subevent1BelkaContent = document as ContentPack
 export const SUBEVENT1_BELKA_CHECKPOINT = 'subevent1.belka.await'
 export const SUBEVENT1_BELKA_BATTLE_ID = 'battle.subevent1.belka'
 export const SUBEVENT1_BELKA_AFTER_CHECKPOINT = 'subevent1.belka.after'
+export const SUBEVENT1_BELKA_REPORT_CHECKPOINT = 'subevent1.belka.report'
+const victoryStoryCheckpoints = [
+  SUBEVENT1_BELKA_AFTER_CHECKPOINT,
+  'subevent1.belka.disband',
+  'subevent1.belka.guard-arrives',
+  'subevent1.belka.guard-recognizes',
+  'subevent1.belka.guard-report',
+  SUBEVENT1_BELKA_REPORT_CHECKPOINT
+]
+const settledVictoryCheckpoints = [SUBEVENT1_BELKA_REPORT_CHECKPOINT, 'subevent1.belka.reception-records',
+  'subevent1.belka.reception-response', 'subevent1.belka.reception-close', 'subevent1.belka.end']
 const ORIGIN = 'matilda.normal.end'
 const battle = subevent1BelkaContent.battles.find((entry) => entry.id === SUBEVENT1_BELKA_BATTLE_ID) as BattleContent & { hp: NonNullable<BattleContent['hp']> }
 
@@ -100,6 +111,10 @@ export function settleSubevent1Belka(save: SaveData, roll: number): SaveData {
   validateSubevent1BelkaState(save); checkRoll(roll)
   const ledger = save.progress.subevent1_belka_battle!, state = view(ledger), outcome = state.outcome
   if (ledger.settled || !outcome) throw new Error('No terminal Belka result')
+  if (outcome === 'win' ? save.progress.checkpoint_id !== SUBEVENT1_BELKA_REPORT_CHECKPOINT
+    : save.progress.checkpoint_id !== SUBEVENT1_BELKA_CHECKPOINT) {
+    throw new Error('Belka battle settlement is not at its designated checkpoint')
+  }
   const delta = battleGoldDelta(battle, outcome, ledger.balance_before, roll)
   if (!Number.isSafeInteger(save.player.money + delta)) throw new Error('Money overflow')
   const inventory = settledInventory(ledger, outcome)
@@ -122,10 +137,12 @@ export function settleSubevent1Belka(save: SaveData, roll: number): SaveData {
 export function continueSubevent1Belka(save: SaveData): SaveData {
   validateSubevent1BelkaState(save)
   const ledger = save.progress.subevent1_belka_battle!
-  if (!ledger.settled || view(ledger).outcome !== 'win' || save.progress.checkpoint_id !== SUBEVENT1_BELKA_CHECKPOINT) {
+  if (view(ledger).outcome !== 'win' || save.progress.checkpoint_id !== SUBEVENT1_BELKA_CHECKPOINT ||
+      (ledger.rounds.length !== ledger.acknowledged + 1 && !(ledger.settled && ledger.rounds.length === ledger.acknowledged))) {
     throw new Error('Subevent 1 Belka victory is not ready to continue')
   }
-  return parseSave({ ...save, progress: { ...save.progress, checkpoint_id: SUBEVENT1_BELKA_AFTER_CHECKPOINT } })
+  return parseSave({ ...save, progress: { ...save.progress, checkpoint_id: SUBEVENT1_BELKA_AFTER_CHECKPOINT,
+    subevent1_belka_battle: { ...ledger, acknowledged: ledger.rounds.length } } })
 }
 
 export function returnSubevent1BelkaToGuild(save: SaveData): SaveData {
@@ -151,18 +168,19 @@ export function validateSubevent1BelkaState(save: SaveData): void {
       !ledger.items_before.every((id) => !!getItemDefinition(id))) throw new Error('Invalid Subevent 1 Belka ledger')
   const state = view(ledger)
   if (!ledger.settled) {
-    if (!active || ledger.gold_delta !== undefined || save.player.money !== ledger.balance_before ||
+    const victoryStory = state.outcome === 'win' && ledger.acknowledged === ledger.rounds.length && victoryStoryCheckpoints.includes(checkpoint)
+    if ((!active && !victoryStory) || (active && state.outcome && ledger.acknowledged === ledger.rounds.length) ||
+        ledger.gold_delta !== undefined || save.player.money !== ledger.balance_before ||
         JSON.stringify(save.player.inventory) !== JSON.stringify(ledger.inventory_before) ||
-        JSON.stringify(save.player.items ?? []) !== JSON.stringify(ledger.items_before) || state.outcome && ledger.acknowledged === ledger.rounds.length) {
-      throw new Error('Unsettled Subevent 1 Belka checkpoint mismatch')
-    }
+        JSON.stringify(save.player.items ?? []) !== JSON.stringify(ledger.items_before)) throw new Error('Unsettled Subevent 1 Belka checkpoint mismatch')
     return
   }
   if (!state.outcome || ledger.acknowledged !== ledger.rounds.length || !Number.isSafeInteger(ledger.gold_delta)) throw new Error('Invalid Subevent 1 Belka settlement')
   if (state.outcome === 'win' && (ledger.gold_delta! < battle.gold_reward.min || ledger.gold_delta! > battle.gold_reward.max) ||
       state.outcome === 'lose' && ledger.gold_delta !== -Math.min(ledger.balance_before, battle.hp.lose_gold) ||
-      state.outcome === 'draw' && ledger.gold_delta !== 0 || ![SUBEVENT1_BELKA_CHECKPOINT, SUBEVENT1_BELKA_AFTER_CHECKPOINT,
-        'subevent1.belka.report', 'subevent1.belka.end', GUILD_CHECKPOINT].includes(checkpoint) ||
+      state.outcome === 'draw' && ledger.gold_delta !== 0 || !(state.outcome === 'win'
+        ? [SUBEVENT1_BELKA_CHECKPOINT, ...victoryStoryCheckpoints, ...settledVictoryCheckpoints, GUILD_CHECKPOINT].includes(checkpoint)
+        : [SUBEVENT1_BELKA_CHECKPOINT, GUILD_CHECKPOINT].includes(checkpoint)) ||
       save.player.money !== ledger.balance_before + ledger.gold_delta! ||
       JSON.stringify(save.player.inventory) !== JSON.stringify(settledInventory(ledger, state.outcome)) ||
       JSON.stringify(save.player.items ?? []) !== JSON.stringify(settledItems(ledger, state.outcome))) {

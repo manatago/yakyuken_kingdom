@@ -60,16 +60,20 @@ export function Subevent1BelkaScreen({ save, onSave, onTitle }: {
         <section className="belka-controls" aria-label="ベルカ戦の進行">
           {ledger.settled ? <div data-testid="subevent1-belka-settled">
             <h2>{view.outcome === 'win' ? 'ベルカに勝利' : view.outcome === 'lose' ? 'ベルカに敗北' : '引き分け'}</h2>
-            <p>精算済み：{ledger.gold_delta! >= 0 ? '+' : ''}{ledger.gold_delta}G ・所持 {save.player.money}G</p>
+            {view.outcome === 'win'
+              ? <p>依頼報酬は精算済み：{ledger.gold_delta! >= 0 ? '+' : ''}{ledger.gold_delta}G。受付へ報告に向かいます。</p>
+              : <><p>サトシはベルカに敗北した。盗賊団のアジトから撤退するしかない...</p>
+                <p>ベルカ「ゲハハ！ ボクに勝てると思ったのかよ？ 出直してきな！」</p>
+                <p>精算済み：{ledger.gold_delta! >= 0 ? '+' : ''}{ledger.gold_delta}G ・所持 {save.player.money}G</p></>}
             <button disabled={disabled('return')} onClick={() => { void commit('return', () => view.outcome === 'win'
               ? continueSubevent1Belka(save) : returnSubevent1BelkaToGuild(save)) }}>
               {view.outcome === 'win' ? '物語を続ける' : 'ギルドホームに戻る'}</button>
           </div> : resultPending ? <div data-testid="subevent1-belka-result">
             <h2>{view.last!.result === 'win' ? '勝ち' : view.last!.result === 'lose' ? '負け' : '引き分け'}</h2>
             <p>ベルカHP {view.opponentHp}/3 ・あなたのHP {view.playerHp}/3</p>
-            <button disabled={disabled('result')} onClick={() => { void commit('result', () => view.outcome
-              ? settleSubevent1Belka(save, Math.random()) : acknowledgeSubevent1BelkaRound(save)) }}>
-              {view.outcome ? '結果を確定' : '次の勝負へ'}</button>
+            <button disabled={disabled('result')} onClick={() => { void commit('result', () => view.outcome === 'win'
+              ? continueSubevent1Belka(save) : view.outcome ? settleSubevent1Belka(save, Math.random()) : acknowledgeSubevent1BelkaRound(save)) }}>
+              {view.outcome === 'win' ? '物語を続ける' : view.outcome ? '結果を確定' : '次の勝負へ'}</button>
           </div> : <>
             <h2>カードを選択してください</h2><p>ベルカHP {view.opponentHp}/3 ・あなたのHP {view.playerHp}/3</p>
             <button disabled={disabled('round') || selected === null} onClick={() => { void commit('round', () => playSubevent1BelkaRound(save, selected!, Math.random())) }}>勝負！</button>

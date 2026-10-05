@@ -1,6 +1,7 @@
 {
   "assets": [
-    { "id": "background.subevent1.jin", "path": "godot/assets/backgrounds/prologue/bg06_prison_arena.png" }
+    { "id": "background.subevent1.jin", "path": "godot/assets/backgrounds/prologue/bg06_prison_arena.png" },
+    { "id": "background.subevent1.guild", "path": "godot/assets/backgrounds/stage1/bg07_st1_001.png" }
   ],
   "layouts": [],
   "battles": [{
@@ -92,8 +93,16 @@
       { "id": "subevent1.belka.approach", "kind": "line", "speaker_id": "ピー助", "text": "ここが盗賊団のギャラリーか。ベルカは元A級冒険者だ。相手の手を読み、三勝先取で決着をつけるぞ。", "next_id": "subevent1.belka.challenge" },
       { "id": "subevent1.belka.challenge", "kind": "line", "speaker_id": "ベルカ", "text": "へっ、ボクに勝てると思ってんの？ シルキーファングの首領、ベルカ・マニエラが相手だ！", "next_id": "subevent1.belka.await" },
       { "id": "subevent1.belka.await", "kind": "battle", "battle_id": "battle.subevent1.belka", "next_id": "subevent1.belka.after" },
-      { "id": "subevent1.belka.after", "kind": "line", "speaker_id": "ベルカ", "text": "う、うそだろ...ボクが...負けた...！", "next_id": "subevent1.belka.report" },
-      { "id": "subevent1.belka.report", "kind": "line", "speaker_id": "ピー助", "text": "盗賊団は解散だ。盗品も返すそうだ。これで依頼完了だな。", "next_id": "subevent1.belka.end" },
+      { "id": "subevent1.belka.after", "kind": "line", "speaker_id": "ベルカ", "text": "う、うそだろ...ボクが...負けた...！", "next_id": "subevent1.belka.disband" },
+      { "id": "subevent1.belka.disband", "kind": "line", "speaker_id": "ベルカ", "text": "約束は守るよ。シルキーファングは今日で解散だ。盗品も返す。...騎士団、呼べばいいよ。", "next_id": "subevent1.belka.guard-arrives" },
+      { "id": "subevent1.belka.guard-arrives", "kind": "line", "speaker_id": "ナレーション", "text": "しばらくして、通報を受けた番兵が駆けつけてきた。", "next_id": "subevent1.belka.guard-recognizes" },
+      { "id": "subevent1.belka.guard-recognizes", "kind": "line", "speaker_id": "番兵", "text": "...お前、あの時の露出狂の変態じゃねえか！", "next_id": "subevent1.belka.guard-report" },
+      { "id": "subevent1.belka.guard-report", "kind": "line", "speaker_id": "番兵", "text": "ベルカの証言も聞いた。報告書は正式に提出しておく。「要注意人物」として、な。", "next_id": "subevent1.belka.reception-background" },
+      { "id": "subevent1.belka.reception-background", "kind": "background", "asset_id": "background.subevent1.guild", "next_id": "subevent1.belka.report" },
+      { "id": "subevent1.belka.report", "kind": "line", "speaker_id": "受付嬢", "text": "サトシ様。盗賊団討伐の報酬です。金貨{{belkaRewardGold}}枚。...お見事でした。", "next_id": "subevent1.belka.reception-records" },
+      { "id": "subevent1.belka.reception-records", "kind": "line", "speaker_id": "受付嬢", "text": "...それと、騎士団から報告書が届いています。ベルカと番兵の所見から、サトシ様は「要注意人物」として記録されたそうです。", "next_id": "subevent1.belka.reception-response" },
+      { "id": "subevent1.belka.reception-response", "kind": "line", "speaker_id": "サトシ", "text": "違うんです！ 全部誤解で！", "next_id": "subevent1.belka.reception-close" },
+      { "id": "subevent1.belka.reception-close", "kind": "line", "speaker_id": "受付嬢", "text": "...金貨{{belkaRewardGold}}枚、確かにお渡ししました。次の依頼もお待ちしております。...犯罪歴がつかない範囲で。", "next_id": "subevent1.belka.end" },
       { "id": "subevent1.belka.end", "kind": "end" },
       { "id": "subevent1.gald.end", "kind": "end" },
       { "id": "subevent1.marco.end", "kind": "end" },
