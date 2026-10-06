@@ -1,5 +1,64 @@
 # Test results
 
+## 2026-10-06 08:48 PDT — サブイベント4まで含む最終macOS検証
+
+- `npm run typecheck`: 成功。`npm test`: Unit 191/191、Integration 27/27 成功。`npm run test:ui`: 36/36 成功。`npm run smoke:game` / `npm run smoke:editor`: ともに `SMOKE_OK`。
+- Stage 6初戦敗北後の保存・アプリ再起動・再開、敗北精算、再戦勝利、Stage 6完了保存、Stage 7の玉座・エピローグ、`game_complete` 保存までElectron UIで連続検証した。
+- 追加したサブイベント4 UIでは、依頼開始後の会話再開、受付嬢戦、勝利報酬、完了フラグとGuild帰還まで確認した。
+- 実画面確認で王女戦名が既定の「マチルダ通常戦」になる不備を検出し、`princess` のタイトル対応とUnitテストを追加。各非同期遷移の完了操作・チェックポイントをUIテストでも待つ。
+- macOS 27.0.1 arm64、Node 22.12.0。UIテストは隔離した一時セーブ領域を利用。Smokeの不正IPC拒否ログは期待される出力。
+- Windows実機／CIは未検証。Godotソース・画像、CI認証／HTTPS、コミット／Pushは変更していない。
+
+## 2026-10-06 08:36 PDT — macOS統合UI再検証
+
+- `npm run typecheck`: 成功。`npm test`: Unit 190/190、Integration 27/27 成功。`npm run test:ui`: 34/34 成功。`npm run smoke:game` / `npm run smoke:editor`: どちらも `SMOKE_OK`。
+- UI再検証で、Electron再起動後に古いPlaywrightページのportrait locatorを参照するテスト不具合を修正。また、サブイベント1のジン／マルコ／ガルド／ベルカ4戦の勝利報酬を累積保持する現仕様に合わせ、各チェックの期待値を更新。帰還後はベルカ精算直後のアイテム一覧が変化しないことを比較する。
+- UIテストは隔離した一時セーブ領域のみを利用。FHD・4:3・縦長表示、ランダム戦、サブイベント1〜3、各ミニゲーム、タイトル・保存再開、別ビルドのエディタを確認した。
+- Smoke中の不正IPC書き込み拒否ログはテスト対象の期待された出力で、両方とも正常終了。
+- 環境はmacOS 27.0.1 arm64、Node 22.12.0。Windows実機／CIは未確認。Godotソース・画像、主作業ツリー、CI資格情報／HTTPS設定、コミット／Pushは変更していない。
+
+## 2026-10-06 06:49 PDT — Migration continuation: rematch recovery and chapter completion
+
+- Scope: recoverable Stage 2 rematch loss, plus Stage 4/5 rematch-win-to-chapter-completion journeys. No Godot files, commits, pushes, actual player saves, or external services touched.
+- `npm run typecheck`: passed. `npm run test:unit`: 160 passed, 0 failed. `npm run test:integration`: 26 passed, 0 failed (includes game/editor builds). All UI test scripts passed `node --check`; `git diff --check` passed.
+- Node built-in unit coverage: 97.57% lines, 92.44% functions, 87.16% branches. Coverage is measured ad hoc; there is no project coverage configuration.
+- Stage 2 now offers a retry after losing the rematch and returning to Guild, once the player rebuilds a valid nine-card deck. The retry preserves the first battle, minigame, and rematch loss in historical state. Stage 4 and Stage 5 unit journeys now continue through a rematch win, chapter settlement, and return to Guild.
+- Electron UI/E2E and smoke tests remain unrun on this Mac because Electron 44 is known to abort during `NSApplication` initialization. The current UI changes still require Windows CI or a usable macOS Electron environment.
+
+## 2026-10-06 06:40 PDT — Migration integration regression pass
+
+- Scope: integrated Electron story-ending navigation and fixed-battle save/reload across Stage 2 after a real Matilda normal battle. No Godot assets/source, commits, pushes, real player saves, or external services touched.
+- `npm run typecheck`: passed. `npm run test:unit`: 159 passed, 0 failed. `npm run test:integration`: 26 passed, 0 failed (includes separate game/editor builds). All `tests/ui/*.mjs` passed `node --check`; `git diff --check` passed.
+- Node's built-in unit-coverage run: 97.44% lines, 92.31% functions, 86.96% branches. There is no project coverage configuration; lower branch coverage is noted for future focused edge-case work.
+- Findings fixed: completion state for the unified Subevent 1 story is now tied to its actual Belka terminal checkpoint; the Stage 2 start guard requires Guild Home; prior settled fixed-battle ledgers remain valid during later story checkpoints and are retained in history until replaced by the next fixed battle. Stage 2 journey asserts Matilda and first-battle ledgers survive through rematch.
+- Electron UI/E2E and smoke tests were not run: this Mac's Electron 44 launch is already known to abort during `NSApplication` initialization. New/updated UI cases await Windows CI or a usable macOS Electron environment. Coverage is not measured; no coverage reporter is configured.
+
+---
+
+## 2026-10-06 07:53 PDT — macOS UI全件・旧セーブ精算の統合監査
+
+- 検証計画: 型検査、Unit、Integration（両アプリ本番ビルドを含む）、macOS上の全Electron UI、ゲーム/エディタSmoke、差分整合性を実行。保存データ履歴の不具合がUIから再現した場合は修正して全対象を再実行。
+- 結果: `npm run typecheck` 成功、Unit 178/178、Integration 26/26、UI 34/34、Game/Editor Smokeとも `SMOKE_OK`、`git diff --check` 成功。
+- Unit coverage: 97.99% lines、87.81% branches、93.16% functions。branch 90%目標は未達。対象ソースには未通過の異常系・拒否系分岐が残る。
+- UI監査で、旧形式のMatilda固定戦台帳を持つ進行済みセーブが、サブイベント1のカード損失後に読めなくなる問題を検出・修正。`validateFixedState` は旧台帳のデッキ整合性検証に履歴インベントリを使い、精算直後かを判定するための現在インベントリとは分ける。サブイベント1の勝敗両経路でUI再検証した。
+- ほかのUIテスト失敗は、テストが実際の現画面・非同期状態を待っていないことに起因していたため、対象チェックポイント・ボタン有効化・ストーリー終端アクションを待つよう修正し、全UI通過を確認。
+- Smokeは安全境界検査として不正IPC書き込みを送信するため、main processに拒否ログが出るが、Renderer側で拒否を確認して正常終了する。
+- macOS 27.0.1 arm64、Node 22.12.0。Windows実機/CI実行は未確認。OS固有挙動はWindows CIで確認が必要。
+- CI credential / HTTPSは変更していない。Godotソース・シーン・画像への差分なし。コミット／Pushなし。
+
+### 2026-10-06 08:14 PDT — 保存・入力検証の追加監査
+
+- `npm run typecheck` 成功、`npm test` 成功（Unit 190/190、Integration 26/26）。macOS Electron UI 34/34 とゲーム／エディタSmoke `SMOKE_OK` もセーブ書き込み変更後に再実行して成功。
+- セーブ書き込みを呼び出し順に直列化し、連続保存で最後の要求が残る回帰テストを追加。変更後に `npm test`、UI全件、ゲーム／エディタSmokeを再実行して成功。
+- Unit coverage: 98.44% lines、90.00% branches、93.89% functions。content validator、ベルカ／ジン戦、Stage 3/5ミニゲームの拒否境界と、ランダム戦の引分け後の再選択を検証。
+- Windows実行・置換ファイル動作はこのmacOS環境では未検証。Godotファイル、CI credential/HTTPS設定、コミット／Pushには変更なし。
+
+### 2026-10-06 08:14 PDT — Game保存キューの実配線を再検証
+
+- 保存要求ごとにDocumentStoreを生成していたため、直列化キューが要求間で共有されない点を修正。アプリ起動時に一度生成した `saveStore` を read/write IPC の双方で共有する。
+- 変更後に `npm run typecheck`、`npm test`（Unit 190/190、Integration 26/26）、macOS UI 34件、Game/Editor Smokeを再実行して成功。Smokeは両方 `SMOKE_OK`。
+- Unit coverage: lines 98.44%、branches 90.00%、functions 93.89%。Godotファイル変更なし。コミット／Pushなし。
+
 ## 2026-09-29 — Task 4.2 Belka verification battle
 
 - Scope: only the verification route from eligible guild home to Belka's independent JSON-defined nine-card, HP3 battle and back. Save/reload, Bayesian tendency display, existing Godot two-pass grade behavior for actual selection, win/loss settlement, and preservation of Matilda history are covered. Full Belka story, rematches, other fixed battles, minigames, Godot edits, credentials and HTTPS are excluded; task 4.2 remains unchecked.
@@ -526,3 +585,49 @@ directory afterward. Actual player saves and external services were not accessed
 Title and overwrite-confirmation screenshots were inspected and copied into
 `docs/plans/electron-title-start-images/`. Video and HTML-player generation were not
 run: this repository does not provide `generate-player.ts`.
+## 2026-10-06 07:17 PDT — Electron統合移行の継続監査
+
+### 検証計画
+- 固定戦画面：前章の精算済み台帳が残る状態で、現在の強制敗北戦にアイテムを使える表示にならないことをドメイン回帰で確認。
+- 街ランダム戦：所持カードが最低3枚のとき敗北しても、以降の対戦が不可能になる状態を作らないことを、9枚からの連続敗北を含む保存往復で確認。
+- ストーリー復帰：プロローグ、サブイベント2〜4、Stage 2〜7の全JSONチェックポイントを各画面ルートが元のストーリーへ解決することを確認。
+- UI/E2E：Playwright UIテストはElectronを実起動する。このMacのElectron 44起動クラッシュが既知のため再実行せず、スクリプト構文とビルドは検証し、実UIはWindows CIで確認する。
+
+### Unit Tests
+| Category | Passed | Failed | Skipped | Total |
+|----------|--------|--------|---------|-------|
+| TypeScript unit | 174 | 0 | 0 | 174 |
+
+### Integration Tests
+| Passed | Failed | Skipped | Total |
+|--------|--------|---------|-------|
+| 26 | 0 | 0 | 26 |
+
+### Summary
+- `npm run typecheck`: 成功。
+- `npm run test:unit`: 174件成功。
+- `npm run test:integration`: 26件成功。ゲーム／エディタの本番ビルドを含む。
+- `node --check` を `tests/ui/` の全 `.mjs` に個別実行：成功。`git diff --check`：成功。
+- Node coverage: lines 98.03%、functions 93.14%、branches 87.75%。分岐率は90%未満。未網羅の分岐は主にサブイベント／章の異常終了・拒否条件と、バトル入力バリデーションにある。今回追加した進行不能防止・画面ルート・強制戦アイテムの回帰経路は網羅。
+- UI/E2EおよびSmoke: 今回未実行。Electron 44のNSApplication初期化クラッシュが既知で、ローカル再試行は行わない。CI Windows実行待ち。
+
+### Fixes Applied
+- `packages/battle/fixed.ts` / `FixedBattle.tsx`: アイテム使用可否を古い戦闘台帳でなく画面上の現在の戦闘IDから判定。前戦精算後にStage 2初戦など強制結果戦へ進んでも、無効なアイテム選択を表示しない。
+- `packages/battle/random.ts` / `RandomBattleScreen.tsx`: 街戦敗北時、カード3枚を下回る損失を防ぐ。街ランダム戦を開始できずカード補充もできない進行不能を避け、保護理由を結果画面に表示。ゴールド損失が0Gの時の負のゼロも正規化。
+- `tests/unit/story-routing.test.ts`: プロローグ、サブイベント2〜4、Stage 2〜7の保存チェックポイント全件についてルート先とストーリーIDの一致を自動検査。
+
+### Notes
+- 3枚下限の保護は、Godot現行コードの「敗北時カード1枚損失」と異なるElectron側の進行救済であり、意図的な差分。3枚未満では街戦・固定戦ともに必要枚数を組めず、別のカード入手手段もないため導入した。
+- Godotのソース／シーン／画像は変更していない。コミット／Pushなし。
+
+## 2026-10-06 07:30 PDT — 保存地点ルートの実再開監査
+
+- ストーリーJSONの会話・戦闘・終了チェックポイント全件について、章ルーターが正しいストーリーを返し、runnerが実際にその地点から復元できることを単体テスト化した。
+- 監査で、サブイベント1拡張前の `subevent1.jin.end`／`subevent1.marco.end`／`subevent1.gald.end` が現セーブ検証では受理されるのに、現在のストーリーグラフからは到達不能で、Continue時にrunnerが例外を投げる不整合を発見した。runnerは「保存地点が終端ノードとして定義済み」の場合に限り、切り離された旧終了チェックポイントを終了画面として復元するよう修正した。不明IDや未到達の会話地点は従来どおり拒否する。
+- 終了処理は「どの戦闘台帳が残っているか」ではなく、終了チェックポイント自体からジン／マルコ、ガルド、ベルカの帰還処理を選ぶようにした。旧結果地点で別戦闘の履歴が残っていても、誤った精算経路を呼ばない。旧終了地点の復元は補間用セーブ値や旧背景・立ち絵を誤って要求・再利用せず、不明IDや未到達会話は拒否するテストも追加した。
+- Subevent 1のGald終了保存を再読込し、旧結果画面からギルドへ戻れるUI回帰を追加（現MacではElectron起動不可のため構文確認のみ）。
+- `npm run typecheck`: 成功。単体178/178成功。統合26/26成功（Game／Editorの別ビルドを含む）。`tests/ui/**/*.mjs` 全件の `node --check`、`git diff --check` 成功。
+- Unit coverage: lines 98.05%、branches 87.83%、functions 93.23%。branchは90%未満。UI／SmokeはElectron 44のmacOS初期化クラッシュのため未実行、Windows CIもPush前のため未確認。
+- Godotソース・シーン・画像変更なし。コミット／Pushなし。
+
+---

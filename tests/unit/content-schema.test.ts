@@ -134,3 +134,44 @@ test('malformed JSON-shaped data yields issues instead of throwing', () => {
     assert.ok(result.issues.length > 0)
   }
 })
+
+test('content validation covers optional battle rules and unusual object shapes', () => {
+  const document: any = example()
+  const battle = document.battles[0]
+  battle.round_limit = 10
+  battle.item_reward_ids = ['healing_potion', 'healing_potion', 'unknown-item']
+  battle.card_reward = { hand: 'lizard', grade: 8 }
+  battle.hp = { player: 0, opponent: 0, grade_effect_passes: 3, lose_gold: -1,
+    first_hand: 'lizard', forced_outcome: 'maybe', extra: true }
+  battle.opponent_tendency = { rock: 0.5, lizard: 1, scissors: 3 }
+  battle.bayes_eye = 'yes'
+  battle.result_route = 'unknown'
+  battle.lose_checkpoint_id = 'step.choice'
+  battle.phases[0].rules = [
+    { kind: 'fixed_opponent_hand', hand: 'lizard', value: 1 },
+    { kind: 'player_win_rate', hand: 'rock', value: -1 },
+    { kind: 'unsupported' }
+  ]
+  document.assets.push({ id: 'asset.invalid', path: 'godot/assets//bad.png' })
+  document.layouts[0].flipped = 'false'
+  document.stories[0].steps.push({ id: 'step.unknown', kind: 'teleport' })
+  const result = validateContent(document, () => { throw new Error('asset check failed') })
+  assert.equal(result.valid, false)
+  assert.ok(result.issues.some((issue) => issue.code === 'missing_asset'))
+  assert.ok(result.issues.some((issue) => issue.path.endsWith('lose_checkpoint_id')))
+  assert.ok(result.issues.some((issue) => issue.path.endsWith('forced_outcome')))
+  assert.ok(result.issues.some((issue) => issue.path.endsWith('card_reward.hand')))
+  assert.ok(result.issues.some((issue) => issue.path.endsWith('opponent_tendency.lizard')))
+  assert.ok(result.issues.some((issue) => issue.path.endsWith('rules[2].kind')))
+
+  const accessor = example() as any
+  Object.defineProperty(accessor.stories[0].steps[0], 'next_id', { enumerable: true, get: () => 'step.end' })
+  assert.ok(validateContent(accessor, assetExists).issues.some((issue) => issue.message === 'Accessors are not allowed'))
+  assert.equal(validateContent(Object.create({ assets: [], layouts: [], battles: [], stories: [] }), assetExists).valid, false)
+  const emptyIdentifier: any = example()
+  emptyIdentifier.assets[0].id = '  '
+  assert.ok(validateContent(emptyIdentifier, assetExists).issues.some((issue) => issue.path === '$.assets[0].id'))
+  const underspecifiedChoice: any = example()
+  underspecifiedChoice.stories[0].steps[3].options.pop()
+  assert.ok(validateContent(underspecifiedChoice, assetExists).issues.some((issue) => issue.path.endsWith('.options')))
+})

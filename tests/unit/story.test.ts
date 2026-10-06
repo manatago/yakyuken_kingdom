@@ -62,6 +62,20 @@ test('invalid checkpoints and automatic-command loops fail instead of hanging', 
   assert.throws(() => startStory(pack, 'story'), /loop/i)
 })
 
+test('disconnected legacy terminal checkpoints remain resumable result screens', () => {
+  const pack = fixture()
+  pack.stories[0]!.steps[5] = { id: 'three', kind: 'line', text: '金貨{{rewardGold}}枚', next_id: 'end' }
+  pack.stories[0]!.steps.push({ id: 'legacy-end', kind: 'end' })
+  const frame = startStory(pack, 'story', 'legacy-end')
+  assert.equal(frame.step.id, 'legacy-end')
+  assert.equal(frame.step.kind, 'end')
+  assert.equal(frame.backgroundAssetId, undefined)
+  assert.deepEqual(frame.portraits, {})
+  assert.equal(nextStoryCheckpoint(pack, 'story', frame), 'legacy-end')
+  pack.stories[0]!.steps.push({ id: 'orphan-line', kind: 'line', text: '古い会話', next_id: 'legacy-end' })
+  assert.throws(() => startStory(pack, 'story', 'orphan-line', { rewardGold: 0 }), /Unreachable checkpoint: orphan-line/)
+})
+
 test('append is a validated optional boolean', () => {
   const pack = fixture()
   assert.equal(validateContent(pack, () => true).valid, true)

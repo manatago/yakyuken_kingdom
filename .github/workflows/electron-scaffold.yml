@@ -13,8 +13,47 @@ on:
       - 'content/catalog/**'
       - 'content/stories/**'
       - 'content/screens/**'
+      - 'content/town/**'
+      - 'content/progression.json'
       - 'godot/assets/backgrounds/prologue/**'
+      - 'godot/assets/characters/main/satoshi/modern/satoshi_modern_001.png'
+      - 'godot/assets/characters/main/minori/modern/minori_modern_001.png'
       - 'godot/assets/backgrounds/stage1/bg07_st1_001.png'
+      - 'godot/assets/backgrounds/stage1/bg06_st1_001.png'
+      - 'godot/assets/backgrounds/stage1/bg08_st1_001.png'
+      - 'godot/assets/backgrounds/stage1/bg09_st1_001.png'
+      - 'godot/assets/backgrounds/stage1/bg10_st1_001.png'
+      - 'godot/assets/backgrounds/stage1/bg11_st1_001.png'
+      - 'godot/assets/backgrounds/stage1/bg12_st1_001.png'
+      - 'godot/assets/backgrounds/stage2/bg_inn_meeting.png'
+      - 'godot/assets/backgrounds/stage2/bg_guild_resting.png'
+      - 'godot/assets/backgrounds/stage3/bg_inn_exterior.png'
+      - 'godot/assets/backgrounds/stage3/bg_cathedral_night.png'
+      - 'godot/assets/backgrounds/stage4/bg_military_back_wall.png'
+      - 'godot/assets/backgrounds/stage4/bg_dojo_third.png'
+      - 'godot/assets/backgrounds/stage5/bg_royal_street.png'
+      - 'godot/assets/backgrounds/stage5/bg_interrogation_room.png'
+      - 'godot/assets/backgrounds/stage5/bg_training_ground.png'
+      - 'godot/assets/backgrounds/stage6/bg_royal_hall.png'
+      - 'godot/assets/backgrounds/stage6/bg_side_room.png'
+      - 'godot/assets/backgrounds/stage7/bg_capital_sunset.png'
+      - 'godot/assets/backgrounds/subevent2/bg01_church_exterior.png'
+      - 'godot/assets/backgrounds/subevent2/bg02_church_interior.png'
+      - 'godot/assets/backgrounds/subevent2/bg03_church_backyard.png'
+      - 'godot/assets/backgrounds/subevent2/bg04_church_corridor.png'
+      - 'godot/assets/backgrounds/subevent2/bg05_church_peep_room.png'
+      - 'godot/assets/characters/main/sister_head/clothed/sister_head_clothed_001.png'
+      - 'godot/assets/backgrounds/subevent3/bg_blacksmith.png'
+      - 'godot/assets/backgrounds/subevent3/bg_noble_room.png'
+      - 'godot/assets/characters/main/fiona/clothed/fiona_clothed_001.png'
+      - 'godot/assets/characters/main/receptionist/clothed/receptionist_clothed_005.png'
+      - 'godot/assets/characters/main/magdalena/clothed/magdalena_clothed_001.png'
+      - 'godot/assets/characters/main/seles/clothed/seles_clothed_001.png'
+      - 'godot/assets/characters/main/feria/clothed/feria_clothed_001.png'
+      - 'godot/assets/characters/main/princess/clothed/princess_clothed_001.png'
+      - 'godot/assets/characters/mob/chamberlain/default/chamberlain_default_001.png'
+      - 'godot/assets/characters/main/layla/clothed/layla_clothed_001.png'
+      - 'godot/assets/characters/main/satoshi/isekai/satoshi_isekai_004.png'
       - 'godot/assets/characters/mob/guard/default/**'
       - 'godot/assets/battle/cards/**'
       - '.github/workflows/electron-scaffold.yml'
@@ -32,7 +71,7 @@ jobs:
         with:
           node-version: '22.12.0'
           cache: npm
-      - name: Fetch tutorial images from Git LFS
+      - name: Fetch game images from Git LFS
         shell: bash
         env:
           LFS_USERNAME: ${{ secrets.LFS_USERNAME }}
@@ -41,7 +80,14 @@ jobs:
           GIT_ASKPASS: ''
         run: |
           node .github/scripts/lfs-credential.mjs check
-          git -c credential.helper= -c 'credential.helper=!node .github/scripts/lfs-credential.mjs' -c credential.useHttpPath=true lfs pull --include="godot/assets/backgrounds/prologue/bg05_prison_cell.png,godot/assets/characters/mob/guard/default/guard_default_024.png,godot/assets/characters/mob/guard/default/guard_default_007.png,godot/assets/characters/mob/guard/default/guard_default_008.png,godot/assets/characters/mob/guard/default/guard_default_009.png,godot/assets/battle/cards/rock_normal.png,godot/assets/battle/cards/scissors_normal.png,godot/assets/battle/cards/paper_normal.png,godot/assets/battle/cards/rock_bronze.png,godot/assets/battle/cards/rock_silver.png,godot/assets/battle/cards/rock_gold.png,godot/assets/battle/cards/rock_platinum.png,godot/assets/battle/cards/scissors_bronze.png,godot/assets/battle/cards/scissors_silver.png,godot/assets/battle/cards/scissors_gold.png,godot/assets/battle/cards/scissors_platinum.png,godot/assets/battle/cards/paper_bronze.png,godot/assets/battle/cards/paper_silver.png,godot/assets/battle/cards/paper_gold.png,godot/assets/battle/cards/paper_platinum.png,godot/assets/backgrounds/stage1/bg07_st1_001.png,godot/assets/backgrounds/prologue/bg06_prison_arena.png"
+          git -c credential.helper= -c 'credential.helper=!node .github/scripts/lfs-credential.mjs' -c credential.useHttpPath=true lfs pull --include="godot/assets/backgrounds/prologue/bg01_university.png,godot/assets/backgrounds/prologue/bg03-1_lab.png,godot/assets/characters/main/satoshi/modern/satoshi_modern_001.png,godot/assets/characters/main/minori/modern/minori_modern_001.png,godot/assets/backgrounds/prologue/bg05_prison_cell.png,godot/assets/characters/mob/guard/default/guard_default_024.png,godot/assets/characters/mob/guard/default/guard_default_007.png,godot/assets/characters/mob/guard/default/guard_default_008.png,godot/assets/characters/mob/guard/default/guard_default_009.png,godot/assets/battle/cards/rock_normal.png,godot/assets/battle/cards/scissors_normal.png,godot/assets/battle/cards/paper_normal.png,godot/assets/battle/cards/rock_bronze.png,godot/assets/battle/cards/rock_silver.png,godot/assets/battle/cards/rock_gold.png,godot/assets/battle/cards/rock_platinum.png,godot/assets/battle/cards/scissors_bronze.png,godot/assets/battle/cards/scissors_silver.png,godot/assets/battle/cards/scissors_gold.png,godot/assets/battle/cards/scissors_platinum.png,godot/assets/battle/cards/paper_bronze.png,godot/assets/battle/cards/paper_silver.png,godot/assets/battle/cards/paper_gold.png,godot/assets/battle/cards/paper_platinum.png,godot/assets/backgrounds/stage1/bg07_st1_001.png,godot/assets/backgrounds/stage1/bg06_st1_001.png,godot/assets/backgrounds/stage1/bg08_st1_001.png,godot/assets/backgrounds/stage1/bg09_st1_001.png,godot/assets/backgrounds/stage1/bg10_st1_001.png,godot/assets/backgrounds/stage1/bg11_st1_001.png,godot/assets/backgrounds/stage1/bg12_st1_001.png,godot/assets/backgrounds/stage2/bg_inn_meeting.png,godot/assets/backgrounds/stage2/bg_guild_resting.png,godot/assets/backgrounds/subevent2/bg01_church_exterior.png,godot/assets/backgrounds/subevent2/bg02_church_interior.png,godot/assets/backgrounds/subevent2/bg03_church_backyard.png,godot/assets/backgrounds/subevent2/bg04_church_corridor.png,godot/assets/backgrounds/subevent2/bg05_church_peep_room.png,godot/assets/characters/main/layla/clothed/layla_clothed_001.png,godot/assets/characters/main/satoshi/isekai/satoshi_isekai_004.png,godot/assets/characters/main/sister_head/clothed/sister_head_clothed_001.png,godot/assets/backgrounds/prologue/bg06_prison_arena.png"
+          git -c credential.helper= -c 'credential.helper=!node .github/scripts/lfs-credential.mjs' -c credential.useHttpPath=true lfs pull --include="godot/assets/backgrounds/subevent3/bg_blacksmith.png,godot/assets/backgrounds/subevent3/bg_noble_room.png,godot/assets/characters/main/fiona/clothed/fiona_clothed_001.png"
+          git -c credential.helper= -c 'credential.helper=!node .github/scripts/lfs-credential.mjs' -c credential.useHttpPath=true lfs pull --include="godot/assets/characters/main/receptionist/clothed/receptionist_clothed_005.png"
+          git -c credential.helper= -c 'credential.helper=!node .github/scripts/lfs-credential.mjs' -c credential.useHttpPath=true lfs pull --include="godot/assets/backgrounds/stage3/bg_inn_exterior.png,godot/assets/backgrounds/stage3/bg_cathedral_night.png,godot/assets/characters/main/magdalena/clothed/magdalena_clothed_001.png"
+          git -c credential.helper= -c 'credential.helper=!node .github/scripts/lfs-credential.mjs' -c credential.useHttpPath=true lfs pull --include="godot/assets/backgrounds/stage4/bg_military_back_wall.png,godot/assets/backgrounds/stage4/bg_dojo_third.png,godot/assets/characters/main/seles/clothed/seles_clothed_001.png"
+          git -c credential.helper= -c 'credential.helper=!node .github/scripts/lfs-credential.mjs' -c credential.useHttpPath=true lfs pull --include="godot/assets/backgrounds/stage5/bg_royal_street.png,godot/assets/backgrounds/stage5/bg_interrogation_room.png,godot/assets/backgrounds/stage5/bg_training_ground.png,godot/assets/characters/main/feria/clothed/feria_clothed_001.png"
+          git -c credential.helper= -c 'credential.helper=!node .github/scripts/lfs-credential.mjs' -c credential.useHttpPath=true lfs pull --include="godot/assets/backgrounds/stage6/bg_royal_hall.png,godot/assets/backgrounds/stage6/bg_side_room.png,godot/assets/backgrounds/stage7/bg_capital_sunset.png,godot/assets/characters/main/princess/clothed/princess_clothed_001.png,godot/assets/characters/mob/chamberlain/default/chamberlain_default_001.png"
+          git -c credential.helper= -c 'credential.helper=!node .github/scripts/lfs-credential.mjs' -c credential.useHttpPath=true lfs pull --include="electron/renderer/src/assets/random-battle/**"
       - run: npm ci
       - run: npm run typecheck
       - run: npm test

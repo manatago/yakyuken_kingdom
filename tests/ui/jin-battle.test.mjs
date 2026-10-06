@@ -14,7 +14,7 @@ test('guild Jin verification persists a three-card draft, retries failed saves, 
   const data = await mkdtemp(join(tmpdir(), 'janken-jin-'))
   const target = join(data, 'janken-save.json')
   const cards = ['rock', 'scissors', 'paper'].flatMap((hand) => Array.from({ length: 3 }, () => ({ hand, grade: 1 })))
-  const original = { save_version: 1, player: { inventory: cards, deck: cards, money: 30 },
+  const original = { save_version: 1, player: { inventory: cards, deck: cards, money: 30, items: ['rock_attract_white'] },
     progress: { checkpoint_id: 'guild.home', guild_return_checkpoint: 'matilda.normal.end',
       flags: ['matilda.tutorial.completed', 'matilda.normal.started'],
       tutorial: { battle_id: 'battle.matilda.practice', rounds: [{ player_index: 6, opponent_index: 0 }, { player_index: 0, opponent_index: 3 }], acknowledged: 2 },
@@ -41,6 +41,7 @@ test('guild Jin verification persists a three-card draft, retries failed saves, 
     await writeFile(target, JSON.stringify(original))
     await open()
     await page.getByRole('heading', { name: 'ギルドホーム', exact: true }).waitFor()
+    await page.getByTestId('jin-draft-disclosure').locator('summary').click()
     await page.getByTestId('jin-draft').waitFor()
     await failNextSave()
     await page.getByRole('button', { name: 'ジン戦に追加 パー N 7', exact: true }).click()
@@ -53,6 +54,7 @@ test('guild Jin verification persists a three-card draft, retries failed saves, 
     assert.equal((await read()).progress.jin_draft.length, 3)
     await app.close(); app = undefined
     await open()
+    await page.getByTestId('jin-draft-disclosure').locator('summary').click()
     await page.getByTestId('jin-draft').waitFor()
     assert.equal((await read()).progress.jin_draft.length, 3)
     await page.getByRole('button', { name: '3枚でジン戦を開始', exact: true }).click()
@@ -68,6 +70,7 @@ test('guild Jin verification persists a three-card draft, retries failed saves, 
       }, size)
     }
     await session.send('Emulation.setDeviceMetricsOverride', { width: 1920, height: 1080, deviceScaleFactor: 1, mobile: false })
+    await page.getByLabel('この勝負で使うアイテム').selectOption('rock_attract_white')
     await page.evaluate(() => { Math.random = () => 0 })
     await failNextSave()
     await page.getByRole('button', { name: '勝負！', exact: true }).click()
@@ -76,6 +79,8 @@ test('guild Jin verification persists a three-card draft, retries failed saves, 
     await page.getByRole('button', { name: '勝負！', exact: true }).click()
     await page.getByTestId('jin-result').waitFor()
     assert.equal((await read()).progress.jin_battle.rounds.length, 1)
+    assert.deepEqual((await read()).progress.jin_battle.round_item_ids, ['rock_attract_white'])
+    assert.deepEqual((await read()).player.items, ['rock_attract_white'])
     assert.equal((await read()).progress.jin_battle.rounds[0].opponent_index, 2)
     await mkdir(join(root, 'test-results/jin'), { recursive: true })
     await page.screenshot({ path: join(root, 'test-results/jin/battle.png') })
@@ -92,6 +97,7 @@ test('guild Jin verification persists a three-card draft, retries failed saves, 
     const settled = await read()
     assert.equal(settled.progress.jin_battle.settled, true)
     assert.equal(settled.player.inventory.length, cards.length + 1)
+    assert.deepEqual(settled.player.items, [])
     assert.equal(settled.player.money, 33)
     await app.close(); app = undefined
     await open()

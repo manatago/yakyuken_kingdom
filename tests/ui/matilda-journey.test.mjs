@@ -12,6 +12,22 @@ const root = fileURLToPath(new URL('../..', import.meta.url))
 const executablePath = createRequire(import.meta.url)('electron')
 const content = JSON.parse(await readFile(join(root, 'content/stories/matilda-tutorial.json'), 'utf8'))
 
+async function continueThroughPrologue(page) {
+  for (let count = 0; count < 20; count++) {
+    const checkpoint = await page.getByTestId('checkpoint-id').textContent()
+    if (checkpoint === 'prologue.end') {
+      await page.getByRole('button', { name: 'チュートリアルへ進む', exact: true }).click()
+      await page.getByTestId('story-text').getByText(/周りの風景/).waitFor()
+      return
+    }
+    assert.ok(checkpoint?.startsWith('prologue.'), `Unexpected opening checkpoint ${checkpoint}`)
+    await page.getByRole('button', { name: '次へ', exact: true }).click()
+    await page.waitForFunction((previous) => document.querySelector('[data-testid="checkpoint-id"]')?.textContent !== previous,
+      checkpoint)
+  }
+  assert.fail('Prologue did not reach Matilda tutorial')
+}
+
 test('new game reaches every Matilda line, prepares, plays twice and resumes through the end', { timeout: 180_000 }, async () => {
   const data = await mkdtemp(join(tmpdir(), 'janken-matilda-journey-'))
   const screenshots = join(root, 'test-results/matilda')
@@ -55,6 +71,7 @@ test('new game reaches every Matilda line, prepares, plays twice and resumes thr
   try {
     await mkdir(screenshots, { recursive: true })
     await open('はじめから')
+    await continueThroughPrologue(page)
     initial = await read()
     await check('matilda.start')
     assert.equal(initial.player.inventory.length, 9)

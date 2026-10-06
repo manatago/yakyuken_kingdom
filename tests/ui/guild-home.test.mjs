@@ -55,6 +55,9 @@ for (const origin of ['matilda.end', 'matilda.normal.end']) {
       assert.deepEqual(await read(), original)
       await page.getByRole('button', { name: 'ギルドホームを確認', exact: true }).click()
       await page.getByRole('heading', { name: 'ギルドホーム', exact: true }).waitFor()
+      await page.getByTestId('subevent-board').waitFor()
+      assert.match(await page.getByTestId('quest-subevent1').innerText(), /未解放：冒険者チュートリアルを完了/)
+      assert.match(await page.getByTestId('quest-subevent2').innerText(), /未解放：サブイベント1を完了/)
       assert.equal((await read()).progress.guild_return_checkpoint, origin)
       assert.equal((await read()).progress.checkpoint_id, 'guild.home')
       await assertHistory()
@@ -63,8 +66,11 @@ for (const origin of ['matilda.end', 'matilda.normal.end']) {
       await open()
       await page.getByRole('heading', { name: 'ギルドホーム', exact: true }).waitFor()
       assert.equal(await readFile(target, 'utf8'), beforeReload)
-      for (const label of ['クエスト', 'アイテム', '装備', 'ショップ', 'ステータス', '街に出る', '次の章へ']) {
+      for (const label of ['ショップ', 'ステータス', '街に出る', '次の章へ']) {
         assert.equal(await page.getByRole('button', { name: label, exact: true }).isDisabled(), true)
+      }
+      for (const label of ['クエスト', 'アイテム', '装備']) {
+        assert.equal(await page.getByRole('button', { name: label, exact: true }).isDisabled(), false)
       }
       const session = await page.context().newCDPSession(page)
       for (const size of [{ width: 1920, height: 1080 }, { width: 1024, height: 768 }, { width: 600, height: 1000 }]) {
@@ -84,6 +90,19 @@ for (const origin of ['matilda.end', 'matilda.normal.end']) {
       await page.waitForFunction(() => { const img = document.querySelector('[data-testid="guild-background"]'); return img.complete && img.naturalWidth > 0 })
       await mkdir(join(root, 'test-results/guild-home'), { recursive: true })
       await page.screenshot({ path: join(root, 'test-results/guild-home', `${origin}-home.png`) })
+      for (const [label, testId] of [['クエスト', 'subevent-board'], ['アイテム', 'item-inventory'], ['装備', 'equipment-inventory']]) {
+        await page.getByRole('button', { name: label, exact: true }).click()
+        await page.waitForFunction((id) => {
+          const scroller = document.querySelector('.guild-notice')
+          const target = document.querySelector(`[data-testid="${id}"]`)
+          if (!scroller || !target) return false
+          const viewport = scroller.getBoundingClientRect()
+          const section = target.getBoundingClientRect()
+          return scroller.scrollHeight <= scroller.clientHeight
+            ? section.top >= viewport.top && section.top < viewport.bottom
+            : section.top < viewport.bottom && section.bottom > viewport.top
+        }, testId)
+      }
       await page.getByRole('button', { name: 'カード', exact: true }).click()
       for (const size of [{ width: 1920, height: 1080 }, { width: 1024, height: 768 }, { width: 600, height: 1000 }]) {
         await session.send('Emulation.setDeviceMetricsOverride', { ...size, deviceScaleFactor: 1, mobile: false })

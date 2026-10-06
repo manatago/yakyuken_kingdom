@@ -14,7 +14,8 @@
     "player_deck_size": 9, "opponent_deck_size": 9,
     "opponent_card_ids": ["rock_normal", "rock_normal", "rock_normal", "scissors_normal", "scissors_normal", "scissors_normal", "paper_normal", "paper_normal", "paper_normal"],
     "gold_reward": { "min": 10, "max": 30 }, "transfer_cards": false,
-    "hp": { "player": 3, "opponent": 3, "first_hand": "rock", "grade_effect_passes": 2, "lose_gold": 10 },
+    "hp": { "player": 3, "opponent": 3, "first_hand": "rock", "grade_effect_passes": 2, "lose_gold": 0 },
+    "lose_checkpoint_id": "matilda.normal.loss.intro",
     "phases": [{ "id": "phase.matilda.normal", "rules": [] }]
   }],
   "stories": [{
@@ -22,10 +23,20 @@
     "steps": [
       { "id": "matilda.normal.background", "kind": "background", "asset_id": "background.prison", "next_id": "matilda.normal.portrait" },
       { "id": "matilda.normal.portrait", "kind": "show_portrait", "slot_id": "matilda", "asset_id": "portrait.matilda.intro", "layout_id": "layout.matilda.intro", "next_id": "matilda.normal.start" },
-      { "id": "matilda.normal.start", "kind": "line", "speaker_id": "matilda", "text": "今度は通常戦を試そう。双方HPは3。保存した編成で挑みな。勝てば10〜30G、負ければ10G減る。カードは移動しない。", "next_id": "matilda.normal.await" },
+      { "id": "matilda.normal.start", "kind": "line", "speaker_id": "matilda", "text": "今度は通常戦を試そう。双方HPは3。保存した編成で挑みな。勝てば10〜30G。負けても所持金とカードは変わらない。", "next_id": "matilda.normal.await" },
       { "id": "matilda.normal.await", "kind": "battle", "battle_id": "battle.matilda.normal", "next_id": "matilda.normal.complete" },
       { "id": "matilda.normal.complete", "kind": "line", "speaker_id": "matilda", "text": "対戦の結果は保存した。編成とグレードの使い方を確かめられたかい？", "next_id": "matilda.normal.end" },
       { "id": "matilda.normal.end", "kind": "end" }
+    ]
+  }, {
+    "id": "story.matilda.normal.loss", "start_id": "matilda.normal.loss.background",
+    "steps": [
+      { "id": "matilda.normal.loss.background", "kind": "background", "asset_id": "background.prison", "next_id": "matilda.normal.loss.portrait" },
+      { "id": "matilda.normal.loss.portrait", "kind": "show_portrait", "slot_id": "matilda", "asset_id": "portrait.matilda.intro", "layout_id": "layout.matilda.intro", "next_id": "matilda.normal.loss.intro" },
+      { "id": "matilda.normal.loss.intro", "kind": "line", "speaker_id": "ナレーション", "text": "サトシはマチルダとの本戦に敗れ、再び保護室へ戻った。勝負に使ったカードはすべて返されている。", "next_id": "matilda.normal.loss.offer" },
+      { "id": "matilda.normal.loss.offer", "kind": "line", "speaker_id": "マチルダ", "text": "カードは返しておく。もう一度挑むなら、準備を整えてから来な。", "next_id": "matilda.normal.loss.response" },
+      { "id": "matilda.normal.loss.response", "kind": "line", "speaker_id": "サトシ", "text": "ここで諦めるわけにはいかない。デッキを見直して、もう一度挑戦しよう。", "next_id": "matilda.normal.loss.end" },
+      { "id": "matilda.normal.loss.end", "kind": "end" }
     ]
   }]
 }

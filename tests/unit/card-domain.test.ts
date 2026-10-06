@@ -5,7 +5,7 @@ import test from 'node:test'
 import { fileURLToPath } from 'node:url'
 import { CARD_CATALOG, getCardDefinition, getCardId } from '../../packages/domain/card-catalog'
 import { judgeCards, type Card, type Hand } from '../../packages/domain/card'
-import { validateDeck } from '../../packages/domain/deck'
+import { hasNineCardDeckWithLossReserve, hasValidNineCardDeck, validateDeck } from '../../packages/domain/deck'
 import { applyBattlePayout } from '../../packages/domain/player-state'
 
 const normal = (hand: Hand): Card => ({ hand, grade: 1 })
@@ -44,6 +44,15 @@ test('deck requires the configured size and cannot exceed owned copies', () => {
     reason: 'not_owned'
   })
   assert.deepEqual(inventory, before)
+})
+
+test('fixed-story readiness requires nine cards that are all still owned', () => {
+  const inventory = Array.from({ length: 9 }, (_, index) => normal((['rock', 'scissors', 'paper'] as const)[index % 3]))
+  assert.equal(hasValidNineCardDeck(inventory, inventory), true)
+  assert.equal(hasValidNineCardDeck(inventory.slice(1), inventory), false)
+  assert.equal(hasValidNineCardDeck(inventory, inventory.slice(1)), false)
+  assert.equal(hasNineCardDeckWithLossReserve(inventory, inventory), false)
+  assert.equal(hasNineCardDeckWithLossReserve([...inventory, ...Array.from({ length: 3 }, () => normal('rock'))], inventory), true)
 })
 
 test('battle payout adds captured cards and gold only on victory without mutating input', () => {

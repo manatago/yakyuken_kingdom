@@ -8,6 +8,7 @@ import { enterGuildHome, leaveGuildHome } from '../../packages/guild/home'
 import { startBelka, playBelkaRound, acknowledgeBelkaRound, settleBelka, returnBelkaToGuild,
   belkaView, belkaProbabilities, belkaBayesProbabilities, belkaContent } from '../../packages/battle/belka'
 import { validateContent } from '../../packages/content/validate'
+import { equipItem, unequipItem } from '../../packages/domain/equipment'
 
 function guild(): SaveData {
   const initial = createInitialGameSave()
@@ -62,6 +63,16 @@ test('Belka starts only from eligible guild, snapshots lineup and preserves Mati
   assert.throws(() => startBelka(leaveGuildHome(source)))
 })
 
+test('Belka rejects invalid rolls and premature round, settlement, and return actions', () => {
+  const source = guild()
+  const started = startBelka(source)
+  assert.throws(() => belkaView(source), /not started/)
+  assert.throws(() => playBelkaRound(started, 0, Number.NaN), /random roll/)
+  assert.throws(() => acknowledgeBelkaRound(started), /No pending/)
+  assert.throws(() => settleBelka(started, 0), /terminal Belka result/)
+  assert.throws(() => returnBelkaToGuild(started), /not settled/)
+})
+
 test('Belka win and loss settle exactly once and return to guild without erasing history', () => {
   for (const kind of ['win', 'lose'] as const) {
     const pending = outcome(kind)
@@ -80,6 +91,35 @@ test('Belka win and loss settle exactly once and return to guild without erasing
     assert.deepEqual(parseSave(JSON.parse(JSON.stringify(home))), home)
     assert.throws(() => startBelka(home))
   }
+})
+
+test('Belka snapshots the gold charm bonus and permits changing equipment after settlement', () => {
+  const source = guild()
+  const equipped = equipItem({ ...source, player: { ...source.player, items: ['gold_charm'] } }, 'gold_charm')
+  let pending = startBelka(equipped)
+  for (const index of [6, 7, 8]) {
+    pending = playBelkaRound(pending, index, 0)
+    if (!belkaView(pending).outcome) pending = acknowledgeBelkaRound(pending)
+  }
+  const settled = settleBelka(pending, .999)
+  assert.equal(settled.player.money, equipped.player.money + 80)
+  assert.deepEqual(settled.progress.belka_battle?.equipment_before, ['gold_charm'])
+  assert.deepEqual(unequipItem(settled, 'gold_charm').player.equipment, [])
+})
+
+test('Belka records a per-round probability item and consumes it once when settling', () => {
+  const source = guild()
+  const owned = { ...source, player: { ...source.player, items: ['rock_attract_white'] as const } }
+  let pending = startBelka(owned)
+  for (const [round, index] of [6, 7, 8].entries()) {
+    pending = playBelkaRound(pending, index, 0, round === 0 ? 'rock_attract_white' : undefined)
+    if (!belkaView(pending).outcome) pending = acknowledgeBelkaRound(pending)
+  }
+  assert.equal(belkaView(pending).outcome, 'win')
+  assert.deepEqual(pending.progress.belka_battle?.round_item_ids, ['rock_attract_white', null, null])
+  const settled = settleBelka(pending, 0)
+  assert.deepEqual(settled.player.items, [])
+  assert.deepEqual(parseSave(JSON.parse(JSON.stringify(settled))), settled)
 })
 
 test('Belka save rejects missing history, forged checkpoint and unsettled home', () => {

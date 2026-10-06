@@ -25,7 +25,7 @@ export function CardPanel({ player, layouts = [], onEdit, editDisabled = false }
     </aside>
     <aside className="deck-panel" data-testid="deck-panel" aria-label="デッキ・手札" data-layout-id="layout.cards.deck"
       style={{ ...layoutStyle(cardLayout({ layouts }, 'layout.cards.deck')), width: 1220 }}>
-      <h2>デッキ・手札 {overflow.length ? `9枠（保存${player.deck.length}枚）` : `${player.deck.length}/9`} <small>編集・対戦は準備中</small></h2>
+      <h2>デッキ・手札 {overflow.length ? `9枠（保存${player.deck.length}枚）` : `${player.deck.length}/9`}</h2>
       <div className="deck-grid">{Array.from({ length: 9 }, (_, index) =>
         player.deck[index] ? cardButton(player.deck[index], index)
           : <span key={index} className="empty-deck-slot" data-testid="empty-deck-slot">{index + 1}</span>)}</div>

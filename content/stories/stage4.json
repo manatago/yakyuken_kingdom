@@ -1,0 +1,93 @@
+{
+  "assets": [
+    { "id": "background.stage4.guild", "path": "godot/assets/backgrounds/stage1/bg07_st1_001.png" },
+    { "id": "background.stage4.resting", "path": "godot/assets/backgrounds/stage2/bg_guild_resting.png" },
+    { "id": "background.stage4.approach", "path": "godot/assets/backgrounds/prologue/bg06_prison_arena.png" },
+    { "id": "background.stage4.wall", "path": "godot/assets/backgrounds/stage4/bg_military_back_wall.png" },
+    { "id": "background.stage4.dojo", "path": "godot/assets/backgrounds/stage4/bg_dojo_third.png" },
+    { "id": "portrait.seles", "path": "godot/assets/characters/main/seles/clothed/seles_clothed_001.png" },
+    { "id": "portrait.stage4.hero", "path": "godot/assets/characters/main/satoshi/isekai/satoshi_isekai_004.png" }
+  ],
+  "layouts": [
+    { "id": "layout.stage4.seles", "x": 1430, "y": 465, "scale": 0.62, "flipped": false },
+    { "id": "layout.stage4.hero", "x": 490, "y": 465, "scale": 0.62, "flipped": true }
+  ],
+  "battles": [
+    {
+      "id": "battle.stage4.first", "opponent_id": "seles", "background_asset_id": "background.stage4.dojo",
+      "player_deck_size": 9, "opponent_deck_size": 9, "round_limit": 3,
+      "opponent_card_ids": ["rock_silver", "rock_gold", "rock_gold", "scissors_silver", "scissors_gold", "scissors_gold", "paper_silver", "paper_gold", "paper_gold"],
+      "item_reward_ids": ["paper_attract_gold"],
+      "card_reward": { "hand": "paper", "grade": 5 },
+      "gold_reward": { "min": 100, "max": 150 }, "transfer_cards": true,
+      "hp": { "player": 3, "opponent": 3, "grade_effect_passes": 1, "lose_gold": 0, "forced_outcome": "lose" },
+      "opponent_tendency": { "rock": 0.35, "paper": 0.35 }, "bayes_eye": true,
+      "phases": [{ "id": "phase.stage4.first", "rules": [] }]
+    },
+    {
+      "id": "battle.stage4.rematch", "opponent_id": "seles", "background_asset_id": "background.stage4.dojo",
+      "player_deck_size": 9, "opponent_deck_size": 9, "round_limit": 3,
+      "opponent_card_ids": ["rock_silver", "rock_gold", "rock_gold", "scissors_silver", "scissors_gold", "scissors_gold", "paper_silver", "paper_gold", "paper_gold"],
+      "item_reward_ids": ["paper_attract_gold"],
+      "card_reward": { "hand": "paper", "grade": 5 },
+      "gold_reward": { "min": 100, "max": 150 }, "transfer_cards": true,
+      "hp": { "player": 3, "opponent": 3, "grade_effect_passes": 1, "lose_gold": 0 },
+      "opponent_tendency": { "rock": 0.35, "paper": 0.35 }, "bayes_eye": true,
+      "result_route": "guild_home", "lose_checkpoint_id": "stage4.rematch.loss.end",
+      "phases": [{ "id": "phase.stage4.rematch", "rules": [] }]
+    }
+  ],
+  "stories": [
+    {
+      "id": "story.stage4.pre", "start_id": "stage4.pre.background", "steps": [
+        { "id": "stage4.pre.background", "kind": "background", "asset_id": "background.stage4.guild", "next_id": "stage4.pre.hero" },
+        { "id": "stage4.pre.hero", "kind": "show_portrait", "slot_id": "hero", "asset_id": "portrait.stage4.hero", "layout_id": "layout.stage4.hero", "next_id": "stage4.pre.notice" },
+        { "id": "stage4.pre.notice", "kind": "line", "speaker_id": "受付嬢", "text": "魔法師団長セレス様より、あなたの技能と記録について公開検証の申し入れが届きました。", "next_id": "stage4.pre.hero.line" },
+        { "id": "stage4.pre.hero.line", "kind": "line", "speaker_id": "サトシ", "text": "正式な手続きなら受けます。ただし、条件と記録は双方が確認できる形にしてください。", "next_id": "stage4.pre.pisuke" },
+        { "id": "stage4.pre.pisuke", "kind": "line", "speaker_id": "ピー助", "text": "相手は強敵だ。初戦でルールと魔法の仕組みを観察しよう。", "next_id": "stage4.pre.end" },
+        { "id": "stage4.pre.end", "kind": "end" }
+      ]
+    },
+    {
+      "id": "story.stage4.first", "start_id": "stage4.first.background", "steps": [
+        { "id": "stage4.first.background", "kind": "background", "asset_id": "background.stage4.dojo", "next_id": "stage4.first.seles" },
+        { "id": "stage4.first.seles", "kind": "show_portrait", "slot_id": "seles", "asset_id": "portrait.seles", "layout_id": "layout.stage4.seles", "next_id": "stage4.first.meet" },
+        { "id": "stage4.first.meet", "kind": "line", "speaker_id": "セレス", "text": "第三演習場へようこそ。三本勝負で、あなたの技量を検証します。", "next_id": "stage4.first.hero" },
+        { "id": "stage4.first.hero", "kind": "line", "speaker_id": "サトシ", "text": "分かりました。記録を残しながら、正面から勝負します。", "next_id": "stage4.first.battle" },
+        { "id": "stage4.first.battle", "kind": "battle", "battle_id": "battle.stage4.first", "next_id": "stage4.first.result" },
+        { "id": "stage4.first.result", "kind": "line", "speaker_id": "ピー助", "text": "初戦は負けたが、魔法の発動条件は記録できた。強度を合わせる訓練をしよう。", "next_id": "stage4.first.end" },
+        { "id": "stage4.first.end", "kind": "end" }
+      ]
+    },
+    {
+      "id": "story.stage4.recover", "start_id": "stage4.recover.background", "steps": [
+        { "id": "stage4.recover.background", "kind": "background", "asset_id": "background.stage4.resting", "next_id": "stage4.recover.hero" },
+        { "id": "stage4.recover.hero", "kind": "show_portrait", "slot_id": "hero", "asset_id": "portrait.stage4.hero", "layout_id": "layout.stage4.hero", "next_id": "stage4.recover.analysis" },
+        { "id": "stage4.recover.analysis", "kind": "line", "speaker_id": "ピー助", "text": "魔力の集中度が高い時は弱い刺激、落ち着いてきた時は強い刺激が効く。強度を見極めよう。", "next_id": "stage4.recover.hero.line" },
+        { "id": "stage4.recover.hero.line", "kind": "line", "speaker_id": "サトシ", "text": "相手の反応を見て選ぶんだな。危険な魔法を使わせないようにしよう。", "next_id": "stage4.recover.end" },
+        { "id": "stage4.recover.end", "kind": "end" }
+      ]
+    },
+    {
+      "id": "story.stage4.rematch", "start_id": "stage4.rematch.background", "steps": [
+        { "id": "stage4.rematch.background", "kind": "background", "asset_id": "background.stage4.dojo", "next_id": "stage4.rematch.hero" },
+        { "id": "stage4.rematch.hero", "kind": "show_portrait", "slot_id": "hero", "asset_id": "portrait.stage4.hero", "layout_id": "layout.stage4.hero", "next_id": "stage4.rematch.seles" },
+        { "id": "stage4.rematch.seles", "kind": "show_portrait", "slot_id": "seles", "asset_id": "portrait.seles", "layout_id": "layout.stage4.seles", "next_id": "stage4.rematch.start" },
+        { "id": "stage4.rematch.start", "kind": "line", "speaker_id": "サトシ", "text": "もう一度、検証をお願いします。今度は、魔力の動きを読み切ります。", "next_id": "stage4.rematch.battle" },
+        { "id": "stage4.rematch.battle", "kind": "battle", "battle_id": "battle.stage4.rematch", "next_id": "stage4.rematch.result" },
+        { "id": "stage4.rematch.result", "kind": "line", "speaker_id": "セレス", "text": "見事です。演習の記録は、正式な結果として提出します。", "next_id": "stage4.rematch.end" },
+        { "id": "stage4.rematch.end", "kind": "end" }
+      ]
+    },
+    {
+      "id": "story.stage4.post", "start_id": "stage4.post.background", "steps": [
+        { "id": "stage4.post.background", "kind": "background", "asset_id": "background.stage4.dojo", "next_id": "stage4.post.seles" },
+        { "id": "stage4.post.seles", "kind": "show_portrait", "slot_id": "seles", "asset_id": "portrait.seles", "layout_id": "layout.stage4.seles", "next_id": "stage4.post.outcome" },
+        { "id": "stage4.post.outcome", "kind": "line", "speaker_id": "セレス", "text": "技量検証はあなたの勝利です。対策訓練の記録を、今後の研究に役立てます。", "next_id": "stage4.post.hero" },
+        { "id": "stage4.post.hero", "kind": "line", "speaker_id": "サトシ", "text": "ありがとうございます。訓練内容と結果は、双方が確認できる記録に残しましょう。", "next_id": "stage4.post.end" },
+        { "id": "stage4.post.end", "kind": "end" }
+      ]
+    },
+    { "id": "story.stage4.loss", "start_id": "stage4.rematch.loss.end", "steps": [{ "id": "stage4.rematch.loss.end", "kind": "end" }] }
+  ]
+}

@@ -6,6 +6,7 @@ import { validateContent } from '../../../packages/content/validate'
 import { fitViewport } from '../../../packages/story/viewport'
 import { cardPresentation } from '../../../packages/cards/presentation'
 import { CardView } from './CardView'
+import { getItemDefinition, isBattleUsable, type ItemId } from '../../../packages/domain/item-catalog'
 import arena from '../../../godot/assets/backgrounds/prologue/bg06_prison_arena.png?url'
 
 const backgroundPath = 'godot/assets/backgrounds/prologue/bg06_prison_arena.png'
@@ -21,6 +22,7 @@ export function BelkaScreen({ save, onSave, onTitle }: {
   const proposalAction = useRef<string | null>(null)
   const [fit, setFit] = useState(() => fitViewport(0, 0))
   const [selected, setSelected] = useState<number | null>(null)
+  const [selectedItem, setSelectedItem] = useState<ItemId | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const ledger = save.progress.belka_battle!
@@ -50,6 +52,7 @@ export function BelkaScreen({ save, onSave, onTitle }: {
       proposal.current = null
       proposalAction.current = null
       setSelected(null)
+      setSelectedItem(null)
     } catch {
       setError('保存に失敗しました。進行は変わっていません。同じ操作で再試行してください。')
     } finally {
@@ -100,7 +103,20 @@ export function BelkaScreen({ save, onSave, onTitle }: {
           </div> : <>
             <h2>カードを選択してください</h2>
             <p>ベルカHP {view.opponentHp}/3 ・あなたのHP {view.playerHp}/3</p>
-            <button disabled={actionDisabled('round') || selected === null} onClick={() => { void commit('round', () => playBelkaRound(save, selected!, Math.random())) }}>勝負！</button>
+            <label htmlFor="belka-battle-item">この勝負で使うアイテム</label>{' '}
+            <select id="belka-battle-item" aria-label="この勝負で使うアイテム" value={selectedItem ?? ''}
+              disabled={busy} onChange={(event) => setSelectedItem(event.target.value ? event.target.value as ItemId : null)}>
+              <option value="">使わない</option>
+              {Array.from(new Set(save.player.items ?? [])).map((id) => {
+                const item = getItemDefinition(id)
+                const used = (ledger.round_item_ids ?? []).filter((entry) => entry === id).length
+                const owned = (ledger.items_before ?? []).filter((entry) => entry === id).length
+                return item?.category === 'consumable' && item.effect !== 'protect_card' && isBattleUsable(item) && used < owned
+                  ? <option key={id} value={id}>{item.name}</option> : null
+              })}
+            </select>{' '}
+            <button disabled={actionDisabled('round') || selected === null}
+              onClick={() => { void commit('round', () => playBelkaRound(save, selected!, Math.random(), selectedItem ?? undefined)) }}>勝負！</button>
           </>}
           {error && <p role="alert" className="error-message">{error}</p>}
         </section>

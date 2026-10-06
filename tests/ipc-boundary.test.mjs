@@ -62,8 +62,13 @@ test('fixed document store preserves prior data when a write is rejected', async
     assert.equal(await store.read(), null)
     await store.write({ message: 'first' })
     assert.deepEqual(await store.read(), { message: 'first' })
+    await Promise.all([
+      store.write({ message: 'second' }),
+      store.write({ message: 'third' })
+    ])
+    assert.deepEqual(await store.read(), { message: 'third' })
     await assert.rejects(store.write({ message: undefined }))
-    assert.equal(await readFile(join(directory, 'document.json'), 'utf8'), '{"message":"first"}')
+    assert.equal(await readFile(join(directory, 'document.json'), 'utf8'), '{"message":"third"}')
   } finally {
     await rm(directory, { recursive: true, force: true })
   }

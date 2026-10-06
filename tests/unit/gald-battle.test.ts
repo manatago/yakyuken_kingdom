@@ -21,7 +21,8 @@ function guild(): SaveData {
     if (!fixedView(save).outcome) save = acknowledgeFixedRound(save)
   }
   save = settleFixedBattle(save, 0)
-  return enterGuildHome(parseSave({ ...save, progress: { ...save.progress, checkpoint_id: 'matilda.normal.end' } }))
+  return enterGuildHome(parseSave({ ...save, progress: { ...save.progress, checkpoint_id: 'matilda.normal.end',
+    flags: [...save.progress.flags, 'adventurer.tutorial.completed'], random_battles_completed: 3 } }))
 }
 
 function galdSetup(): SaveData {
@@ -50,7 +51,8 @@ test('Gald victory captures a card, gold, and each configured item once across s
   assert.equal(galdView(won).outcome, 'win')
   assert.equal(won.player.inventory.length, started.player.inventory.length + 1)
   assert.equal(won.player.money, started.player.money + 8)
-  assert.deepEqual(won.player.items, ['scissors_attract_white', 'paper_seal_white'])
+  assert.deepEqual(won.player.items, ['paper_attract_white', 'rock_break_white', 'substitute_card', 'iron_shield',
+    'scissors_attract_white', 'paper_seal_white'])
   assert.deepEqual(parseSave(JSON.parse(JSON.stringify(won))), won)
   assert.throws(() => settleGald(won, 0))
 
@@ -59,14 +61,15 @@ test('Gald victory captures a card, gold, and each configured item once across s
   } })
   const home = returnSubevent1GaldToGuild(end)
   assert.equal(home.progress.checkpoint_id, 'guild.home')
-  assert.deepEqual(home.player.items, ['scissors_attract_white', 'paper_seal_white'])
+  assert.deepEqual(home.player.items, ['paper_attract_white', 'rock_break_white', 'substitute_card', 'iron_shield',
+    'scissors_attract_white', 'paper_seal_white'])
 })
 
 test('Gald defeat does not grant item rewards and returns to Guild Home', () => {
   const started = prepareSubevent1Gald(galdSetup())
   const lost = settleGald(playGaldRound(started, 2, .2), 0)
   assert.equal(galdView(lost).outcome, 'lose')
-  assert.deepEqual(lost.player.items, [])
+  assert.deepEqual(lost.player.items, ['paper_attract_white', 'rock_break_white', 'substitute_card', 'iron_shield'])
   assert.equal(lost.player.inventory.length, started.player.inventory.length - 1)
   assert.equal(returnSubevent1GaldToGuild(lost).progress.checkpoint_id, 'guild.home')
 })

@@ -2,9 +2,9 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { createInitialGameSave } from '../../packages/domain/new-game'
 import { startJin, jinContent, jinProbabilities, jinView, playJinRound, returnJinToGuild,
-  startSubevent1JinStory, prepareSubevent1Jin, continueSubevent1Jin, returnSubevent1JinToGuild,
+  acknowledgeJinRound, startSubevent1JinStory, prepareSubevent1Jin, continueSubevent1Jin, returnSubevent1JinToGuild,
   prepareSubevent1Marco, continueSubevent1Marco, SUBEVENT1_MARCO_CHECKPOINT,
-  activeJinLedger, canStartJin,
+  activeJinLedger, canStartJin, canStartSubevent1Jin,
   setJinDraft, settleJin, validateJinState } from '../../packages/battle/jin'
 import { prepareTutorial, playTutorialRound, acknowledgeTutorial } from '../../packages/battle/tutorial'
 import { prepareFixedBattle, playFixedRound, acknowledgeFixedRound, settleFixedBattle, fixedView } from '../../packages/battle/fixed'
@@ -12,6 +12,7 @@ import { enterGuildHome } from '../../packages/guild/home'
 import { startBelka, playBelkaRound, acknowledgeBelkaRound, settleBelka, returnBelkaToGuild, belkaView } from '../../packages/battle/belka'
 import { parseSave, type SaveData } from '../../packages/domain/save'
 import { validateContent } from '../../packages/content/validate'
+import { equipItem, unequipItem } from '../../packages/domain/equipment'
 
 function guild(): SaveData {
   const initial = createInitialGameSave()
@@ -24,7 +25,8 @@ function guild(): SaveData {
     if (!fixedView(save).outcome) save = acknowledgeFixedRound(save)
   }
   save = settleFixedBattle(save, 0)
-  return enterGuildHome(parseSave({ ...save, progress: { ...save.progress, checkpoint_id: 'matilda.normal.end' } }))
+  return enterGuildHome(parseSave({ ...save, progress: { ...save.progress, checkpoint_id: 'matilda.normal.end',
+    flags: [...save.progress.flags, 'adventurer.tutorial.completed'], random_battles_completed: 3 } }))
 }
 
 function zeroMoneyGuild(): SaveData {
@@ -40,7 +42,8 @@ function zeroMoneyGuild(): SaveData {
   assert.equal(fixedView(save).outcome, 'lose')
   save = settleFixedBattle(save, 0)
   assert.equal(save.player.money, 0)
-  return enterGuildHome(parseSave({ ...save, progress: { ...save.progress, checkpoint_id: 'matilda.normal.end' } }))
+  return enterGuildHome(parseSave({ ...save, progress: { ...save.progress, checkpoint_id: 'matilda.normal.end',
+    flags: [...save.progress.flags, 'adventurer.tutorial.completed'], random_battles_completed: 3 } }))
 }
 
 function winBelka(save: SaveData): SaveData {
@@ -91,6 +94,18 @@ test('Jin saves a three-card ordered draft, applies the opponent tendency and re
   assert.equal(jinView(pending).outcome, 'win')
 })
 
+test('Jin rejects invalid rolls and premature result transitions', () => {
+  const source = guild()
+  const started = startJin(source, source.player.inventory.slice(6, 9))
+  assert.equal(activeJinLedger(source), undefined)
+  assert.throws(() => jinView(source), /not started/)
+  assert.throws(() => playJinRound(started, 0, Number.NaN), /random roll/)
+  assert.throws(() => acknowledgeJinRound(started), /No pending Jin result/)
+  assert.throws(() => settleJin(started, 0), /terminal Jin result/)
+  assert.throws(() => returnJinToGuild(started), /not settled/)
+  assert.throws(() => continueSubevent1Jin(started), /not ready to continue/)
+})
+
 test('Jin victory captures one card and settles once; draw consumes neither hand nor inventory', () => {
   const source = guild(), deck = [source.player.inventory[6], source.player.inventory[7], source.player.inventory[8]]
   const started = startJin(source, deck)
@@ -110,6 +125,43 @@ test('Jin victory captures one card and settles once; draw consumes neither hand
   assert.equal(jinView(tie).outcome, undefined)
   assert.deepEqual(tie.player.inventory, drawn.player.inventory)
   assert.deepEqual(jinView(tie).usedPlayer, [])
+})
+
+test('Greed Ring adds a persisted second capture to a one-round Jin win', () => {
+  const source = guild()
+  const equipped = equipItem({ ...source, player: { ...source.player, items: ['greed_ring'] } }, 'greed_ring')
+  const started = startJin(equipped, equipped.player.inventory.slice(0, 3))
+  const terminal = playJinRound(started, 0, .5)
+  assert.equal(jinView(terminal).outcome, 'win')
+  const settled = settleJin(terminal, .5, .99)
+  const ledger = settled.progress.jin_battle!
+  assert.equal(settled.player.inventory.length, equipped.player.inventory.length + 2)
+  assert.notEqual(ledger.bonus_capture_index, ledger.rounds[0]!.opponent_index)
+  assert.deepEqual(parseSave(JSON.parse(JSON.stringify(settled))), settled)
+})
+
+test('Jin battle item choice is saved, bounded by inventory, and consumed once after settlement', () => {
+  const source = guild()
+  const owned = { ...source, player: { ...source.player, items: ['rock_attract_white'] as const } }
+  const started = startJin(owned, owned.player.inventory.slice(6, 9))
+  const pending = playJinRound(started, 0, 0, 'rock_attract_white')
+  assert.deepEqual(pending.progress.jin_battle?.round_item_ids, ['rock_attract_white'])
+  assert.deepEqual(pending.player.items, ['rock_attract_white'])
+  assert.deepEqual(parseSave(JSON.parse(JSON.stringify(pending))), pending)
+  assert.throws(() => playJinRound(pending, 1, 0, 'rock_attract_white'))
+  const settled = settleJin(pending, 0)
+  assert.deepEqual(settled.player.items, [])
+  assert.deepEqual(parseSave(JSON.parse(JSON.stringify(settled))), settled)
+})
+
+test('Jin snapshots the gold charm bonus and permits changing equipment after settlement', () => {
+  const source = guild(), equipped = equipItem({ ...source, player: { ...source.player, items: ['gold_charm'] } }, 'gold_charm')
+  const deck = [equipped.player.inventory[6]!, equipped.player.inventory[7]!, equipped.player.inventory[8]!]
+  const pending = playJinRound(startJin(equipped, deck), 0, 0)
+  const settled = settleJin(pending, 0)
+  assert.equal(settled.player.money, equipped.player.money + 23)
+  assert.deepEqual(settled.progress.jin_battle?.equipment_before, ['gold_charm'])
+  assert.deepEqual(unequipItem(settled, 'gold_charm').player.equipment, [])
 })
 
 test('Jin loss removes one played card while preserving historical Matilda save and valid current lineup', () => {
@@ -151,6 +203,18 @@ test('Subevent 1 Jin can follow the verification Jin battle without overwriting 
   assert.equal(migrated.progress.jin_battle, undefined)
   const pending = playJinRound(prepared, 0, 0)
   assert.deepEqual(parseSave(JSON.parse(JSON.stringify(pending))), pending)
+})
+
+test('the Subevent 1 draft remains available after the one-time Jin verification battle', () => {
+  const original = guild(), verificationDeck = original.player.inventory.slice(6, 9)
+  const verification = settleJin(playJinRound(startJin(original, verificationDeck), 0, 0), 0)
+  const home = returnJinToGuild(verification)
+  assert.equal(canStartJin(home), false)
+  assert.equal(canStartSubevent1Jin(home), true)
+  const eventDeck = home.player.inventory.slice(0, 3)
+  const drafted = setJinDraft(home, eventDeck)
+  assert.deepEqual(drafted.progress.jin_draft, eventDeck)
+  assert.equal(startSubevent1JinStory(drafted, eventDeck).progress.checkpoint_id, 'subevent1.jin.intro')
 })
 
 test('verification Jin can follow completed Subevent 1 Jin while retaining both ledgers', () => {

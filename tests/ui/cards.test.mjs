@@ -57,6 +57,18 @@ test('Normal card box, deck slots and full preview show real art without modifyi
     app = await electron.launch({ executablePath, args })
     let page = await app.firstWindow()
     await page.getByRole('button', { name: 'はじめから' }).click()
+    for (let count = 0; count < 20; count++) {
+      const checkpoint = await page.getByTestId('checkpoint-id').textContent()
+      if (checkpoint === 'prologue.end') {
+        await page.getByRole('button', { name: 'チュートリアルへ進む', exact: true }).click()
+        break
+      }
+      assert.ok(checkpoint?.startsWith('prologue.'), `Unexpected opening checkpoint ${checkpoint}`)
+      await page.getByRole('button', { name: '次へ', exact: true }).click()
+      await page.waitForFunction((previous) => document.querySelector('[data-testid="checkpoint-id"]')?.textContent !== previous,
+        checkpoint)
+    }
+    await page.getByTestId('story-text').getByText(/周りの風景/).waitFor()
     const box = page.getByTestId('card-box')
     await box.waitFor()
     assert.equal(await box.locator('button').count(), 9)

@@ -7,6 +7,7 @@ import { validateContent } from '../../../packages/content/validate'
 import { fitViewport } from '../../../packages/story/viewport'
 import { cardPresentation } from '../../../packages/cards/presentation'
 import { CardView } from './CardView'
+import { getItemDefinition, isBattleUsable, type ItemId } from '../../../packages/domain/item-catalog'
 import arena from '../../../godot/assets/backgrounds/prologue/bg06_prison_arena.png?url'
 
 const arenaPath = 'godot/assets/backgrounds/prologue/bg06_prison_arena.png'
@@ -19,7 +20,8 @@ export function JinScreen({ save, onSave, onTitle }: {
   const viewport = useRef<HTMLElement>(null), pending = useRef(false), proposal = useRef<SaveData | null>(null)
   const proposalAction = useRef<string | null>(null)
   const [fit, setFit] = useState(() => fitViewport(0, 0))
-  const [selected, setSelected] = useState<number | null>(null), [busy, setBusy] = useState(false), [error, setError] = useState('')
+  const [selected, setSelected] = useState<number | null>(null), [selectedItem, setSelectedItem] = useState<ItemId | null>(null)
+  const [busy, setBusy] = useState(false), [error, setError] = useState('')
   const ledger = activeJinLedger(save)!, view = jinView(save)
   const marcoBattle = ledger.battle_id === SUBEVENT1_MARCO_BATTLE_ID
   const galdBattle = ledger.battle_id === SUBEVENT1_GALD_BATTLE_ID
@@ -42,7 +44,7 @@ export function JinScreen({ save, onSave, onTitle }: {
     try {
       proposal.current ??= makeSave(); proposalAction.current = action
       await onSave(proposal.current)
-      proposal.current = null; proposalAction.current = null; setSelected(null)
+      proposal.current = null; proposalAction.current = null; setSelected(null); setSelectedItem(null)
     } catch { setError('保存に失敗しました。進行は変わっていません。同じ操作で再試行してください。') }
     finally { pending.current = false; setBusy(false) }
   }
@@ -73,6 +75,9 @@ export function JinScreen({ save, onSave, onTitle }: {
           {ledger.settled ? <div data-testid="jin-settled">
             <h2>{view.outcome === 'win' ? `${opponentName}に勝利` : view.outcome === 'lose' ? `${opponentName}に敗北` : '引き分け'}</h2>
             <p>精算済み：{ledger.gold_delta! >= 0 ? '+' : ''}{ledger.gold_delta}G ・所持 {save.player.money}G</p>
+            {view.outcome === 'win' && ledger.item_rewards?.length ? <div data-testid="jin-rewards" aria-label="勝利報酬">
+              {ledger.item_rewards.map((id, index) => <p key={`${id}-${index}`}>{getItemDefinition(id)?.name ?? id}を獲得。</p>)}
+            </div> : null}
             <button disabled={disabled('return')} onClick={() => { void commit('return', () => storyBattle && view.outcome === 'win'
               ? galdBattle ? continueSubevent1Gald(save) : marcoBattle ? continueSubevent1Marco(save) : continueSubevent1Jin(save)
               : galdBattle ? returnSubevent1GaldToGuild(save) : returnJinToGuild(save)) }}>
@@ -81,10 +86,23 @@ export function JinScreen({ save, onSave, onTitle }: {
             <h2>{view.last!.result === 'win' ? '勝ち' : view.last!.result === 'lose' ? '負け' : '引き分け'}</h2>
             <p>{opponentName}HP {view.opponentHp}/1 ・あなたのHP {view.playerHp}/1</p>
             <button disabled={disabled('result')} onClick={() => { void commit('result', () => view.outcome
-              ? settleJin(save, Math.random()) : acknowledgeJinRound(save)) }}>{view.outcome ? '結果を確定' : '次の勝負へ'}</button>
+              ? settleJin(save, Math.random(), Math.random()) : acknowledgeJinRound(save)) }}>{view.outcome ? '結果を確定' : '次の勝負へ'}</button>
           </div> : <>
             <h2>カードを選択してください</h2><p>{opponentName}HP {view.opponentHp}/1 ・あなたのHP {view.playerHp}/1</p>
-            <button disabled={disabled('round') || selected === null} onClick={() => { void commit('round', () => playJinRound(save, selected!, Math.random())) }}>勝負！</button>
+            <label htmlFor="jin-battle-item">この勝負で使うアイテム</label>{' '}
+            <select id="jin-battle-item" aria-label="この勝負で使うアイテム" value={selectedItem ?? ''}
+              disabled={busy} onChange={(event) => setSelectedItem(event.target.value ? event.target.value as ItemId : null)}>
+              <option value="">使わない</option>
+              {Array.from(new Set(save.player.items ?? [])).map((id) => {
+                const item = getItemDefinition(id)
+                const used = (ledger.round_item_ids ?? []).filter((entry) => entry === id).length
+                const owned = (ledger.items_before ?? []).filter((entry) => entry === id).length
+                return item?.category === 'consumable' && isBattleUsable(item) && used < owned
+                  ? <option key={id} value={id}>{item.name}</option> : null
+              })}
+            </select>{' '}
+            <button disabled={disabled('round') || selected === null}
+              onClick={() => { void commit('round', () => playJinRound(save, selected!, Math.random(), selectedItem ?? undefined)) }}>勝負！</button>
           </>}
           {error && <p role="alert" className="error-message">{error}</p>}
         </section>

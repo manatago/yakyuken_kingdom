@@ -69,6 +69,22 @@ function replayStory(pack: ContentPack, storyId: string, checkpointId: string | 
 
 export function startStory(pack: ContentPack, storyId: string, checkpointId?: string,
   variables: StoryTextVariables = {}): StoryFrame {
+  const story = pack.stories.find((entry) => entry.id === storyId)
+  const target = story?.steps.find((step) => step.id === checkpointId)
+  if (checkpointId && target?.kind === 'end') {
+    try {
+      const replayed = replayStory(pack, storyId, checkpointId, variables, false)
+      if (replayed.step.id === checkpointId) return replayStory(pack, storyId, checkpointId, variables, true)
+    } catch (error) {
+      // Older saves can reference a terminal result node disconnected by a
+      // later story expansion. Reopen only that declared end state; all other
+      // unreachable checkpoints and replay errors remain invalid.
+      if (error instanceof Error && error.message === `Unreachable checkpoint: ${checkpointId}`) {
+        return { step: target, text: '', portraits: {} }
+      }
+      throw error
+    }
+  }
   return replayStory(pack, storyId, checkpointId, variables, true)
 }
 
