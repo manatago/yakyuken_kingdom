@@ -73,6 +73,7 @@ test('Subevent 3 persists the story handoff and resumes the minigame at the exac
     const firstChoice = page.getByRole('button', { name: 'ピー助に任せる', exact: true })
     await firstChoice.waitFor()
     await firstChoice.click()
+    await page.waitForFunction(() => document.querySelector('[data-testid="subevent3-gauge"]')?.textContent === '60/130')
     assert.equal(JSON.parse(await readFile(target, 'utf8')).progress.subevent3_minigame.gauge, 60)
     await app.close(); app = undefined
     page = await open()
