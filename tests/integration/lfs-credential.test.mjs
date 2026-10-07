@@ -55,7 +55,7 @@ test('real Git credential protocol uses the environment helper without network a
 
 test('Electron CI scopes LFS Secrets to image fetch and retains its verification steps', () => {
   const workflow = readFileSync(new URL('../../.github/workflows/electron-scaffold.yml', import.meta.url), 'utf8')
-  const fetch = workflow.slice(workflow.indexOf('      - name: Fetch tutorial'), workflow.indexOf('      - run: npm ci'))
+  const fetch = workflow.slice(workflow.indexOf('      - name: Fetch game images'), workflow.indexOf('      - run: npm ci'))
   assert.match(fetch, /shell: bash/)
   assert.match(fetch, /LFS_USERNAME: \$\{\{ secrets\.LFS_USERNAME \}\}/)
   assert.match(fetch, /LFS_PASSWORD: \$\{\{ secrets\.LFS_PASSWORD \}\}/)
@@ -63,7 +63,7 @@ test('Electron CI scopes LFS Secrets to image fetch and retains its verification
   assert.match(fetch, /credential\.helper=!node \.github\/scripts\/lfs-credential\.mjs/)
   assert.match(fetch, /credential\.useHttpPath=true lfs pull/)
   assert.equal((workflow.match(/secrets\.LFS_PASSWORD/g) ?? []).length, 1)
-  assert.ok(workflow.indexOf('actions/setup-node@') < workflow.indexOf('name: Fetch tutorial'))
+  assert.ok(workflow.indexOf('actions/setup-node@') < workflow.indexOf('name: Fetch game images'))
   assert.ok(workflow.includes("- '.github/scripts/lfs-credential.mjs'"))
   assert.ok(workflow.includes("- 'godot/assets/battle/cards/**'"))
   const include = fetch.match(/--include="([^"]+)"/)[1].split(',')

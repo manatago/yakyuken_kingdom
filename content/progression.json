@@ -1,0 +1,9 @@
+{
+  "subeventRandomBattleRequirement": 3,
+  "subeventCompleteFlags": {
+    "subevent1": "sub1_cleared",
+    "subevent2": "sub2_cleared",
+    "subevent3": "sub3_cleared",
+    "subevent4": "sub4_cleared"
+  }
+}

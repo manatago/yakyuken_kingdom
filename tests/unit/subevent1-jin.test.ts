@@ -28,14 +28,15 @@ test('Subevent 1 story reaches its fixed Jin battle separately from verification
   assert.equal(battle.player_deck_size, 3)
   assert.equal(battle.opponent_deck_size, 3)
   assert.equal(battle.round_limit, 1)
-  assert.deepEqual(battle.opponent_card_ids, ['scissors_normal', 'scissors_normal', 'rock_normal'])
+  assert.deepEqual(battle.opponent_card_ids, ['scissors_bronze', 'scissors_normal', 'rock_normal'])
+  assert.deepEqual(battle.item_reward_ids, ['paper_attract_white', 'rock_break_white'])
   assert.deepEqual(battle.hp && [battle.hp.player, battle.hp.opponent], [1, 1])
   assert.equal(battle.gold_reward.min, 3)
   assert.equal(battle.gold_reward.max, 8)
   assert.notEqual(battle.id, 'battle.thief_jin')
 
   const tied: FixedLedger = { battle_id: battle.id, player_deck: [
-    { hand: 'scissors', grade: 1 }, { hand: 'rock', grade: 1 }, { hand: 'paper', grade: 1 }
+    { hand: 'scissors', grade: 2 }, { hand: 'rock', grade: 1 }, { hand: 'paper', grade: 1 }
   ], rounds: [{ player_index: 0, opponent_index: 0 }], acknowledged: 0, settled: false, balance_before: 0 }
   assert.equal(replayFixedBattle(battle as typeof battle & { hp: NonNullable<typeof battle.hp> }, tied).outcome, 'draw')
 })
@@ -54,7 +55,8 @@ test('Subevent 1 continues from Jin into the one-match balanced Marco encounter'
   assert.equal(battle.player_deck_size, 3)
   assert.equal(battle.opponent_deck_size, 3)
   assert.equal(battle.round_limit, 1)
-  assert.deepEqual(battle.opponent_card_ids, ['rock_normal', 'scissors_normal', 'paper_normal'])
+  assert.deepEqual(battle.opponent_card_ids, ['rock_normal', 'scissors_normal', 'paper_bronze'])
+  assert.deepEqual(battle.item_reward_ids, ['substitute_card', 'iron_shield'])
   assert.deepEqual(battle.hp && [battle.hp.player, battle.hp.opponent, battle.hp.lose_gold], [1, 1, 3])
   assert.equal(battle.bayes_eye, true)
   assert.deepEqual(battle.opponent_tendency, {})

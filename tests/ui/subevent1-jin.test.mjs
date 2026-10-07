@@ -16,8 +16,8 @@ test('guild completes Jin, Marco, and Gald, resumes Gald, and persists the item 
   const target = join(data, 'janken-save.json')
   const cards = ['rock', 'scissors', 'paper'].flatMap((hand) => Array.from({ length: 3 }, () => ({ hand, grade: 1 })))
   const original = { save_version: 1, player: { inventory: cards, deck: cards, money: 30 },
-    progress: { checkpoint_id: 'guild.home', guild_return_checkpoint: 'matilda.normal.end',
-      flags: ['matilda.tutorial.completed', 'matilda.normal.started'],
+    progress: { checkpoint_id: 'guild.home', guild_return_checkpoint: 'matilda.normal.end', random_battles_completed: 3,
+      flags: ['matilda.tutorial.completed', 'matilda.normal.started', 'adventurer.tutorial.completed'],
       tutorial: { battle_id: 'battle.matilda.practice', rounds: [{ player_index: 6, opponent_index: 0 }, { player_index: 0, opponent_index: 3 }], acknowledged: 2 },
       fixed_battle: { battle_id: 'battle.matilda.normal', player_deck: cards,
         rounds: [6, 7, 8].map((player_index, opponent_index) => ({ player_index, opponent_index })),
@@ -30,7 +30,7 @@ test('guild completes Jin, Marco, and Gald, resumes Gald, and persists the item 
     let page = await app.firstWindow()
     await page.getByRole('button', { name: 'つづきから', exact: true }).click()
     await page.getByRole('heading', { name: 'ギルドホーム', exact: true }).waitFor()
-    await page.getByRole('button', { name: 'サブイベント1を開始（解放条件なし）', exact: true }).click()
+    await page.getByRole('button', { name: 'サブイベント1を開始', exact: true }).click()
     await page.getByRole('heading', { name: 'サブイベント1：盗賊団討伐', exact: true }).waitFor()
     await page.getByText('へっ、来たな冒険者。アジトの場所を嗅ぎつけるとは、やるじゃねえか。だが、ここから先は通さねえぜ。', { exact: true }).waitFor()
     await page.getByRole('button', { name: '次へ', exact: true }).click()
@@ -78,7 +78,11 @@ test('guild completes Jin, Marco, and Gald, resumes Gald, and persists the item 
     await page.getByRole('button', { name: '結果を確定', exact: true }).click()
     await page.getByTestId('jin-settled').waitFor()
     const savedGald = JSON.parse(await readFile(target, 'utf8'))
-    assert.deepEqual(savedGald.player.items, ['scissors_attract_white', 'paper_seal_white'])
+    assert.deepEqual(savedGald.player.items, [
+      'paper_attract_white', 'rock_break_white',
+      'substitute_card', 'iron_shield',
+      'scissors_attract_white', 'paper_seal_white'
+    ])
     await page.getByRole('button', { name: '物語を続ける', exact: true }).click()
     for (let index = 0; index < 4; index++) await page.getByRole('button', { name: '次へ', exact: true }).click()
     await page.getByRole('heading', { name: 'サブイベント1：ベルカ戦', exact: true }).waitFor()
@@ -98,17 +102,21 @@ test('guild completes Jin, Marco, and Gald, resumes Gald, and persists the item 
     await defeatPage.evaluate(() => { Math.random = () => 0.99 })
     for (const cardIndex of [0, 1, 2]) {
       await defeatPage.locator('[data-testid="subevent1-belka-deck"] button').nth(cardIndex).click()
+      if (cardIndex === 0) await defeatPage.getByLabel('この勝負で使うアイテム').selectOption('scissors_attract_white')
       await defeatPage.getByRole('button', { name: '勝負！', exact: true }).click()
       await defeatPage.getByTestId('subevent1-belka-result').waitFor()
       if (cardIndex !== 2) await defeatPage.getByRole('button', { name: '次の勝負へ', exact: true }).click()
     }
     await defeatPage.getByRole('button', { name: '結果を確定', exact: true }).click()
-    await defeatPage.getByTestId('subevent1-belka-settled').waitFor()
+    await defeatPage.getByTestId('subevent1-belka-settled').waitFor({ timeout: 3000 }).catch(async () => {
+      throw new Error(`Belka settlement did not render: ${await defeatPage.locator('body').innerText()}`)
+    })
     await defeatPage.getByText('サトシはベルカに敗北した。盗賊団のアジトから撤退するしかない...', { exact: true }).waitFor()
     const defeatedSave = JSON.parse(await readFile(join(defeatData, 'janken-save.json'), 'utf8'))
     assert.equal(defeatedSave.progress.subevent1_belka_battle.settled, true)
     assert.equal(defeatedSave.player.inventory.length, belkaStart.player.inventory.length - 3)
-    assert.deepEqual(defeatedSave.player.items, belkaStart.player.items)
+    assert.deepEqual(defeatedSave.progress.subevent1_belka_battle.round_item_ids, ['scissors_attract_white', null, null])
+    assert.deepEqual(defeatedSave.player.items, belkaStart.player.items.filter((id) => id !== 'scissors_attract_white'))
     await defeatPage.getByRole('button', { name: 'ギルドホームに戻る', exact: true }).click()
     await defeatPage.getByRole('heading', { name: 'ギルドホーム', exact: true }).waitFor()
     await defeatApp.close()
@@ -150,7 +158,12 @@ test('guild completes Jin, Marco, and Gald, resumes Gald, and persists the item 
     assert.equal(savedBelka.player.money, belkaStart.player.money + savedBelka.progress.subevent1_belka_battle.gold_delta)
     assert.ok(savedBelka.progress.subevent1_belka_battle.gold_delta >= 40)
     assert.ok(savedBelka.progress.subevent1_belka_battle.gold_delta <= 60)
-    assert.deepEqual(savedBelka.player.items, ['scissors_attract_white', 'paper_seal_white', 'greed_ring', 'rock_attract_crimson'])
+    assert.deepEqual(savedBelka.player.items, [
+      'paper_attract_white', 'rock_break_white',
+      'substitute_card', 'iron_shield',
+      'scissors_attract_white', 'paper_seal_white',
+      'greed_ring', 'rock_attract_crimson'
+    ])
     const settledMoney = savedBelka.player.money
     await page.getByRole('button', { name: '次へ', exact: true }).click()
     await page.getByText('...それと、騎士団から報告書が届いています。ベルカと番兵の所見から、サトシ様は「要注意人物」として記録されたそうです。', { exact: true }).waitFor()
@@ -162,18 +175,36 @@ test('guild completes Jin, Marco, and Gald, resumes Gald, and persists the item 
     await page.getByRole('button', { name: '次へ', exact: true }).click()
     await page.waitForFunction(() => document.querySelector('[data-testid="checkpoint-id"]')?.textContent === 'subevent1.belka.end',
       { timeout: 3000 }).catch(async () => { throw new Error(`Belka aftermath did not finish: ${await page.locator('body').innerText()}`) })
-    await page.getByRole('heading', { name: 'サブイベント1 前半終了', exact: true }).waitFor()
+    await page.getByRole('heading', { name: 'サブイベント1：討伐完了', exact: true }).waitFor()
     await page.getByRole('button', { name: 'ギルドホームへ戻る', exact: true }).click()
-    await page.getByText('刃招きの珠・白紋', { exact: true }).waitFor()
-    await page.getByText('紙封じの栞・白紋', { exact: true }).waitFor()
+    await page.getByTestId('item-inventory').getByText('刃招きの珠・白紋').waitFor()
+    await page.getByTestId('item-inventory').getByText('紙封じの栞・白紋').waitFor()
     const finalSave = JSON.parse(await readFile(target, 'utf8'))
     assert.equal(finalSave.progress.checkpoint_id, 'guild.home')
-    assert.equal(finalSave.player.items.length, 4)
+    assert.ok(finalSave.progress.flags.includes('sub1_cleared'))
+    assert.deepEqual(finalSave.player.items, savedBelka.player.items)
     assert.equal(finalSave.progress.subevent1_jin_battle.rounds.length, 1)
     assert.equal(finalSave.progress.subevent1_marco_battle.rounds.length, 1)
     assert.equal(finalSave.progress.subevent1_gald_battle.rounds.length, 1)
     assert.equal(finalSave.player.inventory.length, cards.length + 6)
     assert.equal(finalSave.progress.subevent1_belka_battle.rounds.length, 3)
+    assert.equal(await page.getByRole('button', { name: 'ギルドホームを確認', exact: true }).count(), 0,
+      'the chapter-ending action must not be bypassed before the completion flag is recorded')
+
+    // Older saves may still contain the now-disconnected Gald result checkpoint.
+    // Continuing must show its result screen rather than crashing during story replay.
+    await writeFile(join(defeatData, 'janken-save.json'), JSON.stringify({ ...savedGald,
+      progress: { ...savedGald.progress, checkpoint_id: 'subevent1.gald.end' } }))
+    defeatApp = await electron.launch({ executablePath, args: [join(root, 'dist/game/main/index.js'), `--user-data-dir=${defeatData}`] })
+    const legacyPage = await defeatApp.firstWindow()
+    await legacyPage.getByRole('button', { name: 'つづきから', exact: true }).click()
+    await legacyPage.waitForFunction(() => document.querySelector('[data-testid="checkpoint-id"]')?.textContent === 'subevent1.gald.end')
+    await legacyPage.getByRole('heading', { name: 'サブイベント1：戦闘終了', exact: true }).waitFor()
+    await legacyPage.getByRole('button', { name: 'ギルドホームへ戻る', exact: true }).click()
+    await legacyPage.getByRole('heading', { name: 'ギルドホーム', exact: true }).waitFor()
+    assert.equal(JSON.parse(await readFile(join(defeatData, 'janken-save.json'), 'utf8')).progress.checkpoint_id, 'guild.home')
+    await defeatApp.close()
+    defeatApp = undefined
 
     await writeFile(target, JSON.stringify({ ...finalSave,
       progress: { ...finalSave.progress, checkpoint_id: 'subevent1.belka.await' } }))

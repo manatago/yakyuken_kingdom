@@ -1,0 +1,74 @@
+{
+  "assets": [
+    { "id": "background.stage6.guild", "path": "godot/assets/backgrounds/stage1/bg07_st1_001.png" },
+    { "id": "background.stage6.hall", "path": "godot/assets/backgrounds/stage6/bg_royal_hall.png" },
+    { "id": "background.stage6.side", "path": "godot/assets/backgrounds/stage6/bg_side_room.png" },
+    { "id": "portrait.stage6.hero", "path": "godot/assets/characters/main/satoshi/isekai/satoshi_isekai_004.png" },
+    { "id": "portrait.stage6.princess", "path": "godot/assets/characters/main/princess/clothed/princess_clothed_001.png" },
+    { "id": "portrait.stage6.chamberlain", "path": "godot/assets/characters/mob/chamberlain/default/chamberlain_default_001.png" }
+  ],
+  "layouts": [
+    { "id": "layout.stage6.hero", "x": 490, "y": 465, "scale": 0.62, "flipped": true },
+    { "id": "layout.stage6.princess", "x": 1430, "y": 465, "scale": 0.62, "flipped": false },
+    { "id": "layout.stage6.chamberlain", "x": 1430, "y": 465, "scale": 0.55, "flipped": false }
+  ],
+  "battles": [
+    { "id": "battle.stage6.first", "opponent_id": "princess", "background_asset_id": "background.stage6.hall",
+      "player_deck_size": 9, "opponent_deck_size": 9, "round_limit": 3,
+      "opponent_card_ids": ["rock_silver", "rock_silver", "rock_silver", "scissors_silver", "scissors_silver", "scissors_silver", "paper_silver", "paper_silver", "paper_silver"],
+      "gold_reward": { "min": 150, "max": 250 }, "transfer_cards": true,
+      "hp": { "player": 3, "opponent": 3, "grade_effect_passes": 1, "lose_gold": 0, "forced_outcome": "lose" },
+      "bayes_eye": true, "phases": [{ "id": "phase.stage6.first", "rules": [] }] },
+    { "id": "battle.stage6.rematch", "opponent_id": "princess", "background_asset_id": "background.stage6.hall",
+      "player_deck_size": 9, "opponent_deck_size": 9, "round_limit": 3,
+      "opponent_card_ids": ["rock_silver", "rock_silver", "rock_silver", "scissors_silver", "scissors_silver", "scissors_silver", "paper_silver", "paper_silver", "paper_silver"],
+      "gold_reward": { "min": 150, "max": 250 }, "transfer_cards": true,
+      "hp": { "player": 3, "opponent": 3, "grade_effect_passes": 1, "lose_gold": 0 },
+      "bayes_eye": true, "result_route": "guild_home", "lose_checkpoint_id": "stage6.rematch.loss.end",
+      "phases": [{ "id": "phase.stage6.rematch", "rules": [] }] }
+  ],
+  "stories": [
+    { "id": "story.stage6.pre", "start_id": "stage6.pre.background", "steps": [
+      { "id": "stage6.pre.background", "kind": "background", "asset_id": "background.stage6.guild", "next_id": "stage6.pre.receptionist" },
+      { "id": "stage6.pre.receptionist", "kind": "line", "speaker_id": "受付嬢", "text": "王宮より、アレクシア王女殿下の署名がある晩餐会への招待状が届いております。四傑との一連の勝負について、正式な報告も求められています。", "next_id": "stage6.pre.hero" },
+      { "id": "stage6.pre.hero", "kind": "show_portrait", "slot_id": "hero", "asset_id": "portrait.stage6.hero", "layout_id": "layout.stage6.hero", "next_id": "stage6.pre.reply" },
+      { "id": "stage6.pre.reply", "kind": "line", "speaker_id": "サトシ", "text": "勝負の記録を持って、説明を聞きに行こう。条件は始める前に確認したい。", "next_id": "stage6.pre.end" },
+      { "id": "stage6.pre.end", "kind": "end" }
+    ] },
+    { "id": "story.stage6.banquet", "start_id": "stage6.banquet.background", "steps": [
+      { "id": "stage6.banquet.background", "kind": "background", "asset_id": "background.stage6.hall", "next_id": "stage6.banquet.princess" },
+      { "id": "stage6.banquet.princess", "kind": "show_portrait", "slot_id": "princess", "asset_id": "portrait.stage6.princess", "layout_id": "layout.stage6.princess", "next_id": "stage6.banquet.welcome" },
+      { "id": "stage6.banquet.welcome", "kind": "line", "speaker_id": "アレクシア", "text": "ようこそ。これまでの四傑との勝負について、関係者がそれぞれの記録を持ち寄りました。", "next_id": "stage6.banquet.concern" },
+      { "id": "stage6.banquet.concern", "kind": "line", "speaker_id": "貴族代表", "text": "勝負の経緯には確認すべき点が残ります。手続きの正当性を、ここで明らかにしていただきたい。", "next_id": "stage6.banquet.hero" },
+      { "id": "stage6.banquet.hero", "kind": "line", "speaker_id": "サトシ", "text": "記録はすべて提出します。ただし、結論を決めつけず、公平な条件で検証してください。", "next_id": "stage6.banquet.terms" },
+      { "id": "stage6.banquet.terms", "kind": "line", "speaker_id": "アレクシア", "text": "古い王室規定に従い、三本勝負を一試合として、複数試合のうち一勝すれば挑戦者の勝利とします。第一試合の結果だけは、規定上、王室側の勝利と確定しています。", "next_id": "stage6.banquet.chamberlain" },
+      { "id": "stage6.banquet.chamberlain", "kind": "show_portrait", "slot_id": "chamberlain", "asset_id": "portrait.stage6.chamberlain", "layout_id": "layout.stage6.chamberlain", "next_id": "stage6.banquet.confirm" },
+      { "id": "stage6.banquet.confirm", "kind": "line", "speaker_id": "侍従長", "text": "規定の原文と試合記録を公開します。第一試合を始めます。", "next_id": "stage6.banquet.battle" },
+      { "id": "stage6.banquet.battle", "kind": "battle", "battle_id": "battle.stage6.first", "next_id": "stage6.banquet.result" },
+      { "id": "stage6.banquet.result", "kind": "line", "speaker_id": "ピー助", "text": "初戦の敗北は規定どおりだ。だが規定に書かれていない特例は、結果へ持ち込めない。原文を確認し、次の試合の条件を改めて確かめよう。", "next_id": "stage6.banquet.end" },
+      { "id": "stage6.banquet.end", "kind": "end" }
+    ] },
+    { "id": "story.stage6.recover", "start_id": "stage6.recover.background", "steps": [
+      { "id": "stage6.recover.background", "kind": "background", "asset_id": "background.stage6.side", "next_id": "stage6.recover.chamberlain" },
+      { "id": "stage6.recover.chamberlain", "kind": "show_portrait", "slot_id": "chamberlain", "asset_id": "portrait.stage6.chamberlain", "layout_id": "layout.stage6.chamberlain", "next_id": "stage6.recover.review" },
+      { "id": "stage6.recover.review", "kind": "line", "speaker_id": "侍従長", "text": "規定には、試合ごとの判定方法を書き換える権限は記されていません。第一試合の特例は、第二試合以降へは及ばないようです。", "next_id": "stage6.recover.hero" },
+      { "id": "stage6.recover.hero", "kind": "line", "speaker_id": "サトシ", "text": "それなら原文と同じ条件で、最後まで勝負します。内容と結果が記録されるなら、異議はありません。", "next_id": "stage6.recover.end" },
+      { "id": "stage6.recover.end", "kind": "end" }
+    ] },
+    { "id": "story.stage6.rematch", "start_id": "stage6.rematch.background", "steps": [
+      { "id": "stage6.rematch.background", "kind": "background", "asset_id": "background.stage6.hall", "next_id": "stage6.rematch.princess" },
+      { "id": "stage6.rematch.princess", "kind": "show_portrait", "slot_id": "princess", "asset_id": "portrait.stage6.princess", "layout_id": "layout.stage6.princess", "next_id": "stage6.rematch.start" },
+      { "id": "stage6.rematch.start", "kind": "line", "speaker_id": "アレクシア", "text": "確認しました。第二試合を始めましょう。今回は双方、同じ通常ルールで行います。", "next_id": "stage6.rematch.battle" },
+      { "id": "stage6.rematch.battle", "kind": "battle", "battle_id": "battle.stage6.rematch", "next_id": "stage6.rematch.result" },
+      { "id": "stage6.rematch.result", "kind": "line", "speaker_id": "アレクシア", "text": "勝負の結果を認めます。記録に基づく審査は、あなたの勝利です。", "next_id": "stage6.rematch.end" },
+      { "id": "stage6.rematch.end", "kind": "end" }
+    ] },
+    { "id": "story.stage6.post", "start_id": "stage6.post.background", "steps": [
+      { "id": "stage6.post.background", "kind": "background", "asset_id": "background.stage6.hall", "next_id": "stage6.post.outcome" },
+      { "id": "stage6.post.outcome", "kind": "line", "speaker_id": "侍従長", "text": "古い王室規定に基づき、挑戦者サトシ殿を勝者と記録します。王位継承の手続きは、関係者の立会いのもとで進められます。", "next_id": "stage6.post.hero" },
+      { "id": "stage6.post.hero", "kind": "line", "speaker_id": "サトシ", "text": "勝ったからといって、ひとりで国を決めるつもりはありません。記録を公開し、評議会と一緒に責任を果たします。", "next_id": "stage6.post.end" },
+      { "id": "stage6.post.end", "kind": "end" }
+    ] },
+    { "id": "story.stage6.loss", "start_id": "stage6.rematch.loss.end", "steps": [{ "id": "stage6.rematch.loss.end", "kind": "end" }] }
+  ]
+}

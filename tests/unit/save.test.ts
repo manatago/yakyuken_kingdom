@@ -14,7 +14,7 @@ test('new Electron game state has a version and resumes without losing state', (
   const save = createNewSave('matilda.start', initial)
   assert.deepEqual(save, {
     save_version: 1,
-    player: { ...initial, items: [] },
+    player: { ...initial, items: [], equipment: [] },
     progress: { checkpoint_id: 'matilda.start', flags: [] }
   })
   assert.deepEqual(parseSave(JSON.parse(JSON.stringify(save))), save)
@@ -54,6 +54,9 @@ test('item inventory defaults for existing saves, validates IDs, and survives se
   const rewarded = { ...save, player: { ...save.player, items: ['scissors_attract_white', 'paper_seal_white'] } }
   assert.deepEqual(parseSave(JSON.parse(JSON.stringify(rewarded))), rewarded)
   assert.throws(() => parseSave({ ...save, player: { ...save.player, items: ['unknown_item'] } }))
+  const equipped = parseSave({ ...save, player: { ...save.player, items: ['greed_ring'], equipment: ['gold_charm'] } })
+  assert.deepEqual(equipped.player.equipment, ['gold_charm'])
+  assert.throws(() => parseSave({ ...save, player: { ...save.player, equipment: ['paper_seal_white'] } }))
 })
 
 test('Electron save store reloads a save and preserves old data on invalid writes', async () => {

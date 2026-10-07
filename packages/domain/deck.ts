@@ -28,3 +28,11 @@ export function validateDeck(
   }
   return { valid: true }
 }
+
+export function hasValidNineCardDeck(inventory: readonly Card[], deck: readonly Card[]): boolean {
+  return validateDeck(inventory, deck, 9).valid
+}
+
+export function hasNineCardDeckWithLossReserve(inventory: readonly Card[], deck: readonly Card[]): boolean {
+  return inventory.length >= 12 && hasValidNineCardDeck(inventory, deck)
+}

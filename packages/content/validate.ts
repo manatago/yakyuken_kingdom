@@ -1,4 +1,4 @@
-import { HANDS } from '../domain/card'
+import { GRADES, HANDS } from '../domain/card'
 import { getCardDefinition } from '../domain/card-catalog'
 import { getItemDefinition } from '../domain/item-catalog'
 
@@ -30,6 +30,8 @@ function isAssetPath(path: string): boolean {
 export function validateContent(value: unknown, assetExists: (path: string) => boolean): ContentValidation {
   const issues: ContentIssue[] = []
   const allIds = new Map<string, string>()
+  const stepKinds = new Map<string, unknown>()
+  const lossCheckpoints: { path: string; id: string }[] = []
   const known: Record<ReferenceKind, Set<string>> = {
     asset: new Set(), layout: new Set(), battle: new Set(), step: new Set()
   }
@@ -145,7 +147,7 @@ export function validateContent(value: unknown, assetExists: (path: string) => b
     const battle = object(entry, path, [
       'id', 'opponent_id', 'background_asset_id', 'player_deck_size', 'opponent_deck_size',
       'opponent_card_ids', 'gold_reward', 'transfer_cards', 'phases'
-    ], ['hp', 'opponent_tendency', 'bayes_eye', 'result_route', 'round_limit', 'item_reward_ids'])
+    ], ['hp', 'opponent_tendency', 'bayes_eye', 'result_route', 'lose_checkpoint_id', 'round_limit', 'item_reward_ids', 'card_reward'])
     if (battle === null) return
     register(battle.id, `${path}.id`, 'battle')
     identifier(battle.opponent_id, `${path}.opponent_id`)
@@ -181,6 +183,17 @@ export function validateContent(value: unknown, assetExists: (path: string) => b
         }
       })
     }
+    if (Object.hasOwn(battle, 'card_reward')) {
+      const card = object(battle.card_reward, `${path}.card_reward`, ['hand', 'grade'])
+      if (card) {
+        if (!HANDS.includes(card.hand as (typeof HANDS)[number])) {
+          issue(`${path}.card_reward.hand`, 'invalid_value', 'Unknown card hand')
+        }
+        if (!GRADES.includes(card.grade as (typeof GRADES)[number])) {
+          issue(`${path}.card_reward.grade`, 'invalid_value', 'Unknown card grade')
+        }
+      }
+    }
     const reward = object(battle.gold_reward, `${path}.gold_reward`, ['min', 'max'])
     if (reward !== null) {
       const min = nonnegativeInteger(reward.min, `${path}.gold_reward.min`)
@@ -193,7 +206,7 @@ export function validateContent(value: unknown, assetExists: (path: string) => b
       issue(`${path}.transfer_cards`, 'invalid_value', 'Expected a boolean')
     }
     if (Object.hasOwn(battle, 'hp')) {
-      const hp = object(battle.hp, `${path}.hp`, ['player', 'opponent', 'grade_effect_passes', 'lose_gold'], ['first_hand'])
+      const hp = object(battle.hp, `${path}.hp`, ['player', 'opponent', 'grade_effect_passes', 'lose_gold'], ['first_hand', 'forced_outcome'])
       if (hp) {
         nonnegativeInteger(hp.player, `${path}.hp.player`, true)
         nonnegativeInteger(hp.opponent, `${path}.hp.opponent`, true)
@@ -202,6 +215,9 @@ export function validateContent(value: unknown, assetExists: (path: string) => b
         if (passes !== null && passes > 2) issue(`${path}.hp.grade_effect_passes`, 'invalid_value', 'At most two passes supported')
         if (Object.hasOwn(hp, 'first_hand') && !HANDS.includes(hp.first_hand as (typeof HANDS)[number])) {
           issue(`${path}.hp.first_hand`, 'invalid_value', 'Invalid first hand')
+        }
+        if (Object.hasOwn(hp, 'forced_outcome') && !['win', 'lose', 'draw'].includes(hp.forced_outcome as string)) {
+          issue(`${path}.hp.forced_outcome`, 'invalid_value', 'Invalid forced outcome')
         }
       }
     }
@@ -216,6 +232,12 @@ export function validateContent(value: unknown, assetExists: (path: string) => b
     }
     if (Object.hasOwn(battle, 'bayes_eye') && typeof battle.bayes_eye !== 'boolean') issue(`${path}.bayes_eye`, 'invalid_value', 'Expected a boolean')
     if (Object.hasOwn(battle, 'result_route') && battle.result_route !== 'guild_home') issue(`${path}.result_route`, 'invalid_value', 'Unknown result route')
+    if (Object.hasOwn(battle, 'lose_checkpoint_id')) {
+      reference(battle.lose_checkpoint_id, `${path}.lose_checkpoint_id`, 'step')
+      if (typeof battle.lose_checkpoint_id === 'string') {
+        lossCheckpoints.push({ path: `${path}.lose_checkpoint_id`, id: battle.lose_checkpoint_id })
+      }
+    }
     const phases = array(battle.phases, `${path}.phases`)
     if (phases.length === 0) issue(`${path}.phases`, 'invalid_value', 'Battle must contain a phase')
     phases.forEach((entry, phaseIndex) => {
@@ -264,6 +286,7 @@ export function validateContent(value: unknown, assetExists: (path: string) => b
       ])
       if (step === null) return
       register(step.id, `${stepPath}.id`, 'step')
+      if (typeof step.id === 'string') stepKinds.set(step.id, step.kind)
       const next = () => reference(step.next_id, `${stepPath}.next_id`, 'step')
       switch (step.kind) {
         case 'line':
@@ -327,6 +350,11 @@ export function validateContent(value: unknown, assetExists: (path: string) => b
 
   for (const { path, id, kind } of references) {
     if (!known[kind].has(id)) issue(path, 'missing_reference', `Unknown ${kind} ID: ${id}`)
+  }
+  for (const { path, id } of lossCheckpoints) {
+    if (known.step.has(id) && !['line', 'end'].includes(stepKinds.get(id) as string)) {
+      issue(path, 'invalid_value', 'A loss checkpoint must start at a story line or end step')
+    }
   }
   return issues.length === 0 ? { valid: true, issues: [] } : { valid: false, issues }
 }

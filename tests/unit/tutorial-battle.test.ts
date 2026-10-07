@@ -76,3 +76,14 @@ test('save validation rejects forged battle ledgers, reuse and inconsistent chec
   corrupt((s) => { s.progress.tutorial.extra = true })
   assert.deepEqual(parseSave(createInitialGameSave()), createInitialGameSave())
 })
+
+test('completed tutorial replay remains valid after real card losses change the active deck', () => {
+  const first = acknowledgeTutorial(playTutorialRound(prepared(), 6, 0))
+  const completed = acknowledgeTutorial(playTutorialRound(first, 0, 0))
+  const inventory = completed.player.inventory.filter((_, index) => index >= 3)
+  const activeDeck = completed.player.deck.slice(3)
+  const afterLoss = { ...completed, player: { ...completed.player, inventory, deck: activeDeck } }
+  assert.doesNotThrow(() => parseSave(JSON.parse(JSON.stringify(afterLoss))))
+  assert.deepEqual(parseSave(afterLoss).progress.tutorial?.player_deck, completed.progress.tutorial?.player_deck)
+  assert.equal(tutorialView(afterLoss).opponentHp, tutorialView(completed).opponentHp)
+})

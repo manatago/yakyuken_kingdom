@@ -1,0 +1,33 @@
+{
+  "assets": [
+    { "id": "background.prologue.university", "path": "godot/assets/backgrounds/prologue/bg01_university.png" },
+    { "id": "background.prologue.lab", "path": "godot/assets/backgrounds/prologue/bg03-1_lab.png" },
+    { "id": "background.prologue.capital", "path": "godot/assets/backgrounds/stage1/bg06_st1_001.png" },
+    { "id": "portrait.prologue.satoshi", "path": "godot/assets/characters/main/satoshi/modern/satoshi_modern_001.png" },
+    { "id": "portrait.prologue.minori", "path": "godot/assets/characters/main/minori/modern/minori_modern_001.png" }
+  ],
+  "layouts": [
+    { "id": "layout.prologue.hero", "x": 500, "y": 455, "scale": 0.62, "flipped": true },
+    { "id": "layout.prologue.friend", "x": 1420, "y": 455, "scale": 0.62, "flipped": false }
+  ],
+  "battles": [],
+  "stories": [{
+    "id": "story.prologue",
+    "start_id": "prologue.university.background",
+    "steps": [
+      { "id": "prologue.university.background", "kind": "background", "asset_id": "background.prologue.university", "next_id": "prologue.hero" },
+      { "id": "prologue.hero", "kind": "show_portrait", "slot_id": "hero", "asset_id": "portrait.prologue.satoshi", "layout_id": "layout.prologue.hero", "next_id": "prologue.intro" },
+      { "id": "prologue.intro", "kind": "line", "speaker_id": "ナレーション", "text": "大学の研究棟。数学を専攻するサトシは、対戦データから相手の手を読む確率モデルを研究していた。", "next_id": "prologue.friend" },
+      { "id": "prologue.friend", "kind": "show_portrait", "slot_id": "friend", "asset_id": "portrait.prologue.minori", "layout_id": "layout.prologue.friend", "next_id": "prologue.minori.line" },
+      { "id": "prologue.minori.line", "kind": "line", "speaker_id": "みのり", "text": "また実験室？ 数式を作るだけじゃなく、実際の記録で確かめないと説得力がないよ。", "next_id": "prologue.hero.reply" },
+      { "id": "prologue.hero.reply", "kind": "line", "speaker_id": "サトシ", "text": "わかってる。大型演算装置でモデルを試せば、予測の精度を検証できるはずだ。", "next_id": "prologue.lab.background" },
+      { "id": "prologue.lab.background", "kind": "background", "asset_id": "background.prologue.lab", "next_id": "prologue.lab.accident" },
+      { "id": "prologue.lab.accident", "kind": "line", "speaker_id": "ナレーション", "text": "試験運転の最中、装置に予想外の反応が起きた。光が視界を覆い、サトシの意識は遠のいていく。", "next_id": "prologue.capital.background" },
+      { "id": "prologue.capital.background", "kind": "background", "asset_id": "background.prologue.capital", "next_id": "prologue.capital.arrival" },
+      { "id": "prologue.capital.arrival", "kind": "line", "speaker_id": "ナレーション", "text": "目を開けると、そこは見知らぬ王都だった。石畳と城壁を前に、サトシは自分が別の世界へ来たことを知る。", "next_id": "prologue.guard" },
+      { "id": "prologue.guard", "kind": "line", "speaker_id": "番兵", "text": "身元が確認できるまで、いったん保護室で話を聞く。落ち着いて事情を説明してくれ。", "next_id": "prologue.detained" },
+      { "id": "prologue.detained", "kind": "line", "speaker_id": "ナレーション", "text": "こうしてサトシは王都の施設で保護され、監視役のマチルダが事情を聞きに来ることになった。", "next_id": "prologue.end" },
+      { "id": "prologue.end", "kind": "end" }
+    ]
+  }]
+}

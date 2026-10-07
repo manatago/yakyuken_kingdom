@@ -28,10 +28,15 @@ test('editor JSON save survives an isolated game rebuild and restart', { timeout
     const target = join(project, 'content/stories/matilda-tutorial.json')
     const original = await readFile(target, 'utf8')
     const source = JSON.parse(original)
+    const renderer = await readFile(join(root, 'electron/renderer/src/matilda-content.ts'), 'utf8')
+    const mappedAssets = [...renderer.matchAll(/from ['"]\.\.\/\.\.\/\.\.\/(godot\/assets\/[^'"]+)\?url['"]/g)]
+      .map((match) => match[1])
     const guildHome = JSON.parse(await readFile(join(project, 'content/screens/guild-home.json'), 'utf8'))
     const belka = JSON.parse(await readFile(join(project, 'content/stories/belka-verification.json'), 'utf8'))
-    const paths = [...source.assets.map((asset) => asset.path), guildHome.background,
+    const town = JSON.parse(await readFile(join(project, 'content/town/stage1.json'), 'utf8'))
+    const paths = [...mappedAssets, ...source.assets.map((asset) => asset.path), guildHome.background,
       ...belka.assets.map((asset) => asset.path),
+      ...Object.values(town.areas).map((area) => area.background),
       ...['rock', 'scissors', 'paper'].flatMap((hand) => ['normal', 'bronze', 'silver', 'gold', 'platinum']
         .map((grade) => `godot/assets/battle/cards/${hand}_${grade}.png`))]
     for (const path of paths) {
@@ -65,6 +70,21 @@ test('editor JSON save survives an isolated game rebuild and restart', { timeout
         `--user-data-dir=${join(project, 'game-user')}`] })
       page = await app.firstWindow()
       await page.getByRole('button', { name: attempt ? 'つづきから' : 'はじめから', exact: true }).click()
+      if (!attempt) {
+        for (let step = 0; step < 20; step++) {
+          const checkpoint = await page.getByTestId('checkpoint-id').textContent()
+          if (checkpoint === 'prologue.end') {
+            await page.getByRole('button', { name: 'チュートリアルへ進む', exact: true }).click()
+            await page.waitForFunction(() => document.querySelector('[data-testid="checkpoint-id"]')?.textContent === 'matilda.start')
+            break
+          }
+          const next = page.getByRole('button', { name: '次へ', exact: true })
+          await next.waitFor()
+          await next.click()
+          await page.waitForFunction((previous) => document.querySelector('[data-testid="checkpoint-id"]')?.textContent !== previous,
+            checkpoint)
+        }
+      }
       const box = page.getByTestId('card-box')
       await box.waitFor()
       assert.equal(await box.evaluate((element) => element.style.left), '1510px')

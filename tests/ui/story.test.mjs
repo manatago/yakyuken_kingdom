@@ -20,6 +20,20 @@ async function advanceDialogue(page) {
   }, checkpoint)
 }
 
+async function continueThroughPrologue(page) {
+  for (let count = 0; count < 20; count++) {
+    const checkpoint = await page.getByTestId('checkpoint-id').textContent()
+    if (checkpoint === 'prologue.end') {
+      await page.getByRole('button', { name: 'チュートリアルへ進む', exact: true }).click()
+      await page.getByTestId('story-text').getByText(/周りの風景/).waitFor()
+      return
+    }
+    assert.ok(checkpoint?.startsWith('prologue.'), `Unexpected opening checkpoint ${checkpoint}`)
+    await advanceDialogue(page)
+  }
+  assert.fail('Prologue did not reach Matilda tutorial')
+}
+
 async function assertFittedViewport(page, size) {
   await page.waitForFunction(({ width, height }) => window.innerWidth === width && window.innerHeight === height, size)
   await page.waitForFunction(() => {
@@ -40,6 +54,7 @@ test('Matilda scene displays real images, grades, scales and resumes its dialogu
     app = await electron.launch({ executablePath, args })
     let page = await app.firstWindow()
     await page.getByRole('button', { name: 'はじめから' }).click()
+    await continueThroughPrologue(page)
     await page.getByTestId('story-text').getByText(/周りの風景/).waitFor()
     await page.waitForFunction(() => [...document.querySelectorAll('.story-stage img')].length >= 2 &&
       [...document.querySelectorAll('.story-stage img')].every((img) => img.complete && img.naturalWidth > 0))
@@ -91,7 +106,7 @@ test('Matilda scene displays real images, grades, scales and resumes its dialogu
     }
     await page.getByRole('button', { name: '準備完了', exact: true }).waitFor()
     const save = JSON.parse(await readFile(join(userData, 'janken-save.json'), 'utf8'))
-    assert.deepEqual(save.progress.flags, [])
+    assert.deepEqual(save.progress.flags, ['prologue.completed'])
     assert.equal(save.player.inventory.length, 9)
   } finally {
     if (app) await app.close()
@@ -106,6 +121,7 @@ test('failed dialogue save keeps the displayed checkpoint unchanged', async () =
     app = await electron.launch({ executablePath, args: [join(root, 'dist/game/main/index.js'), `--user-data-dir=${userData}`] })
     const page = await app.firstWindow()
     await page.getByRole('button', { name: 'はじめから' }).click()
+    await continueThroughPrologue(page)
     await page.getByTestId('story-text').waitFor()
     const previous = await page.getByTestId('story-text').textContent()
     const target = join(userData, 'janken-save.json')

@@ -1,4 +1,5 @@
-import type { Hand } from '../domain/card'
+import type { Card, Hand } from '../domain/card'
+import type { ItemId } from '../domain/item-catalog'
 
 export interface AssetContent {
   id: string
@@ -30,7 +31,8 @@ export interface BattleContent {
   opponent_deck_size: number
   round_limit?: number
   opponent_card_ids: string[]
-  item_reward_ids?: string[]
+  item_reward_ids?: ItemId[]
+  card_reward?: Card
   gold_reward: { min: number; max: number }
   transfer_cards: boolean
   phases: BattlePhase[]
@@ -40,10 +42,12 @@ export interface BattleContent {
     first_hand?: Hand
     grade_effect_passes: number
     lose_gold: number
+    forced_outcome?: 'win' | 'lose' | 'draw'
   }
   opponent_tendency?: Partial<Record<Hand, number>>
   bayes_eye?: boolean
   result_route?: 'guild_home'
+  lose_checkpoint_id?: string
 }
 
 export type StoryStep =

@@ -1,0 +1,96 @@
+{
+  "assets": [
+    { "id": "background.subevent3.guild", "path": "godot/assets/backgrounds/stage1/bg07_st1_001.png" },
+    { "id": "background.subevent3.blacksmith", "path": "godot/assets/backgrounds/subevent3/bg_blacksmith.png" },
+    { "id": "background.subevent3.noble-room", "path": "godot/assets/backgrounds/subevent3/bg_noble_room.png" },
+    { "id": "portrait.subevent3.fiona", "path": "godot/assets/characters/main/fiona/clothed/fiona_clothed_001.png" }
+  ],
+  "layouts": [
+    { "id": "layout.subevent3.fiona", "x": 1430, "y": 465, "scale": 0.62, "flipped": false },
+    { "id": "layout.subevent3.cards.box", "x": 1554, "y": 190, "scale": 1, "flipped": false },
+    { "id": "layout.subevent3.cards.deck", "x": 350, "y": 884, "scale": 1, "flipped": false },
+    { "id": "layout.subevent3.cards.showdown", "x": 350, "y": 170, "scale": 1, "flipped": false }
+  ],
+  "battles": [
+    {
+      "id": "battle.subevent3.fiona",
+      "opponent_id": "fiona",
+      "background_asset_id": "background.subevent3.noble-room",
+      "player_deck_size": 9,
+      "opponent_deck_size": 9,
+      "opponent_card_ids": ["rock_silver", "rock_silver", "rock_silver", "scissors_silver", "scissors_silver", "scissors_silver", "paper_silver", "paper_silver", "paper_gold"],
+      "item_reward_ids": ["crystal_fragment", "paper_attract_crimson"],
+      "gold_reward": { "min": 100, "max": 150 },
+      "transfer_cards": true,
+      "hp": { "player": 3, "opponent": 3, "grade_effect_passes": 1, "lose_gold": 0 },
+      "opponent_tendency": { "paper": 0.35 },
+      "bayes_eye": true,
+      "result_route": "guild_home",
+      "lose_checkpoint_id": "subevent3.battle.loss.end",
+      "phases": [{ "id": "phase.subevent3.fiona", "rules": [] }]
+    }
+  ],
+  "stories": [
+    {
+      "id": "story.subevent3.pre",
+      "start_id": "subevent3.pre.background",
+      "steps": [
+        { "id": "subevent3.pre.background", "kind": "background", "asset_id": "background.subevent3.guild", "next_id": "subevent3.pre.request" },
+        { "id": "subevent3.pre.request", "kind": "line", "speaker_id": "執事セバス", "text": "エドモンド家のフィオナが、古い呪いの鎧に閉じ込められています。解呪の手掛かりを探してください。", "next_id": "subevent3.pre.receptionist" },
+        { "id": "subevent3.pre.receptionist", "kind": "line", "speaker_id": "受付嬢", "text": "報酬は金貨100枚です。まずは鍛冶師ゴルンに、鎧の由来を尋ねてみましょう。", "next_id": "subevent3.pre.hero" },
+        { "id": "subevent3.pre.hero", "kind": "line", "speaker_id": "サトシ", "text": "分かりました。本人の気持ちを確かめながら、無理のない方法を探します。", "next_id": "subevent3.pre.end" },
+        { "id": "subevent3.pre.end", "kind": "end" }
+      ]
+    },
+    {
+      "id": "story.subevent3.blacksmith",
+      "start_id": "subevent3.blacksmith.background",
+      "steps": [
+        { "id": "subevent3.blacksmith.background", "kind": "background", "asset_id": "background.subevent3.blacksmith", "next_id": "subevent3.blacksmith.goren" },
+        { "id": "subevent3.blacksmith.goren", "kind": "line", "speaker_id": "ゴルン", "text": "ヴァニティ・チェインは、身に着けた者の恐れを糧に守りを固める呪具じゃ。", "next_id": "subevent3.blacksmith.crystal" },
+        { "id": "subevent3.blacksmith.crystal", "kind": "line", "speaker_id": "ゴルン", "text": "この真言の水晶なら、鎧の刻印が反応する言葉を映せる。使うなら、本人の同意を忘れるでないぞ。", "next_id": "subevent3.blacksmith.hero" },
+        { "id": "subevent3.blacksmith.hero", "kind": "line", "speaker_id": "サトシ", "text": "はい。彼女の意思を確かめて、二人きりの部屋で使います。", "next_id": "subevent3.blacksmith.end" },
+        { "id": "subevent3.blacksmith.end", "kind": "end" }
+      ]
+    },
+    {
+      "id": "story.subevent3.visit",
+      "start_id": "subevent3.visit.background",
+      "steps": [
+        { "id": "subevent3.visit.background", "kind": "background", "asset_id": "background.subevent3.noble-room", "next_id": "subevent3.visit.fiona" },
+        { "id": "subevent3.visit.fiona", "kind": "show_portrait", "slot_id": "fiona", "asset_id": "portrait.subevent3.fiona", "layout_id": "layout.subevent3.fiona", "next_id": "subevent3.visit.explanation" },
+        { "id": "subevent3.visit.explanation", "kind": "line", "speaker_id": "サトシ", "text": "水晶で呪いの仕組みを探りたいんです。続けてよいか、あなたが決めてください。", "next_id": "subevent3.visit.agreement" },
+        { "id": "subevent3.visit.agreement", "kind": "line", "speaker_id": "フィオナ", "text": "……お願いします。自分の意思で、この鎧を外したいです。", "next_id": "subevent3.visit.pisuke" },
+        { "id": "subevent3.visit.pisuke", "kind": "line", "speaker_id": "ピー助", "text": "水晶に映る反応を見て、鎧の加護を弱めよう。選択肢によってゲージが上下する。", "next_id": "subevent3.visit.minigame" },
+        { "id": "subevent3.visit.minigame", "kind": "end" }
+      ]
+    },
+    {
+      "id": "story.subevent3.battle",
+      "start_id": "subevent3.battle.start",
+      "steps": [
+        { "id": "subevent3.battle.start", "kind": "battle", "battle_id": "battle.subevent3.fiona", "next_id": "subevent3.post.background" }
+      ]
+    },
+    {
+      "id": "story.subevent3.post",
+      "start_id": "subevent3.post.background",
+      "steps": [
+        { "id": "subevent3.post.background", "kind": "background", "asset_id": "background.subevent3.guild", "next_id": "subevent3.post.thanks" },
+        { "id": "subevent3.post.thanks", "kind": "line", "speaker_id": "フィオナ", "text": "助けてくださって、ありがとうございます。これからは自分で進む道を決めます。", "next_id": "subevent3.post.reward" },
+        { "id": "subevent3.post.reward", "kind": "line", "speaker_id": "受付嬢", "text": "エドモンド家から金貨100枚と、呪具を砕いた水晶の破片が届いております。", "next_id": "subevent3.post.end" },
+        { "id": "subevent3.post.end", "kind": "end" }
+      ]
+    },
+    {
+      "id": "story.subevent3.minigame-loss",
+      "start_id": "subevent3.minigame.loss.end",
+      "steps": [{ "id": "subevent3.minigame.loss.end", "kind": "end" }]
+    },
+    {
+      "id": "story.subevent3.battle-loss",
+      "start_id": "subevent3.battle.loss.end",
+      "steps": [{ "id": "subevent3.battle.loss.end", "kind": "end" }]
+    }
+  ]
+}

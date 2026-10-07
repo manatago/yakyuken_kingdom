@@ -7,7 +7,8 @@ export function assertMatildaSave(save, initial, { checkpoint, deckSize, rounds,
   assert.equal(save.player.money, initial.player.money)
   assert.equal(save.player.deck.length, deckSize)
   assert.equal(save.progress.checkpoint_id, checkpoint)
-  assert.deepEqual(save.progress.flags, acknowledged === 2 ? ['matilda.tutorial.completed'] : [])
+  assert.deepEqual(save.progress.flags, [...initial.progress.flags,
+    ...(acknowledged === 2 ? ['matilda.tutorial.completed'] : [])])
   if (deckSize === 9) {
     const cards = (deck) => deck.map(({ hand, grade }) => `${hand}:${grade}`).sort()
     assert.deepEqual(cards(save.player.deck), cards(initial.player.inventory))

@@ -3,7 +3,10 @@ import type { SaveData } from '../domain/save'
 
 export const guildHomeContent = content
 export const GUILD_CHECKPOINT = content.checkpoint_id
-const origins = ['matilda.end', 'matilda.normal.end']
+const origins = ['matilda.end', 'matilda.normal.end', 'stage2.close.end', 'stage2.battle2.loss.end',
+  'subevent2.loss.end', 'subevent2.post.end', 'subevent3.minigame.loss.end', 'subevent3.battle.loss.end', 'subevent3.post.end',
+  'subevent4.post.end', 'stage3.rematch.loss.end', 'stage3.post.end', 'stage4.rematch.loss.end', 'stage4.post.end',
+  'stage5.rematch.loss.end', 'stage5.post.end', 'stage6.rematch.loss.end', 'stage6.post.end', 'stage7.throne.end', 'stage7.epilogue.end']
 
 // Validate navigation metadata before interpreting the historical battle records.
 export function guildValidationSave(save: SaveData): SaveData {

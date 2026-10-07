@@ -15,7 +15,7 @@ for (const outcome of ['win', 'lose']) {
     const data = await mkdtemp(join(tmpdir(), 'janken-fixed-'))
     const target = join(data, 'janken-save.json')
     const cards = ['rock', 'scissors', 'paper'].flatMap((hand) => Array.from({ length: 3 }, () => ({ hand, grade: 1 })))
-    const original = { save_version: 1, player: { inventory: cards, deck: cards, prepared_deck: [...cards].reverse(), money: 20 },
+    const original = { save_version: 1, player: { inventory: cards, deck: cards, prepared_deck: [...cards].reverse(), money: 20, items: ['rock_attract_white'] },
       progress: { checkpoint_id: 'matilda.end', flags: ['matilda.tutorial.completed'],
         tutorial: { battle_id: 'battle.matilda.practice', rounds: [{ player_index: 6, opponent_index: 0 }, { player_index: 0, opponent_index: 3 }], acknowledged: 2 } } }
     let app, page
@@ -54,7 +54,7 @@ for (const outcome of ['win', 'lose']) {
       await page.getByRole('button', { name: '通常戦を試す', exact: true }).click()
       await page.getByTestId('story-text').waitFor()
       await page.getByRole('button', { name: '次へ', exact: true }).click()
-      await page.getByRole('button', { name: '通常戦を開始', exact: true }).click()
+      await page.getByRole('button', { name: 'マチルダ通常戦を開始', exact: true }).click()
       await page.getByRole('button', { name: '勝負！', exact: true }).waitFor()
       assert.deepEqual((await read()).progress.fixed_battle.player_deck, original.player.prepared_deck)
       assert.deepEqual(await page.getByTestId('fixed-deck').getByRole('button').first().getAttribute('aria-label'), '選択 パー N')
@@ -63,6 +63,7 @@ for (const outcome of ['win', 'lose']) {
         const hand = outcome === 'win' ? 'パー' : 'チョキ'
         const buttons = page.getByRole('button', { name: `選択 ${hand} N`, exact: true })
         await buttons.nth(round).click()
+        if (round === 0) await page.getByLabel('この勝負で使うアイテム').selectOption('rock_attract_white')
         if (round === 0) {
           const before = await readFile(target, 'utf8')
           await failNextSave()
@@ -78,6 +79,9 @@ for (const outcome of ['win', 'lose']) {
         assert.deepEqual(saved.player.deck, original.player.deck)
         assert.deepEqual(saved.progress.tutorial, original.progress.tutorial)
         assert.deepEqual(saved.player.inventory, original.player.inventory)
+        assert.deepEqual(saved.progress.fixed_battle.round_item_ids,
+          Array.from({ length: round + 1 }, (_, index) => index === 0 ? 'rock_attract_white' : null))
+        assert.deepEqual(saved.player.items, original.player.items)
         await restart()
         await page.getByTestId('fixed-result').waitFor()
         if (round < 2) await page.getByRole('button', { name: '次の勝負へ', exact: true }).click()
@@ -92,23 +96,35 @@ for (const outcome of ['win', 'lose']) {
       }
       await page.getByRole('button', { name: '結果を確定', exact: true }).click()
       await page.getByTestId('fixed-settled').waitFor()
-      assert.equal((await read()).player.money, outcome === 'win' ? 30 : 10)
+      assert.equal((await read()).player.money, outcome === 'win' ? 30 : 20)
+      assert.deepEqual((await read()).player.items, [])
       await capture(`${outcome}-settled`)
       await restart()
       await page.getByTestId('fixed-settled').waitFor()
-      assert.equal((await read()).player.money, outcome === 'win' ? 30 : 10)
+      assert.equal((await read()).player.money, outcome === 'win' ? 30 : 20)
       assert.equal(await page.getByRole('button', { name: '結果を確定', exact: true }).count(), 0)
       if (outcome === 'lose') {
+        await page.getByRole('button', { name: '会話に戻る', exact: true }).click()
+        await page.waitForFunction(() => document.querySelector('[data-testid="checkpoint-id"]')?.textContent === 'matilda.normal.loss.intro')
+        assert.equal((await read()).player.money, 20)
+        await page.getByRole('button', { name: 'ホームに戻る', exact: true }).click()
+        await page.getByRole('button', { name: 'つづきから', exact: true }).click()
+        await page.waitForFunction(() => document.querySelector('[data-testid="checkpoint-id"]')?.textContent === 'matilda.normal.loss.intro')
+        await restart()
+        for (const checkpoint of ['matilda.normal.loss.intro', 'matilda.normal.loss.offer', 'matilda.normal.loss.response']) {
+          await page.waitForFunction((id) => document.querySelector('[data-testid="checkpoint-id"]')?.textContent === id, checkpoint)
+          await page.getByRole('button', { name: '次へ', exact: true }).click()
+        }
+        await page.waitForFunction(() => document.querySelector('[data-testid="checkpoint-id"]')?.textContent === 'matilda.normal.loss.end')
         const before = await readFile(target, 'utf8')
         await failNextSave()
-        await page.getByRole('button', { name: '再挑戦', exact: true }).click()
+        await page.getByRole('button', { name: 'デッキを確認して再挑戦する', exact: true }).click()
         await page.getByRole('alert').waitFor()
         assert.equal(await readFile(target, 'utf8'), before)
-        assert.equal(await page.getByRole('button', { name: '会話に戻る', exact: true }).isDisabled(), true)
-        await page.getByRole('button', { name: '再挑戦', exact: true }).click()
+        await page.getByRole('button', { name: 'デッキを確認して再挑戦する', exact: true }).click()
         await page.getByRole('button', { name: '勝負！', exact: true }).waitFor()
         const retried = await read()
-        assert.equal(retried.player.money, 10)
+        assert.equal(retried.player.money, 20)
         assert.deepEqual(retried.progress.fixed_battle.rounds, [])
         assert.deepEqual(retried.progress.tutorial, original.progress.tutorial)
         await restart()
@@ -118,7 +134,7 @@ for (const outcome of ['win', 'lose']) {
         await page.getByTestId('story-text').waitFor()
         assert.equal((await read()).progress.checkpoint_id, 'matilda.normal.complete')
         await page.getByRole('button', { name: '次へ', exact: true }).click()
-        await page.getByRole('heading', { name: '通常戦の確認完了', exact: true }).waitFor()
+        await page.getByRole('heading', { name: '通常戦終了', exact: true }).waitFor()
         await restart()
         assert.equal((await read()).player.money, 30)
       }

@@ -14,7 +14,7 @@ test('guild verification Belka battle saves each round, settles once and returns
   const data = await mkdtemp(join(tmpdir(), 'janken-belka-'))
   const target = join(data, 'janken-save.json')
   const cards = ['rock', 'scissors', 'paper'].flatMap((hand) => Array.from({ length: 3 }, () => ({ hand, grade: 1 })))
-  const original = { save_version: 1, player: { inventory: cards, deck: cards, money: 30 },
+  const original = { save_version: 1, player: { inventory: cards, deck: cards, money: 30, items: ['rock_attract_white'] },
     progress: { checkpoint_id: 'guild.home', guild_return_checkpoint: 'matilda.normal.end',
       flags: ['matilda.tutorial.completed', 'matilda.normal.started'],
       tutorial: { battle_id: 'battle.matilda.practice', rounds: [{ player_index: 6, opponent_index: 0 }, { player_index: 0, opponent_index: 3 }], acknowledged: 2 },
@@ -39,6 +39,7 @@ test('guild verification Belka battle saves each round, settles once and returns
     await writeFile(target, JSON.stringify(original))
     await open()
     await page.getByRole('heading', { name: 'ギルドホーム', exact: true }).waitFor()
+    await page.getByTestId('belka-verification-disclosure').locator('summary').click()
     await failNextSave()
     await page.getByRole('button', { name: 'ベルカ戦を確認', exact: true }).click()
     await page.getByRole('alert').waitFor()
@@ -66,6 +67,7 @@ test('guild verification Belka battle saves each round, settles once and returns
     await page.screenshot({ path: join(root, 'test-results/belka/battle.png') })
     for (let round = 0; round < 3; round++) {
       await page.getByRole('button', { name: '選択 パー N', exact: true }).nth(round).click()
+      if (round === 0) await page.getByLabel('この勝負で使うアイテム').selectOption('rock_attract_white')
       if (round === 0) await failNextSave()
       await page.getByRole('button', { name: '勝負！', exact: true }).click()
       if (round === 0) {
@@ -76,6 +78,7 @@ test('guild verification Belka battle saves each round, settles once and returns
       }
       await page.getByTestId('belka-result').waitFor()
       assert.equal((await read()).progress.belka_battle.rounds.length, round + 1)
+      assert.equal((await read()).progress.belka_battle.round_item_ids.length, round + 1)
       if (round === 0) assert.equal((await read()).progress.belka_battle.rounds[0].opponent_index, 0)
       if (round === 0) {
         await app.close(); app = undefined
@@ -96,6 +99,7 @@ test('guild verification Belka battle saves each round, settles once and returns
     const settled = await read()
     assert.equal(settled.progress.belka_battle.settled, true)
     assert.equal(settled.player.money, 70)
+    assert.deepEqual(settled.player.items, [])
     assert.deepEqual(settled.progress.fixed_battle, original.progress.fixed_battle)
     assert.deepEqual(settled.progress.tutorial, original.progress.tutorial)
     assert.deepEqual(settled.player.deck, original.player.deck)
@@ -107,6 +111,7 @@ test('guild verification Belka battle saves each round, settles once and returns
     await page.getByRole('button', { name: 'つづきから', exact: true }).click()
     await page.getByRole('heading', { name: 'ギルドホーム', exact: true }).waitFor()
     assert.equal((await read()).progress.belka_battle.settled, true)
+    assert.match(await page.getByTestId('belka-verification-settled').innerText(), /物語本編のベルカ戦はサブイベント1から開始できます/)
     await session.detach().catch(() => {})
   } finally {
     try { if (app) await app.close() }

@@ -1,0 +1,77 @@
+{
+  "assets": [
+    { "id": "background.subevent2.exterior", "path": "godot/assets/backgrounds/subevent2/bg01_church_exterior.png" },
+    { "id": "background.subevent2.interior", "path": "godot/assets/backgrounds/subevent2/bg02_church_interior.png" },
+    { "id": "background.subevent2.backyard", "path": "godot/assets/backgrounds/subevent2/bg03_church_backyard.png" },
+    { "id": "background.subevent2.corridor", "path": "godot/assets/backgrounds/subevent2/bg04_church_corridor.png" },
+    { "id": "background.subevent2.peep-room", "path": "godot/assets/backgrounds/subevent2/bg05_church_peep_room.png" },
+    { "id": "portrait.subevent2.sister-head", "path": "godot/assets/characters/main/sister_head/clothed/sister_head_clothed_001.png" }
+  ],
+  "layouts": [
+    { "id": "layout.subevent2.sister-head", "x": 1430, "y": 465, "scale": 0.62, "flipped": false },
+    { "id": "layout.subevent2.cards.box", "x": 1554, "y": 190, "scale": 1, "flipped": false },
+    { "id": "layout.subevent2.cards.deck", "x": 350, "y": 884, "scale": 1, "flipped": false },
+    { "id": "layout.subevent2.cards.showdown", "x": 350, "y": 170, "scale": 1, "flipped": false }
+  ],
+  "battles": [
+    {
+      "id": "battle.subevent2.sister-head",
+      "opponent_id": "sister_head",
+      "background_asset_id": "background.subevent2.peep-room",
+      "player_deck_size": 9,
+      "opponent_deck_size": 9,
+      "opponent_card_ids": ["rock_normal", "rock_bronze", "rock_bronze", "scissors_normal", "scissors_bronze", "scissors_bronze", "paper_normal", "paper_normal", "paper_bronze"],
+      "item_reward_ids": ["gold_charm", "scissors_attract_crimson"],
+      "gold_reward": { "min": 50, "max": 80 },
+      "transfer_cards": true,
+      "hp": { "player": 3, "opponent": 3, "grade_effect_passes": 1, "lose_gold": 10 },
+      "opponent_tendency": { "paper": 0.3 },
+      "bayes_eye": true,
+      "result_route": "guild_home",
+      "lose_checkpoint_id": "subevent2.loss.end",
+      "phases": [{ "id": "phase.subevent2.sister-head", "rules": [] }]
+    }
+  ],
+  "stories": [
+    {
+      "id": "story.subevent2.pre",
+      "start_id": "subevent2.pre.background",
+      "steps": [
+        { "id": "subevent2.pre.background", "kind": "background", "asset_id": "background.subevent2.exterior", "next_id": "subevent2.pre.receptionist" },
+        { "id": "subevent2.pre.receptionist", "kind": "line", "speaker_id": "受付嬢", "text": "聖アレクシア教会の更衣室に覗き穴があるという相談が届きました。現地で事実を確かめてください。", "next_id": "subevent2.pre.hero" },
+        { "id": "subevent2.pre.hero", "kind": "line", "speaker_id": "サトシ", "text": "俺が調査を？ 分かりました。まずは教会の人から話を聞いてみます。", "next_id": "subevent2.pre.pisuke" },
+        { "id": "subevent2.pre.pisuke", "kind": "line", "speaker_id": "ピー助", "text": "まずは普通に中で情報を集めろ。証拠を見つけても、余計なことはするなよ。", "next_id": "subevent2.pre.interior" },
+        { "id": "subevent2.pre.interior", "kind": "background", "asset_id": "background.subevent2.interior", "next_id": "subevent2.pre.witness" },
+        { "id": "subevent2.pre.witness", "kind": "line", "speaker_id": "若いシスター", "text": "ギルドの方ですね。更衣室の壁の穴から、隣の特別礼拝室を覗けるようになっています。", "next_id": "subevent2.pre.backyard" },
+        { "id": "subevent2.pre.backyard", "kind": "background", "asset_id": "background.subevent2.backyard", "next_id": "subevent2.pre.hero-promise" },
+        { "id": "subevent2.pre.hero-promise", "kind": "line", "speaker_id": "サトシ", "text": "それで献金額が増えていたのか……。証拠を押さえて、シスター長にやめさせます。", "next_id": "subevent2.pre.corridor" },
+        { "id": "subevent2.pre.corridor", "kind": "background", "asset_id": "background.subevent2.corridor", "next_id": "subevent2.pre.lock" },
+        { "id": "subevent2.pre.lock", "kind": "line", "speaker_id": "ピー助", "text": "隣の特別礼拝室だ。帳簿を見つけたら記録して、すぐギルドへ持ち帰るぞ。", "next_id": "subevent2.pre.room" },
+        { "id": "subevent2.pre.room", "kind": "background", "asset_id": "background.subevent2.peep-room", "next_id": "subevent2.pre.ledger" },
+        { "id": "subevent2.pre.ledger", "kind": "line", "speaker_id": "サトシ", "text": "顧客名簿を見つけた。これなら不正を証明できる！", "next_id": "subevent2.pre.sister" },
+        { "id": "subevent2.pre.sister", "kind": "show_portrait", "slot_id": "sister-head", "asset_id": "portrait.subevent2.sister-head", "layout_id": "layout.subevent2.sister-head", "next_id": "subevent2.pre.confrontation" },
+        { "id": "subevent2.pre.confrontation", "kind": "line", "speaker_id": "シスター長", "text": "その帳簿を見てしまったのね。……それを持ち帰らせるわけにはいきません。", "next_id": "subevent2.pre.challenge" },
+        { "id": "subevent2.pre.challenge", "kind": "line", "speaker_id": "ピー助", "text": "勝負で真実を決めるんだ。勝てば帳簿を持ち帰る。負けたら、いったん退くしかない。", "next_id": "subevent2.battle.start" },
+        { "id": "subevent2.battle.start", "kind": "battle", "battle_id": "battle.subevent2.sister-head", "next_id": "subevent2.post.background" }
+      ]
+    },
+    {
+      "id": "story.subevent2.post",
+      "start_id": "subevent2.post.background",
+      "steps": [
+        { "id": "subevent2.post.background", "kind": "background", "asset_id": "background.subevent2.interior", "next_id": "subevent2.post.admission" },
+        { "id": "subevent2.post.admission", "kind": "line", "speaker_id": "シスター長", "text": "……私の負けです。帳簿も、もう隠せませんね。", "next_id": "subevent2.post.hero" },
+        { "id": "subevent2.post.hero", "kind": "line", "speaker_id": "サトシ", "text": "これで不正は明らかになりました。帳簿はギルドへ届けます。", "next_id": "subevent2.post.receptionist" },
+        { "id": "subevent2.post.receptionist", "kind": "line", "speaker_id": "受付嬢", "text": "調査報告を確認しました。教会の件は、ギルドから正式に対応します。ご苦労さまでした。", "next_id": "subevent2.post.end" },
+        { "id": "subevent2.post.end", "kind": "end" }
+      ]
+    },
+    {
+      "id": "story.subevent2.loss",
+      "start_id": "subevent2.loss.end",
+      "steps": [
+        { "id": "subevent2.loss.end", "kind": "end" }
+      ]
+    }
+  ]
+}

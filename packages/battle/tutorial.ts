@@ -5,6 +5,19 @@ import { judgeCards, type Card, type BattleResult } from '../domain/card'
 import { validateDeck } from '../domain/deck'
 import type { SaveData } from '../domain/save'
 import { isFixedCheckpoint } from './fixed'
+import { STAGE2_MINIGAME_CHECKPOINT, STAGE2_MINIGAME_END_CHECKPOINT } from './stage2-minigame'
+import stage2Content from '../../content/stories/stage2.json'
+import subevent2Content from '../../content/stories/subevent2.json'
+import subevent3Content from '../../content/stories/subevent3.json'
+import subevent4Content from '../../content/stories/subevent4.json'
+import stage3Content from '../../content/stories/stage3.json'
+import { STAGE3_MINIGAME_CHECKPOINT, STAGE3_MINIGAME_END_CHECKPOINT } from './stage3-minigame'
+import stage4Content from '../../content/stories/stage4.json'
+import { STAGE4_MINIGAME_CHECKPOINT, STAGE4_MINIGAME_END_CHECKPOINT } from './stage4-minigame'
+import stage5Content from '../../content/stories/stage5.json'
+import { STAGE5_MINIGAME_CHECKPOINT, STAGE5_MINIGAME_END_CHECKPOINT } from './stage5-minigame'
+import stage6Content from '../../content/stories/stage6.json'
+import stage7Content from '../../content/stories/stage7.json'
 
 export const tutorialBattle = content.battles[0] as BattleContent
 export const TUTORIAL_CHECKPOINT = 'matilda.await-deck'
@@ -14,6 +27,7 @@ export interface TutorialLedger {
   readonly battle_id: string
   readonly rounds: readonly TutorialRound[]
   readonly acknowledged: number
+  readonly player_deck?: readonly Card[]
 }
 
 const opponentDeck: readonly Card[] = tutorialBattle.opponent_card_ids.map((id) => {
@@ -22,18 +36,25 @@ const opponentDeck: readonly Card[] = tutorialBattle.opponent_card_ids.map((id) 
   return { hand: definition.hand, grade: definition.grade }
 })
 
+function assertTutorialDeck(deck: readonly Card[], inventory?: readonly Card[]) {
+  if (deck.length !== tutorialBattle.player_deck_size || deck.some((card) => card.grade !== 1) ||
+      inventory && !validateDeck(inventory, deck, tutorialBattle.player_deck_size).valid) {
+    throw new Error('Nine owned Normal cards required')
+  }
+}
+
 function assertReady(save: SaveData) {
-  if (!validateDeck(save.player.inventory, save.player.deck, tutorialBattle.player_deck_size).valid ||
-      save.player.deck.some((card) => card.grade !== 1)) throw new Error('Nine owned Normal cards required')
+  assertTutorialDeck(save.player.deck, save.player.inventory)
 }
 
 // Derive all mutable battle facts from the persisted ledger; never reroll on load.
 export function tutorialView(save: SaveData) {
+  const historicalDeck = save.progress.tutorial?.player_deck ?? save.player.deck
   const usedPlayer: number[] = [], usedOpponent: number[] = []
   let playerHp = 3, opponentHp = 3
   let last: { player: Card; opponent: Card; result: BattleResult } | undefined
   for (const round of save.progress.tutorial?.rounds ?? []) {
-    const player = save.player.deck[round.player_index], opponent = opponentDeck[round.opponent_index]
+    const player = historicalDeck[round.player_index], opponent = opponentDeck[round.opponent_index]
     if (!player || !opponent || usedPlayer.includes(round.player_index) || usedOpponent.includes(round.opponent_index)) {
       throw new Error('Invalid or reused tutorial card')
     }
@@ -49,12 +70,26 @@ export function tutorialView(save: SaveData) {
 export function validateTutorialState(save: SaveData) {
   const ledger = save.progress.tutorial
   const completed = save.progress.flags.includes(TUTORIAL_COMPLETE)
-  const completionCheckpoint = ['matilda.complete', 'matilda.end'].includes(save.progress.checkpoint_id) || isFixedCheckpoint(save.progress.checkpoint_id)
+  const completionCheckpoint = ['matilda.complete', 'matilda.end', STAGE2_MINIGAME_CHECKPOINT,
+    STAGE2_MINIGAME_END_CHECKPOINT].includes(save.progress.checkpoint_id) || isFixedCheckpoint(save.progress.checkpoint_id) ||
+    stage2Content.stories.some((story) => story.steps.some((step) => step.id === save.progress.checkpoint_id)) ||
+    subevent2Content.stories.some((story) => story.steps.some((step) => step.id === save.progress.checkpoint_id)) ||
+    subevent3Content.stories.some((story) => story.steps.some((step) => step.id === save.progress.checkpoint_id)) ||
+    subevent4Content.stories.some((story) => story.steps.some((step) => step.id === save.progress.checkpoint_id)) ||
+    stage3Content.stories.some((story) => story.steps.some((step) => step.id === save.progress.checkpoint_id)) ||
+    stage4Content.stories.some((story) => story.steps.some((step) => step.id === save.progress.checkpoint_id)) ||
+    stage5Content.stories.some((story) => story.steps.some((step) => step.id === save.progress.checkpoint_id)) ||
+    stage6Content.stories.some((story) => story.steps.some((step) => step.id === save.progress.checkpoint_id)) ||
+    stage7Content.stories.some((story) => story.steps.some((step) => step.id === save.progress.checkpoint_id)) ||
+    [STAGE3_MINIGAME_CHECKPOINT, STAGE3_MINIGAME_END_CHECKPOINT, STAGE4_MINIGAME_CHECKPOINT,
+      STAGE4_MINIGAME_END_CHECKPOINT, STAGE5_MINIGAME_CHECKPOINT, STAGE5_MINIGAME_END_CHECKPOINT,
+      'subevent3.minigame', 'subevent3.minigame.end'].includes(save.progress.checkpoint_id)
   if (!ledger) {
     if (completed || completionCheckpoint) throw new Error('Missing tutorial completion ledger')
     return
   }
-  assertReady(save)
+  if (ledger.player_deck) assertTutorialDeck(ledger.player_deck)
+  else assertReady(save)
   if (ledger.battle_id !== tutorialBattle.id || ledger.rounds.length > tutorialBattle.phases.length ||
       !Number.isSafeInteger(ledger.acknowledged) || ledger.acknowledged < 0 ||
       ledger.acknowledged > ledger.rounds.length || ledger.rounds.length - ledger.acknowledged > 1) {
@@ -78,7 +113,8 @@ export function validateTutorialState(save: SaveData) {
 export function prepareTutorial(save: SaveData, deck: readonly Card[]): SaveData {
   if (save.progress.checkpoint_id !== TUTORIAL_CHECKPOINT || save.progress.tutorial) throw new Error('Not preparing tutorial')
   const ready: SaveData = { ...save, player: { ...save.player, deck: [...deck] }, progress: {
-    ...save.progress, tutorial: { battle_id: tutorialBattle.id, rounds: [], acknowledged: 0 }
+    ...save.progress, tutorial: { battle_id: tutorialBattle.id, rounds: [], acknowledged: 0,
+      player_deck: deck.map((card) => ({ ...card })) }
   } }
   assertReady(ready)
   return ready

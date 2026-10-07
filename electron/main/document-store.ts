@@ -5,6 +5,7 @@ import { parseDocument, serializeDocument } from './json-document'
 
 export function createDocumentStore(directory: string, filename: string) {
   const target = join(directory, filename)
+  let pending: Promise<void> = Promise.resolve()
 
   return {
     async read(): Promise<Record<string, unknown> | null> {
@@ -17,16 +18,20 @@ export function createDocumentStore(directory: string, filename: string) {
     },
     async write(value: unknown): Promise<void> {
       const serialized = serializeDocument(value)
-      await mkdir(directory, { recursive: true })
-      const temporary = join(directory, `.${filename}.${randomUUID()}.tmp`)
-      try {
-        await writeFile(temporary, serialized, { encoding: 'utf8', flag: 'wx', mode: 0o600 })
-        await rename(temporary, target)
-      } finally {
-        await unlink(temporary).catch((error: NodeJS.ErrnoException) => {
-          if (error.code !== 'ENOENT') throw error
-        })
-      }
+      const operation = pending.then(async () => {
+        await mkdir(directory, { recursive: true })
+        const temporary = join(directory, `.${filename}.${randomUUID()}.tmp`)
+        try {
+          await writeFile(temporary, serialized, { encoding: 'utf8', flag: 'wx', mode: 0o600 })
+          await rename(temporary, target)
+        } finally {
+          await unlink(temporary).catch((error: NodeJS.ErrnoException) => {
+            if (error.code !== 'ENOENT') throw error
+          })
+        }
+      })
+      pending = operation.catch(() => {})
+      return operation
     }
   }
 }
