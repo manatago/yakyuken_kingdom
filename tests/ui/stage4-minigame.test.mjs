@@ -32,6 +32,7 @@ test('Stage 4 strength calibration saves, resumes, and hands off to the rematch'
     await writeFile(target, JSON.stringify(original))
     await open()
     await page.getByRole('button', { name: '明確な課題を提示する', exact: true }).click()
+    await page.waitForFunction(() => document.querySelector('[data-testid="stage4-gauge"]')?.textContent === '115/130')
     assert.equal((await read()).progress.stage4_minigame.gauge, 115)
     await app.close(); app = undefined
     await open()
@@ -41,6 +42,7 @@ test('Stage 4 strength calibration saves, resumes, and hands off to the rematch'
     await page.getByRole('button', { name: '明確な課題を提示する', exact: true }).click()
     await page.getByTestId('stage4-result').waitFor()
     await page.getByRole('button', { name: '再戦へ進む', exact: true }).click()
+    await page.waitForFunction(() => document.querySelector('[data-testid="checkpoint-id"]')?.textContent === 'stage4.rematch.start')
     const saved = await read()
     assert.equal(saved.progress.checkpoint_id, 'stage4.rematch.background')
     assert.ok(saved.progress.flags.includes('stage4_minigame_completed'))

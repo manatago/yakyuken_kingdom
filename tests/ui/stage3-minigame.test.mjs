@@ -35,6 +35,7 @@ test('Stage 3 evidence review saves each selection, resumes, and continues to it
     await writeFile(target, JSON.stringify(original))
     await open()
     await page.getByRole('button', { name: 'ピー助に任せる', exact: true }).click()
+    await page.waitForFunction(() => document.querySelector('[data-testid="stage3-gauge"]')?.textContent === '60/130')
     assert.equal((await read()).progress.stage3_minigame.gauge, 60)
     assert.equal((await read()).progress.stage3_minigame.rounds[0].hit, true)
     await app.close(); app = undefined
@@ -44,6 +45,7 @@ test('Stage 3 evidence review saves each selection, resumes, and continues to it
     await page.getByRole('button', { name: 'ピー助に任せる', exact: true }).click()
     await page.getByTestId('stage3-result').waitFor()
     await page.getByRole('button', { name: '再審査へ進む', exact: true }).click()
+    await page.waitForFunction(() => document.querySelector('[data-testid="checkpoint-id"]')?.textContent === 'stage3.rematch.start')
     const saved = await read()
     assert.equal(saved.progress.checkpoint_id, 'stage3.rematch.background')
     assert.ok(saved.progress.flags.includes('stage3_minigame_completed'))

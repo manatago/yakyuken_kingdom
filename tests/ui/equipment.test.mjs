@@ -35,7 +35,7 @@ test('equipment can be equipped and removed from Guild Home and persists after r
     await writeFile(target, JSON.stringify(save))
     let page = await open()
     await page.getByRole('button', { name: '装備 強欲の指輪', exact: true }).click()
-    await page.getByTestId('equipment-inventory').waitFor()
+    await page.getByRole('button', { name: '外す 強欲の指輪', exact: true }).waitFor()
     assert.deepEqual((await read()).player.items, ['gold_charm', 'paper_seal_white'])
     assert.deepEqual((await read()).player.equipment, ['greed_ring'])
     await app.close(); app = undefined
