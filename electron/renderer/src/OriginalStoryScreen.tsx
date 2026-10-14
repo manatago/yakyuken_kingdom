@@ -183,6 +183,7 @@ export function OriginalStoryScreen({ sequenceId = 'prologue', cursor = 0, initi
 
   useEffect(() => {
     alive.current = true
+    if (document.activeElement === document.body) container.current?.focus({ preventScroll: true })
     if (completed) return () => { alive.current = false }
     if (cursor && !completedBattles?.includes(`original:${sequenceId}:${cursor}`) && ['line', 'band', 'battle'].includes(originalStory.sequences.find(s => s.id === sequenceId)!.commands[cursor - 1]?.kind)) {
       const c = originalStory.sequences.find(s => s.id === sequenceId)!.commands[cursor - 1]

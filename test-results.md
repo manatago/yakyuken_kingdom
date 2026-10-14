@@ -1,5 +1,13 @@
 # Test results
 
+## 2026-10-13 — PR #38入力フォーカスの修正・改行指摘の訂正
+
+- 通常ストーリー開始／再開直後にbodyへ届くEnter／Spaceが処理されない問題を、明示フォーカスしないnative UI 4ケースでRED（4/4失敗）確認。マウント時にbodyが入力先の場合だけ原本画面へフォーカスし、スクロール位置を変更しない。無条件フォーカスがエディタの選択欄を奪うこともREDで確認し、条件を限定した。セリフ・保存形式・ゲームロジックは変更しない。
+- 改行コードのレビュー指摘は誤りだった。既存の`godot/.gitattributes`の`* text=auto eol=lf`を見落としていた。`core.autocrlf=true`指定の実`checkout-index`を隔離ディレクトリで実行し、原本照合で使うテキストのLFとSHA一致を確認するIntegrationテストを追加した。Git設定・属性・原本ハッシュの期待値は変更しない。
+- Unit322/322、Integration40/40、型検査、Game/Editorビルド成功。全UI67/67成功（149.36秒、入力4件＋エディタのフォーカス保持1件を追加）。証跡：`/private/tmp/janken-resolve-{keyboard-red,keyboard-green,editor-focus-red,unit,integration,build,typecheck,ui}.log`。
+- code-reviewの独立レビューは今回の3ソース／テスト差分をOKと判断。UIは既存Electron環境が必要なためホスト上で一時userDataを使い、finallyでアプリ終了・削除する。本番セーブ、画像、認証設定は変更しない。
+- 公開済みc48959fのCI run38508612850はWindows UIで失敗し、macOSはキャンセル。レイアウト反映fixtureの待機、入力ヘルパーのフォールバック、ミニゲームのカーソル待機など別の失敗がログにある。今回の2点の対応でそれらが解消したとは判断しない。今回の変更は未コミット／未Pushで、CI再実行は行わない。
+
 ## 2026-10-13 — 統合差分レビュー後の回帰修正
 
 - 独立レビュー3範囲と修正後の相互確認で、画像寸法更新時のgrow位置、5ミニゲームの終了UI／追加入力、Stage3ゲージ閾値、依頼完了判定、Sequence・マチルダ戦後の表示状態引き継ぎを修正。原本セリフ・ストーリーフラグは変更しない。
