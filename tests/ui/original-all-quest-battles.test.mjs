@@ -1,4 +1,4 @@
-import { advanceStory, originalDisplayedBattleText } from './story-input.mjs'
+import { advanceBattleDialogue, originalDisplayedBattleText } from './story-input.mjs'
 import assert from 'node:assert/strict'
 import { mkdtemp, rm, readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
@@ -14,7 +14,8 @@ const executablePath = createRequire(import.meta.url)('electron')
 const chapters = JSON.parse(await readFile(join(root, 'content/stories/godot-quest-battles.json'), 'utf8')).chapters
 const sequences = JSON.parse(await readFile(join(root, 'content/stories/godot-original.json'), 'utf8')).sequences
 
-test('all seven canonical quest battles draft, play raw lines, resume and settle once', { timeout: 180_000 }, async () => {
+// Full native typing across seven chapters takes about three minutes locally.
+test('all seven canonical quest battles draft, play raw lines, resume and settle once', { timeout: 360_000 }, async () => {
   const userData = await mkdtemp(join(tmpdir(), 'janken-original-all-quests-'))
   const app = await electron.launch({ executablePath, args: [join(root, 'dist/game/main/index.js'), `--user-data-dir=${userData}`] })
   try {
@@ -59,9 +60,7 @@ test('all seven canonical quest battles draft, play raw lines, resume and settle
           assert.ok(chapter.traces.some(trace => trace.commands.some(command =>
             command.kind === 'band' && command.args[1] === state.text || command.kind === 'bubble' && command.args[0] === state.text)))
           const displayedText = originalDisplayedBattleText(state)
-          if (await page.getByTestId('original-quest-text').textContent() !== displayedText) await advanceStory(page)
-          await page.waitForFunction(text => document.querySelector('[data-testid="original-quest-text"]')?.textContent === text, displayedText)
-          await advanceStory(page)
+          await advanceBattleDialogue(page, 'original-quest-text', displayedText, 'original-quest-battle-cursor', before)
         } else if (state.phase === 'selection') {
           const index = state.battle.playerUsed.findIndex(used => !used)
           await page.getByRole('button', { name: `デッキ ${index + 1} paper`, exact: true }).click()
