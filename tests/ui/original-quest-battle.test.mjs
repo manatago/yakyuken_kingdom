@@ -34,6 +34,9 @@ for (const winning of [true, false]) test(`original Jin ${winning ? 'victory res
       await page.getByRole('button', { name: `手持ち ${index + 1} ${winning ? 'paper' : 'scissors'} 1`, exact: true }).click()
       await page.waitForFunction(async length => (await globalThis.janken.save.read()).progress.original_quest_battle.draft.length === length,
         (winning ? [6, 7, 8] : [3, 4, 5]).indexOf(index) + 1)
+      await page.waitForFunction(length => document.querySelectorAll('button[aria-label^="デッキ "]').length === length &&
+        [...document.querySelectorAll('button')].some(button => button.textContent === 'タイトルに戻る' && !button.disabled),
+      (winning ? [6, 7, 8] : [3, 4, 5]).indexOf(index) + 1)
     }
     await page.waitForFunction(() => [...document.querySelectorAll('button')].some(button =>
       button.textContent === '準備完了' && !button.disabled))

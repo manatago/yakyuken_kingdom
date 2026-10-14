@@ -41,6 +41,7 @@ test('new game reads every original opening/tutorial line, prepares, plays twice
     const sequence = originalDocument.sequences.find(entry => entry.id === 'prologue')
     const tutorialIndex = sequence.commands.findIndex(command => command.kind === 'battle' && command.parameters.is_tutorial)
     assert.equal(tutorialIndex, 197)
+    await page.getByTestId('original-cursor').waitFor()
     const initial = await read()
     assert.equal(initial.player.inventory.length, 9)
     assert.ok(initial.player.inventory.every(card => card.grade === 1))

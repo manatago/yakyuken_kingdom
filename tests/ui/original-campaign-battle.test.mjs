@@ -1,4 +1,4 @@
-import { advanceStory, originalDisplayedBattleText } from './story-input.mjs'
+import { advanceBattleDialogue, originalDisplayedBattleText } from './story-input.mjs'
 import assert from 'node:assert/strict'
 import { mkdtemp, rm, readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
@@ -16,14 +16,15 @@ const sequences = JSON.parse(await readFile(join(root, 'content/stories/godot-or
 
 test('all ten canonical campaign variants draft, play raw lines, resume and settle once', { timeout: 180_000 }, async () => {
   const userData = await mkdtemp(join(tmpdir(), 'janken-original-campaign-'))
-  const app = await electron.launch({ executablePath, args: [join(root, 'dist/game/main/index.js'), `--user-data-dir=${userData}`] })
+  let app
   try {
-    const page = await app.firstWindow()
-    await page.addInitScript(() => { Math.random = () => 0 })
     let verifiedEntrance = false
-    for (const chapter of chapters) {
-      // No prior story callback may write over the next isolated fixture.
-      await page.reload()
+    for (const [chapterIndex, chapter] of chapters.entries()) {
+      if (app) { await app.close(); app = undefined }
+      // Each chapter has its own process and save: old IPC writes cannot overwrite this fixture.
+      app = await electron.launch({ executablePath, args: [join(root, 'dist/game/main/index.js'), `--user-data-dir=${join(userData, String(chapterIndex))}`] })
+      const page = await app.firstWindow()
+      await page.addInitScript(() => { Math.random = () => 0 })
       await page.getByRole('heading', { name: 'Janken Kingdom', exact: true }).waitFor()
       const sequence = sequences.find(sequence => sequence.commands.some(command => command.kind === 'battle' && command.parameters.chapter_path === chapter.chapter_path))
       const cursor = sequence.commands.findIndex(command => command.kind === 'battle' && command.parameters.chapter_path === chapter.chapter_path) + 1
@@ -66,9 +67,7 @@ test('all ten canonical campaign variants draft, play raw lines, resume and sett
             verifiedEntrance = true
           }
           const displayedText = originalDisplayedBattleText(state)
-          if (await page.getByTestId('original-quest-text').textContent() !== displayedText) await advanceStory(page)
-          await page.waitForFunction(text => document.querySelector('[data-testid="original-quest-text"]')?.textContent === text, displayedText)
-          await advanceStory(page)
+          await advanceBattleDialogue(page, 'original-quest-text', displayedText, 'original-quest-battle-cursor', before)
         } else if (state.phase === 'selection') {
           const index = state.battle.playerUsed.findIndex(used => !used)
           await page.getByRole('button', { name: `デッキ ${index + 1} rock`, exact: true }).click()
@@ -101,5 +100,5 @@ test('all ten canonical campaign variants draft, play raw lines, resume and sett
       assert.equal(finished, true)
     }
     assert.equal(verifiedEntrance, true)
-  } finally { await app.close(); await rm(userData, { recursive: true, force: true }) }
+  } finally { if (app) await app.close(); await rm(userData, { recursive: true, force: true }) }
 })

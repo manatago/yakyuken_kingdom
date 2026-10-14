@@ -1,4 +1,4 @@
-import { advanceStory } from './story-input.mjs'
+import { advanceBattleDialogue } from './story-input.mjs'
 import assert from 'node:assert/strict'
 import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
@@ -42,10 +42,7 @@ test('raw Stage 4 strength minigame retains original text, immediate support and
       if (command && ['narrator_band', 'dialogue_band'].includes(command.kind)) {
         const text = String(command.args[command.kind === 'narrator_band' ? 0 : 1])
         await page.waitForFunction(previous => document.querySelector('[data-testid="original-strength-cursor"]')?.textContent === previous, previous)
-        const display = page.getByTestId('original-strength-text')
-        if (await display.textContent() !== text) await advanceStory(page)
-        await page.waitForFunction(text => document.querySelector('[data-testid="original-strength-text"]')?.textContent === text, text)
-        await advanceStory(page)
+        await advanceBattleDialogue(page, 'original-strength-text', text, 'original-strength-cursor', previous)
       } else if (!command && !ledger.game.outcome) {
         assert.equal(ledger.game.gauge, [110, 70, 30][ledger.game.actions.length])
         assert.equal(await page.getByTestId('original-strength-support').isDisabled(), false)

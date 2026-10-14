@@ -1,4 +1,4 @@
-import { advanceStory } from './story-input.mjs'
+import { advanceBattleDialogue } from './story-input.mjs'
 import assert from 'node:assert/strict'
 import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
@@ -43,10 +43,7 @@ test('raw Stage 3 evidence minigame retains original text, first-turn lock and r
       if (command && ['narrator_band', 'dialogue_band'].includes(command.kind)) {
         const text = String(command.args[command.kind === 'narrator_band' ? 0 : 1])
         await page.waitForFunction(previous => document.querySelector('[data-testid="original-evidence-cursor"]')?.textContent === previous, previous)
-        const display = page.getByTestId('original-evidence-text')
-        if (await display.textContent() !== text) await advanceStory(page)
-        await page.waitForFunction(text => document.querySelector('[data-testid="original-evidence-text"]')?.textContent === text, text)
-        await advanceStory(page)
+        await advanceBattleDialogue(page, 'original-evidence-text', text, 'original-evidence-cursor', previous)
       } else if (!command && !ledger.game.outcome) {
         const bounds = await page.locator('[data-testid^="original-evidence-book-"], [data-testid^="original-evidence-proof-"]').evaluateAll(buttons => {
           const decide = [...document.querySelectorAll('button')].find(button => button.textContent === '[決定] この組み合わせで攻撃').getBoundingClientRect()
