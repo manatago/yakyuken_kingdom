@@ -1,5 +1,14 @@
 # Test results
 
+## 2026-10-13 — PR #38 Windows保存置換失敗への対応
+
+- CI run38521380108（e9c5433）のWindows UI64/68成功・4失敗、macOSキャンセル。ジン敗北後の`save:write`で一時ファイル→保存先のrenameがEPERMとなったことを確認。残る表情・力・所持品復元のtimeout3件が同一原因かはログだけでは断定しない。
+- 保存処理のWindows EPERM/EACCES/EBUSYだけを最大7回・待機合計1575msまで再試行。旧保存先を削除するfallbackは導入しない。恒久failureはrejectし旧bytesを保持、一時ファイルをcleanupし次の保存を可能にする。readも同じqueueに並べ、保存中の競合・古いreadを防ぐ。IO境界で失敗を模擬するUnit7件を追加（初回RED6失敗/1cancel、GREEN成功）。読み取り開始順序のテストは独立レビューを受け、rename停止中のread呼出数0を直接検証する形へ強化した。
+- 対象UI6/6成功47.74秒。表情・力・所持品復元の進行待機は条件/30秒timeoutを変えず、失敗時に表示cursor・alert・無効control・元例外causeを付ける診断を追加。ゲーム台詞・勝敗・報酬・保存形式の期待値は変更しない。
+- 初回全UIで保存中故障注入2件がtimeout。store作成時にrenameをcaptureして既存の動的fs.rename差替えを取り込まなかったため、各attempt時に解決する最小修正を実施。停止した隔離テストElectronのみを終了し、再build後の既存故障注入＋診断回帰4/4成功3.46秒。独立再レビューOK。
+- 最終型検査・Unit329/329・Integration40/40・Game/Editorビルド成功。最終全UI68/68成功180.46秒、Game/Editor隔離Smoke両方SMOKE_OK。証跡：`/private/tmp/janken-save-retry-{red,green,green-final,typecheck-final,unit-final,integration-final,build-final,target-ui,compat-ui,ui,ui-final,smoke-game,smoke-editor}.log`。
+- macOSホストの隔離Electron/userData・一時保存のみを使用。本番セーブ、Godot原本・画像、認証・HTTPS設定不変。Windows故障はIO注入で確認したが、実Windows CIでの修正後検証はPublish後に必要。コミット・Push・CI操作なし。
+
 ## 2026-10-13 — PR #38依頼戦7種の文字送り競合修正
 
 - `original-all-quest-battles.test.mjs`の部分表示判定→文字送り完了入力→全文待機→次入力を、既存の`advanceBattleDialogue`（期待する全文と現在カーソルの厳密一致を待って入力1回）へ置換。PRレビューで指摘された判定・入力間の競合を除去し、原本台詞、画像・演出、勝敗、再開、精算の期待値は変更しない。ゲーム本体・原本・画像も不変。

@@ -1,4 +1,4 @@
-import { advanceBattleDialogue } from './story-input.mjs'
+import { advanceBattleDialogue, waitForStoryProgress } from './story-input.mjs'
 import assert from 'node:assert/strict'
 import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
@@ -62,7 +62,7 @@ test('raw Stage 4 strength minigame retains original text, immediate support and
         assert.deepEqual(result.progress.original_completed_minigames, ['original:stage4_recover:18'])
         finished = true; break
       }
-      await page.waitForFunction(previous => document.querySelector('[data-testid="original-strength-cursor"]')?.textContent !== previous, previous)
+      await waitForStoryProgress(page, 'original-strength-cursor', previous)
     }
     const completed = await page.evaluate(() => globalThis.janken.save.read())
     assert.equal(completed.progress.original_strength_game, undefined)

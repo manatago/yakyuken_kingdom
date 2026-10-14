@@ -38,6 +38,22 @@ export async function advanceBattleDialogue(page, textId, text, cursorId, previo
   await advanceStory(page)
 }
 
+/** Keep the strict progress wait; include save/UI failures instead of only a timeout. */
+export async function waitForStoryProgress(page, cursorId, previous, timeout = 30_000) {
+  try {
+    await page.waitForFunction(({ cursorId, previous }) =>
+      document.querySelector(`[data-testid="${cursorId}"]`)?.textContent !== previous,
+    { cursorId, previous }, { timeout })
+  } catch (cause) {
+    const diagnostic = await page.evaluate(({ cursorId, previous }) => ({
+      cursorId, previous, displayed: document.querySelector(`[data-testid="${cursorId}"]`)?.textContent,
+      alerts: [...document.querySelectorAll('[role="alert"]')].map(element => element.textContent),
+      disabledControls: [...document.querySelectorAll('button:disabled')].map(button => button.textContent)
+    }), { cursorId, previous }).catch(error => ({ diagnosticError: String(error) }))
+    throw new Error(`Story progress failed: ${JSON.stringify(diagnostic)}`, { cause })
+  }
+}
+
 /** Reload the application to the title, retaining the isolated persistent save. */
 export async function reopenStoryTitle(page) {
   const debugExit = page.getByRole('button', { name: '原本再生を終了', exact: true })

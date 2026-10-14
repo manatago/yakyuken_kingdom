@@ -6,7 +6,7 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
 import { _electron as electron } from 'playwright-core'
-import { advanceStory, advanceBattleDialogue } from './story-input.mjs'
+import { advanceStory, advanceBattleDialogue, waitForStoryProgress } from './story-input.mjs'
 
 const root = fileURLToPath(new URL('../..', import.meta.url))
 test('native input helper waits for the busy guard and does not double-advance a completed typewriter', async () => {
@@ -31,6 +31,16 @@ test('native input helper waits for the busy guard and does not double-advance a
     await page.evaluate(() => { document.querySelector('button').disabled = false })
     await input
     assert.equal(await page.getByTestId('cursor').textContent(), '2')
+    await page.evaluate(() => {
+      const alert = document.createElement('p'); alert.setAttribute('role', 'alert')
+      alert.textContent = 'save:write EPERM'; document.body.append(alert)
+    })
+    await assert.rejects(waitForStoryProgress(page, 'cursor', '2', 100), error => {
+      assert.match(error.message, /save:write EPERM/)
+      assert.match(error.message, /"displayed":"2"/)
+      assert.ok(error.cause)
+      return true
+    })
     await page.evaluate(() => {
       document.querySelector('[data-testid="cursor"]').textContent = '1'
       globalThis.inputAttempts = 0

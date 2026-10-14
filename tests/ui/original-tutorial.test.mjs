@@ -1,4 +1,4 @@
-import { advanceStory, reopenStoryTitle } from './story-input.mjs'
+import { advanceStory, reopenStoryTitle, waitForStoryProgress } from './story-input.mjs'
 import assert from 'node:assert/strict'
 import { mkdtemp, rm } from 'node:fs/promises'
 import { createRequire } from 'node:module'
@@ -92,7 +92,7 @@ test('original inventory viewer returns after battle with its opening snapshot',
         finished = true
         break
       }
-      await page.waitForFunction(before => document.querySelector('[data-testid="original-tutorial-cursor"]')?.textContent !== before, before)
+      await waitForStoryProgress(page, 'original-tutorial-cursor', before)
     }
     assert.equal(finished, true)
   } finally { await app.close(); await rm(userData, { recursive: true, force: true }) }

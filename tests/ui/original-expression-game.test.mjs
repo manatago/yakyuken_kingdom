@@ -1,4 +1,4 @@
-import { advanceStory } from './story-input.mjs'
+import { advanceStory, waitForStoryProgress } from './story-input.mjs'
 import assert from 'node:assert/strict'
 import { mkdtemp, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
@@ -70,7 +70,7 @@ test('raw Stage 2 expression minigame retains original text, first-turn lock and
         assert.deepEqual(result.progress.original_completed_minigames, ['original:stage2_recover:30'])
         finished = true; break
       }
-      await page.waitForFunction(previous => document.querySelector('[data-testid="original-expression-cursor"]')?.textContent !== previous, previous)
+      await waitForStoryProgress(page, 'original-expression-cursor', previous)
     }
     const completed = await page.evaluate(() => globalThis.janken.save.read())
     assert.equal(completed.progress.original_expression_game, undefined)
