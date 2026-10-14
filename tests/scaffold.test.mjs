@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
-import { existsSync, readFileSync, readdirSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync, mkdtempSync, writeFileSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
+import { tmpdir } from 'node:os'
 import test from 'node:test'
 import { fileURLToPath } from 'node:url'
 
@@ -10,10 +11,24 @@ function readTree(directory) {
   return readdirSync(directory, { withFileTypes: true })
     .map((entry) => {
       const path = join(directory, entry.name)
-      return entry.isDirectory() ? readTree(path) : readFileSync(path, 'utf8')
+      // Inspect shipped code/content, not PNG/video bytes interpreted as UTF-8.
+      return entry.isDirectory() ? readTree(path) : /\.(?:[cm]?js|html|css|json|map|txt)$/i.test(entry.name)
+        ? readFileSync(path, 'utf8') : ''
     })
     .join('\n')
 }
+
+test('build isolation inspection includes text but does not decode binary assets', () => {
+  const directory = mkdtempSync(join(tmpdir(), 'janken-build-inspection-'))
+  try {
+    writeFileSync(join(directory, 'code.js'), 'Janken Kingdom')
+    writeFileSync(join(directory, 'data.json'), '{"value":"text data"}')
+    writeFileSync(join(directory, 'image.png'), Buffer.from('Janken Editor'))
+    assert.match(readTree(directory), /Janken Kingdom/)
+    assert.match(readTree(directory), /text data/)
+    assert.doesNotMatch(readTree(directory), /Janken Editor/)
+  } finally { rmSync(directory, { recursive: true, force: true }) }
+})
 
 test('both applications have separate development and build commands', () => {
   const packageJson = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'))

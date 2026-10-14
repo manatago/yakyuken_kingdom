@@ -1,6 +1,5 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import prologue from '../../content/stories/prologue.json'
 import matildaTutorial from '../../content/stories/matilda-tutorial.json'
 import matildaNormal from '../../content/stories/matilda-normal.json'
 import subevent1 from '../../content/stories/subevent1-jin.json'
@@ -13,7 +12,7 @@ import stage4 from '../../content/stories/stage4.json'
 import stage5 from '../../content/stories/stage5.json'
 import stage6 from '../../content/stories/stage6.json'
 import stage7 from '../../content/stories/stage7.json'
-import { isPrologueCheckpoint } from '../../packages/story/prologue'
+import { originalStory, restoreOriginalStoryState } from '../../packages/story/original'
 import { fixedContent } from '../../packages/battle/fixed'
 import { SUBEVENT1_JIN_STORY_ID, isSubevent1JinStoryCheckpoint } from '../../packages/battle/jin'
 import { stage2StoryForCheckpoint } from '../../packages/battle/stage2'
@@ -35,8 +34,6 @@ function asContentPack(content: unknown): ContentPack {
 }
 
 const routes: readonly { label: string; content: RoutedStoryPack; resolve: (checkpoint: string) => string | undefined }[] = [
-  { label: 'Prologue', content: asContentPack(prologue), resolve: (checkpoint) =>
-    isPrologueCheckpoint(checkpoint) ? prologue.stories.find((story) => story.steps.some((step) => step.id === checkpoint))?.id : undefined },
   { label: 'Matilda tutorial', content: asContentPack(matildaTutorial), resolve: (checkpoint) =>
     matildaTutorial.stories.find((story) => story.steps.some((step) => step.id === checkpoint))?.id },
   { label: 'Matilda normal battle', content: asContentPack(matildaNormal), resolve: (checkpoint) =>
@@ -53,6 +50,18 @@ const routes: readonly { label: string; content: RoutedStoryPack; resolve: (chec
   { label: 'Stage 6', content: asContentPack(stage6), resolve: stage6StoryForCheckpoint },
   { label: 'Stage 7', content: asContentPack(stage7), resolve: stage7StoryForCheckpoint }
 ]
+
+test('original prologue restores every dialogue and battle checkpoint without adapted story nodes', () => {
+  const prologue = originalStory.sequences.find(sequence => sequence.id === 'prologue')!
+  for (let cursor = 1; cursor <= prologue.commands.length; cursor++) {
+    const command = prologue.commands[cursor - 1]
+    if (command.kind === 'battle' || command.kind === 'band' && command.parameters.wait_for_input) {
+      const restored = restoreOriginalStoryState('prologue', cursor)
+      assert.equal(restored.cursor, cursor)
+      if (command.kind === 'band') assert.equal(restored.text, command.parameters.text)
+    }
+  }
+})
 
 for (const route of routes) {
   test(`${route.label} resumes every saved checkpoint and has no orphan scene nodes`, () => {

@@ -6,6 +6,7 @@ import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
 import { _electron as electron } from 'playwright-core'
+import { originalStage1End } from '../helpers/original-ui.mjs'
 
 const root = fileURLToPath(new URL('../..', import.meta.url))
 const executablePath = createRequire(import.meta.url)('electron')
@@ -16,12 +17,8 @@ test('equipment can be equipped and removed from Guild Home and persists after r
   const cards = ['rock', 'scissors', 'paper'].flatMap((hand) => Array.from({ length: 3 }, () => ({ hand, grade: 1 })))
   const save = { save_version: 1, player: { inventory: cards, deck: cards, money: 20,
     items: ['greed_ring', 'gold_charm', 'paper_seal_white'] },
-    progress: { checkpoint_id: 'guild.home', guild_return_checkpoint: 'matilda.normal.end',
-      flags: ['matilda.tutorial.completed', 'matilda.normal.started'],
-      tutorial: { battle_id: 'battle.matilda.practice', rounds: [{ player_index: 6, opponent_index: 0 }, { player_index: 0, opponent_index: 3 }], acknowledged: 2 },
-      fixed_battle: { battle_id: 'battle.matilda.normal', player_deck: cards,
-        rounds: [6, 7, 8].map((player_index, opponent_index) => ({ player_index, opponent_index })),
-        acknowledged: 3, settled: true, balance_before: 10, gold_delta: 10 } } }
+    progress: { checkpoint_id: 'guild.home', guild_return_checkpoint: originalStage1End,
+      flags: ['original.matilda.tutorial.completed'] } }
   let app
   const read = async () => JSON.parse(await readFile(target, 'utf8'))
   const open = async () => {

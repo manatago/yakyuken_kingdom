@@ -34,6 +34,14 @@ test('layout editor previews scaled dragging, saves one ID and reloads without t
       return page
     }
     let page = await open()
+    await page.getByTestId('original-cursor').filter({ hasText: 'prologue:149' }).waitFor()
+    await page.locator('[data-layout-id="layout.matilda.intro"]').waitFor()
+    await page.getByLabel('X座標').fill('990')
+    await page.getByLabel('拡大率').fill('0.4')
+    await page.getByRole('button', { name: '変更を取り消す', exact: true }).click()
+    await page.getByLabel('配置ID').selectOption('layout.matilda.explanation')
+    await page.getByTestId('original-cursor').filter({ hasText: 'prologue:192' }).waitFor()
+    await page.locator('[data-layout-id="layout.matilda.explanation"]').waitFor()
     await page.getByLabel('配置ID').selectOption('layout.cards.box')
     const box = page.getByTestId('card-box')
     const rect = await box.boundingBox()
@@ -75,8 +83,17 @@ test('layout editor previews scaled dragging, saves one ID and reloads without t
     await page.getByLabel('配置ID').selectOption('layout.cards.box')
     assert.equal(await page.getByLabel('X座標').inputValue(), '1510')
     await page.getByLabel('配置ID').selectOption('layout.cards.showdown')
-    await page.getByTestId('tutorial-result').waitFor()
+    await page.getByTestId('original-tutorial-result').waitFor()
+    await page.getByTestId('original-showdown').waitFor()
+    assert.equal(await page.getByTestId('tutorial-result').count(), 0)
     assert.equal(await page.getByLabel('配置ID').inputValue(), 'layout.cards.showdown')
+    await page.getByLabel('X座標').fill('380')
+    await page.getByLabel('拡大率').fill('0.8')
+    await page.waitForFunction(() => {
+      const result = document.querySelector('[data-layout-id="layout.cards.showdown"]')
+      return result?.style.left === '680px' && result.style.transform === 'scale(0.8, 0.8)'
+    })
+    await page.getByRole('button', { name: '変更を取り消す', exact: true }).click()
     await page.waitForFunction(() => [...document.querySelectorAll('.story-stage img')].every((img) => img.complete && img.naturalWidth > 0))
     if (process.env.JANKEN_UI_SCREENSHOT_DIR) await page.screenshot({ path: join(process.env.JANKEN_UI_SCREENSHOT_DIR, 'layout-editor.png') })
     assert.equal(await readFile(target, 'utf8'), JSON.stringify(saved, null, 2) + '\n')

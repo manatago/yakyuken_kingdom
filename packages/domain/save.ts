@@ -1,11 +1,23 @@
 import { GRADES, HANDS, type Card } from './card'
-import { getItemDefinition, type ItemId } from './item-catalog'
+import { restoreOriginalQuestionLedger, type OriginalQuestionLedger } from '../story/original-question-game'
+import { restoreOriginalStrengthLedger, type OriginalStrengthLedger } from '../story/original-strength-game'
+import { restoreOriginalEvidenceLedger, type OriginalEvidenceLedger } from '../story/original-evidence-game'
+import { restoreOriginalExpressionLedger, type OriginalExpressionLedger } from '../story/original-expression-game'
+import { restoreOriginalCurseLedger, type OriginalCurseLedger } from '../story/original-curse-game'
+import { restoreOriginalTutorial, type OriginalTutorial } from '../story/original-tutorial'
+import { restoreOriginalNormal, type OriginalNormal } from '../story/original-normal'
+import { validateOriginalMatildaAftermath, type OriginalMatildaAftermath } from '../story/original-matilda-aftermath-save'
+import originalDocument from '../../content/stories/godot-original.json'
+import { parseOriginalQuest, type OriginalQuest } from '../story/original-quests'
+import { validateOriginalQuestBattleLedger, validateOriginalLastLoss, type OriginalQuestBattleLedger } from '../story/original-quest-save'
+import { restoreOriginalAdventurer, type OriginalAdventurer } from '../story/original-adventurer'
+import { getItemDefinition, getGoldBonus, type ItemId } from './item-catalog'
 import { validateDeck } from './deck'
 import { validateTutorialState, type TutorialLedger } from '../battle/tutorial'
 import { validateFixedState, type FixedLedger } from '../battle/fixed'
 import { BELKA_CHECKPOINT, validateBelkaState, type BelkaLedger } from '../battle/belka'
 import { JIN_CHECKPOINT, SUBEVENT1_JIN_BATTLE_ID, SUBEVENT1_JIN_CHECKPOINT, isSubevent1JinStoryCheckpoint, validateJinState, type JinLedger } from '../battle/jin'
-import { GUILD_CHECKPOINT, guildValidationSave } from '../guild/routes'
+import { GUILD_CHECKPOINT, ORIGINAL_STAGE1_END, guildValidationSave } from '../guild/routes'
 import { validateSubevent1BelkaState } from '../battle/subevent1-belka'
 import { validateRandomBattleState, type RandomBattleLedger } from '../battle/random'
 import { parseStage2Minigame, STAGE2_MINIGAME_CHECKPOINT, STAGE2_MINIGAME_END_CHECKPOINT, STAGE2_REMATCH_CHECKPOINT,
@@ -47,6 +59,22 @@ export interface SaveData {
   readonly progress: {
     readonly checkpoint_id: string
     readonly flags: readonly string[]
+    readonly original_tutorial?: OriginalTutorial
+    readonly original_normal?: OriginalNormal
+    readonly original_matilda_aftermath?: OriginalMatildaAftermath
+    readonly original_adventurer?: OriginalAdventurer
+    readonly original_quest?: OriginalQuest
+    readonly original_quest_battle?: OriginalQuestBattleLedger
+    readonly original_completed_battles?: readonly string[]
+    readonly original_completed_quests?: readonly ('subevent1' | 'subevent2' | 'subevent3' | 'subevent4')[]
+    readonly original_story_origin?: 'prologue_battle_win' | 'prologue_battle_lose'
+    readonly original_curse_game?: OriginalCurseLedger
+    readonly original_expression_game?: OriginalExpressionLedger
+    readonly original_evidence_game?: OriginalEvidenceLedger
+    readonly original_strength_game?: OriginalStrengthLedger
+    readonly original_question_game?: OriginalQuestionLedger
+    readonly original_completed_minigames?: readonly string[]
+    readonly original_last_lose_narration?: string
     readonly tutorial?: TutorialLedger
     readonly fixed_battle?: FixedLedger
     readonly fixed_battle_history?: readonly FixedLedger[]
@@ -218,10 +246,111 @@ export function parseSave(value: unknown): SaveData {
     throw new RangeError('Save deck contains cards not owned by the player')
   }
 
-  const progress = record(root.progress, ['checkpoint_id', 'flags'], ['tutorial', 'fixed_battle', 'fixed_battle_history', 'belka_battle', 'jin_draft', 'jin_battle', 'subevent1_jin_battle', 'subevent1_marco_battle', 'subevent1_gald_battle', 'subevent1_belka_battle', 'random_battle', 'town_area', 'town_origin_checkpoint', 'random_battles_completed', 'adventurer_tutorial', 'last_battle_id', 'last_jin_battle_id', 'guild_return_checkpoint', 'stage2_minigame', 'subevent3_minigame', 'subevent3_minigame_history', 'stage3_minigame', 'stage4_minigame', 'stage5_minigame'])
+const progress = record(root.progress, ['checkpoint_id', 'flags'], ['original_story_origin', 'original_completed_quests', 'original_matilda_aftermath', 'original_completed_battles', 'original_question_game', 'original_strength_game', 'original_evidence_game', 'original_expression_game', 'original_completed_minigames', 'original_curse_game', 'original_last_lose_narration', 'original_quest_battle', 'original_quest', 'original_adventurer', 'original_normal', 'original_tutorial', 'tutorial', 'fixed_battle', 'fixed_battle_history', 'belka_battle', 'jin_draft', 'jin_battle', 'subevent1_jin_battle', 'subevent1_marco_battle', 'subevent1_gald_battle', 'subevent1_belka_battle', 'random_battle', 'town_area', 'town_origin_checkpoint', 'random_battles_completed', 'adventurer_tutorial', 'last_battle_id', 'last_jin_battle_id', 'guild_return_checkpoint', 'stage2_minigame', 'subevent3_minigame', 'stage3_minigame', 'subevent3_minigame_history', 'stage4_minigame', 'stage5_minigame'])
+  const completedQuests = Object.hasOwn(progress, 'original_completed_quests') ? (() => {
+    const ids = progress.original_completed_quests
+    if (!Array.isArray(ids) || ids.length > 4 || new Set(ids).size !== ids.length ||
+        ids.some(id => !['subevent1', 'subevent2', 'subevent3', 'subevent4'].includes(id))) throw new Error('Invalid original completed quests')
+    return [...ids] as ('subevent1' | 'subevent2' | 'subevent3' | 'subevent4')[]
+  })() : undefined
+  const storyOrigin = Object.hasOwn(progress, 'original_story_origin') ? (() => {
+    if (typeof progress.original_story_origin !== 'string' || !['prologue_battle_win', 'prologue_battle_lose'].includes(progress.original_story_origin) ||
+        !(String(progress.checkpoint_id).startsWith('original:stage1:') || progress.checkpoint_id === 'original:prologue:234' ||
+          Object.hasOwn(progress, 'original_matilda_aftermath'))) throw new Error('Invalid original story origin')
+    return progress.original_story_origin as 'prologue_battle_win' | 'prologue_battle_lose'
+  })() : undefined
+  const completedCampaign = Object.hasOwn(progress, 'original_completed_battles') ? (() => {
+    const checkpoints = progress.original_completed_battles
+    if (!Array.isArray(checkpoints) || checkpoints.length > 10 || new Set(checkpoints).size !== checkpoints.length ||
+        checkpoints.some(checkpoint => {
+          if (typeof checkpoint !== 'string') return true
+          const [prefix, id, cursor, extra] = checkpoint.split(':')
+          const command = originalDocument.sequences.find(sequence => sequence.id === id)?.commands[Number(cursor) - 1]
+          return prefix !== 'original' || extra !== undefined || !/^\d+$/.test(cursor) || command?.kind !== 'battle' ||
+            command.parameters.is_minigame || command.parameters.is_tutorial ||
+            !/^res:\/\/battle\/chapters\/Stage[2-6]BattleChapter\.gd$/.test(String(command.parameters.chapter_path))
+        })) throw new Error('Invalid original completed campaign battles')
+    return checkpoints as string[]
+  })() : undefined
+  const originalExpression = Object.hasOwn(progress, 'original_expression_game') ? restoreOriginalExpressionLedger(progress.original_expression_game) : undefined
+  const originalCompletedMinigames = Object.hasOwn(progress, 'original_completed_minigames') ? (() => {
+    if (!Array.isArray(progress.original_completed_minigames) || progress.original_completed_minigames.length > 4 ||
+        new Set(progress.original_completed_minigames).size !== progress.original_completed_minigames.length ||
+        progress.original_completed_minigames.some(checkpoint => !['original:stage2_recover:30', 'original:stage3_recover:56', 'original:stage4_recover:18', 'original:stage5_recover:65'].includes(String(checkpoint)))) throw new Error('Invalid original completed minigames')
+    return [...progress.original_completed_minigames] as string[]
+  })() : undefined
+  if (originalExpression && (progress.checkpoint_id !== 'original:stage2_recover:30' ||
+      originalCompletedMinigames?.includes(String(progress.checkpoint_id)) ||
+      ['original_strength_game', 'original_evidence_game', 'original_curse_game', 'original_quest', 'original_quest_battle', 'original_tutorial', 'original_normal', 'original_adventurer',
+        'stage2_minigame', 'stage3_minigame', 'stage4_minigame', 'stage5_minigame', 'subevent3_minigame'].some(key => Object.hasOwn(progress, key)))) throw new Error('Original expression game is outside its battle')
+  const originalQuest = Object.hasOwn(progress, 'original_quest') ? parseOriginalQuest(progress.original_quest, String(progress.checkpoint_id)) : undefined
+  const originalEvidence = Object.hasOwn(progress, 'original_evidence_game') ? restoreOriginalEvidenceLedger(progress.original_evidence_game) : undefined
+  if (originalEvidence && (progress.checkpoint_id !== 'original:stage3_recover:56' ||
+      originalCompletedMinigames?.includes(String(progress.checkpoint_id)) ||
+      ['original_question_game', 'original_strength_game', 'original_expression_game', 'original_curse_game', 'original_quest', 'original_quest_battle', 'original_tutorial', 'original_normal', 'original_adventurer',
+        'stage2_minigame', 'stage3_minigame', 'stage4_minigame', 'stage5_minigame', 'subevent3_minigame'].some(key => Object.hasOwn(progress, key)))) throw new Error('Original evidence game is outside its battle')
+  const originalQuestion = Object.hasOwn(progress, 'original_question_game') ? restoreOriginalQuestionLedger(progress.original_question_game) : undefined
+  if (originalQuestion && (progress.checkpoint_id !== 'original:stage5_recover:65' ||
+      originalCompletedMinigames?.includes(String(progress.checkpoint_id)) ||
+      ['original_strength_game', 'original_expression_game', 'original_evidence_game', 'original_curse_game', 'original_quest', 'original_quest_battle', 'original_tutorial', 'original_normal', 'original_adventurer',
+        'stage2_minigame', 'stage3_minigame', 'stage4_minigame', 'stage5_minigame', 'subevent3_minigame'].some(key => Object.hasOwn(progress, key)))) throw new Error('Original question game is outside its battle')
+  const originalCurse = Object.hasOwn(progress, 'original_curse_game') ? restoreOriginalCurseLedger(progress.original_curse_game) : undefined
+  const originalStrength = Object.hasOwn(progress, 'original_strength_game') ? restoreOriginalStrengthLedger(progress.original_strength_game) : undefined
+  if (originalStrength && (progress.checkpoint_id !== 'original:stage4_recover:18' ||
+      originalCompletedMinigames?.includes(String(progress.checkpoint_id)) ||
+      ['original_question_game', 'original_expression_game', 'original_evidence_game', 'original_curse_game', 'original_quest', 'original_quest_battle', 'original_tutorial', 'original_normal', 'original_adventurer',
+        'stage2_minigame', 'stage3_minigame', 'stage4_minigame', 'stage5_minigame', 'subevent3_minigame'].some(key => Object.hasOwn(progress, key)))) throw new Error('Original strength game is outside its battle')
+  if (originalCurse) {
+    const [, sequenceId, cursor] = String(progress.checkpoint_id).split(':')
+    const command = originalDocument.sequences.find(sequence => sequence.id === sequenceId)?.commands[Number(cursor) - 1]
+    if (originalQuest?.id !== 'subevent3' || !String(progress.checkpoint_id).startsWith('original:') || command?.kind !== 'battle' ||
+        command.parameters.chapter_path !== 'res://battle/chapters/Subevent3MinigameChapter.gd' || !command.parameters.is_minigame ||
+        ['original_quest_battle', 'original_tutorial', 'original_normal', 'original_adventurer', 'subevent3_minigame'].some(key => Object.hasOwn(progress, key))) throw new Error('Original curse game is outside its battle')
+  }
+  const originalQuestBattle = Object.hasOwn(progress, 'original_quest_battle') ? validateOriginalQuestBattleLedger(progress.original_quest_battle,
+    { inventory, deck, money: player.money as number, items: itemInventory, equipment }, String(progress.checkpoint_id), progress.flags as string[]) : undefined
+  if (originalQuestBattle && completedCampaign?.includes(originalQuestBattle.checkpoint)) {
+    throw new Error('Original campaign battle is already completed')
+  }
+  if (originalQuestBattle && ((!originalQuest && !originalQuestBattle.chapter_id.startsWith('campaign:')) ||
+      originalQuest && originalQuestBattle.chapter_id.startsWith('campaign:') ||
+      ['original_tutorial', 'original_normal', 'original_adventurer'].some(key => Object.hasOwn(progress, key)))) throw new Error('Original quest battle is outside its quest')
+  const originalAdventurer = Object.hasOwn(progress, 'original_adventurer') ? restoreOriginalAdventurer(progress.original_adventurer) : undefined
+  if (originalAdventurer && (progress.checkpoint_id !== 'original:stage1:113' ||
+      originalAdventurer.balanceBefore !== player.money || originalAdventurer.goldBonus !== getGoldBonus(equipment.map(id => ({ id }))) ||
+      Object.hasOwn(progress, 'original_normal') || Object.hasOwn(progress, 'original_tutorial'))) throw new Error('Original adventurer save does not match its battle')
+  const originalNormal = Object.hasOwn(progress, 'original_normal') ? restoreOriginalNormal(progress.original_normal) : undefined
+  if (typeof progress.checkpoint_id === 'string' && progress.checkpoint_id.startsWith('original:')) {
+    const parts = progress.checkpoint_id.split(':')
+    const sequence = originalDocument.sequences.find(sequence => sequence.id === parts[1])
+    const cursor = Number(parts[2])
+    if (parts.length !== 3 || !sequence || !/^\d+$/.test(parts[2]) || !Number.isSafeInteger(cursor) || cursor > sequence.commands.length) {
+      throw new Error('Invalid original story checkpoint')
+    }
+  }
+  if (originalNormal && (progress.checkpoint_id !== 'original:prologue:234' ||
+      originalNormal.balanceBefore !== player.money ||
+      originalNormal.goldBonus !== getGoldBonus(equipment.map(id => ({ id }))) ||
+      Object.hasOwn(progress, 'original_tutorial') || !validateDeck(inventory, originalNormal.initialDeck, 9).valid ||
+      !validateDeck(inventory, originalNormal.battle.playerDeck, 9).valid)) {
+    throw new Error('Original normal battle does not match the saved battle or owned cards')
+  }
+  const originalTutorial = Object.hasOwn(progress, 'original_tutorial') ? restoreOriginalTutorial(progress.original_tutorial) : undefined
+  if (originalTutorial && (progress.checkpoint_id !== 'original:prologue:198' ||
+      !validateDeck(inventory, originalTutorial.battle.playerDeck, 9).valid)) {
+    throw new Error('Original tutorial does not match the saved battle or owned cards')
+  }
   if (!Array.isArray(progress.flags)) throw new TypeError('Save flags must be an array')
   const flags = Array.from(progress.flags, identifier)
   if (new Set(flags).size !== flags.length) throw new TypeError('Save flags must be unique')
+  const originalMatildaAftermath = Object.hasOwn(progress, 'original_matilda_aftermath')
+    ? validateOriginalMatildaAftermath(progress.original_matilda_aftermath, String(progress.checkpoint_id),
+      { inventory, deck, money: player.money as number, items: itemInventory, equipment }, flags) : undefined
+  if (originalMatildaAftermath && ['original_normal', 'original_tutorial', 'original_adventurer', 'original_quest', 'original_quest_battle',
+    'original_curse_game', 'original_expression_game', 'original_evidence_game', 'original_strength_game', 'original_question_game',
+    'tutorial', 'fixed_battle', 'belka_battle', 'jin_battle', 'random_battle'].some(key => Object.hasOwn(progress, key))) {
+    throw new Error('Matilda aftermath overlaps another active game')
+  }
 
   let tutorial: TutorialLedger | undefined
   if (Object.hasOwn(progress, 'tutorial')) {
@@ -377,7 +506,20 @@ export function parseSave(value: unknown): SaveData {
     save_version: SAVE_VERSION,
     player: { inventory, deck, money: player.money as number, items: itemInventory, equipment,
       ...(prepared ? { prepared_deck: prepared } : {}) },
-    progress: { checkpoint_id: identifier(progress.checkpoint_id), flags, ...(tutorial ? { tutorial } : {}), ...(fixed ? { fixed_battle: fixed } : {}),
+    progress: { checkpoint_id: identifier(progress.checkpoint_id), flags,
+      ...(originalQuest ? { original_quest: originalQuest } : {}),
+      ...(originalQuestBattle ? { original_quest_battle: originalQuestBattle } : {}),
+      ...(completedCampaign ? { original_completed_battles: completedCampaign } : {}),
+      ...(completedQuests ? { original_completed_quests: completedQuests } : {}),
+      ...(storyOrigin ? { original_story_origin: storyOrigin } : {}),
+      ...(originalCurse ? { original_curse_game: originalCurse } : {}),
+      ...(originalExpression ? { original_expression_game: originalExpression } : {}),
+      ...(originalEvidence ? { original_evidence_game: originalEvidence } : {}),
+      ...(originalStrength ? { original_strength_game: originalStrength } : {}),
+      ...(originalQuestion ? { original_question_game: originalQuestion } : {}),
+      ...(originalCompletedMinigames ? { original_completed_minigames: originalCompletedMinigames } : {}),
+      ...(Object.hasOwn(progress, 'original_last_lose_narration') ? { original_last_lose_narration: validateOriginalLastLoss(progress.original_last_lose_narration) } : {}),
+      ...(originalMatildaAftermath ? { original_matilda_aftermath: originalMatildaAftermath } : {}), ...(originalAdventurer ? { original_adventurer: originalAdventurer } : {}), ...(originalNormal ? { original_normal: originalNormal } : {}), ...(originalTutorial ? { original_tutorial: originalTutorial } : {}), ...(tutorial ? { tutorial } : {}), ...(fixed ? { fixed_battle: fixed } : {}),
       ...(fixedHistory ? { fixed_battle_history: fixedHistory } : {}),
       ...(belka ? { belka_battle: belka } : {}),
       ...(jinDraft ? { jin_draft: jinDraft } : {}), ...(jin ? { jin_battle: jin } : {}),
@@ -415,7 +557,9 @@ export function parseSave(value: unknown): SaveData {
   const inSubevent3Story = subevent3Content.stories.some((story) => story.steps.some((step) => step.id === save.progress.checkpoint_id))
   const inSubevent4Story = subevent4Content.stories.some((story) => story.steps.some((step) => step.id === save.progress.checkpoint_id))
   const historicalCheckpoint = inRandomTown
-    ? { ...save, progress: { ...save.progress, checkpoint_id: 'matilda.normal.end', guild_return_checkpoint: undefined } }
+    ? { ...save, progress: { ...save.progress,
+      checkpoint_id: save.progress.town_origin_checkpoint === ORIGINAL_STAGE1_END ? ORIGINAL_STAGE1_END : 'matilda.normal.end',
+      guild_return_checkpoint: undefined } }
     : inSubevent2Story && fixed?.battle_id !== 'battle.subevent2.sister-head'
     ? { ...save, progress: { ...save.progress, checkpoint_id: 'matilda.normal.end', guild_return_checkpoint: undefined } }
     : inSubevent3Story && fixed?.battle_id !== 'battle.subevent3.fiona'

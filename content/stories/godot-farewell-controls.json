@@ -1,0 +1,310 @@
+{
+  "cases": [
+    {
+      "checkpoint": "original:prologue:234",
+      "farewell": {},
+      "frames": []
+    },
+    {
+      "checkpoint": "original:subevent1_hideout:24",
+      "farewell": {
+        "narration": "サトシは盗賊ジンに敗北した。\nこれ以上先に進むのは危険だ...。",
+        "portrait": "res://assets/characters/mob/jin/clothed/jin_clothed_001.png",
+        "portrait_scale": 0.33,
+        "text": "へっ！ 雑魚が！ 出直してこい！"
+      },
+      "frames": [
+        {
+          "band_visible": true,
+          "band_y": 860,
+          "body_rect": [
+            480,
+            876,
+            1,
+            1218
+          ],
+          "body_text": "サトシは盗賊ジンに敗北した。\nこれ以上先に進むのは危険だ...。",
+          "body_visible": false,
+          "filtered": true,
+          "right_flip": false,
+          "right_visible": false,
+          "speaker_rect": [
+            480,
+            876,
+            1,
+            28
+          ],
+          "speaker_text": "",
+          "speaker_visible": false
+        },
+        {
+          "band_visible": true,
+          "band_y": 860,
+          "body_rect": [
+            480,
+            876,
+            1,
+            1218
+          ],
+          "body_text": "へっ！ 雑魚が！ 出直してこい！",
+          "body_visible": false,
+          "filtered": true,
+          "right_flip": false,
+          "right_visible": true,
+          "speaker_rect": [
+            480,
+            876,
+            1,
+            28
+          ],
+          "speaker_text": "盗賊ジン",
+          "speaker_visible": false
+        }
+      ]
+    },
+    {
+      "checkpoint": "original:subevent1_hideout:47",
+      "farewell": {
+        "narration": "サトシは盗賊マルコに敗北した。\nこれ以上先に進むのは危険だ...。",
+        "portrait": "res://assets/characters/mob/marco/clothed/marco_clothed_001.png",
+        "portrait_scale": 0.34,
+        "text": "......。帰れ。"
+      },
+      "frames": [
+        {
+          "band_visible": true,
+          "band_y": 860,
+          "body_rect": [
+            480,
+            876,
+            1,
+            1255
+          ],
+          "body_text": "サトシは盗賊マルコに敗北した。\nこれ以上先に進むのは危険だ...。",
+          "body_visible": false,
+          "filtered": true,
+          "right_flip": false,
+          "right_visible": false,
+          "speaker_rect": [
+            480,
+            876,
+            1,
+            28
+          ],
+          "speaker_text": "",
+          "speaker_visible": false
+        },
+        {
+          "band_visible": true,
+          "band_y": 860,
+          "body_rect": [
+            480,
+            876,
+            1,
+            1255
+          ],
+          "body_text": "......。帰れ。",
+          "body_visible": false,
+          "filtered": true,
+          "right_flip": false,
+          "right_visible": true,
+          "speaker_rect": [
+            480,
+            876,
+            1,
+            28
+          ],
+          "speaker_text": "盗賊マルコ",
+          "speaker_visible": false
+        }
+      ]
+    },
+    {
+      "checkpoint": "original:subevent1_hideout:88",
+      "farewell": {
+        "narration": "サトシはガルドに敗北した。\nこれ以上先に進むのは危険だ...。",
+        "portrait": "res://assets/characters/mob/gald/clothed/gald_clothed_002.png",
+        "portrait_scale": 0.33,
+        "text": "ガハハ！ 帰んな、弱虫！"
+      },
+      "frames": [
+        {
+          "band_visible": true,
+          "band_y": 860,
+          "body_rect": [
+            480,
+            876,
+            1,
+            1181
+          ],
+          "body_text": "サトシはガルドに敗北した。\nこれ以上先に進むのは危険だ...。",
+          "body_visible": false,
+          "filtered": true,
+          "right_flip": false,
+          "right_visible": false,
+          "speaker_rect": [
+            480,
+            876,
+            1,
+            28
+          ],
+          "speaker_text": "",
+          "speaker_visible": false
+        },
+        {
+          "band_visible": true,
+          "band_y": 860,
+          "body_rect": [
+            480,
+            876,
+            1,
+            1181
+          ],
+          "body_text": "ガハハ！ 帰んな、弱虫！",
+          "body_visible": false,
+          "filtered": true,
+          "right_flip": false,
+          "right_visible": true,
+          "speaker_rect": [
+            480,
+            876,
+            1,
+            28
+          ],
+          "speaker_text": "ガルド",
+          "speaker_visible": false
+        }
+      ]
+    },
+    {
+      "checkpoint": "original:subevent1_hideout:148",
+      "farewell": {
+        "narration": "サトシはベルカに敗北した。\n盗賊団のアジトから撤退するしかない...。",
+        "portrait": "res://assets/characters/main/belka/nude/belka_nude_003.png",
+        "portrait_scale": 0.64,
+        "text": "ゲハハ！ ボクに勝てると思ったのかよ？\n出直してきな！"
+      },
+      "frames": [
+        {
+          "band_visible": true,
+          "band_y": 860,
+          "body_rect": [
+            480,
+            876,
+            1,
+            1329
+          ],
+          "body_text": "サトシはベルカに敗北した。\n盗賊団のアジトから撤退するしかない...。",
+          "body_visible": false,
+          "filtered": true,
+          "right_flip": false,
+          "right_visible": false,
+          "speaker_rect": [
+            480,
+            876,
+            1,
+            28
+          ],
+          "speaker_text": "",
+          "speaker_visible": false
+        },
+        {
+          "band_visible": true,
+          "band_y": 860,
+          "body_rect": [
+            480,
+            876,
+            1,
+            1329
+          ],
+          "body_text": "ゲハハ！ ボクに勝てると思ったのかよ？\n出直してきな！",
+          "body_visible": false,
+          "filtered": true,
+          "right_flip": false,
+          "right_visible": true,
+          "speaker_rect": [
+            480,
+            876,
+            1,
+            28
+          ],
+          "speaker_text": "ベルカ",
+          "speaker_visible": false
+        }
+      ]
+    },
+    {
+      "checkpoint": "original:subevent2_pre2:76",
+      "farewell": {},
+      "frames": []
+    },
+    {
+      "checkpoint": "original:subevent2_rematch:14",
+      "farewell": {},
+      "frames": []
+    },
+    {
+      "checkpoint": "original:subevent3_visit:106",
+      "farewell": {},
+      "frames": []
+    },
+    {
+      "checkpoint": "original:subevent4_post:26",
+      "farewell": {},
+      "frames": []
+    },
+    {
+      "checkpoint": "original:stage2_meet:29",
+      "farewell": {},
+      "frames": []
+    },
+    {
+      "checkpoint": "original:stage2_recover:34",
+      "farewell": {},
+      "frames": []
+    },
+    {
+      "checkpoint": "original:stage3_challenge:37",
+      "farewell": {},
+      "frames": []
+    },
+    {
+      "checkpoint": "original:stage3_recover:60",
+      "farewell": {},
+      "frames": []
+    },
+    {
+      "checkpoint": "original:stage4_meet:42",
+      "farewell": {},
+      "frames": []
+    },
+    {
+      "checkpoint": "original:stage4_recover:22",
+      "farewell": {},
+      "frames": []
+    },
+    {
+      "checkpoint": "original:stage5_interrogation:56",
+      "farewell": {},
+      "frames": []
+    },
+    {
+      "checkpoint": "original:stage5_recover:69",
+      "farewell": {},
+      "frames": []
+    },
+    {
+      "checkpoint": "original:stage6_banquet:87",
+      "farewell": {},
+      "frames": []
+    },
+    {
+      "checkpoint": "original:stage6_post:12",
+      "farewell": {},
+      "frames": []
+    }
+  ],
+  "main_source_hash": "31571141955af7276cce3878d30e4caec914584ddfecd21a8824f342f9238f9e",
+  "method_hash": "5c8309a29a56c9d3cdd158e5e5ee7ed36ffaa1c0043c466d6964e2889a2f6901",
+  "scope": "actual-main-farewell-from-reconstructed-prefixes"
+}

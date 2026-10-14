@@ -1,0 +1,333 @@
+{
+  "blur": {
+    "amount": 15,
+    "shader": "shader_type canvas_item;\nuniform float blur_amount : hint_range(0.0, 8.0) = 3.0;\nvoid fragment() {\n\tvec2 ps = TEXTURE_PIXEL_SIZE * blur_amount;\n\tvec4 col = texture(TEXTURE, UV) * 0.16;\n\tcol += texture(TEXTURE, UV + vec2(ps.x, 0.0)) * 0.12;\n\tcol += texture(TEXTURE, UV - vec2(ps.x, 0.0)) * 0.12;\n\tcol += texture(TEXTURE, UV + vec2(0.0, ps.y)) * 0.12;\n\tcol += texture(TEXTURE, UV - vec2(0.0, ps.y)) * 0.12;\n\tcol += texture(TEXTURE, UV + vec2(ps.x, ps.y)) * 0.09;\n\tcol += texture(TEXTURE, UV - vec2(ps.x, ps.y)) * 0.09;\n\tcol += texture(TEXTURE, UV + vec2(ps.x, -ps.y)) * 0.09;\n\tcol += texture(TEXTURE, UV - vec2(ps.x, -ps.y)) * 0.09;\n\tCOLOR = col;\n}"
+  },
+  "cases": [
+    {
+      "flip_h": false,
+      "options": {
+        "direction": "left",
+        "offset_x": 50,
+        "offset_y": 20
+      },
+      "pivot": [
+        96,
+        54
+      ],
+      "position": [
+        152,
+        216
+      ],
+      "rect": [
+        300,
+        200,
+        200,
+        100
+      ],
+      "rotation": 0,
+      "size": [
+        192,
+        108
+      ],
+      "target": "hand_panel"
+    },
+    {
+      "flip_h": false,
+      "options": {
+        "direction": "left",
+        "offset_x": 50,
+        "offset_y": 20
+      },
+      "pivot": [
+        96,
+        54
+      ],
+      "position": [
+        152,
+        216
+      ],
+      "rect": [
+        300,
+        200,
+        200,
+        100
+      ],
+      "rotation": 0,
+      "size": [
+        192,
+        108
+      ],
+      "target": "card_bar"
+    },
+    {
+      "flip_h": true,
+      "options": {
+        "direction": "right",
+        "offset_x": 50,
+        "offset_y": 20
+      },
+      "pivot": [
+        96,
+        54
+      ],
+      "position": [
+        506,
+        216
+      ],
+      "rect": [
+        300,
+        200,
+        200,
+        100
+      ],
+      "rotation": 0,
+      "size": [
+        192,
+        108
+      ],
+      "target": "hand_panel"
+    },
+    {
+      "flip_h": true,
+      "options": {
+        "direction": "right",
+        "offset_x": 50,
+        "offset_y": 20
+      },
+      "pivot": [
+        96,
+        54
+      ],
+      "position": [
+        506,
+        216
+      ],
+      "rect": [
+        300,
+        200,
+        200,
+        100
+      ],
+      "rotation": 0,
+      "size": [
+        192,
+        108
+      ],
+      "target": "card_bar"
+    },
+    {
+      "flip_h": false,
+      "options": {
+        "direction": "top",
+        "offset_x": 50,
+        "offset_y": 20
+      },
+      "pivot": [
+        96,
+        54
+      ],
+      "position": [
+        354,
+        106
+      ],
+      "rect": [
+        300,
+        200,
+        200,
+        100
+      ],
+      "rotation": 1.57079637050629,
+      "size": [
+        192,
+        108
+      ],
+      "target": "hand_panel"
+    },
+    {
+      "flip_h": false,
+      "options": {
+        "direction": "top",
+        "offset_x": 50,
+        "offset_y": 20
+      },
+      "pivot": [
+        96,
+        54
+      ],
+      "position": [
+        354,
+        106
+      ],
+      "rect": [
+        300,
+        200,
+        200,
+        100
+      ],
+      "rotation": 1.57079637050629,
+      "size": [
+        192,
+        108
+      ],
+      "target": "card_bar"
+    },
+    {
+      "flip_h": false,
+      "options": {
+        "direction": "bottom",
+        "offset_x": 50,
+        "offset_y": 20
+      },
+      "pivot": [
+        96,
+        54
+      ],
+      "position": [
+        354,
+        326
+      ],
+      "rect": [
+        300,
+        200,
+        200,
+        100
+      ],
+      "rotation": -1.57079637050629,
+      "size": [
+        192,
+        108
+      ],
+      "target": "hand_panel"
+    },
+    {
+      "flip_h": false,
+      "options": {
+        "direction": "bottom",
+        "offset_x": 50,
+        "offset_y": 20
+      },
+      "pivot": [
+        96,
+        54
+      ],
+      "position": [
+        354,
+        326
+      ],
+      "rect": [
+        300,
+        200,
+        200,
+        100
+      ],
+      "rotation": -1.57079637050629,
+      "size": [
+        192,
+        108
+      ],
+      "target": "card_bar"
+    },
+    {
+      "flip_h": true,
+      "options": {
+        "direction": "auto",
+        "offset_x": 50,
+        "offset_y": 20
+      },
+      "pivot": [
+        96,
+        54
+      ],
+      "position": [
+        506,
+        216
+      ],
+      "rect": [
+        300,
+        200,
+        200,
+        100
+      ],
+      "rotation": 0,
+      "size": [
+        192,
+        108
+      ],
+      "target": "hand_panel"
+    },
+    {
+      "flip_h": false,
+      "options": {
+        "direction": "auto",
+        "offset_x": 50,
+        "offset_y": 20
+      },
+      "pivot": [
+        96,
+        54
+      ],
+      "position": [
+        354,
+        106
+      ],
+      "rect": [
+        300,
+        200,
+        200,
+        100
+      ],
+      "rotation": 1.57079637050629,
+      "size": [
+        192,
+        108
+      ],
+      "target": "card_bar"
+    }
+  ],
+  "pulse_samples": [
+    1,
+    1.00046239991207,
+    1.0018467488233,
+    1.00414451165125,
+    1.00734152179211,
+    1.01141806989908,
+    1.01634902060032,
+    1.0221039749682,
+    1.02864744961262,
+    1.03593910634518,
+    1.04393398463726,
+    1.05258278995752,
+    1.06183220893145,
+    1.07162520885468,
+    1.08190142214298,
+    1.09259749054909,
+    1.10364744067192,
+    1.11498319804668,
+    1.12653483748436,
+    1.13823112845421,
+    1.15,
+    1.1617688536644,
+    1.17346516251564,
+    1.18501681089401,
+    1.19635254144669,
+    1.20740250945091,
+    1.21809856891632,
+    1.22837479114532,
+    1.23816778659821,
+    1.24741718769073,
+    1.25606602430344,
+    1.26406088471413,
+    1.27135254144669,
+    1.27789602279663,
+    1.28365097045898,
+    1.28858192563057,
+    1.29265847206116,
+    1.29585548639297,
+    1.29815324544907,
+    1.29953760504723,
+    1.3
+  ],
+  "scope": "actual-highlight-method-isolated-controls",
+  "source_hash": "3cdc96173ee3c723bbec497ec2404f2e7d66c4b972bdb9f593545b9e39bf786b"
+}

@@ -1,146 +1,130 @@
+import { advanceStory } from './story-input.mjs'
 import assert from 'node:assert/strict'
-import { mkdir, mkdtemp, readFile, rm } from 'node:fs/promises'
+import { mkdtemp, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
+import { finishOriginalShowdown } from '../helpers/original-ui.mjs'
 import { _electron as electron } from 'playwright-core'
-import { assertMatildaSave } from '../helpers/matilda-checks.mjs'
+import { originalDocument, advanceOriginalDialogue } from '../helpers/original-ui.mjs'
 
 const root = fileURLToPath(new URL('../..', import.meta.url))
 const executablePath = createRequire(import.meta.url)('electron')
-const content = JSON.parse(await readFile(join(root, 'content/stories/matilda-tutorial.json'), 'utf8'))
+const battleDocument = JSON.parse(await readFile(join(root, 'content/stories/godot-prologue-battle.json'), 'utf8'))
 
-async function continueThroughPrologue(page) {
-  for (let count = 0; count < 20; count++) {
-    const checkpoint = await page.getByTestId('checkpoint-id').textContent()
-    if (checkpoint === 'prologue.end') {
-      await page.getByRole('button', { name: 'チュートリアルへ進む', exact: true }).click()
-      await page.getByTestId('story-text').getByText(/周りの風景/).waitFor()
-      return
-    }
-    assert.ok(checkpoint?.startsWith('prologue.'), `Unexpected opening checkpoint ${checkpoint}`)
-    await page.getByRole('button', { name: '次へ', exact: true }).click()
-    await page.waitForFunction((previous) => document.querySelector('[data-testid="checkpoint-id"]')?.textContent !== previous,
-      checkpoint)
-  }
-  assert.fail('Prologue did not reach Matilda tutorial')
-}
-
-test('new game reaches every Matilda line, prepares, plays twice and resumes through the end', { timeout: 180_000 }, async () => {
-  const data = await mkdtemp(join(tmpdir(), 'janken-matilda-journey-'))
-  const screenshots = join(root, 'test-results/matilda')
-  const target = join(data, 'janken-save.json')
-  let app, page, initial
-  const read = async () => JSON.parse(await readFile(target, 'utf8'))
-  const open = async (button) => {
-    app = await electron.launch({ executablePath,
-      args: [join(root, 'dist/game/main/index.js'), `--user-data-dir=${data}`] })
+test('new game reads every original opening/tutorial line, prepares, plays twice and resumes into the original normal battle', { timeout: 360_000 }, async () => {
+  const userData = await mkdtemp(join(tmpdir(), 'janken-matilda-journey-'))
+  const args = [join(root, 'dist/game/main/index.js'), `--user-data-dir=${userData}`]
+  let app, page
+  const open = async button => {
+    app = await electron.launch({ executablePath, args })
     page = await app.firstWindow()
-    const session = await page.context().newCDPSession(page)
-    await session.send('Emulation.setDeviceMetricsOverride', { width: 1920, height: 1080, deviceScaleFactor: 1, mobile: false })
+    await page.addInitScript(() => { Math.random = () => 0 })
+    await page.evaluate(() => { Math.random = () => 0 })
     await page.getByRole('button', { name: button, exact: true }).click()
-    await page.getByTestId('checkpoint-id').waitFor()
   }
-  const check = async (checkpoint, deckSize = 0, rounds = null, acknowledged = null) => {
-    await page.waitForFunction((id) => document.querySelector('[data-testid="checkpoint-id"]')?.textContent === id, checkpoint)
-    const save = await read()
-    assertMatildaSave(save, initial, { checkpoint, deckSize, rounds, acknowledged })
-    return save
-  }
-  const restart = async () => {
-    const before = await readFile(target, 'utf8')
-    const checkpoint = await page.getByTestId('checkpoint-id').textContent()
-    const text = await page.getByTestId('story-text').allTextContents()
-    const result = await page.getByTestId('tutorial-result').allTextContents()
+  const read = () => page.evaluate(() => globalThis.janken.save.read())
+  const restartTutorial = async state => {
+    const before = await read()
     await app.close(); app = undefined
     await open('つづきから')
-    assert.equal(await page.getByTestId('checkpoint-id').textContent(), checkpoint)
-    assert.deepEqual(await page.getByTestId('story-text').allTextContents(), text)
-    assert.deepEqual(await page.getByTestId('tutorial-result').allTextContents(), result)
-    assert.equal(await readFile(target, 'utf8'), before)
-  }
-  const capture = async (name) => {
-    await page.waitForFunction(() => [...document.querySelectorAll('.story-stage img')].length > 0 &&
-      [...document.querySelectorAll('.story-stage img')].every((img) => img.complete && img.naturalWidth > 0))
-    const rect = await page.getByTestId('story-frame').boundingBox()
-    assert.deepEqual(rect, { x: 0, y: 0, width: 1920, height: 1080 })
-    await page.screenshot({ path: join(screenshots, `${name}.png`) })
+    await page.getByTestId('original-tutorial-cursor').filter({ hasText: `${state.playback.cursor}:${state.phase}` }).waitFor()
+    assert.deepEqual(await read(), before)
+    if (state.phase === 'dialogue') {
+      await page.waitForFunction(text => document.querySelector('[data-testid="original-tutorial-dialogue"]')?.textContent?.endsWith(text), state.text)
+    }
   }
   try {
-    await mkdir(screenshots, { recursive: true })
     await open('はじめから')
-    await continueThroughPrologue(page)
-    initial = await read()
-    await check('matilda.start')
+    const sequence = originalDocument.sequences.find(entry => entry.id === 'prologue')
+    const tutorialIndex = sequence.commands.findIndex(command => command.kind === 'battle' && command.parameters.is_tutorial)
+    assert.equal(tutorialIndex, 197)
+    const initial = await read()
     assert.equal(initial.player.inventory.length, 9)
+    assert.ok(initial.player.inventory.every(card => card.grade === 1))
     assert.equal(initial.player.money, 0)
-    assert.ok(initial.player.inventory.every((card) => card.grade === 1))
-    await capture('introduction')
-    const lines = content.stories[0].steps.filter((step) => step.kind === 'line' && step.id !== 'matilda.complete')
-    for (const line of lines) {
-      await check(line.id)
-      assert.ok((await page.getByTestId('story-text').textContent()).includes(line.text))
-      if (line.id === 'matilda.grades.normal-only') {
-        await capture('grades')
-        await restart()
-      }
-      await page.getByRole('button', { name: '次へ', exact: true }).click()
-      await page.waitForFunction((previous) => {
-        const next = [...document.querySelectorAll('button')].find((button) => button.textContent === '次へ')
-        return document.querySelector('[data-testid="checkpoint-id"]')?.textContent !== previous && (!next || !next.disabled)
-      }, line.id)
-    }
-    await check('matilda.await-deck')
-    await restart()
-    const ready = page.getByRole('button', { name: '準備完了', exact: true })
-    assert.equal(await ready.isDisabled(), true)
-    await page.getByRole('button', { name: '追加 グー N', exact: true }).first().click()
-    await page.getByRole('button', { name: '削除 グー N', exact: true }).click()
-    await page.getByRole('button', { name: '自動', exact: true }).click()
-    await capture('preparation')
-    await ready.click()
-    await page.getByTestId('tutorial-selection').waitFor()
-    await check('matilda.await-deck', 9, 0, 0)
-    await restart()
-    for (const [round, hand] of [[0, 'パー'], [1, 'グー']]) {
-      await page.getByTestId('tutorial-selection').waitFor()
-      assert.equal(await page.getByRole('button', { name: '勝負！', exact: true }).isDisabled(), true)
-      await page.getByRole('button', { name: `選択 ${hand} N`, exact: true }).first().click()
-      await page.getByRole('button', { name: '勝負！', exact: true }).click()
-      await page.getByTestId('tutorial-result').waitFor()
-      const saved = await check('matilda.await-deck', 9, round + 1, round)
-      if (!round) {
-        assert.ok((await page.getByTestId('tutorial-result').textContent()).includes('勝ち'))
-        assert.equal(saved.progress.tutorial.rounds[0].opponent_index, 0)
-      }
-      await capture(`result-${round + 1}`)
-      await restart()
-      await page.getByRole('button', { name: round ? '練習を終える' : '次の練習へ', exact: true }).click()
-      if (!round) {
-        await page.getByTestId('tutorial-selection').waitFor()
-        await check('matilda.await-deck', 9, 1, 1)
-        assert.equal(await page.getByRole('button', { name: '選択 パー N', exact: true })
-          .evaluateAll((buttons) => buttons.filter((button) => button.disabled).length), 1)
-        await restart()
+    for (const [index, command] of sequence.commands.slice(0, tutorialIndex).entries()) {
+      if (['band', 'line'].includes(command.kind) && command.parameters.wait_for_input) {
+        await advanceOriginalDialogue(page, 'prologue', index + 1)
       }
     }
-    await check('matilda.complete', 9, 2, 2)
-    await page.getByTestId('story-text').getByText(/これがじゃんけんバトルの基本/).waitFor()
-    await capture('completion')
-    await restart()
-    await page.getByRole('button', { name: '次へ', exact: true }).click()
-    await check('matilda.end', 9, 2, 2)
-    await page.getByRole('heading', { name: 'チュートリアル完了', exact: true }).waitFor()
-    assert.equal(await page.getByRole('button', { name: '次へ', exact: true }).count(), 0)
-    await restart()
-    await page.getByRole('heading', { name: 'チュートリアル完了', exact: true }).waitFor()
-  } finally {
-    try {
-      if (app) await app.close()
-    } finally {
-      await rm(data, { recursive: true, force: true })
+    const seenDialogue = []
+    const resumedRounds = new Set()
+    let sawDeck = false, completed = false, sawGrades = false
+    for (let iteration = 0; iteration < 180; iteration++) {
+      await page.waitForFunction(() => {
+        const cursor = document.querySelector('[data-testid="original-tutorial-cursor"]')?.textContent
+        return cursor && !cursor.endsWith(':running')
+      })
+      const saved = await read(), state = saved.progress.original_tutorial
+      assert.ok(state)
+      assert.deepEqual(saved.player.inventory, initial.player.inventory)
+      assert.equal(saved.player.money, 0)
+      const before = `${state.playback.cursor}:${state.phase}`
+      if (state.phase === 'dialogue') {
+        const trace = battleDocument.traces.find(trace => trace.method === 'tutorial' &&
+          state.playback.results.every((result, index) => trace.outcomes[index] === result))
+        const command = trace.commands[state.playback.cursor - 1]
+        assert.equal(command.kind, 'band')
+        assert.equal(state.text, command.args[1])
+        seenDialogue.push(state.playback.cursor - 1)
+        await page.waitForFunction(text => document.querySelector('[data-testid="original-tutorial-dialogue"]')?.textContent?.endsWith(text), state.text)
+        if (state.text.includes('Nはノーマル')) {
+          sawGrades = true
+          await restartTutorial(state)
+        }
+        await advanceStory(page)
+      } else if (state.phase === 'deck') {
+        sawDeck = true
+        assert.equal(await page.getByRole('button', { name: '準備完了', exact: true }).isDisabled(), true)
+        await restartTutorial(state)
+        await page.getByRole('button', { name: '手持ち rock N', exact: true }).click()
+        await page.getByRole('button', { name: 'デッキ 1 rock', exact: true }).click()
+        assert.equal(await page.getByRole('button', { name: 'デッキ 1 rock', exact: true }).count(), 0)
+        await page.getByRole('button', { name: '自動', exact: true }).click()
+        await page.getByRole('button', { name: '準備完了', exact: true }).click()
+      } else if (state.phase === 'selection') {
+        assert.equal(await page.getByRole('button', { name: '勝負！', exact: true }).isDisabled(), true)
+        const index = state.battle.playerDeck.findIndex((card, index) => card.hand === 'paper' && !state.battle.playerUsed[index])
+        assert.ok(index >= 0)
+        await page.getByRole('button', { name: `デッキ ${index + 1} paper`, exact: true }).click()
+        await page.getByRole('button', { name: '勝負！', exact: true }).click()
+      } else if (state.phase === 'result') {
+        const round = state.battle.rounds.at(-1)
+        assert.equal(round.result, 'win')
+        assert.equal(round.opponent.hand, 'rock')
+        assert.equal(state.battle.opponentHp, 3 - state.battle.rounds.length)
+        await restartTutorial(state)
+        resumedRounds.add(state.battle.rounds.length)
+        await finishOriginalShowdown(page)
+      } else if (state.phase === 'reward') {
+        assert.equal(state.battle.rounds.length, 2)
+        assert.equal(state.gold, 10)
+        const trace = battleDocument.traces.find(trace => trace.method === 'tutorial' && trace.outcomes.every(result => result === 'win'))
+        assert.deepEqual(seenDialogue, trace.commands.flatMap((command, index) => command.kind === 'band' ? [index] : []))
+        await page.getByRole('button', { name: 'OK', exact: true }).click()
+        await page.getByTestId('original-cursor').filter({ hasText: 'prologue:201' }).waitFor()
+        const paid = await read()
+        assert.equal(paid.player.money, 10)
+        assert.deepEqual(paid.player.inventory, initial.player.inventory)
+        assert.equal(paid.progress.original_tutorial, undefined)
+        for (const [index, command] of sequence.commands.entries()) {
+          if (index >= 200 && command.kind !== 'battle' && ['line', 'band'].includes(command.kind) && command.parameters.wait_for_input) {
+            await advanceOriginalDialogue(page, 'prologue', index + 1)
+          }
+        }
+        await page.getByRole('button', { name: '準備完了', exact: true }).waitFor()
+        const normal = await read()
+        assert.equal(normal.progress.checkpoint_id, 'original:prologue:234')
+        assert.equal(normal.progress.original_normal.phase, 'deck')
+        assert.equal(normal.player.money, 10)
+        completed = true; break
+      }
+      await page.waitForFunction(previous => document.querySelector('[data-testid="original-tutorial-cursor"]')?.textContent !== previous, before)
     }
-  }
+    assert.equal(sawDeck, true); assert.equal(sawGrades, true); assert.equal(completed, true)
+    assert.deepEqual([...resumedRounds], [1, 2])
+  } finally { if (app) await app.close(); await rm(userData, { recursive: true, force: true }) }
 })

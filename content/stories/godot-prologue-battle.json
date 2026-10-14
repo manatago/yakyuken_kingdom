@@ -1,0 +1,8023 @@
+{
+  "chapter_path": "res://battle/chapters/PrologueBattleChapter.gd",
+  "format": "godot-battle-traces",
+  "traces": [
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_024.png",
+            {
+              "position": [
+                0,
+                -160
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "matilda",
+            "周りの風景が変わっただろう。これがこの世界のバトルシステム「じゃんけん」だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "item_panel",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_007.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "左にあるのがアイテムボックスだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "バトル中に使えるアイテムがここに表示される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "今は何もないけど、運が良ければ勝率をあげるアイテムなんかを手に入れることができる",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "噂じゃ、伝説のアイテムなるものがあるみたいだが、、、眉唾もんだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "hand_panel",
+            {
+              "offset_x": 50
+            }
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_008.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "右にあるのが手持ちカードだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "グー、チョキ、パーの3種類がある。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カード自体にはグレードがある。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "右上の丸い印が、そのカードのグレードを表してる。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "Nはノーマル、Bはブロンズ、Sはシルバー、Gはゴールド、Pはプラチナだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "同じ手を出した時、グレードが高い方が勝つのさ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "今回は練習だから、互いにNのカードだけを使う。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "card_bar",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_009.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "下のデッキに9枚セットしな。手持ちからカードを選んでデッキに入れるんだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードボックスのカードをクリックするとデッキに登録される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "デッキのカードをクリックするとアイテムボックスに戻るんだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "面倒なら「自動」ボタンで一発だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「準備完了」をクリックすると、デッキが完成する。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_005.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [],
+          "kind": "build_deck"
+        },
+        {
+          "args": [
+            "card_bar",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_009.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "よし、デッキができたな。次はカードの選択だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「カードを選択してください」って表示されたら、",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "出したいカードをクリックするとカードが選択される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「勝負！」を押すと、じゃんけんが始まる。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_011.png",
+            {
+              "position": [
+                0,
+                -348
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "最初は特別にグーを出してやるから、お前はパーを出しな。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_005.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            "action_prompt",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            0,
+            {
+              "fixed": "rock"
+            },
+            "win"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_013.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "ほら、勝っただろ？",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "item_panel",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "opponent_hp",
+            {
+              "offset_y": 20
+            }
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_010.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードで勝負がつくと、どちらかのHPが減る。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "上が相手のHPだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝負に勝つと相手のHPが減る",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "player_hp",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "右下があんたのHPだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝負に負けると自分のHPが減る",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "3回負けたらゲームオーバーだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "逆に相手を3回倒せば勝ちさ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_006.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "もう一回やってみな。\n今度は好きなカードを選びな。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {
+              "win_rate": 0.8
+            },
+            "win"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_013.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "思ったよりやるな。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_010.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "これがじゃんけんバトルの基本だ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードの使い方、グレードの活かし方...",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝つための戦略を考えるのが醍醐味さ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "ルールは理解したか？本番はもっと厳しいからな。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        }
+      ],
+      "method": "tutorial",
+      "outcomes": [
+        "win",
+        "win"
+      ]
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_024.png",
+            {
+              "position": [
+                0,
+                -160
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "matilda",
+            "周りの風景が変わっただろう。これがこの世界のバトルシステム「じゃんけん」だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "item_panel",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_007.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "左にあるのがアイテムボックスだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "バトル中に使えるアイテムがここに表示される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "今は何もないけど、運が良ければ勝率をあげるアイテムなんかを手に入れることができる",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "噂じゃ、伝説のアイテムなるものがあるみたいだが、、、眉唾もんだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "hand_panel",
+            {
+              "offset_x": 50
+            }
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_008.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "右にあるのが手持ちカードだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "グー、チョキ、パーの3種類がある。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カード自体にはグレードがある。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "右上の丸い印が、そのカードのグレードを表してる。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "Nはノーマル、Bはブロンズ、Sはシルバー、Gはゴールド、Pはプラチナだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "同じ手を出した時、グレードが高い方が勝つのさ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "今回は練習だから、互いにNのカードだけを使う。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "card_bar",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_009.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "下のデッキに9枚セットしな。手持ちからカードを選んでデッキに入れるんだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードボックスのカードをクリックするとデッキに登録される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "デッキのカードをクリックするとアイテムボックスに戻るんだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "面倒なら「自動」ボタンで一発だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「準備完了」をクリックすると、デッキが完成する。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_005.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [],
+          "kind": "build_deck"
+        },
+        {
+          "args": [
+            "card_bar",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_009.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "よし、デッキができたな。次はカードの選択だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「カードを選択してください」って表示されたら、",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "出したいカードをクリックするとカードが選択される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「勝負！」を押すと、じゃんけんが始まる。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_011.png",
+            {
+              "position": [
+                0,
+                -348
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "最初は特別にグーを出してやるから、お前はパーを出しな。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_005.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            "action_prompt",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            0,
+            {
+              "fixed": "rock"
+            },
+            "win"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_013.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "ほら、勝っただろ？",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "item_panel",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "opponent_hp",
+            {
+              "offset_y": 20
+            }
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_010.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードで勝負がつくと、どちらかのHPが減る。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "上が相手のHPだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝負に勝つと相手のHPが減る",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "player_hp",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "右下があんたのHPだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝負に負けると自分のHPが減る",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "3回負けたらゲームオーバーだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "逆に相手を3回倒せば勝ちさ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_006.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "もう一回やってみな。\n今度は好きなカードを選びな。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {
+              "win_rate": 0.8
+            },
+            "lose"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_012.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "見た目通り弱いな。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_010.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "これがじゃんけんバトルの基本だ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードの使い方、グレードの活かし方...",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝つための戦略を考えるのが醍醐味さ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "ルールは理解したか？本番はもっと厳しいからな。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        }
+      ],
+      "method": "tutorial",
+      "outcomes": [
+        "win",
+        "lose"
+      ]
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_024.png",
+            {
+              "position": [
+                0,
+                -160
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "matilda",
+            "周りの風景が変わっただろう。これがこの世界のバトルシステム「じゃんけん」だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "item_panel",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_007.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "左にあるのがアイテムボックスだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "バトル中に使えるアイテムがここに表示される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "今は何もないけど、運が良ければ勝率をあげるアイテムなんかを手に入れることができる",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "噂じゃ、伝説のアイテムなるものがあるみたいだが、、、眉唾もんだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "hand_panel",
+            {
+              "offset_x": 50
+            }
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_008.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "右にあるのが手持ちカードだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "グー、チョキ、パーの3種類がある。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カード自体にはグレードがある。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "右上の丸い印が、そのカードのグレードを表してる。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "Nはノーマル、Bはブロンズ、Sはシルバー、Gはゴールド、Pはプラチナだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "同じ手を出した時、グレードが高い方が勝つのさ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "今回は練習だから、互いにNのカードだけを使う。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "card_bar",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_009.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "下のデッキに9枚セットしな。手持ちからカードを選んでデッキに入れるんだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードボックスのカードをクリックするとデッキに登録される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "デッキのカードをクリックするとアイテムボックスに戻るんだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "面倒なら「自動」ボタンで一発だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「準備完了」をクリックすると、デッキが完成する。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_005.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [],
+          "kind": "build_deck"
+        },
+        {
+          "args": [
+            "card_bar",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_009.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "よし、デッキができたな。次はカードの選択だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「カードを選択してください」って表示されたら、",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "出したいカードをクリックするとカードが選択される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「勝負！」を押すと、じゃんけんが始まる。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_011.png",
+            {
+              "position": [
+                0,
+                -348
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "最初は特別にグーを出してやるから、お前はパーを出しな。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_005.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            "action_prompt",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            0,
+            {
+              "fixed": "rock"
+            },
+            "win"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_013.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "ほら、勝っただろ？",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "item_panel",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "opponent_hp",
+            {
+              "offset_y": 20
+            }
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_010.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードで勝負がつくと、どちらかのHPが減る。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "上が相手のHPだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝負に勝つと相手のHPが減る",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "player_hp",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "右下があんたのHPだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝負に負けると自分のHPが減る",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "3回負けたらゲームオーバーだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "逆に相手を3回倒せば勝ちさ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_006.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "もう一回やってみな。\n今度は好きなカードを選びな。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {
+              "win_rate": 0.8
+            },
+            "draw"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_012.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "見た目通り弱いな。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_010.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "これがじゃんけんバトルの基本だ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードの使い方、グレードの活かし方...",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝つための戦略を考えるのが醍醐味さ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "ルールは理解したか？本番はもっと厳しいからな。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        }
+      ],
+      "method": "tutorial",
+      "outcomes": [
+        "win",
+        "draw"
+      ]
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_024.png",
+            {
+              "position": [
+                0,
+                -160
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "matilda",
+            "周りの風景が変わっただろう。これがこの世界のバトルシステム「じゃんけん」だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "item_panel",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_007.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "左にあるのがアイテムボックスだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "バトル中に使えるアイテムがここに表示される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "今は何もないけど、運が良ければ勝率をあげるアイテムなんかを手に入れることができる",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "噂じゃ、伝説のアイテムなるものがあるみたいだが、、、眉唾もんだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "hand_panel",
+            {
+              "offset_x": 50
+            }
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_008.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "右にあるのが手持ちカードだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "グー、チョキ、パーの3種類がある。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カード自体にはグレードがある。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "右上の丸い印が、そのカードのグレードを表してる。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "Nはノーマル、Bはブロンズ、Sはシルバー、Gはゴールド、Pはプラチナだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "同じ手を出した時、グレードが高い方が勝つのさ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "今回は練習だから、互いにNのカードだけを使う。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "card_bar",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_009.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "下のデッキに9枚セットしな。手持ちからカードを選んでデッキに入れるんだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードボックスのカードをクリックするとデッキに登録される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "デッキのカードをクリックするとアイテムボックスに戻るんだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "面倒なら「自動」ボタンで一発だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「準備完了」をクリックすると、デッキが完成する。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_005.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [],
+          "kind": "build_deck"
+        },
+        {
+          "args": [
+            "card_bar",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_009.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "よし、デッキができたな。次はカードの選択だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「カードを選択してください」って表示されたら、",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "出したいカードをクリックするとカードが選択される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「勝負！」を押すと、じゃんけんが始まる。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_011.png",
+            {
+              "position": [
+                0,
+                -348
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "最初は特別にグーを出してやるから、お前はパーを出しな。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_005.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            "action_prompt",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            0,
+            {
+              "fixed": "rock"
+            },
+            "lose"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_012.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "...あんた、パーを出せって言っただろ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "まぁいい、次で取り返しな。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "opponent_hp",
+            {
+              "offset_y": 20
+            }
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_010.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードで勝負がつくと、どちらかのHPが減る。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "上が相手のHPだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝負に勝つと相手のHPが減る",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "player_hp",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "右下があんたのHPだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝負に負けると自分のHPが減る",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "3回負けたらゲームオーバーだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "逆に相手を3回倒せば勝ちさ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_006.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "もう一回やってみな。\n今度は好きなカードを選びな。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {
+              "win_rate": 0.8
+            },
+            "win"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_013.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "思ったよりやるな。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_010.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "これがじゃんけんバトルの基本だ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードの使い方、グレードの活かし方...",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝つための戦略を考えるのが醍醐味さ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "ルールは理解したか？本番はもっと厳しいからな。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        }
+      ],
+      "method": "tutorial",
+      "outcomes": [
+        "lose",
+        "win"
+      ]
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_024.png",
+            {
+              "position": [
+                0,
+                -160
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "matilda",
+            "周りの風景が変わっただろう。これがこの世界のバトルシステム「じゃんけん」だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "item_panel",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_007.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "左にあるのがアイテムボックスだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "バトル中に使えるアイテムがここに表示される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "今は何もないけど、運が良ければ勝率をあげるアイテムなんかを手に入れることができる",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "噂じゃ、伝説のアイテムなるものがあるみたいだが、、、眉唾もんだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "hand_panel",
+            {
+              "offset_x": 50
+            }
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_008.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "右にあるのが手持ちカードだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "グー、チョキ、パーの3種類がある。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カード自体にはグレードがある。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "右上の丸い印が、そのカードのグレードを表してる。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "Nはノーマル、Bはブロンズ、Sはシルバー、Gはゴールド、Pはプラチナだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "同じ手を出した時、グレードが高い方が勝つのさ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "今回は練習だから、互いにNのカードだけを使う。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "card_bar",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_009.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "下のデッキに9枚セットしな。手持ちからカードを選んでデッキに入れるんだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードボックスのカードをクリックするとデッキに登録される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "デッキのカードをクリックするとアイテムボックスに戻るんだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "面倒なら「自動」ボタンで一発だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「準備完了」をクリックすると、デッキが完成する。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_005.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [],
+          "kind": "build_deck"
+        },
+        {
+          "args": [
+            "card_bar",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_009.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "よし、デッキができたな。次はカードの選択だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「カードを選択してください」って表示されたら、",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "出したいカードをクリックするとカードが選択される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「勝負！」を押すと、じゃんけんが始まる。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_011.png",
+            {
+              "position": [
+                0,
+                -348
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "最初は特別にグーを出してやるから、お前はパーを出しな。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_005.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            "action_prompt",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            0,
+            {
+              "fixed": "rock"
+            },
+            "lose"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_012.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "...あんた、パーを出せって言っただろ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "まぁいい、次で取り返しな。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "opponent_hp",
+            {
+              "offset_y": 20
+            }
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_010.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードで勝負がつくと、どちらかのHPが減る。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "上が相手のHPだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝負に勝つと相手のHPが減る",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "player_hp",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "右下があんたのHPだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝負に負けると自分のHPが減る",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "3回負けたらゲームオーバーだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "逆に相手を3回倒せば勝ちさ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_006.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "もう一回やってみな。\n今度は好きなカードを選びな。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {
+              "win_rate": 0.8
+            },
+            "lose"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_012.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "見た目通り弱いな。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_010.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "これがじゃんけんバトルの基本だ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードの使い方、グレードの活かし方...",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝つための戦略を考えるのが醍醐味さ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "ルールは理解したか？本番はもっと厳しいからな。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        }
+      ],
+      "method": "tutorial",
+      "outcomes": [
+        "lose",
+        "lose"
+      ]
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_024.png",
+            {
+              "position": [
+                0,
+                -160
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "matilda",
+            "周りの風景が変わっただろう。これがこの世界のバトルシステム「じゃんけん」だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "item_panel",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_007.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "左にあるのがアイテムボックスだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "バトル中に使えるアイテムがここに表示される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "今は何もないけど、運が良ければ勝率をあげるアイテムなんかを手に入れることができる",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "噂じゃ、伝説のアイテムなるものがあるみたいだが、、、眉唾もんだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "hand_panel",
+            {
+              "offset_x": 50
+            }
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_008.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "右にあるのが手持ちカードだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "グー、チョキ、パーの3種類がある。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カード自体にはグレードがある。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "右上の丸い印が、そのカードのグレードを表してる。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "Nはノーマル、Bはブロンズ、Sはシルバー、Gはゴールド、Pはプラチナだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "同じ手を出した時、グレードが高い方が勝つのさ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "今回は練習だから、互いにNのカードだけを使う。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "card_bar",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_009.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "下のデッキに9枚セットしな。手持ちからカードを選んでデッキに入れるんだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードボックスのカードをクリックするとデッキに登録される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "デッキのカードをクリックするとアイテムボックスに戻るんだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "面倒なら「自動」ボタンで一発だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「準備完了」をクリックすると、デッキが完成する。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_005.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [],
+          "kind": "build_deck"
+        },
+        {
+          "args": [
+            "card_bar",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_009.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "よし、デッキができたな。次はカードの選択だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「カードを選択してください」って表示されたら、",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "出したいカードをクリックするとカードが選択される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「勝負！」を押すと、じゃんけんが始まる。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_011.png",
+            {
+              "position": [
+                0,
+                -348
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "最初は特別にグーを出してやるから、お前はパーを出しな。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_005.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            "action_prompt",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            0,
+            {
+              "fixed": "rock"
+            },
+            "lose"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_012.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "...あんた、パーを出せって言っただろ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "まぁいい、次で取り返しな。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "opponent_hp",
+            {
+              "offset_y": 20
+            }
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_010.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードで勝負がつくと、どちらかのHPが減る。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "上が相手のHPだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝負に勝つと相手のHPが減る",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "player_hp",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "右下があんたのHPだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝負に負けると自分のHPが減る",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "3回負けたらゲームオーバーだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "逆に相手を3回倒せば勝ちさ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_006.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "もう一回やってみな。\n今度は好きなカードを選びな。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {
+              "win_rate": 0.8
+            },
+            "draw"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_012.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "見た目通り弱いな。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_010.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "これがじゃんけんバトルの基本だ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードの使い方、グレードの活かし方...",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝つための戦略を考えるのが醍醐味さ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "ルールは理解したか？本番はもっと厳しいからな。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        }
+      ],
+      "method": "tutorial",
+      "outcomes": [
+        "lose",
+        "draw"
+      ]
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_024.png",
+            {
+              "position": [
+                0,
+                -160
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "matilda",
+            "周りの風景が変わっただろう。これがこの世界のバトルシステム「じゃんけん」だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "item_panel",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_007.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "左にあるのがアイテムボックスだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "バトル中に使えるアイテムがここに表示される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "今は何もないけど、運が良ければ勝率をあげるアイテムなんかを手に入れることができる",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "噂じゃ、伝説のアイテムなるものがあるみたいだが、、、眉唾もんだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "hand_panel",
+            {
+              "offset_x": 50
+            }
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_008.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "右にあるのが手持ちカードだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "グー、チョキ、パーの3種類がある。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カード自体にはグレードがある。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "右上の丸い印が、そのカードのグレードを表してる。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "Nはノーマル、Bはブロンズ、Sはシルバー、Gはゴールド、Pはプラチナだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "同じ手を出した時、グレードが高い方が勝つのさ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "今回は練習だから、互いにNのカードだけを使う。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "card_bar",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_009.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "下のデッキに9枚セットしな。手持ちからカードを選んでデッキに入れるんだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードボックスのカードをクリックするとデッキに登録される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "デッキのカードをクリックするとアイテムボックスに戻るんだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "面倒なら「自動」ボタンで一発だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「準備完了」をクリックすると、デッキが完成する。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_005.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [],
+          "kind": "build_deck"
+        },
+        {
+          "args": [
+            "card_bar",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_009.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "よし、デッキができたな。次はカードの選択だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「カードを選択してください」って表示されたら、",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "出したいカードをクリックするとカードが選択される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「勝負！」を押すと、じゃんけんが始まる。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_011.png",
+            {
+              "position": [
+                0,
+                -348
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "最初は特別にグーを出してやるから、お前はパーを出しな。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_005.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            "action_prompt",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            0,
+            {
+              "fixed": "rock"
+            },
+            "draw"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_006.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "あいこか。同じグレードだと引き分けになる。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "opponent_hp",
+            {
+              "offset_y": 20
+            }
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_010.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードで勝負がつくと、どちらかのHPが減る。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "上が相手のHPだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝負に勝つと相手のHPが減る",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "player_hp",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "右下があんたのHPだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝負に負けると自分のHPが減る",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "3回負けたらゲームオーバーだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "逆に相手を3回倒せば勝ちさ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_006.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "もう一回やってみな。\n今度は好きなカードを選びな。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {
+              "win_rate": 0.8
+            },
+            "win"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_013.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "思ったよりやるな。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_010.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "これがじゃんけんバトルの基本だ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードの使い方、グレードの活かし方...",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝つための戦略を考えるのが醍醐味さ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "ルールは理解したか？本番はもっと厳しいからな。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        }
+      ],
+      "method": "tutorial",
+      "outcomes": [
+        "draw",
+        "win"
+      ]
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_024.png",
+            {
+              "position": [
+                0,
+                -160
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "matilda",
+            "周りの風景が変わっただろう。これがこの世界のバトルシステム「じゃんけん」だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "item_panel",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_007.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "左にあるのがアイテムボックスだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "バトル中に使えるアイテムがここに表示される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "今は何もないけど、運が良ければ勝率をあげるアイテムなんかを手に入れることができる",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "噂じゃ、伝説のアイテムなるものがあるみたいだが、、、眉唾もんだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "hand_panel",
+            {
+              "offset_x": 50
+            }
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_008.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "右にあるのが手持ちカードだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "グー、チョキ、パーの3種類がある。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カード自体にはグレードがある。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "右上の丸い印が、そのカードのグレードを表してる。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "Nはノーマル、Bはブロンズ、Sはシルバー、Gはゴールド、Pはプラチナだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "同じ手を出した時、グレードが高い方が勝つのさ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "今回は練習だから、互いにNのカードだけを使う。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "card_bar",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_009.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "下のデッキに9枚セットしな。手持ちからカードを選んでデッキに入れるんだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードボックスのカードをクリックするとデッキに登録される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "デッキのカードをクリックするとアイテムボックスに戻るんだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "面倒なら「自動」ボタンで一発だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「準備完了」をクリックすると、デッキが完成する。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_005.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [],
+          "kind": "build_deck"
+        },
+        {
+          "args": [
+            "card_bar",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_009.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "よし、デッキができたな。次はカードの選択だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「カードを選択してください」って表示されたら、",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "出したいカードをクリックするとカードが選択される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「勝負！」を押すと、じゃんけんが始まる。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_011.png",
+            {
+              "position": [
+                0,
+                -348
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "最初は特別にグーを出してやるから、お前はパーを出しな。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_005.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            "action_prompt",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            0,
+            {
+              "fixed": "rock"
+            },
+            "draw"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_006.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "あいこか。同じグレードだと引き分けになる。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "opponent_hp",
+            {
+              "offset_y": 20
+            }
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_010.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードで勝負がつくと、どちらかのHPが減る。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "上が相手のHPだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝負に勝つと相手のHPが減る",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "player_hp",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "右下があんたのHPだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝負に負けると自分のHPが減る",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "3回負けたらゲームオーバーだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "逆に相手を3回倒せば勝ちさ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_006.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "もう一回やってみな。\n今度は好きなカードを選びな。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {
+              "win_rate": 0.8
+            },
+            "lose"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_012.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "見た目通り弱いな。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_010.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "これがじゃんけんバトルの基本だ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードの使い方、グレードの活かし方...",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝つための戦略を考えるのが醍醐味さ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "ルールは理解したか？本番はもっと厳しいからな。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        }
+      ],
+      "method": "tutorial",
+      "outcomes": [
+        "draw",
+        "lose"
+      ]
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_024.png",
+            {
+              "position": [
+                0,
+                -160
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "matilda",
+            "周りの風景が変わっただろう。これがこの世界のバトルシステム「じゃんけん」だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "item_panel",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_007.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "左にあるのがアイテムボックスだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "バトル中に使えるアイテムがここに表示される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "今は何もないけど、運が良ければ勝率をあげるアイテムなんかを手に入れることができる",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "噂じゃ、伝説のアイテムなるものがあるみたいだが、、、眉唾もんだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "hand_panel",
+            {
+              "offset_x": 50
+            }
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_008.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "右にあるのが手持ちカードだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "グー、チョキ、パーの3種類がある。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カード自体にはグレードがある。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "右上の丸い印が、そのカードのグレードを表してる。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "Nはノーマル、Bはブロンズ、Sはシルバー、Gはゴールド、Pはプラチナだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "同じ手を出した時、グレードが高い方が勝つのさ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "今回は練習だから、互いにNのカードだけを使う。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "card_bar",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_009.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "下のデッキに9枚セットしな。手持ちからカードを選んでデッキに入れるんだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードボックスのカードをクリックするとデッキに登録される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "デッキのカードをクリックするとアイテムボックスに戻るんだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "面倒なら「自動」ボタンで一発だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「準備完了」をクリックすると、デッキが完成する。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_005.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [],
+          "kind": "build_deck"
+        },
+        {
+          "args": [
+            "card_bar",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_009.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "よし、デッキができたな。次はカードの選択だ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「カードを選択してください」って表示されたら、",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "出したいカードをクリックするとカードが選択される。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "「勝負！」を押すと、じゃんけんが始まる。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_011.png",
+            {
+              "position": [
+                0,
+                -348
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "最初は特別にグーを出してやるから、お前はパーを出しな。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_005.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            "action_prompt",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            0,
+            {
+              "fixed": "rock"
+            },
+            "draw"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_006.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "あいこか。同じグレードだと引き分けになる。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "opponent_hp",
+            {
+              "offset_y": 20
+            }
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_010.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードで勝負がつくと、どちらかのHPが減る。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "上が相手のHPだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝負に勝つと相手のHPが減る",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "player_hp",
+            {}
+          ],
+          "kind": "highlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "右下があんたのHPだ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝負に負けると自分のHPが減る",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "3回負けたらゲームオーバーだ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "逆に相手を3回倒せば勝ちさ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "unhighlight"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_006.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "もう一回やってみな。\n今度は好きなカードを選びな。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {
+              "win_rate": 0.8
+            },
+            "draw"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_012.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "見た目通り弱いな。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_010.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "これがじゃんけんバトルの基本だ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "カードの使い方、グレードの活かし方...",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "勝つための戦略を考えるのが醍醐味さ。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            "matilda",
+            "ルールは理解したか？本番はもっと厳しいからな。",
+            {
+              "append": true
+            }
+          ],
+          "kind": "band"
+        }
+      ],
+      "method": "tutorial",
+      "outcomes": [
+        "draw",
+        "draw"
+      ]
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_024.png",
+            {
+              "appear_duration": 0.4,
+              "appear_effect": "fade_slide",
+              "appear_from": "right",
+              "position": [
+                0,
+                -160
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "さあ、始めようか。手加減はしないよ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {
+              "fixed": "rock"
+            },
+            "win"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_014.png",
+            {
+              "position": [
+                0,
+                -194
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "くっ、変態の癖に。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "matilda",
+            {}
+          ],
+          "kind": "leave"
+        },
+        {
+          "args": [
+            "",
+            {}
+          ],
+          "kind": "deck"
+        },
+        {
+          "args": [
+            false
+          ],
+          "kind": "set_battle_ui_visible"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing1.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "くっ・・・、しょうがないな・・・・",
+            {
+              "side": "right"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing2.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "・・・・・・・・・",
+            {
+              "side": "right"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing3.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "・・・・・あんまり、まじまじ見るなよぉ・・・・・",
+            {
+              "side": "right"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/backgrounds/prologue/bg05_prison_cell.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            true
+          ],
+          "kind": "set_battle_ui_visible"
+        },
+        {
+          "args": [
+            "res://assets/battle/decks/pedestal_01_marble.png",
+            {
+              "position": [
+                0,
+                180
+              ],
+              "scale": 0.55
+            }
+          ],
+          "kind": "deck"
+        }
+      ],
+      "method": "outfit_3",
+      "outcomes": [
+        "win"
+      ],
+      "repeated": false
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_024.png",
+            {
+              "appear_duration": 0.4,
+              "appear_effect": "fade_slide",
+              "appear_from": "right",
+              "position": [
+                0,
+                -160
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "さあ、始めようか。手加減はしないよ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {},
+            "win"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_014.png",
+            {
+              "position": [
+                0,
+                -194
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "くっ、変態の癖に。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "matilda",
+            {}
+          ],
+          "kind": "leave"
+        },
+        {
+          "args": [
+            "",
+            {}
+          ],
+          "kind": "deck"
+        },
+        {
+          "args": [
+            false
+          ],
+          "kind": "set_battle_ui_visible"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing1.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "くっ・・・、しょうがないな・・・・",
+            {
+              "side": "right"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing2.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "・・・・・・・・・",
+            {
+              "side": "right"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing3.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "・・・・・あんまり、まじまじ見るなよぉ・・・・・",
+            {
+              "side": "right"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/backgrounds/prologue/bg05_prison_cell.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            true
+          ],
+          "kind": "set_battle_ui_visible"
+        },
+        {
+          "args": [
+            "res://assets/battle/decks/pedestal_01_marble.png",
+            {
+              "position": [
+                0,
+                180
+              ],
+              "scale": 0.55
+            }
+          ],
+          "kind": "deck"
+        }
+      ],
+      "method": "outfit_3",
+      "outcomes": [
+        "win"
+      ],
+      "repeated": true
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_024.png",
+            {
+              "appear_duration": 0.4,
+              "appear_effect": "fade_slide",
+              "appear_from": "right",
+              "position": [
+                0,
+                -160
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "さあ、始めようか。手加減はしないよ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {
+              "fixed": "rock"
+            },
+            "lose"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_015.png",
+            {
+              "position": [
+                0,
+                -194
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "やっぱり、真剣勝負も弱いわね。ふっ。",
+            {}
+          ],
+          "kind": "band"
+        }
+      ],
+      "method": "outfit_3",
+      "outcomes": [
+        "lose"
+      ],
+      "repeated": false
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_024.png",
+            {
+              "appear_duration": 0.4,
+              "appear_effect": "fade_slide",
+              "appear_from": "right",
+              "position": [
+                0,
+                -160
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "さあ、始めようか。手加減はしないよ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {},
+            "lose"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_015.png",
+            {
+              "position": [
+                0,
+                -194
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "やっぱり、真剣勝負も弱いわね。ふっ。",
+            {}
+          ],
+          "kind": "band"
+        }
+      ],
+      "method": "outfit_3",
+      "outcomes": [
+        "lose"
+      ],
+      "repeated": true
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_024.png",
+            {
+              "appear_duration": 0.4,
+              "appear_effect": "fade_slide",
+              "appear_from": "right",
+              "position": [
+                0,
+                -160
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "さあ、始めようか。手加減はしないよ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {
+              "fixed": "rock"
+            },
+            "draw"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_012.png",
+            {
+              "position": [
+                0,
+                -236
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "あいこか。首がつながったな。",
+            {}
+          ],
+          "kind": "band"
+        }
+      ],
+      "method": "outfit_3",
+      "outcomes": [
+        "draw"
+      ],
+      "repeated": false
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_024.png",
+            {
+              "appear_duration": 0.4,
+              "appear_effect": "fade_slide",
+              "appear_from": "right",
+              "position": [
+                0,
+                -160
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "さあ、始めようか。手加減はしないよ。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {},
+            "draw"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_012.png",
+            {
+              "position": [
+                0,
+                -236
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "あいこか。首がつながったな。",
+            {}
+          ],
+          "kind": "band"
+        }
+      ],
+      "method": "outfit_3",
+      "outcomes": [
+        "draw"
+      ],
+      "repeated": true
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_016.png",
+            {
+              "position": [
+                0,
+                -187
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "あんまり、じろじろ見るんじゃないぞ",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {
+              "win_rate": 0.6
+            },
+            "win"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_017.png",
+            {
+              "position": [
+                0,
+                -94
+              ],
+              "scale": 0.92,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "...っ、負けた...",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "matilda",
+            {}
+          ],
+          "kind": "leave"
+        },
+        {
+          "args": [
+            "",
+            {}
+          ],
+          "kind": "deck"
+        },
+        {
+          "args": [
+            false
+          ],
+          "kind": "set_battle_ui_visible"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing4.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "くそっ・・・・こんな変態に・・・",
+            {
+              "side": "right"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing5.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "（強気なお姉さんの恥じらい・・・えろっ・・・）",
+            {
+              "side": "left"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing6.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "ほほら・・・・。これでいいか？",
+            {
+              "side": "right"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "ダメです。あと10秒！",
+            {
+              "side": "left"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing7.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "（うううう・・・恥ずかしい・・・）",
+            {
+              "side": "right"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/backgrounds/prologue/bg05_prison_cell.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            true
+          ],
+          "kind": "set_battle_ui_visible"
+        },
+        {
+          "args": [
+            "res://assets/battle/decks/pedestal_01_marble.png",
+            {
+              "position": [
+                0,
+                180
+              ],
+              "scale": 0.55
+            }
+          ],
+          "kind": "deck"
+        }
+      ],
+      "method": "outfit_2",
+      "outcomes": [
+        "win"
+      ],
+      "repeated": false
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_016.png",
+            {
+              "position": [
+                0,
+                -187
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "あんまり、じろじろ見るんじゃないぞ",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {
+              "win_rate": 0.6
+            },
+            "win"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_017.png",
+            {
+              "position": [
+                0,
+                -94
+              ],
+              "scale": 0.92,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "...っ、負けた...",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "matilda",
+            {}
+          ],
+          "kind": "leave"
+        },
+        {
+          "args": [
+            "",
+            {}
+          ],
+          "kind": "deck"
+        },
+        {
+          "args": [
+            false
+          ],
+          "kind": "set_battle_ui_visible"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing4.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "くそっ・・・・こんな変態に・・・",
+            {
+              "side": "right"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing5.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "（強気なお姉さんの恥じらい・・・えろっ・・・）",
+            {
+              "side": "left"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing6.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "ほほら・・・・。これでいいか？",
+            {
+              "side": "right"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "ダメです。あと10秒！",
+            {
+              "side": "left"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing7.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "（うううう・・・恥ずかしい・・・）",
+            {
+              "side": "right"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/backgrounds/prologue/bg05_prison_cell.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            true
+          ],
+          "kind": "set_battle_ui_visible"
+        },
+        {
+          "args": [
+            "res://assets/battle/decks/pedestal_01_marble.png",
+            {
+              "position": [
+                0,
+                180
+              ],
+              "scale": 0.55
+            }
+          ],
+          "kind": "deck"
+        }
+      ],
+      "method": "outfit_2",
+      "outcomes": [
+        "win"
+      ],
+      "repeated": true
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_016.png",
+            {
+              "position": [
+                0,
+                -187
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "あんまり、じろじろ見るんじゃないぞ",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {
+              "win_rate": 0.6
+            },
+            "lose"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_018.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "よし、勝ったぞ",
+            {}
+          ],
+          "kind": "band"
+        }
+      ],
+      "method": "outfit_2",
+      "outcomes": [
+        "lose"
+      ],
+      "repeated": false
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_016.png",
+            {
+              "position": [
+                0,
+                -187
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "あんまり、じろじろ見るんじゃないぞ",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {
+              "win_rate": 0.6
+            },
+            "lose"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_018.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "よし、勝ったぞ",
+            {}
+          ],
+          "kind": "band"
+        }
+      ],
+      "method": "outfit_2",
+      "outcomes": [
+        "lose"
+      ],
+      "repeated": true
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_016.png",
+            {
+              "position": [
+                0,
+                -187
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "あんまり、じろじろ見るんじゃないぞ",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {
+              "win_rate": 0.6
+            },
+            "draw"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_019.png",
+            {
+              "position": [
+                0,
+                -132
+              ],
+              "scale": 0.54,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "あいこか。命拾いしたな。",
+            {}
+          ],
+          "kind": "band"
+        }
+      ],
+      "method": "outfit_2",
+      "outcomes": [
+        "draw"
+      ],
+      "repeated": false
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_016.png",
+            {
+              "position": [
+                0,
+                -187
+              ],
+              "scale": 0.8,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "あんまり、じろじろ見るんじゃないぞ",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {
+              "win_rate": 0.6
+            },
+            "draw"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_019.png",
+            {
+              "position": [
+                0,
+                -132
+              ],
+              "scale": 0.54,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "あいこか。命拾いしたな。",
+            {}
+          ],
+          "kind": "band"
+        }
+      ],
+      "method": "outfit_2",
+      "outcomes": [
+        "draw"
+      ],
+      "repeated": true
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_020.png",
+            {
+              "position": [
+                13,
+                -243
+              ],
+              "scale": 0.67,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "...変態、こっちをみるな",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {
+              "win_rate": 0.6
+            },
+            "win"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_021.png",
+            {
+              "position": [
+                -3,
+                -223
+              ],
+              "scale": 0.67,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "...変態に見られる...。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "matilda",
+            {}
+          ],
+          "kind": "leave"
+        },
+        {
+          "args": [
+            "",
+            {}
+          ],
+          "kind": "deck"
+        },
+        {
+          "args": [
+            false
+          ],
+          "kind": "set_battle_ui_visible"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing8.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "ほ、本当に、脱ぐからな！",
+            {
+              "side": "right"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing9.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "（スゲェ・・・なまおま◯こ・・・初めて見た・・・）",
+            {
+              "side": "left"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing10.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "あ、あれ・・・\nなんか引っかかって・・・",
+            {
+              "side": "right"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing11.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "さ、さぁ。脱いだぞ・・・\nこれでいいよな？",
+            {
+              "side": "right"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "いいわけないの、わかってますよね？",
+            {
+              "side": "left"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "・・・・・・・・",
+            {
+              "side": "right"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing12.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "（くっ・・・・、見られてる・・・\n変態に・・・余すとこなく・・・・）",
+            {
+              "side": "right"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing13.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "な、なぁ・・・・\nもういい。だろ？",
+            {
+              "side": "right"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/backgrounds/prologue/bg05_prison_cell.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            true
+          ],
+          "kind": "set_battle_ui_visible"
+        },
+        {
+          "args": [
+            "res://assets/battle/decks/pedestal_01_marble.png",
+            {
+              "position": [
+                0,
+                180
+              ],
+              "scale": 0.55
+            }
+          ],
+          "kind": "deck"
+        }
+      ],
+      "method": "outfit_1",
+      "outcomes": [
+        "win"
+      ],
+      "repeated": false
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_020.png",
+            {
+              "position": [
+                13,
+                -243
+              ],
+              "scale": 0.67,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "...変態、こっちをみるな",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {
+              "win_rate": 0.6
+            },
+            "win"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_021.png",
+            {
+              "position": [
+                -3,
+                -223
+              ],
+              "scale": 0.67,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "...変態に見られる...。",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "matilda",
+            {}
+          ],
+          "kind": "leave"
+        },
+        {
+          "args": [
+            "",
+            {}
+          ],
+          "kind": "deck"
+        },
+        {
+          "args": [
+            false
+          ],
+          "kind": "set_battle_ui_visible"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing8.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "ほ、本当に、脱ぐからな！",
+            {
+              "side": "right"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing9.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "（スゲェ・・・なまおま◯こ・・・初めて見た・・・）",
+            {
+              "side": "left"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing10.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "あ、あれ・・・\nなんか引っかかって・・・",
+            {
+              "side": "right"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing11.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "さ、さぁ。脱いだぞ・・・\nこれでいいよな？",
+            {
+              "side": "right"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "いいわけないの、わかってますよね？",
+            {
+              "side": "left"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "・・・・・・・・",
+            {
+              "side": "right"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing12.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "（くっ・・・・、見られてる・・・\n変態に・・・余すとこなく・・・・）",
+            {
+              "side": "right"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/characters/main/matilda/clothed/machilda_undressing13.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            "な、なぁ・・・・\nもういい。だろ？",
+            {
+              "side": "right"
+            }
+          ],
+          "kind": "bubble"
+        },
+        {
+          "args": [
+            "res://assets/backgrounds/prologue/bg05_prison_cell.png"
+          ],
+          "kind": "background"
+        },
+        {
+          "args": [
+            true
+          ],
+          "kind": "set_battle_ui_visible"
+        },
+        {
+          "args": [
+            "res://assets/battle/decks/pedestal_01_marble.png",
+            {
+              "position": [
+                0,
+                180
+              ],
+              "scale": 0.55
+            }
+          ],
+          "kind": "deck"
+        }
+      ],
+      "method": "outfit_1",
+      "outcomes": [
+        "win"
+      ],
+      "repeated": true
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_020.png",
+            {
+              "position": [
+                13,
+                -243
+              ],
+              "scale": 0.67,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "...変態、こっちをみるな",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {
+              "win_rate": 0.6
+            },
+            "lose"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_022.png",
+            {
+              "position": [
+                0,
+                -220
+              ],
+              "scale": 0.67,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "ふう、勝ったぞ。",
+            {}
+          ],
+          "kind": "band"
+        }
+      ],
+      "method": "outfit_1",
+      "outcomes": [
+        "lose"
+      ],
+      "repeated": false
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_020.png",
+            {
+              "position": [
+                13,
+                -243
+              ],
+              "scale": 0.67,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "...変態、こっちをみるな",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {
+              "win_rate": 0.6
+            },
+            "lose"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_022.png",
+            {
+              "position": [
+                0,
+                -220
+              ],
+              "scale": 0.67,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "ふう、勝ったぞ。",
+            {}
+          ],
+          "kind": "band"
+        }
+      ],
+      "method": "outfit_1",
+      "outcomes": [
+        "lose"
+      ],
+      "repeated": true
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_020.png",
+            {
+              "position": [
+                13,
+                -243
+              ],
+              "scale": 0.67,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "...変態、こっちをみるな",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {
+              "win_rate": 0.6
+            },
+            "draw"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_023.png",
+            {
+              "position": [
+                0,
+                -204
+              ],
+              "scale": 0.67,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "さっさと、次やるよ。",
+            {}
+          ],
+          "kind": "band"
+        }
+      ],
+      "method": "outfit_1",
+      "outcomes": [
+        "draw"
+      ],
+      "repeated": false
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_020.png",
+            {
+              "position": [
+                13,
+                -243
+              ],
+              "scale": 0.67,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "...変態、こっちをみるな",
+            {}
+          ],
+          "kind": "band"
+        },
+        {
+          "args": [],
+          "kind": "select_hand"
+        },
+        {
+          "args": [
+            0,
+            {
+              "win_rate": 0.6
+            },
+            "draw"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [
+            "matilda",
+            "res://assets/characters/mob/guard/default/guard_default_023.png",
+            {
+              "position": [
+                0,
+                -204
+              ],
+              "scale": 0.67,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "matilda",
+            "さっさと、次やるよ。",
+            {}
+          ],
+          "kind": "band"
+        }
+      ],
+      "method": "outfit_1",
+      "outcomes": [
+        "draw"
+      ],
+      "repeated": true
+    }
+  ],
+  "version": 1
+}

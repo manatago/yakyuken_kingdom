@@ -3,7 +3,8 @@ import type { SaveData } from '../../../packages/domain/save'
 import { hasValidNineCardDeck } from '../../../packages/domain/deck'
 import { leaveGuildHome } from '../../../packages/guild/home'
 import { canStartBelka, startBelka } from '../../../packages/battle/belka'
-import { guildHomeContent } from '../../../packages/guild/routes'
+import { guildHomeContent, ORIGINAL_STAGE1_END } from '../../../packages/guild/routes'
+import { canStartOriginalQuest, originalQuestProgressionFlags } from '../../../packages/story/original-quests'
 import { fitViewport } from '../../../packages/story/viewport'
 import guildBackground from '../../../godot/assets/backgrounds/stage1/bg07_st1_001.png?url'
 import { CardPanel } from './CardPanel'
@@ -33,7 +34,7 @@ const subeventBoard: readonly { id: SubeventId; title: string }[] = [
   { id: 'subevent1', title: '盗賊団を解体せよ！' },
   { id: 'subevent2', title: '教会の不正を暴け！' },
   { id: 'subevent3', title: '呪われた鎧を脱がせ！' },
-  { id: 'subevent4', title: '次の依頼' }
+  { id: 'subevent4', title: '受付嬢を脱がせ！' }
 ]
 
 const backgrounds: Record<string, string> = {
@@ -58,6 +59,8 @@ export function GuildHome({ save, onSave, onTitle }: {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const jinDraft = save.progress.jin_draft ?? []
+  const originalGuild = save.progress.guild_return_checkpoint === ORIGINAL_STAGE1_END
+  const questFlags = originalGuild ? originalQuestProgressionFlags(save) : save.progress.flags
   const retryDeck = save.player.prepared_deck ?? save.player.deck
   const retryDeckIsValid = hasValidNineCardDeck(save.player.inventory, retryDeck)
   const fixedChapterReady = retryDeckIsValid && save.player.inventory.length >= 12
@@ -142,10 +145,10 @@ export function GuildHome({ save, onSave, onTitle }: {
     finally { pending.current = false; setBusy(false) }
   }
 
-  async function tutorialAction(operation: () => SaveData) {
+  async function tutorialAction(operation: () => SaveData | Promise<SaveData>) {
     if (pending.current || editing) return
     pending.current = true; setBusy(true); setError('')
-    try { await onSave(operation()) }
+    try { await onSave(await operation()) }
     catch { setError('チュートリアルを保存できませんでした。進行状況は変わっていません。') }
     finally { pending.current = false; setBusy(false) }
   }
@@ -200,24 +203,29 @@ export function GuildHome({ save, onSave, onTitle }: {
           {save.progress.flags.includes(ADVENTURER_TUTORIAL_COMPLETE) && <p data-testid="random-battle-count">ランダム戦の経験 {save.progress.random_battles_completed ?? 0}/{SUBEVENT_RANDOM_BATTLE_REQUIREMENT}</p>}
           <section ref={questBoard} aria-label="クエストボード" data-testid="subevent-board">
             <h2>クエストボード</h2>
-            {!retryDeckIsValid && <p data-testid="nine-card-deck-required">固定戦のある依頼・本編には、所持カードから有効な9枚のデッキが必要です。カードが足りない場合は、街のランダム戦で集めてください。</p>}
+            {!originalGuild && !retryDeckIsValid && <p data-testid="nine-card-deck-required">固定戦のある依頼・本編には、所持カードから有効な9枚のデッキが必要です。カードが足りない場合は、街のランダム戦で集めてください。</p>}
             <ol>{subeventBoard.map(({ id, title }) => {
-              const state = getSubeventUnlockState(id, save.progress.flags, save.progress.random_battles_completed ?? 0)
-              const completed = save.progress.flags.includes(SUBEVENT_COMPLETION_FLAGS[id])
+              const state = getSubeventUnlockState(id, questFlags, save.progress.random_battles_completed ?? 0)
+              const completed = questFlags.includes(SUBEVENT_COMPLETION_FLAGS[id])
               const implemented = id === 'subevent1' || id === 'subevent2' || id === 'subevent3' || id === 'subevent4'
-              const needsNineCards = id !== 'subevent1'
+              const needsNineCards = !originalGuild && id !== 'subevent1'
               const status = completed ? '完了' : !state.unlocked ? `未解放：${state.reasons.join('、')}`
                 : needsNineCards && !retryDeckIsValid ? '解放済み：所持カードから9枚のデッキが必要'
                   : implemented ? '受注可能' : '解放条件達成・本編未移植'
               return <li key={id} data-testid={`quest-${id}`} data-unlocked={state.unlocked}>
                 <span>{title}</span><span>{status}</span>
-                {id === 'subevent2' && canStartSubevent2(save) && <button disabled={busy}
+                {originalGuild && canStartOriginalQuest(save, id) && <button disabled={busy}
+                  onClick={() => { void tutorialAction(async () => {
+                    const { startOriginalQuest } = await import('../../../packages/story/original-flow')
+                    return startOriginalQuest(save, id)
+                  }) }}>サブイベント{id.slice(-1)}を{completed ? '再受注' : '開始'}</button>}
+                {!originalGuild && id === 'subevent2' && canStartSubevent2(save) && <button disabled={busy}
                   onClick={() => { void tutorialAction(() => startSubevent2(save)) }}>教会編を開始</button>}
                 {id === 'subevent2' && canRetrySubevent2(save) && <button disabled={busy || !retryDeckIsValid}
                   onClick={() => { void tutorialAction(() => retryFixedBattle(save)) }}>教会編を再開</button>}
                 {id === 'subevent2' && canRetrySubevent2(save) && !retryDeckIsValid &&
                   <span>再戦には所持カードから9枚のデッキを編成してください。</span>}
-                {id === 'subevent3' && canStartSubevent3(save) && <button disabled={busy}
+                {!originalGuild && id === 'subevent3' && canStartSubevent3(save) && <button disabled={busy}
                   onClick={() => { void tutorialAction(() => startSubevent3(save)) }}>フィオナ編を開始</button>}
                 {id === 'subevent3' && canRetrySubevent3Minigame(save) && <button disabled={busy}
                   onClick={() => { void tutorialAction(() => retrySubevent3Minigame(save, Array.from({ length: 4 }, () => Math.random()))) }}>水晶調査を再開</button>}
@@ -225,12 +233,12 @@ export function GuildHome({ save, onSave, onTitle }: {
                   onClick={() => { void tutorialAction(() => retryFixedBattle(save)) }}>フィオナ戦を再開</button>}
                 {id === 'subevent3' && canRetrySubevent3Battle(save) && !retryDeckIsValid &&
                   <span>再戦には所持カードから9枚のデッキを編成してください。</span>}
-                {id === 'subevent4' && canStartSubevent4(save) && <button disabled={busy}
+                {!originalGuild && id === 'subevent4' && canStartSubevent4(save) && <button disabled={busy}
                   onClick={() => { void tutorialAction(() => startSubevent4(save)) }}>審査を開始</button>}
               </li>
             })}</ol>
           </section>
-          <section aria-label="本編" data-testid="main-story-board">
+          {!originalGuild && <section aria-label="本編" data-testid="main-story-board">
             <h2>本編</h2>
             {save.player.inventory.length < 12 && <p data-testid="chapter-card-reserve-required">本編の初戦は物語上の敗北となりカードを3枚失います。開始には9枚のデッキに加えて予備カード3枚が必要です。街のランダム戦でカードを集めてください。</p>}
             {save.progress.flags.includes('stage2_complete') ? <p data-testid="stage2-complete">レイラ編：完了</p>
@@ -285,7 +293,7 @@ export function GuildHome({ save, onSave, onTitle }: {
               <span>再戦には所持カードから9枚のデッキを編成してください。</span>}
             {save.progress.flags.includes('game_complete') ? <p data-testid="game-complete">ゲームクリア：王位継承とエピローグ完了</p>
               : canStartStage7(save) && <button disabled={busy} onClick={() => { void tutorialAction(() => startStage7(save)) }}>最終章・エピローグを見る</button>}
-          </section>
+          </section>}
           {canStartBelka(save) && <details className="guild-verification" data-testid="belka-verification-disclosure">
             <summary>開発用のベルカ検証戦</summary>
             <button disabled={busy} onClick={() => { void openBelka() }}>ベルカ戦を確認</button>
@@ -311,7 +319,7 @@ export function GuildHome({ save, onSave, onTitle }: {
               </li>
             })}</ul>}
           </section>
-          {(canStartJin(save) || canStartSubevent1Jin(save)) && <details className="guild-verification" open={canStartSubevent1Jin(save)}
+          {!originalGuild && (canStartJin(save) || canStartSubevent1Jin(save)) && <details className="guild-verification" open={canStartSubevent1Jin(save)}
             data-testid="jin-draft-disclosure">
             <summary>{canStartSubevent1Jin(save) ? 'サブイベント1の受注・デッキ準備' : '開発用の検証戦'}</summary>
             <section aria-label="ジン戦カード選択" data-testid="jin-draft">

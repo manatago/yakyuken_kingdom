@@ -1,3 +1,4 @@
+import { advanceStory } from './story-input.mjs'
 import assert from 'node:assert/strict'
 import { mkdir, mkdtemp, readFile, rename, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
@@ -9,130 +10,85 @@ import { _electron as electron } from 'playwright-core'
 
 const root = fileURLToPath(new URL('../..', import.meta.url))
 const executablePath = createRequire(import.meta.url)('electron')
-
-async function advanceDialogue(page) {
-  const checkpoint = await page.getByTestId('checkpoint-id').textContent()
-  await page.getByRole('button', { name: '次へ', exact: true }).click()
-  await page.waitForFunction((previous) => {
-    const current = document.querySelector('[data-testid="checkpoint-id"]')?.textContent
-    const next = [...document.querySelectorAll('button')].find((button) => button.textContent === '次へ')
-    return current !== previous && (!next || !next.disabled)
-  }, checkpoint)
-}
-
-async function continueThroughPrologue(page) {
-  for (let count = 0; count < 20; count++) {
-    const checkpoint = await page.getByTestId('checkpoint-id').textContent()
-    if (checkpoint === 'prologue.end') {
-      await page.getByRole('button', { name: 'チュートリアルへ進む', exact: true }).click()
-      await page.getByTestId('story-text').getByText(/周りの風景/).waitFor()
-      return
-    }
-    assert.ok(checkpoint?.startsWith('prologue.'), `Unexpected opening checkpoint ${checkpoint}`)
-    await advanceDialogue(page)
-  }
-  assert.fail('Prologue did not reach Matilda tutorial')
-}
+const original = JSON.parse(await readFile(join(root, 'content/stories/godot-original.json'), 'utf8'))
+const opening = original.sequences.find(sequence => sequence.id === 'prologue').commands
 
 async function assertFittedViewport(page, size) {
-  await page.waitForFunction(({ width, height }) => window.innerWidth === width && window.innerHeight === height, size)
-  await page.waitForFunction(() => {
-    const rect = document.querySelector('.story-frame').getBoundingClientRect()
-    return Math.abs(rect.width - Math.min(innerWidth, innerHeight * 16 / 9)) < 1
-  })
-  const rect = await page.getByTestId('story-frame').boundingBox()
+  await page.waitForFunction(({ width, height }) => {
+    const frame = document.querySelector('.story-frame').getBoundingClientRect()
+    return innerWidth === width && innerHeight === height && Math.abs(frame.width - Math.min(width, height * 16 / 9)) < 1
+  }, size)
+  const rect = await page.locator('.story-frame').boundingBox()
   assert.ok(Math.abs(rect.width / rect.height - 16 / 9) < .001)
   assert.ok(Math.abs(rect.x - (size.width - rect.width) / 2) < 1)
   assert.ok(Math.abs(rect.y - (size.height - rect.height) / 2) < 1)
 }
 
-test('Matilda scene displays real images, grades, scales and resumes its dialogue', async (t) => {
+test('Godot story displays real portraits, fits letterboxed viewports and resumes unchanged dialogue', async (t) => {
   const userData = await mkdtemp(join(tmpdir(), 'janken-story-ui-'))
   const args = [join(root, 'dist/game/main/index.js'), `--user-data-dir=${userData}`]
   let app
   try {
     app = await electron.launch({ executablePath, args })
     let page = await app.firstWindow()
-    await page.getByRole('button', { name: 'はじめから' }).click()
-    await continueThroughPrologue(page)
-    await page.getByTestId('story-text').getByText(/周りの風景/).waitFor()
+    await page.getByRole('button', { name: 'はじめから', exact: true }).click()
+    await page.getByTestId('original-cursor').filter({ hasText: 'prologue:6' }).waitFor()
+    await page.waitForFunction(text => document.querySelector('[data-testid="original-text"]')?.textContent === text, opening[5].parameters.text)
     await page.waitForFunction(() => [...document.querySelectorAll('.story-stage img')].length >= 2 &&
-      [...document.querySelectorAll('.story-stage img')].every((img) => img.complete && img.naturalWidth > 0))
-    const initialPortrait = await page.getByTestId('story-portrait').getAttribute('src')
-    for (let count = 0; count < 25; count++) {
-      if ((await page.getByTestId('story-text').textContent()).includes('今回は練習だから')) break
-      await advanceDialogue(page)
-    }
-    const gradeText = await page.getByTestId('story-text').textContent()
-    assert.ok(gradeText.includes('今回は練習だから'))
-    assert.ok(gradeText.includes('Nはノーマル、Bはブロンズ、Sはシルバー、Gはゴールド、Pはプラチナだ。'))
-    assert.notEqual(await page.getByTestId('story-portrait').getAttribute('src'), initialPortrait)
+      [...document.querySelectorAll('.story-stage img')].every(image => image.complete && image.naturalWidth > 0))
+    assert.equal(await page.getByTestId('original-portrait-main').evaluate(image => image.complete && image.naturalWidth > 0), true)
     const checkpoint = JSON.parse(await readFile(join(userData, 'janken-save.json'), 'utf8')).progress.checkpoint_id
-    assert.equal(await page.getByTestId('checkpoint-id').textContent(), checkpoint)
-    await app.close()
+    assert.equal(checkpoint, 'original:prologue:6')
+    await app.close(); app = undefined
     app = await electron.launch({ executablePath, args })
     page = await app.firstWindow()
-    await page.getByRole('button', { name: 'つづきから' }).click()
-    await page.getByTestId('story-text').getByText(/今回は練習だから/).waitFor()
-    assert.equal(await page.getByTestId('story-text').textContent(), gradeText)
-    assert.equal(await page.getByTestId('checkpoint-id').textContent(), checkpoint)
-    // Reproduce a CI display that cannot fit a native FHD window.
+    await page.getByRole('button', { name: 'つづきから', exact: true }).click()
+    await page.getByTestId('original-cursor').filter({ hasText: 'prologue:6' }).waitFor()
+    assert.equal(await page.getByTestId('original-text').textContent(), opening[5].parameters.text)
+    assert.equal(JSON.parse(await readFile(join(userData, 'janken-save.json'), 'utf8')).progress.checkpoint_id, checkpoint)
     const native = await app.evaluate(({ BrowserWindow, screen }) => {
       const window = BrowserWindow.getAllWindows()[0]
-      window.setMaximumSize(800, 600)
-      window.setContentSize(1920, 1080)
+      window.setMaximumSize(800, 600); window.setContentSize(1920, 1080)
       const [width, height] = window.getContentSize()
       return { width, height, workArea: screen.getPrimaryDisplay().workAreaSize }
     })
-    t.diagnostic(`Native requested=1920x1080 actual=${native.width}x${native.height} workArea=${JSON.stringify(native.workArea)}`)
+    t.diagnostic(`Native actual=${native.width}x${native.height} workArea=${JSON.stringify(native.workArea)}`)
     assert.ok(native.width <= 800 && native.height <= 600)
     await assertFittedViewport(page, native)
-    // Control renderer dimensions independently of OS display/window limits.
-    const viewportSession = await page.context().newCDPSession(page)
+    const session = await page.context().newCDPSession(page)
     try {
       for (const size of [{ width: 1920, height: 1080 }, { width: 1024, height: 768 }, { width: 600, height: 1000 }]) {
-        await viewportSession.send('Emulation.setDeviceMetricsOverride', { ...size, deviceScaleFactor: 1, mobile: false })
-        t.diagnostic(`Controlled viewport requested=${size.width}x${size.height} native=${native.width}x${native.height}`)
+        await session.send('Emulation.setDeviceMetricsOverride', { ...size, deviceScaleFactor: 1, mobile: false })
         await assertFittedViewport(page, size)
         if (process.env.JANKEN_UI_SCREENSHOT_DIR) await page.screenshot({ path: join(process.env.JANKEN_UI_SCREENSHOT_DIR, `story-${size.width}x${size.height}.png`) })
       }
-    } finally {
-      await viewportSession.send('Emulation.clearDeviceMetricsOverride')
-      await viewportSession.detach()
-    }
+    } finally { await session.send('Emulation.clearDeviceMetricsOverride'); await session.detach() }
     await assertFittedViewport(page, native)
-    for (let count = 0; count < 10 && await page.getByRole('button', { name: '次へ', exact: true }).count(); count++) {
-      await advanceDialogue(page)
-    }
-    await page.getByRole('button', { name: '準備完了', exact: true }).waitFor()
+    await advanceStory(page)
+    await page.getByTestId('original-cursor').filter({ hasText: 'prologue:7' }).waitFor()
     const save = JSON.parse(await readFile(join(userData, 'janken-save.json'), 'utf8'))
-    assert.deepEqual(save.progress.flags, ['prologue.completed'])
+    assert.equal(save.progress.checkpoint_id, 'original:prologue:7')
     assert.equal(save.player.inventory.length, 9)
-  } finally {
-    if (app) await app.close()
-    await rm(userData, { recursive: true, force: true })
-  }
+  } finally { if (app) await app.close(); await rm(userData, { recursive: true, force: true }) }
 })
 
-test('failed dialogue save keeps the displayed checkpoint unchanged', async () => {
+test('failed original dialogue save keeps the visible and persisted checkpoint unchanged', async () => {
   const userData = await mkdtemp(join(tmpdir(), 'janken-story-save-error-'))
   let app
   try {
     app = await electron.launch({ executablePath, args: [join(root, 'dist/game/main/index.js'), `--user-data-dir=${userData}`] })
     const page = await app.firstWindow()
-    await page.getByRole('button', { name: 'はじめから' }).click()
-    await continueThroughPrologue(page)
-    await page.getByTestId('story-text').waitFor()
-    const previous = await page.getByTestId('story-text').textContent()
+    await page.getByRole('button', { name: 'はじめから', exact: true }).click()
+    await page.getByTestId('original-cursor').filter({ hasText: 'prologue:6' }).waitFor()
+    await page.waitForFunction(text => document.querySelector('[data-testid="original-text"]')?.textContent === text, opening[5].parameters.text)
     const target = join(userData, 'janken-save.json')
-    await rename(target, join(userData, 'original-save.json'))
-    await mkdir(target)
-    await page.getByRole('button', { name: '次へ', exact: true }).click()
+    const previous = await readFile(target, 'utf8')
+    const backup = join(userData, 'original-save.json')
+    await rename(target, backup); await mkdir(target)
+    await advanceStory(page)
     await page.getByRole('alert').waitFor()
-    assert.equal(await page.getByTestId('story-text').textContent(), previous)
-    assert.equal(await page.getByTestId('checkpoint-id').textContent(), 'matilda.start')
-  } finally {
-    if (app) await app.close()
-    await rm(userData, { recursive: true, force: true })
-  }
+    assert.equal(await page.getByTestId('original-text').textContent(), opening[5].parameters.text)
+    assert.equal(await page.getByTestId('original-cursor').textContent(), 'prologue:6')
+    assert.equal(await readFile(backup, 'utf8'), previous)
+  } finally { if (app) await app.close(); await rm(userData, { recursive: true, force: true }) }
 })

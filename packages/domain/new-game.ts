@@ -2,7 +2,7 @@ import { HANDS } from './card'
 import { createNewSave, type SaveData } from './save'
 
 export const MATILDA_START_CHECKPOINT = 'matilda.start'
-export const PROLOGUE_START_CHECKPOINT = 'prologue.university.background'
+export const PROLOGUE_START_CHECKPOINT = 'original:prologue:0'
 
 export function createInitialGameSave(): SaveData {
   return createNewSave(MATILDA_START_CHECKPOINT, {
@@ -15,7 +15,7 @@ export function createInitialGameSave(): SaveData {
   })
 }
 
-/** Title-screen saves begin with the adapted opening; domain fixtures may start at Matilda. */
+/** Normal play begins with the mechanically exported Godot prologue. */
 export function createNewGameSave(): SaveData {
   const save = createInitialGameSave()
   return createNewSave(PROLOGUE_START_CHECKPOINT, save.player)

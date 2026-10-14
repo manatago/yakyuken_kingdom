@@ -33,7 +33,7 @@ for (const application of [
   })
 }
 
-test('new game starts the adapted prologue and Continue restores it after restart', async () => {
+test('new game starts the Godot prologue and Continue restores it after restart', async () => {
   const userData = await mkdtemp(join(tmpdir(), 'janken-ui-new-game-'))
   const args = [join(root, 'dist/game/main/index.js'), `--user-data-dir=${userData}`]
   let app
@@ -43,10 +43,10 @@ test('new game starts the adapted prologue and Continue restores it after restar
     await page.getByRole('heading', { name: 'Janken Kingdom' }).waitFor()
     assert.equal(await page.getByRole('button', { name: 'つづきから' }).isDisabled(), true)
     await page.getByRole('button', { name: 'はじめから' }).click()
-    await page.getByRole('heading', { name: 'プロローグ' }).waitFor()
-    assert.equal(await page.getByTestId('checkpoint-id').textContent(), 'prologue.intro')
+    await page.getByTestId('original-text').filter({ hasText: '5月の大学キャンパス。' }).waitFor()
+    assert.equal(await page.getByTestId('original-cursor').textContent(), 'prologue:6')
     const save = JSON.parse(await readFile(join(userData, 'janken-save.json'), 'utf8'))
-    assert.equal(save.progress.checkpoint_id, 'prologue.university.background')
+    assert.equal(save.progress.checkpoint_id, 'original:prologue:6')
     assert.equal(save.player.inventory.length, 9)
     await app.close()
 
@@ -54,8 +54,8 @@ test('new game starts the adapted prologue and Continue restores it after restar
     page = await app.firstWindow()
     await page.getByRole('heading', { name: 'Janken Kingdom' }).waitFor()
     await page.getByRole('button', { name: 'つづきから' }).click()
-    await page.getByRole('heading', { name: 'プロローグ' }).waitFor()
-    assert.equal(await page.getByTestId('checkpoint-id').textContent(), 'prologue.intro')
+    await page.getByTestId('original-text').filter({ hasText: '5月の大学キャンパス。' }).waitFor()
+    assert.equal(await page.getByTestId('original-cursor').textContent(), 'prologue:6')
     assert.deepEqual(JSON.parse(await readFile(join(userData, 'janken-save.json'), 'utf8')), save)
   } finally {
     if (app) await app.close()
@@ -117,9 +117,9 @@ test('existing save requires explicit overwrite confirmation and cancel preserve
     await page.getByRole('button', { name: 'タイトルに戻る' }).click()
     await page.getByRole('button', { name: 'はじめから' }).click()
     await page.getByRole('button', { name: '保存を上書きして開始' }).click()
-    await page.getByRole('heading', { name: 'プロローグ' }).waitFor()
+    await page.getByTestId('original-text').filter({ hasText: '5月の大学キャンパス。' }).waitFor()
     const replaced = JSON.parse(await readFile(target, 'utf8'))
-    assert.equal(replaced.progress.checkpoint_id, 'prologue.university.background')
+    assert.equal(replaced.progress.checkpoint_id, 'original:prologue:6')
     assert.equal(replaced.player.money, 0)
     assert.deepEqual(replaced.progress.flags, [])
   } finally {
@@ -168,9 +168,11 @@ test('Continue does not label an unrelated saved checkpoint as Matilda', async (
     const page = await app.firstWindow()
     await page.getByRole('button', { name: 'つづきから' }).click()
     await page.getByRole('heading', { name: '保存地点' }).waitFor()
-    await page.getByText('この保存地点に対応する画面はありません。タイトルへ戻り、対応済みの保存地点から再開してください。').waitFor()
+    await page.getByTestId('unsupported-save').getByText('この保存地点はGodot原本の再生に対応していません。別のストーリーには置き換えません。保存データは変更していません。').waitFor()
     assert.equal(await page.getByTestId('checkpoint-id').textContent(), 'chapter-two.start')
     assert.equal(await page.getByRole('heading', { name: 'マチルダのチュートリアル' }).count(), 0)
+    assert.deepEqual(JSON.parse(await readFile(join(userData, 'janken-save.json'), 'utf8')),
+      { save_version: 1, player: { inventory: [], deck: [], money: 0 }, progress: { checkpoint_id: 'chapter-two.start', flags: [] } })
   } finally {
     await app.close()
     await rm(userData, { recursive: true, force: true })

@@ -8,6 +8,7 @@ import { GUILD_CHECKPOINT } from '../guild/routes'
 import { battleGoldDelta, opponentProbabilities, replayFixedBattle, selectOpponent, type FixedLedger } from './fixed'
 import type { BattleContent } from '../content/schema'
 import { TUTORIAL_COMPLETE } from './tutorial'
+import { ORIGINAL_MATILDA_TUTORIAL_COMPLETE } from '../story/original-progress'
 import { ADVENTURER_TUTORIAL_COMPLETE } from './adventurer-tutorial'
 import { PROGRESSION_FLAGS, SUBEVENT_RANDOM_BATTLE_REQUIREMENT } from '../domain/progression'
 
@@ -163,7 +164,7 @@ export function enterTown(save: SaveData, areaId: string, rolls: TownRolls): Sav
   parseSave(save)
   if (save.progress.checkpoint_id !== GUILD_CHECKPOINT || !save.progress.guild_return_checkpoint ||
       !townContent.homeConnections.includes(areaId as AreaId)) throw new Error('Town entry requires an available guild connection')
-  if (!save.progress.flags.includes(TUTORIAL_COMPLETE) ||
+  if (!(save.progress.flags.includes(TUTORIAL_COMPLETE) || save.progress.flags.includes(ORIGINAL_MATILDA_TUTORIAL_COMPLETE)) ||
       !save.progress.flags.includes(ADVENTURER_TUTORIAL_COMPLETE)) throw new Error('Complete both tutorials before exploring')
   const { guild_return_checkpoint: origin, ...progress } = save.progress
   return startEncounter({ ...save, progress: { ...progress, town_origin_checkpoint: origin } }, areaId as AreaId, rolls)
@@ -171,7 +172,7 @@ export function enterTown(save: SaveData, areaId: string, rolls: TownRolls): Sav
 
 export function canEnterTown(save: SaveData): boolean {
   return save.progress.checkpoint_id === GUILD_CHECKPOINT && !!save.progress.guild_return_checkpoint &&
-    save.progress.flags.includes(TUTORIAL_COMPLETE) &&
+    (save.progress.flags.includes(TUTORIAL_COMPLETE) || save.progress.flags.includes(ORIGINAL_MATILDA_TUTORIAL_COMPLETE)) &&
     save.progress.flags.includes(ADVENTURER_TUTORIAL_COMPLETE) && !save.progress.random_battle
 }
 
@@ -203,6 +204,17 @@ export function randomBattleView(save: SaveData) {
   const ledger = save.progress.random_battle
   if (!ledger) throw new Error('Random battle not started')
   return replayFixedBattle(toBattle(ledger), ledger)
+}
+
+/** Presentation before the pending showdown; never rewind its saved result. */
+export function randomBattlePreResultView(save: SaveData) {
+  validateRandomBattleState(save)
+  const ledger = save.progress.random_battle
+  if (!ledger || ledger.settled || save.progress.checkpoint_id !== RANDOM_BATTLE_CHECKPOINT ||
+      ledger.rounds.length !== ledger.acknowledged + 1) throw new Error('No pending random showdown')
+  const prefix = { ...ledger, rounds: ledger.rounds.slice(0, ledger.acknowledged),
+    round_item_ids: ledger.round_item_ids?.slice(0, ledger.acknowledged) }
+  return replayFixedBattle(toBattle(prefix), prefix)
 }
 
 function adjustmentFor(itemId: ItemId | undefined, player?: Card): { targetHand: Hand; delta: number } | undefined {

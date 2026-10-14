@@ -72,6 +72,7 @@ button:disabled { opacity: .45; cursor: default; }
 .town-destination-picker h2 { margin: 0 0 24px; font-size: 36px; }
 .town-destination-picker button { margin: 10px; font-size: 24px; }
 .story-stage { position: absolute; width: 1920px; height: 1080px; transform-origin: 0 0; overflow: hidden; background: #111829; }
+.original-suspension { position: absolute; left: 400px; right: 400px; top: 360px; padding: 32px; background: #111e; color: white; font-size: 24px; }
 .story-background { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .story-portrait { position: absolute; height: 1024px; width: auto; }
 .random-opponent-portrait { position: absolute; z-index: 3; top: 160px; right: 40px; width: 340px; height: 620px; object-fit: contain; pointer-events: none; filter: drop-shadow(0 8px 18px #000b); }

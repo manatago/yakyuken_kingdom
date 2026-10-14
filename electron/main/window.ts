@@ -66,10 +66,14 @@ export function startWindow(title: string, capability: string): void {
     }
 
     const devUrl = process.env.ELECTRON_RENDERER_URL
+    const originalSequence = capability === 'save' ? app.commandLine.getSwitchValue('original-story') : ''
+    const query = originalSequence ? { original: originalSequence } : undefined
     if (devUrl) {
-      void window.loadURL(devUrl)
+      const url = new URL(devUrl)
+      if (originalSequence) url.searchParams.set('original', originalSequence)
+      void window.loadURL(url.href)
     } else {
-      void window.loadFile(join(__dirname, '../renderer/index.html'))
+      void window.loadFile(join(__dirname, '../renderer/index.html'), { query })
     }
   }
 
