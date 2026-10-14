@@ -6,6 +6,7 @@ import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
 import { _electron as electron } from 'playwright-core'
+import { originalGuildSave } from '../helpers/original-ui.mjs'
 
 const root = fileURLToPath(new URL('../..', import.meta.url))
 const executablePath = createRequire(import.meta.url)('electron')
@@ -17,13 +18,14 @@ test('saved decks retain nine slots and expose overflow without rewriting the sa
   try {
     for (const size of [9, 10]) {
       const deck = Array.from({ length: size }, (_, index) => ({ hand: index === 9 ? 'scissors' : 'rock', grade: 1 }))
-      const save = { save_version: 1, player: { inventory: deck, deck, money: 0 },
-        progress: { checkpoint_id: 'matilda.start', flags: [] } }
+      const save = originalGuildSave(deck)
+      save.player.inventory = deck
       const source = JSON.stringify(save)
       await writeFile(join(userData, 'janken-save.json'), source)
       app = await electron.launch({ executablePath, args })
       const page = await app.firstWindow()
       await page.getByRole('button', { name: 'つづきから' }).click()
+      await page.getByRole('button', { name: 'カード', exact: true }).click()
       await page.getByTestId('deck-panel').waitFor()
       assert.equal(await page.getByTestId('deck-panel').locator('.deck-grid > *').count(), 9)
       assert.equal(await page.getByTestId('deck-panel').locator('button').count(), 9)
@@ -54,21 +56,11 @@ test('Normal card box, deck slots and full preview show real art without modifyi
   const args = [join(root, 'dist/game/main/index.js'), `--user-data-dir=${userData}`]
   let app
   try {
+    await writeFile(join(userData, 'janken-save.json'), JSON.stringify(originalGuildSave()))
     app = await electron.launch({ executablePath, args })
     let page = await app.firstWindow()
-    await page.getByRole('button', { name: 'はじめから' }).click()
-    for (let count = 0; count < 20; count++) {
-      const checkpoint = await page.getByTestId('checkpoint-id').textContent()
-      if (checkpoint === 'prologue.end') {
-        await page.getByRole('button', { name: 'チュートリアルへ進む', exact: true }).click()
-        break
-      }
-      assert.ok(checkpoint?.startsWith('prologue.'), `Unexpected opening checkpoint ${checkpoint}`)
-      await page.getByRole('button', { name: '次へ', exact: true }).click()
-      await page.waitForFunction((previous) => document.querySelector('[data-testid="checkpoint-id"]')?.textContent !== previous,
-        checkpoint)
-    }
-    await page.getByTestId('story-text').getByText(/周りの風景/).waitFor()
+    await page.getByRole('button', { name: 'つづきから', exact: true }).click()
+    await page.getByRole('button', { name: 'カード', exact: true }).click()
     const box = page.getByTestId('card-box')
     await box.waitFor()
     assert.equal(await box.locator('button').count(), 9)
@@ -90,7 +82,7 @@ test('Normal card box, deck slots and full preview show real art without modifyi
           const frame = document.querySelector('.story-frame').getBoundingClientRect()
           return innerWidth === width && innerHeight === height && Math.abs(frame.width - Math.min(width, height * 16 / 9)) < 1
         }, size)
-        const frame = await page.getByTestId('story-frame').boundingBox()
+        const frame = await page.locator('.story-frame').boundingBox()
         for (const id of ['card-box', 'deck-panel', 'card-preview']) {
           const rect = await page.getByTestId(id).boundingBox()
           assert.ok(rect.x >= frame.x - 1 && rect.y >= frame.y - 1)
@@ -115,6 +107,7 @@ test('Normal card box, deck slots and full preview show real art without modifyi
     app = await electron.launch({ executablePath, args })
     page = await app.firstWindow()
     await page.getByRole('button', { name: 'つづきから' }).click()
+    await page.getByRole('button', { name: 'カード', exact: true }).click()
     await page.getByTestId('deck-panel').waitFor()
     assert.equal(await page.getByTestId('deck-panel').locator('button').count(), 3)
     assert.equal(await page.getByTestId('empty-deck-slot').count(), 6)

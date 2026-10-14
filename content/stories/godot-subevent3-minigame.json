@@ -1,0 +1,4893 @@
+{
+  "chapter_path": "res://battle/chapters/Subevent3MinigameChapter.gd",
+  "choice_prompt": "...さあ、次の一言をどう選ぶか。",
+  "choice_traces": [
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...フ、フィオナさん。鎧、重くないですか...？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_normal.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_001.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...お、重いです...でも、だいじょうぶ...。",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "気遣いが的外れで、フィオナの心に波紋は起きない。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0,
+            110
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n...。\n\n（加護度 ±0）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_normal.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 0,
+      "index": 0
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nその鎧...手入れは、どなたがなさってるんですか？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_normal.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_001.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...手入れ、など...もう、ずっと...。",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "雑事めいた質問で、フィオナの心は動かない。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0,
+            110
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n...（困惑）\n\n（加護度 ±0）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_normal.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 0,
+      "index": 1
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...そういえば、剣とかも、お使いになるんですか？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_normal.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_001.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...い、いえ...戦いは、無縁で...。",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "見当違いの話題で、フィオナは拍子抜けする。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0,
+            110
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n...。\n\n（加護度 ±0）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_normal.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 0,
+      "index": 2
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nい、いい天気、ですよね...今日...。",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_normal.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_001.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...は、はい...窓から、見えて、います...。",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "あたりさわりない世間話で、フィオナの心は動かない。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0,
+            110
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n...（無言）\n\n（加護度 ±0）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_normal.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 0,
+      "index": 3
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nあの...ご趣味って、何か、おありですか？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_normal.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_001.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...本を...読むのが、好き、で...。",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "初対面の話題で、フィオナは僅かに戸惑うだけ。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0,
+            110
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n...。\n\n（加護度 ±0）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_normal.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 0,
+      "index": 4
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nえ、えっと...お、お元気、ですか...？\nいや、元気なわけないか...す、すみません...。",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_normal.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_001.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...え...あ、は、はい、なんとか...。",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "サトシが緊張しすぎて、むしろフィオナが気を遣う側になる。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0,
+            110
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n...（小さく溜息）\n\n（加護度 ±0）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_normal.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 0,
+      "index": 5
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nあ、あの、お、お飲み物とか...い、いや、飲めないですよね、その、鎧で...。\nす、すみません、忘れてくださ...。",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_normal.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_001.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...あ、いえ...お気遣い、ありがとうございます...。",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "サトシの挙動不審で、フィオナは動揺するどころか気の毒に思う。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0,
+            110
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n...（もう一度、溜息）\n\n（加護度 ±0）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_normal.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 0,
+      "index": 6
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n一か月も鎧の中、本当にお辛かったですよね。\nよく耐えてこられたと思います。",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_gentle.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_003.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...あ、ありがとうございます...お優しい、です...。",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「...この人、本当に優しい...気遣ってくれる...」\n優しさに心が温まり、羞恥どころか呪いが強まってしまった。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            10,
+            120
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n...サトシ様。色が濃くなっております。\n\n（加護度 +10）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_strict.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 10,
+      "index": 7
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nご家族の皆さんも、フィオナさんをずっとご心配されてたでしょうね。",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_gentle.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_003.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...お父様も、セバスも...わたしのために...。",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「...みんな、わたしを愛してくれている...」\n家族の愛を実感し、心が満たされて羞恥が生まれない。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            10,
+            120
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n...いけませんな、サトシ様。\n\n（加護度 +10）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_strict.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 10,
+      "index": 8
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nご立派にお耐えですね、フィオナさん。\n尊敬します。",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_gentle.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_003.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...わ、わたし、そんな...そんなふうに...。",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「...わたし、頑張ってこれたんだ...認めてくれる人がいる...」\n尊敬の言葉でフィオナの誇りが復活し、呪いが強まる。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            10,
+            120
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n...（頭を抱える）\n\n（加護度 +10）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_strict.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 10,
+      "index": 9
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nきっと、大丈夫です。\nフィオナさんの呪い、必ず解いてみせます。",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_gentle.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_003.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...あ、ありがとうございます...わたし、信じます...。",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「...この人が、助けてくれる...もう少し、耐えよう...」\n希望の言葉で心が満たされ、羞恥が遠のいて呪いが強まる。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            10,
+            120
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n...頼もしいお言葉ですが、色が...。\n\n（加護度 +10）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_strict.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 10,
+      "index": 10
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nセバスさん、本当にフィオナさんに尽くしておられますね。\n素敵なご関係ですよね。",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_gentle.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_003.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...セバス、いつも、そばに...いて、くれて...。",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「...わたし、一人じゃない...セバスが、いてくれる...」\n家人の愛を実感し、心が温まって羞恥が生まれない。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            10,
+            120
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n...（やや誇らしげ）...しかし、色が...。\n\n（加護度 +10）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_strict.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 10,
+      "index": 11
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nしかし、ヴァニティ・チェインって、貴重な魔道具ですよね。\n歴史ある品物でしょう？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_gentle.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_003.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...は、はい...先祖代々、伝わるものだと...。",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「...そう、これは誇り高い、家の宝...わたしが継いだ...」\n家宝への敬意でフィオナの誇りが疼き、呪いが強まる。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            10,
+            120
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n...サトシ様、今はそれを褒める場面では...。\n\n（加護度 +10）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_strict.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 10,
+      "index": 12
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...お風呂、入りたいですよね...。一か月は、さすがに...。",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_gentle.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_004.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...は、はい...入りたい、です...。",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「お風呂...お湯に浸かりたい...髪、洗いたい...」\n不浄な自分を直視させられ、小さな羞恥が呪いを削る。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            -5,
+            105
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n...微々たるものですな。\n\n（加護度 -5）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_frown.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": -5,
+      "index": 13
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...早く、脱ぎたいですよね...鎧。",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_gentle.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_004.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...は、はい...脱ぎたい...です...。",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「脱ぎたい...こんな鎧、もう、やだ...」\n無力な自分を認めさせられ、小さな羞恥が呪いを削る。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            -5,
+            105
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n...微々たるものですな。\n\n（加護度 -5）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_frown.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": -5,
+      "index": 14
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...髪、ぺたんこになって、ませんか？　ずっと兜の中で...。",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_gentle.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_004.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...っ...た、たぶん、なってます...。",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「ぺったり...ぐしゃぐしゃ...貴族令嬢の髪型じゃ、ない...」\n令嬢らしさの崩壊を突きつけられ、羞恥が呪いを削る。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            -5,
+            105
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n...微々たるものですが、効いております。\n\n（加護度 -5）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_frown.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": -5,
+      "index": 15
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nあ...お化粧も、できて、ないですよね...一か月...。",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_gentle.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_004.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...っ...い、いえ、普段から、薄化粧、で...。",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「素顔...誰にも見せたことないのに、たぶん今、見られてる...」\n素顔を晒していることを意識させられ、小さな羞恥が呪いを削る。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            -5,
+            105
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n...進んでおります。\n\n（加護度 -5）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_frown.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": -5,
+      "index": 16
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nその...鎧の跡、肌に残っちゃいますよね？\n金属、ずっと当たってるから...。",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_gentle.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_004.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...あ...跡、ついて、ます...たぶん、ずっと...。",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「痣みたいな跡...絶対、残ってる...醜い...」\n身体の物理的変容を意識させられ、羞恥が呪いを削る。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            -5,
+            105
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n...微々たるものですが、確実に。\n\n（加護度 -5）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_frown.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": -5,
+      "index": 17
+    }
+  ],
+  "choices": [
+    {
+      "delta": 0,
+      "explain": "気遣いが的外れで、フィオナの心に波紋は起きない。",
+      "fiona": "...お、重いです...でも、だいじょうぶ...。",
+      "label": "鎧、重くないですか？",
+      "satoshi": "...フ、フィオナさん。鎧、重くないですか...？",
+      "sebas": "...。",
+      "thought": ""
+    },
+    {
+      "delta": 0,
+      "explain": "雑事めいた質問で、フィオナの心は動かない。",
+      "fiona": "...手入れ、など...もう、ずっと...。",
+      "label": "手入れは誰がなさってるんですか？",
+      "satoshi": "その鎧...手入れは、どなたがなさってるんですか？",
+      "sebas": "...（困惑）",
+      "thought": ""
+    },
+    {
+      "delta": 0,
+      "explain": "見当違いの話題で、フィオナは拍子抜けする。",
+      "fiona": "...い、いえ...戦いは、無縁で...。",
+      "label": "剣とか、お使いになるんですか？",
+      "satoshi": "...そういえば、剣とかも、お使いになるんですか？",
+      "sebas": "...。",
+      "thought": ""
+    },
+    {
+      "delta": 0,
+      "explain": "あたりさわりない世間話で、フィオナの心は動かない。",
+      "fiona": "...は、はい...窓から、見えて、います...。",
+      "label": "いい、天気ですよね",
+      "satoshi": "い、いい天気、ですよね...今日...。",
+      "sebas": "...（無言）",
+      "thought": ""
+    },
+    {
+      "delta": 0,
+      "explain": "初対面の話題で、フィオナは僅かに戸惑うだけ。",
+      "fiona": "...本を...読むのが、好き、で...。",
+      "label": "ご趣味は、何ですか？",
+      "satoshi": "あの...ご趣味って、何か、おありですか？",
+      "sebas": "...。",
+      "thought": ""
+    },
+    {
+      "delta": 0,
+      "explain": "サトシが緊張しすぎて、むしろフィオナが気を遣う側になる。",
+      "fiona": "...え...あ、は、はい、なんとか...。",
+      "label": "え、えっと...お、お元気、ですか？",
+      "satoshi": "え、えっと...お、お元気、ですか...？\nいや、元気なわけないか...す、すみません...。",
+      "sebas": "...（小さく溜息）",
+      "thought": ""
+    },
+    {
+      "delta": 0,
+      "explain": "サトシの挙動不審で、フィオナは動揺するどころか気の毒に思う。",
+      "fiona": "...あ、いえ...お気遣い、ありがとうございます...。",
+      "label": "あ、あの、お、お飲み物とか...？",
+      "satoshi": "あ、あの、お、お飲み物とか...い、いや、飲めないですよね、その、鎧で...。\nす、すみません、忘れてくださ...。",
+      "sebas": "...（もう一度、溜息）",
+      "thought": ""
+    },
+    {
+      "delta": 10,
+      "explain": "優しさに心が温まり、羞恥どころか呪いが強まってしまった。",
+      "fiona": "...あ、ありがとうございます...お優しい、です...。",
+      "label": "一か月、本当にお辛かったですね",
+      "satoshi": "一か月も鎧の中、本当にお辛かったですよね。\nよく耐えてこられたと思います。",
+      "sebas": "...サトシ様。色が濃くなっております。",
+      "thought": "...この人、本当に優しい...気遣ってくれる..."
+    },
+    {
+      "delta": 10,
+      "explain": "家族の愛を実感し、心が満たされて羞恥が生まれない。",
+      "fiona": "...お父様も、セバスも...わたしのために...。",
+      "label": "ご家族も、ご心配でしょうね",
+      "satoshi": "ご家族の皆さんも、フィオナさんをずっとご心配されてたでしょうね。",
+      "sebas": "...いけませんな、サトシ様。",
+      "thought": "...みんな、わたしを愛してくれている..."
+    },
+    {
+      "delta": 10,
+      "explain": "尊敬の言葉でフィオナの誇りが復活し、呪いが強まる。",
+      "fiona": "...わ、わたし、そんな...そんなふうに...。",
+      "label": "ご立派にお耐えですね",
+      "satoshi": "ご立派にお耐えですね、フィオナさん。\n尊敬します。",
+      "sebas": "...（頭を抱える）",
+      "thought": "...わたし、頑張ってこれたんだ...認めてくれる人がいる..."
+    },
+    {
+      "delta": 10,
+      "explain": "希望の言葉で心が満たされ、羞恥が遠のいて呪いが強まる。",
+      "fiona": "...あ、ありがとうございます...わたし、信じます...。",
+      "label": "きっと、呪いは解けますよ",
+      "satoshi": "きっと、大丈夫です。\nフィオナさんの呪い、必ず解いてみせます。",
+      "sebas": "...頼もしいお言葉ですが、色が...。",
+      "thought": "...この人が、助けてくれる...もう少し、耐えよう..."
+    },
+    {
+      "delta": 10,
+      "explain": "家人の愛を実感し、心が温まって羞恥が生まれない。",
+      "fiona": "...セバス、いつも、そばに...いて、くれて...。",
+      "label": "セバスさんは、本当に献身的ですね",
+      "satoshi": "セバスさん、本当にフィオナさんに尽くしておられますね。\n素敵なご関係ですよね。",
+      "sebas": "...（やや誇らしげ）...しかし、色が...。",
+      "thought": "...わたし、一人じゃない...セバスが、いてくれる..."
+    },
+    {
+      "delta": 10,
+      "explain": "家宝への敬意でフィオナの誇りが疼き、呪いが強まる。",
+      "fiona": "...は、はい...先祖代々、伝わるものだと...。",
+      "label": "ヴァニティ・チェイン、貴重な鎧ですよね",
+      "satoshi": "しかし、ヴァニティ・チェインって、貴重な魔道具ですよね。\n歴史ある品物でしょう？",
+      "sebas": "...サトシ様、今はそれを褒める場面では...。",
+      "thought": "...そう、これは誇り高い、家の宝...わたしが継いだ..."
+    },
+    {
+      "delta": -5,
+      "explain": "不浄な自分を直視させられ、小さな羞恥が呪いを削る。",
+      "fiona": "...は、はい...入りたい、です...。",
+      "label": "お風呂、入りたいですよね？",
+      "satoshi": "...お風呂、入りたいですよね...。一か月は、さすがに...。",
+      "sebas": "...微々たるものですな。",
+      "thought": "お風呂...お湯に浸かりたい...髪、洗いたい..."
+    },
+    {
+      "delta": -5,
+      "explain": "無力な自分を認めさせられ、小さな羞恥が呪いを削る。",
+      "fiona": "...は、はい...脱ぎたい...です...。",
+      "label": "早く脱ぎたいですよね？",
+      "satoshi": "...早く、脱ぎたいですよね...鎧。",
+      "sebas": "...微々たるものですな。",
+      "thought": "脱ぎたい...こんな鎧、もう、やだ..."
+    },
+    {
+      "delta": -5,
+      "explain": "令嬢らしさの崩壊を突きつけられ、羞恥が呪いを削る。",
+      "fiona": "...っ...た、たぶん、なってます...。",
+      "label": "髪、ぺたんこになってませんか？",
+      "satoshi": "...髪、ぺたんこになって、ませんか？　ずっと兜の中で...。",
+      "sebas": "...微々たるものですが、効いております。",
+      "thought": "ぺったり...ぐしゃぐしゃ...貴族令嬢の髪型じゃ、ない..."
+    },
+    {
+      "delta": -5,
+      "explain": "素顔を晒していることを意識させられ、小さな羞恥が呪いを削る。",
+      "fiona": "...っ...い、いえ、普段から、薄化粧、で...。",
+      "label": "お化粧も、できてないですよね？",
+      "satoshi": "あ...お化粧も、できて、ないですよね...一か月...。",
+      "sebas": "...進んでおります。",
+      "thought": "素顔...誰にも見せたことないのに、たぶん今、見られてる..."
+    },
+    {
+      "delta": -5,
+      "explain": "身体の物理的変容を意識させられ、羞恥が呪いを削る。",
+      "fiona": "...あ...跡、ついて、ます...たぶん、ずっと...。",
+      "label": "鎧の跡、肌に残りますよね？",
+      "satoshi": "その...鎧の跡、肌に残っちゃいますよね？\n金属、ずっと当たってるから...。",
+      "sebas": "...微々たるものですが、確実に。",
+      "thought": "痣みたいな跡...絶対、残ってる...醜い..."
+    }
+  ],
+  "ending": {
+    "lose": "水晶球が真っ赤に染まった...　呪いが完全発動し、儀式は失敗した。",
+    "win": "水晶球が鮮やかな緑に輝いた！　呪いの加護は崩れ去った。"
+  },
+  "format": "godot-subevent3-minigame",
+  "gauge_max": 130,
+  "gauge_start": 100,
+  "intro": [
+    {
+      "args": [
+        "fiona_armor",
+        "res://assets/characters/main/fiona/clothed/fiona_clothed_001.png",
+        {
+          "position": [
+            0,
+            37
+          ],
+          "scale": 0.55,
+          "side": "center"
+        }
+      ],
+      "kind": "set_portrait"
+    },
+    {
+      "args": [
+        "【羞恥の儀】\nフィオナを封じる呪いの鎧「ヴァニティ・チェイン」。\n装着者自身に強烈な羞恥を与え、呪いの加護を削り取れ。",
+        "",
+        ""
+      ],
+      "kind": "narrator_band"
+    },
+    {
+      "args": [
+        "左上のゲージは「呪いの加護度」。\n0 まで削れば呪いは弱まり、鎧は外れる。\n逆に 130 に達すれば、儀式は失敗だ。",
+        "",
+        ""
+      ],
+      "kind": "narrator_band"
+    },
+    {
+      "args": [
+        "選択肢を選び、フィオナに問いかけろ。\n彼女が恥じらえば加護度は下がる。\n...が、的外れな気遣いは逆効果となる。",
+        "",
+        ""
+      ],
+      "kind": "narrator_band"
+    },
+    {
+      "args": [
+        "水晶球は深い赤に染まったまま。\n壁の一角に映像投影窓が浮かび上がる。",
+        "",
+        ""
+      ],
+      "kind": "narrator_band"
+    },
+    {
+      "args": [
+        "bottom-left"
+      ],
+      "kind": "set_bubble_side"
+    },
+    {
+      "args": [
+        "サトシ:\n...え、えっと、フィオナさん。\n...一か月、辛かったですよね...本当にお疲れ様でした。",
+        "satoshi",
+        "res://assets/ui/speakers/satoshi_apologetic.png"
+      ],
+      "kind": "narrator_band"
+    },
+    {
+      "args": [
+        0.0
+      ],
+      "kind": "wait"
+    },
+    {
+      "args": [
+        "right"
+      ],
+      "kind": "set_bubble_side"
+    },
+    {
+      "args": [
+        "フィオナ:\n...あ、ありがとう...お優しい方ですね...。",
+        "fiona",
+        "res://assets/ui/speakers/fiona_default.png"
+      ],
+      "kind": "narrator_band"
+    },
+    {
+      "args": [
+        0.0
+      ],
+      "kind": "wait"
+    },
+    {
+      "args": [
+        "スクリーン映像「...この人、本当に優しい...気遣ってくれる...」\n優しさに心が温まり、羞恥どころか呪いが強まってしまった。",
+        "",
+        ""
+      ],
+      "kind": "narrator_band"
+    },
+    {
+      "args": [
+        10,
+        110
+      ],
+      "kind": "gauge"
+    },
+    {
+      "args": [
+        "水晶球の赤が、さらに濃くなる。",
+        "",
+        ""
+      ],
+      "kind": "narrator_band"
+    },
+    {
+      "args": [
+        "bottom-right"
+      ],
+      "kind": "set_bubble_side"
+    },
+    {
+      "args": [
+        "セバス:\n（眉をひそめて水晶球を見る）\n...色が濃くなっておりますな、サトシ様。",
+        "sebas",
+        "res://assets/ui/speakers/sebas_frown.png"
+      ],
+      "kind": "narrator_band"
+    },
+    {
+      "args": [
+        0.0
+      ],
+      "kind": "wait"
+    },
+    {
+      "args": [
+        "bottom-left"
+      ],
+      "kind": "set_bubble_side"
+    },
+    {
+      "args": [
+        "ピー助（小声・頭を抱える）:\n...サトシ、お前、ただのねぎらいじゃねえか。",
+        "pisuke",
+        ""
+      ],
+      "kind": "narrator_band"
+    },
+    {
+      "args": [
+        0.0
+      ],
+      "kind": "wait"
+    }
+  ],
+  "intro_gauge": 110,
+  "lose_behavior": "redirect",
+  "lose_redirect": {
+    "sequence_id": "subevent3_minigame_lose",
+    "type": "story_sequence_then_guild_home"
+  },
+  "pisuke_lines": [
+    {
+      "fiona": "...っ！ ...い、言わないで...それは、さすがに...！",
+      "fiona2": "...ぁ...やめ...もう、やめて...っ！",
+      "followup": "──黄ばんでますよね。もう色、元に戻らないですよね。\n──肌に張り付いて、剥がすとき、ぺりって音しません？",
+      "opening": "──下着、一か月、ずっと同じままですよね。",
+      "thought": "バレてる...気持ち悪い...洗い替えなんて、ない...ずっと同じ...！"
+    },
+    {
+      "fiona": "...っ！ ...言わないで、それだけは、絶対に──！",
+      "fiona2": "...っ！！ ...ひ、ひどい...なんでそこまで...っ！",
+      "followup": "──貴族のお嬢様がボーボーって、侍女に見られたらどうします？\n──あ、脇だけじゃないですよね。足も、あと...他の場所も。",
+      "opening": "──脇毛、一か月、伸び放題ですよね？",
+      "thought": "もじゃもじゃ...全身...侍女にだけは、絶対、見られたくない...！"
+    },
+    {
+      "fiona": "...っ！ ...き、訊かないで...お願い...っ！",
+      "fiona2": "...ち、違います...ちゃんと、ちゃんと...っ！",
+      "followup": "──あ、まさか、その...鎧の中で、そのまま...？\n──じゃあ、足元のあたり、もう...？",
+      "opening": "──お手洗い、どうしてるんですか？　一か月、ずっと中で？",
+      "thought": "聞かないで...考えたくない...もう、自分でもわからない..."
+    },
+    {
+      "fiona": "...っ！ ...い、嫌...それだけは、嗅がないで...っ！",
+      "fiona2": "...ぐすっ...ひっく...ごめん、なさい...っ！",
+      "followup": "──近くで嗅いだら、わかっちゃいますかね？\n──セバスさんとか、本当はもう気づいてるんじゃないですか？",
+      "opening": "──今、どんな匂いがしていますか？　鎧の中。",
+      "thought": "...きっと、臭い...セバスも気づいてる...優しいから、言わないだけ..."
+    },
+    {
+      "fiona": "...っ！ ...ぃ、言わないで、聞かないで...っ！",
+      "fiona2": "...ぃ、言ったら...死んじゃう...っ！",
+      "followup": "──腋とか、胸の下とか、もう汗だまりじゃないですか？\n──歩くたびに、ぴちゃぴちゃ、音、しません？",
+      "opening": "──鎧の中、汗でヌルヌルですよね？",
+      "thought": "ぴちゃ...ぴちゃ...音、してる...絶対、みんなに聞こえてる...！"
+    }
+  ],
+  "pisuke_traces": [
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...えっと──",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "ピー助（サトシの声に被せて）:\n──下着、一か月、ずっと同じままですよね。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_008.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...っ！ ...い、言わないで...それは、さすがに...！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──黄ばんでますよね。もう色、元に戻らないですよね。\n──肌に張り付いて、剥がすとき、ぺりって音しません？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_018.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...ぁ...やめ...もう、やめて...っ！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「バレてる...気持ち悪い...洗い替えなんて、ない...ずっと同じ...！」\n心を丸裸に暴かれ、強烈な羞恥が呪いを大きく削る。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            -50,
+            60
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n（サトシを睨むが、水晶球を見て、ぐっと耐える）\n...進んでおります。\n\n（加護度 -50）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_strict.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nち、違う！ 今のは俺じゃない！",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "cycle": 0,
+      "delta": -50,
+      "index": 0
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...えっと──",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "ピー助（サトシの声に被せて）:\n──脇毛、一か月、伸び放題ですよね？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_008.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...っ！ ...言わないで、それだけは、絶対に──！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──貴族のお嬢様がボーボーって、侍女に見られたらどうします？\n──あ、脇だけじゃないですよね。足も、あと...他の場所も。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_018.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...っ！！ ...ひ、ひどい...なんでそこまで...っ！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「もじゃもじゃ...全身...侍女にだけは、絶対、見られたくない...！」\n心を丸裸に暴かれ、強烈な羞恥が呪いを大きく削る。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            -50,
+            60
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n（サトシを睨むが、水晶球を見て、ぐっと耐える）\n...進んでおります。\n\n（加護度 -50）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_strict.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nち、違う！ 今のは俺じゃない！",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "cycle": 0,
+      "delta": -50,
+      "index": 1
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...えっと──",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "ピー助（サトシの声に被せて）:\n──お手洗い、どうしてるんですか？　一か月、ずっと中で？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_008.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...っ！ ...き、訊かないで...お願い...っ！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──あ、まさか、その...鎧の中で、そのまま...？\n──じゃあ、足元のあたり、もう...？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_018.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...ち、違います...ちゃんと、ちゃんと...っ！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「聞かないで...考えたくない...もう、自分でもわからない...」\n心を丸裸に暴かれ、強烈な羞恥が呪いを大きく削る。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            -50,
+            60
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n（サトシを睨むが、水晶球を見て、ぐっと耐える）\n...進んでおります。\n\n（加護度 -50）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_strict.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nち、違う！ 今のは俺じゃない！",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "cycle": 0,
+      "delta": -50,
+      "index": 2
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...えっと──",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "ピー助（サトシの声に被せて）:\n──今、どんな匂いがしていますか？　鎧の中。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_008.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...っ！ ...い、嫌...それだけは、嗅がないで...っ！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──近くで嗅いだら、わかっちゃいますかね？\n──セバスさんとか、本当はもう気づいてるんじゃないですか？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_018.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...ぐすっ...ひっく...ごめん、なさい...っ！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「...きっと、臭い...セバスも気づいてる...優しいから、言わないだけ...」\n心を丸裸に暴かれ、強烈な羞恥が呪いを大きく削る。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            -50,
+            60
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n（サトシを睨むが、水晶球を見て、ぐっと耐える）\n...進んでおります。\n\n（加護度 -50）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_strict.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nち、違う！ 今のは俺じゃない！",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "cycle": 0,
+      "delta": -50,
+      "index": 3
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...えっと──",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "ピー助（サトシの声に被せて）:\n──鎧の中、汗でヌルヌルですよね？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_008.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...っ！ ...ぃ、言わないで、聞かないで...っ！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──腋とか、胸の下とか、もう汗だまりじゃないですか？\n──歩くたびに、ぴちゃぴちゃ、音、しません？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_018.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...ぃ、言ったら...死んじゃう...っ！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「ぴちゃ...ぴちゃ...音、してる...絶対、みんなに聞こえてる...！」\n心を丸裸に暴かれ、強烈な羞恥が呪いを大きく削る。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            -50,
+            60
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n（サトシを睨むが、水晶球を見て、ぐっと耐える）\n...進んでおります。\n\n（加護度 -50）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_strict.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nち、違う！ 今のは俺じゃない！",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "cycle": 0,
+      "delta": -50,
+      "index": 4
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...えっと──",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "ピー助（サトシの声に被せて）:\n──下着、一か月、ずっと同じままですよね。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_008.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...っ！ ...い、言わないで...それは、さすがに...！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──黄ばんでますよね。もう色、元に戻らないですよね。\n──肌に張り付いて、剥がすとき、ぺりって音しません？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_009.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...ぁ...やめ...もう、やめて...っ！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「バレてる...気持ち悪い...洗い替えなんて、ない...ずっと同じ...！」\n同じ指摘は二度目。衝撃は弱まったが、羞恥は残る。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            -20,
+            90
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n（サトシを睨むが、水晶球を見て、ぐっと耐える）\n...進んでおります。\n\n（加護度 -20）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_strict.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nち、違う！ 今のは俺じゃない！",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "cycle": 1,
+      "delta": -20,
+      "index": 0
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...えっと──",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "ピー助（サトシの声に被せて）:\n──脇毛、一か月、伸び放題ですよね？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_008.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...っ！ ...言わないで、それだけは、絶対に──！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──貴族のお嬢様がボーボーって、侍女に見られたらどうします？\n──あ、脇だけじゃないですよね。足も、あと...他の場所も。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_009.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...っ！！ ...ひ、ひどい...なんでそこまで...っ！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「もじゃもじゃ...全身...侍女にだけは、絶対、見られたくない...！」\n同じ指摘は二度目。衝撃は弱まったが、羞恥は残る。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            -20,
+            90
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n（サトシを睨むが、水晶球を見て、ぐっと耐える）\n...進んでおります。\n\n（加護度 -20）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_strict.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nち、違う！ 今のは俺じゃない！",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "cycle": 1,
+      "delta": -20,
+      "index": 1
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...えっと──",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "ピー助（サトシの声に被せて）:\n──お手洗い、どうしてるんですか？　一か月、ずっと中で？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_008.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...っ！ ...き、訊かないで...お願い...っ！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──あ、まさか、その...鎧の中で、そのまま...？\n──じゃあ、足元のあたり、もう...？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_009.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...ち、違います...ちゃんと、ちゃんと...っ！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「聞かないで...考えたくない...もう、自分でもわからない...」\n同じ指摘は二度目。衝撃は弱まったが、羞恥は残る。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            -20,
+            90
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n（サトシを睨むが、水晶球を見て、ぐっと耐える）\n...進んでおります。\n\n（加護度 -20）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_strict.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nち、違う！ 今のは俺じゃない！",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "cycle": 1,
+      "delta": -20,
+      "index": 2
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...えっと──",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "ピー助（サトシの声に被せて）:\n──今、どんな匂いがしていますか？　鎧の中。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_008.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...っ！ ...い、嫌...それだけは、嗅がないで...っ！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──近くで嗅いだら、わかっちゃいますかね？\n──セバスさんとか、本当はもう気づいてるんじゃないですか？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_009.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...ぐすっ...ひっく...ごめん、なさい...っ！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「...きっと、臭い...セバスも気づいてる...優しいから、言わないだけ...」\n同じ指摘は二度目。衝撃は弱まったが、羞恥は残る。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            -20,
+            90
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n（サトシを睨むが、水晶球を見て、ぐっと耐える）\n...進んでおります。\n\n（加護度 -20）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_strict.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nち、違う！ 今のは俺じゃない！",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "cycle": 1,
+      "delta": -20,
+      "index": 3
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...えっと──",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "ピー助（サトシの声に被せて）:\n──鎧の中、汗でヌルヌルですよね？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_008.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...っ！ ...ぃ、言わないで、聞かないで...っ！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──腋とか、胸の下とか、もう汗だまりじゃないですか？\n──歩くたびに、ぴちゃぴちゃ、音、しません？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_009.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...ぃ、言ったら...死んじゃう...っ！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「ぴちゃ...ぴちゃ...音、してる...絶対、みんなに聞こえてる...！」\n同じ指摘は二度目。衝撃は弱まったが、羞恥は残る。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            -20,
+            90
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n（サトシを睨むが、水晶球を見て、ぐっと耐える）\n...進んでおります。\n\n（加護度 -20）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_strict.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nち、違う！ 今のは俺じゃない！",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "cycle": 1,
+      "delta": -20,
+      "index": 4
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...えっと──",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "ピー助（サトシの声に被せて）:\n──下着、一か月、ずっと同じままですよね。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_008.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...っ！ ...い、言わないで...それは、さすがに...！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──黄ばんでますよね。もう色、元に戻らないですよね。\n──肌に張り付いて、剥がすとき、ぺりって音しません？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_009.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...ぁ...やめ...もう、やめて...っ！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「バレてる...気持ち悪い...洗い替えなんて、ない...ずっと同じ...！」\n三度目ともなると、フィオナの心も少し慣れてきた。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            -5,
+            105
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n（サトシを睨むが、水晶球を見て、ぐっと耐える）\n...進んでおります。\n\n（加護度 -5）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_strict.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nち、違う！ 今のは俺じゃない！",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "cycle": 2,
+      "delta": -5,
+      "index": 0
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...えっと──",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "ピー助（サトシの声に被せて）:\n──脇毛、一か月、伸び放題ですよね？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_008.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...っ！ ...言わないで、それだけは、絶対に──！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──貴族のお嬢様がボーボーって、侍女に見られたらどうします？\n──あ、脇だけじゃないですよね。足も、あと...他の場所も。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_009.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...っ！！ ...ひ、ひどい...なんでそこまで...っ！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「もじゃもじゃ...全身...侍女にだけは、絶対、見られたくない...！」\n三度目ともなると、フィオナの心も少し慣れてきた。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            -5,
+            105
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n（サトシを睨むが、水晶球を見て、ぐっと耐える）\n...進んでおります。\n\n（加護度 -5）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_strict.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nち、違う！ 今のは俺じゃない！",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "cycle": 2,
+      "delta": -5,
+      "index": 1
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...えっと──",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "ピー助（サトシの声に被せて）:\n──お手洗い、どうしてるんですか？　一か月、ずっと中で？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_008.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...っ！ ...き、訊かないで...お願い...っ！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──あ、まさか、その...鎧の中で、そのまま...？\n──じゃあ、足元のあたり、もう...？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_009.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...ち、違います...ちゃんと、ちゃんと...っ！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「聞かないで...考えたくない...もう、自分でもわからない...」\n三度目ともなると、フィオナの心も少し慣れてきた。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            -5,
+            105
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n（サトシを睨むが、水晶球を見て、ぐっと耐える）\n...進んでおります。\n\n（加護度 -5）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_strict.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nち、違う！ 今のは俺じゃない！",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "cycle": 2,
+      "delta": -5,
+      "index": 2
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...えっと──",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "ピー助（サトシの声に被せて）:\n──今、どんな匂いがしていますか？　鎧の中。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_008.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...っ！ ...い、嫌...それだけは、嗅がないで...っ！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──近くで嗅いだら、わかっちゃいますかね？\n──セバスさんとか、本当はもう気づいてるんじゃないですか？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_009.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...ぐすっ...ひっく...ごめん、なさい...っ！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「...きっと、臭い...セバスも気づいてる...優しいから、言わないだけ...」\n三度目ともなると、フィオナの心も少し慣れてきた。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            -5,
+            105
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n（サトシを睨むが、水晶球を見て、ぐっと耐える）\n...進んでおります。\n\n（加護度 -5）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_strict.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nち、違う！ 今のは俺じゃない！",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "cycle": 2,
+      "delta": -5,
+      "index": 3
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...えっと──",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "ピー助（サトシの声に被せて）:\n──鎧の中、汗でヌルヌルですよね？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_008.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...っ！ ...ぃ、言わないで、聞かないで...っ！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──腋とか、胸の下とか、もう汗だまりじゃないですか？\n──歩くたびに、ぴちゃぴちゃ、音、しません？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "fiona_armor",
+            "res://assets/characters/main/fiona/clothed/fiona_clothed_009.png",
+            {
+              "position": [
+                0,
+                37
+              ],
+              "scale": 0.55,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "フィオナ:\n...ぃ、言ったら...死んじゃう...っ！",
+            "fiona",
+            "res://assets/ui/speakers/fiona_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "スクリーン映像「ぴちゃ...ぴちゃ...音、してる...絶対、みんなに聞こえてる...！」\n三度目ともなると、フィオナの心も少し慣れてきた。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            -5,
+            105
+          ],
+          "kind": "gauge"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "セバス:\n（サトシを睨むが、水晶球を見て、ぐっと耐える）\n...進んでおります。\n\n（加護度 -5）",
+            "sebas",
+            "res://assets/ui/speakers/sebas_strict.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nち、違う！ 今のは俺じゃない！",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "cycle": 2,
+      "delta": -5,
+      "index": 4
+    }
+  ],
+  "version": 1
+}

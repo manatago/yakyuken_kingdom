@@ -15,7 +15,7 @@ test('new game begins at Matilda with the Godot default Normal cards', () => {
   ])
 })
 
-test('the title-screen New Game save starts at the adapted opening with the same initial possessions', () => {
+test('the title-screen New Game save starts at the original opening with the same initial possessions', () => {
   const initial = createInitialGameSave()
   const started = createNewGameSave()
   assert.equal(started.progress.checkpoint_id, PROLOGUE_START_CHECKPOINT)

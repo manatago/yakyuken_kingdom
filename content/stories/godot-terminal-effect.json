@@ -1,0 +1,32 @@
+{
+  "cursor": 53,
+  "first_wait_accept_stays_open": true,
+  "full_text": "> scanning chip_layer3.lib ...\n> undefined function detected: predict()\n> injecting bayes_model.dat ...\n> rewriting pointer: 0x7F3A → math_core.so\n> compiling neural_bridge ...\n> .............................\n> BUILD SUCCESSFUL\n> \n> SKILL REGISTERED: 確率の観測者（ベイズ・アイ）\n> STATUS: ACTIVE\n█",
+  "scope": "isolated-actual-terminal-input",
+  "second_wait_accept_closes": true,
+  "sequence": "stage1",
+  "source_hash": "f5d6b8b1dc0cdd733ad488129678df307e586278f2e646a37ae70168033019a3",
+  "style": {
+    "color": [
+      0.200000002980232,
+      1,
+      0.300000011920929,
+      1
+    ],
+    "font_size": 18,
+    "rect": [
+      60,
+      40,
+      1800,
+      1000
+    ]
+  },
+  "timings": {
+    "fade_in": 300,
+    "glitch": 50,
+    "glitch_after": 100,
+    "flash": 80,
+    "fade_out": 400,
+    "text_fade_out": 300
+  }
+}

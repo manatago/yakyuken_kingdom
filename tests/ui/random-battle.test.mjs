@@ -6,6 +6,7 @@ import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
 import { _electron as electron } from 'playwright-core'
+import { originalStage1End, finishOriginalShowdown } from '../helpers/original-ui.mjs'
 
 const root = fileURLToPath(new URL('../..', import.meta.url))
 const executablePath = createRequire(import.meta.url)('electron')
@@ -15,11 +16,8 @@ test('Stage 1 random encounter persists its generated deck and settles a one-HP 
   const target = join(data, 'janken-save.json')
   const cards = ['rock', 'scissors', 'paper'].flatMap((hand) => Array.from({ length: 3 }, () => ({ hand, grade: 1 })))
   const original = { save_version: 1, player: { inventory: cards, deck: cards, money: 30, items: ['substitute_card'] },
-    progress: { checkpoint_id: 'guild.home', guild_return_checkpoint: 'matilda.normal.end', flags: ['matilda.tutorial.completed', 'matilda.normal.started', 'adventurer.tutorial.completed'],
-      tutorial: { battle_id: 'battle.matilda.practice', rounds: [{ player_index: 6, opponent_index: 0 }, { player_index: 0, opponent_index: 3 }], acknowledged: 2 },
-      fixed_battle: { battle_id: 'battle.matilda.normal', player_deck: cards,
-        rounds: [6, 7, 8].map((player_index, opponent_index) => ({ player_index, opponent_index })),
-        acknowledged: 3, settled: true, balance_before: 20, gold_delta: 10 } } }
+    progress: { checkpoint_id: 'guild.home', guild_return_checkpoint: originalStage1End,
+      flags: ['original.matilda.tutorial.completed', 'adventurer.tutorial.completed'] } }
   let app
   const read = async () => JSON.parse(await readFile(target, 'utf8'))
   const open = async () => {
@@ -72,6 +70,7 @@ test('Stage 1 random encounter persists its generated deck and settles a one-HP 
     await page.getByRole('button', { name: '選択 パー N', exact: true }).click()
     await page.getByRole('button', { name: '勝負！', exact: true }).click()
     await page.getByTestId('random-result').waitFor()
+    await page.getByTestId('original-showdown').waitFor()
     assert.equal((await read()).progress.random_battle.rounds.length, 1)
     assert.equal((await read()).progress.random_battle.opponent_deck[0].hand, 'rock')
     await app.close(); app = undefined
@@ -80,7 +79,18 @@ test('Stage 1 random encounter persists its generated deck and settles a one-HP 
     await page.getByRole('button', { name: 'つづきから', exact: true }).click()
     await page.getByTestId('random-result').waitFor()
     await page.evaluate(() => { Math.random = () => .3 })
-    await page.getByRole('button', { name: '結果を確定', exact: true }).click()
+    assert.equal(await page.getByTestId('random-showdown-hp').innerText(), 'あなたのHP 1/1 ・相手HP 1/1')
+    const pendingResult = await read()
+    await app.evaluate(() => {
+      const fs = process.getBuiltinModule('node:fs/promises')
+      const rename = fs.rename
+      fs.rename = async () => { fs.rename = rename; throw new Error('Injected settlement save failure') }
+    })
+    await finishOriginalShowdown(page)
+    await page.getByRole('alert').waitFor()
+    assert.deepEqual(await read(), pendingResult, 'failed automatic settlement leaves the saved result unchanged')
+    await page.evaluate(() => { Math.random = () => .99 })
+    await page.getByRole('button', { name: '保存を再試行', exact: true }).click()
     await page.getByTestId('random-settlement').waitFor()
     assert.equal(await page.getByTestId('random-opponent-portrait').getAttribute('data-portrait-phase'), 'farewell_win')
     assert.equal(await page.getByTestId('random-dialogue-farewell').innerText(), '「嘘だろ...こんなガキに...」')

@@ -1,0 +1,429 @@
+{
+  "bridge_traces": [
+    {
+      "abort_sequence": false,
+      "choices": [],
+      "commands": [
+        {
+          "kind": "battle",
+          "result": "win"
+        },
+        {
+          "kind": "complete_battle",
+          "result": "win"
+        }
+      ],
+      "final_result": "win",
+      "results": [
+        "win"
+      ]
+    },
+    {
+      "abort_sequence": false,
+      "choices": [
+        "retry"
+      ],
+      "commands": [
+        {
+          "kind": "battle",
+          "result": "lose"
+        },
+        {
+          "kind": "farewell",
+          "result": "lose"
+        },
+        {
+          "id": "prologue_battle_lose",
+          "kind": "scene"
+        },
+        {
+          "choice": "retry",
+          "kind": "redirect_choice",
+          "labels": [
+            "再挑戦する",
+            "ホームに戻る"
+          ]
+        },
+        {
+          "kind": "battle",
+          "result": "win"
+        },
+        {
+          "kind": "complete_battle",
+          "result": "win"
+        }
+      ],
+      "final_result": "win",
+      "results": [
+        "lose",
+        "win"
+      ]
+    },
+    {
+      "abort_sequence": true,
+      "choices": [
+        "home"
+      ],
+      "commands": [
+        {
+          "kind": "battle",
+          "result": "lose"
+        },
+        {
+          "kind": "farewell",
+          "result": "lose"
+        },
+        {
+          "id": "prologue_battle_lose",
+          "kind": "scene"
+        },
+        {
+          "choice": "home",
+          "kind": "redirect_choice",
+          "labels": [
+            "再挑戦する",
+            "ホームに戻る"
+          ]
+        },
+        {
+          "kind": "complete_battle",
+          "result": "lose"
+        }
+      ],
+      "final_result": "lose",
+      "results": [
+        "lose"
+      ]
+    },
+    {
+      "abort_sequence": false,
+      "choices": [
+        "retry"
+      ],
+      "commands": [
+        {
+          "kind": "battle",
+          "result": "draw"
+        },
+        {
+          "kind": "farewell",
+          "result": "draw"
+        },
+        {
+          "id": "prologue_battle_lose",
+          "kind": "scene"
+        },
+        {
+          "choice": "retry",
+          "kind": "redirect_choice",
+          "labels": [
+            "再挑戦する",
+            "ホームに戻る"
+          ]
+        },
+        {
+          "kind": "battle",
+          "result": "win"
+        },
+        {
+          "kind": "complete_battle",
+          "result": "win"
+        }
+      ],
+      "final_result": "win",
+      "results": [
+        "draw",
+        "win"
+      ]
+    },
+    {
+      "abort_sequence": true,
+      "choices": [
+        "home"
+      ],
+      "commands": [
+        {
+          "kind": "battle",
+          "result": "draw"
+        },
+        {
+          "kind": "farewell",
+          "result": "draw"
+        },
+        {
+          "id": "prologue_battle_lose",
+          "kind": "scene"
+        },
+        {
+          "choice": "home",
+          "kind": "redirect_choice",
+          "labels": [
+            "再挑戦する",
+            "ホームに戻る"
+          ]
+        },
+        {
+          "kind": "complete_battle",
+          "result": "lose"
+        }
+      ],
+      "final_result": "lose",
+      "results": [
+        "draw"
+      ]
+    }
+  ],
+  "format": "godot-main-flow",
+  "matilda_lose_behavior": "redirect",
+  "matilda_redirect": {
+    "choices": [
+      "再挑戦する",
+      "ホームに戻る"
+    ],
+    "sequence_id": "prologue_battle_lose",
+    "type": "story_sequence"
+  },
+  "result_screens": [
+    {
+      "buttons": [
+        {
+          "choice": "next",
+          "label": "次の章へ"
+        },
+        {
+          "choice": "title",
+          "label": "タイトルに戻る"
+        }
+      ],
+      "message": "見事な勝利です！次の章へ進みますか？",
+      "result": "win",
+      "title": "勝利！"
+    },
+    {
+      "buttons": [
+        {
+          "choice": "retry",
+          "label": "再戦する"
+        },
+        {
+          "choice": "title",
+          "label": "タイトルに戻る"
+        }
+      ],
+      "message": "残念...再戦しますか？",
+      "result": "lose",
+      "title": "敗北..."
+    },
+    {
+      "buttons": [
+        {
+          "choice": "retry",
+          "label": "再戦する"
+        },
+        {
+          "choice": "title",
+          "label": "タイトルに戻る"
+        }
+      ],
+      "message": "決着がつきませんでした。",
+      "result": "draw",
+      "title": "引き分け"
+    }
+  ],
+  "scenario_order": [
+    {
+      "battle_lose": "prologue_battle_lose",
+      "battle_win": "prologue_battle_win",
+      "id": "prologue"
+    },
+    {
+      "battle_lose": "stage1_battle_lose",
+      "battle_win": "stage1_battle_win",
+      "id": "stage1"
+    }
+  ],
+  "scenario_traces": [
+    {
+      "choice": "next",
+      "commands": [
+        {
+          "id": "prologue",
+          "kind": "scene"
+        },
+        {
+          "id": "prologue_battle_win",
+          "kind": "scene"
+        },
+        {
+          "choice": "next",
+          "kind": "result_choice",
+          "result": "win"
+        },
+        {
+          "id": "stage1",
+          "kind": "scene"
+        },
+        {
+          "kind": "guild_home"
+        }
+      ],
+      "result": "win"
+    },
+    {
+      "choice": "title",
+      "commands": [
+        {
+          "id": "prologue",
+          "kind": "scene"
+        },
+        {
+          "id": "prologue_battle_win",
+          "kind": "scene"
+        },
+        {
+          "choice": "title",
+          "kind": "result_choice",
+          "result": "win"
+        },
+        {
+          "id": "stage1",
+          "kind": "scene"
+        },
+        {
+          "kind": "guild_home"
+        }
+      ],
+      "result": "win"
+    },
+    {
+      "choice": "retry",
+      "commands": [
+        {
+          "id": "prologue",
+          "kind": "scene"
+        },
+        {
+          "id": "prologue_battle_lose",
+          "kind": "scene"
+        },
+        {
+          "choice": "retry",
+          "kind": "result_choice",
+          "result": "lose"
+        },
+        {
+          "id": "prologue",
+          "kind": "scene_from",
+          "label": "battle_start"
+        },
+        {
+          "id": "prologue_battle_win",
+          "kind": "scene"
+        },
+        {
+          "choice": "next",
+          "kind": "result_choice",
+          "result": "win"
+        },
+        {
+          "id": "stage1",
+          "kind": "scene"
+        },
+        {
+          "kind": "guild_home"
+        }
+      ],
+      "result": "lose"
+    },
+    {
+      "choice": "title",
+      "commands": [
+        {
+          "id": "prologue",
+          "kind": "scene"
+        },
+        {
+          "id": "prologue_battle_lose",
+          "kind": "scene"
+        },
+        {
+          "choice": "title",
+          "kind": "result_choice",
+          "result": "lose"
+        },
+        {
+          "id": "stage1",
+          "kind": "scene"
+        },
+        {
+          "kind": "guild_home"
+        }
+      ],
+      "result": "lose"
+    },
+    {
+      "choice": "retry",
+      "commands": [
+        {
+          "id": "prologue",
+          "kind": "scene"
+        },
+        {
+          "choice": "retry",
+          "kind": "result_choice",
+          "result": "draw"
+        },
+        {
+          "id": "prologue",
+          "kind": "scene_from",
+          "label": "battle_start"
+        },
+        {
+          "id": "prologue_battle_win",
+          "kind": "scene"
+        },
+        {
+          "choice": "next",
+          "kind": "result_choice",
+          "result": "win"
+        },
+        {
+          "id": "stage1",
+          "kind": "scene"
+        },
+        {
+          "kind": "guild_home"
+        }
+      ],
+      "result": "draw"
+    },
+    {
+      "choice": "title",
+      "commands": [
+        {
+          "id": "prologue",
+          "kind": "scene"
+        },
+        {
+          "choice": "title",
+          "kind": "result_choice",
+          "result": "draw"
+        },
+        {
+          "id": "stage1",
+          "kind": "scene"
+        },
+        {
+          "kind": "guild_home"
+        }
+      ],
+      "result": "draw"
+    }
+  ],
+  "source_hashes": {
+    "battle/BattleChapterBase.gd": "c66df565defe4c99467b9d5a4375b422fb82d5431bb4b013a095f17755a0640c",
+    "battle/chapters/PrologueBattleChapter.gd": "fa258cfa3f66a786d286693af53ccecabb5b5d6e092f2f7bd9450db962f40889",
+    "game/Main.gd": "31571141955af7276cce3878d30e4caec914584ddfecd21a8824f342f9238f9e"
+  },
+  "version": 1
+}

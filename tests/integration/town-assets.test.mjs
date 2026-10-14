@@ -50,7 +50,7 @@ test('Stage 2 story images used by Electron are fetched from LFS in CI', async (
     assert.ok(include.includes(asset), `CI LFS include missing ${asset}`)
     assert.ok(workflow.includes(`- '${asset}'`), `CI path trigger missing ${asset}`)
   }
-  const renderer = await readFile('electron/renderer/src/matilda-content.ts', 'utf8')
+  const renderer = await readFile('electron/renderer/src/original-assets.ts', 'utf8')
   for (const asset of assets) assert.ok(renderer.includes(asset), `Renderer asset mapping missing ${asset}`)
 })
 
@@ -63,7 +63,7 @@ test('Subevent 2 story backgrounds and the sister portrait are fetched from LFS 
     assert.ok(include.includes(asset), `CI LFS include missing ${asset}`)
     assert.ok(workflow.includes(`- '${asset}'`), `CI path trigger missing ${asset}`)
   }
-  const renderer = await readFile('electron/renderer/src/matilda-content.ts', 'utf8')
+  const renderer = await readFile('electron/renderer/src/original-assets.ts', 'utf8')
   for (const asset of assets) assert.ok(renderer.includes(asset), `Renderer asset mapping missing ${asset}`)
 })
 
@@ -76,7 +76,7 @@ test('Subevent 3 story backgrounds and Fiona portrait are fetched from LFS in CI
     assert.ok(includes.includes(asset), `CI LFS include missing ${asset}`)
     assert.ok(workflow.includes(`- '${asset}'`), `CI path trigger missing ${asset}`)
   }
-  const renderer = await readFile('electron/renderer/src/matilda-content.ts', 'utf8')
+  const renderer = await readFile('electron/renderer/src/original-assets.ts', 'utf8')
   for (const asset of assets) assert.ok(renderer.includes(asset), `Renderer asset mapping missing ${asset}`)
 })
 
@@ -88,7 +88,7 @@ test('Subevent 4 receptionist image is mapped in Electron and fetched from LFS i
     assert.ok(includes.includes(asset), `CI LFS include missing ${asset}`)
     assert.ok(workflow.includes(`- '${asset}'`), `CI path trigger missing ${asset}`)
   }
-  const renderer = await readFile('electron/renderer/src/matilda-content.ts', 'utf8')
+  const renderer = await readFile('electron/renderer/src/original-assets.ts', 'utf8')
   for (const asset of subevent4.assets.map((entry) => entry.path)) assert.ok(renderer.includes(asset), `Renderer asset mapping missing ${asset}`)
 })
 
@@ -96,7 +96,7 @@ test('Stage 3 story images are mapped in Electron and fetched from LFS in CI', a
   const stage3 = JSON.parse(await readFile('content/stories/stage3.json', 'utf8'))
   const workflow = await readFile('.github/workflows/electron-scaffold.yml', 'utf8')
   const includes = [...workflow.matchAll(/--include="([^"]+)"/g)].flatMap((match) => match[1].split(','))
-  const renderer = await readFile('electron/renderer/src/matilda-content.ts', 'utf8')
+  const renderer = await readFile('electron/renderer/src/original-assets.ts', 'utf8')
   for (const asset of stage3.assets.map((entry) => entry.path)) {
     assert.ok(includes.includes(asset), `CI LFS include missing ${asset}`)
     assert.ok(workflow.includes(`- '${asset}'`), `CI path trigger missing ${asset}`)
@@ -108,7 +108,7 @@ test('Stage 4 story images are mapped in Electron and fetched from LFS in CI', a
   const stage4 = JSON.parse(await readFile('content/stories/stage4.json', 'utf8'))
   const workflow = await readFile('.github/workflows/electron-scaffold.yml', 'utf8')
   const includes = [...workflow.matchAll(/--include="([^"]+)"/g)].flatMap((match) => match[1].split(','))
-  const renderer = await readFile('electron/renderer/src/matilda-content.ts', 'utf8')
+  const renderer = await readFile('electron/renderer/src/original-assets.ts', 'utf8')
   for (const asset of stage4.assets.map((entry) => entry.path)) {
     assert.ok(includes.includes(asset), `CI LFS include missing ${asset}`)
     const hasSpecificTrigger = workflow.includes(`- '${asset}'`)
@@ -123,7 +123,7 @@ test('Stage 5 story images are mapped in Electron and fetched from LFS in CI', a
   const stage5 = JSON.parse(await readFile('content/stories/stage5.json', 'utf8'))
   const workflow = await readFile('.github/workflows/electron-scaffold.yml', 'utf8')
   const includes = [...workflow.matchAll(/--include="([^"]+)"/g)].flatMap((match) => match[1].split(','))
-  const renderer = await readFile('electron/renderer/src/matilda-content.ts', 'utf8')
+  const renderer = await readFile('electron/renderer/src/original-assets.ts', 'utf8')
   for (const asset of stage5.assets.map((entry) => entry.path)) {
     assert.ok(includes.includes(asset), `CI LFS include missing ${asset}`)
     const hasSpecificTrigger = workflow.includes(`- '${asset}'`)
@@ -141,7 +141,7 @@ test('Stage 6 and 7 story images are mapped in Electron and fetched from LFS in 
   const stage7 = JSON.parse(await readFile('content/stories/stage7.json', 'utf8'))
   const workflow = await readFile('.github/workflows/electron-scaffold.yml', 'utf8')
   const includes = [...workflow.matchAll(/--include="([^"]+)"/g)].flatMap((match) => match[1].split(','))
-  const renderer = await readFile('electron/renderer/src/matilda-content.ts', 'utf8')
+  const renderer = await readFile('electron/renderer/src/original-assets.ts', 'utf8')
   const alreadyTriggered = new Set([
     'godot/assets/backgrounds/stage1/bg07_st1_001.png',
     'godot/assets/characters/main/satoshi/isekai/satoshi_isekai_004.png'
@@ -153,16 +153,18 @@ test('Stage 6 and 7 story images are mapped in Electron and fetched from LFS in 
   }
 })
 
-test('adapted prologue images are mapped in Electron and fetched from LFS in CI', async () => {
-  const prologue = JSON.parse(await readFile('content/stories/prologue.json', 'utf8'))
+test('original prologue images are mapped in Electron and fetched from LFS in CI', async () => {
+  const original = JSON.parse(await readFile('content/stories/godot-original.json', 'utf8'))
+  const prologue = original.sequences.find(sequence => sequence.id === 'prologue')
   const workflow = await readFile('.github/workflows/electron-scaffold.yml', 'utf8')
-  const includes = [...workflow.matchAll(/--include="([^"]+)"/g)].flatMap((match) => match[1].split(','))
-  const renderer = await readFile('electron/renderer/src/matilda-content.ts', 'utf8')
-  for (const asset of prologue.assets.map((entry) => entry.path)) {
-    assert.ok(includes.includes(asset), `CI LFS include missing ${asset}`)
-    const hasTrigger = workflow.includes(`- '${asset}'`) ||
-      asset.startsWith('godot/assets/backgrounds/prologue/') && workflow.includes("- 'godot/assets/backgrounds/prologue/**'")
-    assert.ok(hasTrigger, `CI path trigger missing ${asset}`)
+  const renderer = await readFile('electron/renderer/src/original-assets.ts', 'utf8')
+  const values = prologue.commands.flatMap(command => Object.values(command.parameters))
+  const assets = values.filter(value => typeof value === 'string' && value.startsWith('res://') && value.endsWith('.png'))
+  assert.ok(assets.length > 0)
+  assert.ok(workflow.includes('pull-original-assets.mjs --pull'))
+  assert.ok(workflow.includes('pull-original-assets.mjs --check'))
+  for (const path of assets) {
+    const asset = path.replace('res://', 'godot/')
     assert.ok(renderer.includes(asset), `Renderer asset mapping missing ${asset}`)
   }
 })

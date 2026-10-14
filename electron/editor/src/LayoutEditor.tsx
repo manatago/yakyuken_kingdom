@@ -2,10 +2,10 @@ import { useEffect, useMemo, useRef, useState, type PointerEvent } from 'react'
 import type { ContentPack, LayoutContent } from '../../../packages/content/schema'
 import { validateContent } from '../../../packages/content/validate'
 import { MATILDA_LAYOUT_IDS, moveLayout } from '../../../packages/content/layout'
-import { createInitialGameSave } from '../../../packages/domain/new-game'
-import { playTutorialRound, prepareTutorial } from '../../../packages/battle/tutorial'
 import type { EditorApi } from '../../preload/api'
-import { StoryScreen } from '../../renderer/src/StoryScreen'
+import { OriginalStoryScreen } from '../../renderer/src/OriginalStoryScreen'
+import { OriginalTutorialScreen } from '../../renderer/src/OriginalTutorialScreen'
+import { originalTutorialDeckPreview, originalTutorialShowdownPreview } from '../../../packages/story/original-tutorial-preview'
 
 const api = (globalThis as typeof globalThis & { janken: EditorApi }).janken
 const labels: Record<string, string> = {
@@ -100,15 +100,8 @@ export function LayoutEditor() {
     drag.current = null
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId)
   }
-  const previewSave = useMemo(() => {
-    const initial = createInitialGameSave()
-    const decked = { ...initial, player: { ...initial.player, deck: initial.player.inventory } }
-    if (selected === 'layout.cards.showdown') {
-      return playTutorialRound(prepareTutorial({ ...decked, progress: { ...decked.progress, checkpoint_id: 'matilda.await-deck' } }, decked.player.deck), 6, 0)
-    }
-    return { ...decked, progress: { ...decked.progress,
-      checkpoint_id: selected === 'layout.matilda.intro' ? 'matilda.start' : 'matilda.cards.box' } }
-  }, [selected])
+  const originalPreview = useMemo(() => selected === 'layout.cards.showdown'
+    ? originalTutorialShowdownPreview() : originalTutorialDeckPreview(), [selected])
 
   return <main className="editor-app">
     <header><h1>Janken Editor</h1><p>マチルダの配置編集 · 1920×1080基準 · 保存先：content/stories/matilda-tutorial.json</p></header>
@@ -123,12 +116,13 @@ export function LayoutEditor() {
             disabled={busy || !layout} value={form[key]} onChange={(event) => input(key, event.target.value)} />
         </label>)}
         {selected.startsWith('layout.matilda.') && <label><input type="checkbox" aria-label="左右反転" disabled={busy || !layout}
-          checked={layout?.flipped ?? false} onChange={(event) => layout && replace({ ...layout, flipped: event.target.checked })} />左右反転</label>}
+          checked={layout?.flipped ?? false} onChange={(event) => layout && replace({ ...layout, flipped: event.target.checked })} />原本から左右反転</label>}
         {!valid && layout && <p className="error-message">座標は有限の数値、拡大率は0より大きい数値にしてください。</p>}
         <button disabled={busy || !dirty || !valid} onClick={() => { void save() }}>配置を保存</button>
         <button disabled={busy || !dirty} onClick={discard}>変更を取り消す</button>
         <button disabled={busy || dirty} onClick={() => { void reload() }}>再読込</button>
         <p>画像やカード領域をドラッグできます。黄色の枠が編集対象です。未保存中は別の配置へ切り替えられません。</p>
+        <p>原本再生画面を使用します。既存の保存形式を維持し、座標は既定値からの移動量、拡大率は既定値に対する比率として反映します。人物の反転は原本に対する追加反転です。</p>
         <p>保存前のJSONは .bak に残ります。保存後は npm run build:game でゲームを再ビルドして再起動してください。</p>
         {error && <p role="alert" className="error-message">{error}</p>}
         <p role="status">{message || (dirty ? '未保存の変更があります。' : '')}</p>
@@ -136,7 +130,10 @@ export function LayoutEditor() {
       <div className="editor-preview" onPointerDownCapture={pointerDown} onPointerMove={pointerMove}
         onPointerUp={pointerEnd} onPointerCancel={pointerEnd} onClickCapture={(event) => event.stopPropagation()}>
         <style>{`[data-layout-id="${selected}"] { outline: 4px solid #ffdc80; outline-offset: 2px; }`}</style>
-        {draft && <StoryScreen content={draft} save={previewSave} onTitle={() => {}} onSave={async () => {}} onCheckpoint={async () => {}} />}
+        {draft && (selected.startsWith('layout.cards.')
+          ? <OriginalTutorialScreen save={originalPreview} layouts={draft} editorPreview onSave={async () => {}} onExit={() => {}} />
+        : <OriginalStoryScreen key={selected} sequenceId="prologue" debugControls cursor={selected === 'layout.matilda.intro' ? 149 : 192}
+            layouts={draft} onExit={() => {}} />)}
       </div>
     </div>
   </main>

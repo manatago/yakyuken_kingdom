@@ -6,17 +6,17 @@ import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import test from 'node:test'
 import { _electron as electron } from 'playwright-core'
+import { originalGuildSave, originalStage1End, originalDocument } from '../helpers/original-ui.mjs'
 
 const root = fileURLToPath(new URL('../..', import.meta.url))
 const executablePath = createRequire(import.meta.url)('electron')
 
 for (const fail of [false, true]) {
-  test(`dialogue save blocks lineup editing and restores it after ${fail ? 'failure' : 'success'}`, { timeout: 30_000 }, async () => {
+  test(`canonical guild draft save stays atomic after ${fail ? 'failure' : 'success'}`, { timeout: 30_000 }, async () => {
     const data = await mkdtemp(join(tmpdir(), 'janken-lineup-pending-'))
     const target = join(data, 'janken-save.json')
-    const cards = ['rock', 'scissors', 'paper'].flatMap((hand) => Array.from({ length: 3 }, () => ({ hand, grade: 1 })))
-    const original = { save_version: 1, player: { inventory: cards, deck: cards, money: 0 },
-      progress: { checkpoint_id: 'matilda.start', flags: [] } }
+    const cards = ['rock', 'scissors', 'paper'].flatMap(hand => Array.from({ length: 3 }, () => ({ hand, grade: 1 })))
+    const original = originalGuildSave(cards)
     const bytes = JSON.stringify(original)
     let app
     try {
@@ -24,57 +24,41 @@ for (const fail of [false, true]) {
       app = await electron.launch({ executablePath, args: [join(root, 'dist/game/main/index.js'), `--user-data-dir=${data}`] })
       const page = await app.firstWindow()
       await page.getByRole('button', { name: 'つづきから', exact: true }).click()
-      const edit = page.getByRole('button', { name: '編成を編集', exact: true })
-      await edit.waitFor()
-      // Hold the actual atomic save before rename, without changing the production IPC handler.
-      await app.evaluate(() => {
-        const fs = process.getBuiltinModule('node:fs/promises')
-        const rename = fs.rename
-        let started
-        globalThis.heldSaveStarted = new Promise((resolve) => { started = resolve })
-        const gate = new Promise((resolve) => { globalThis.releaseHeldSave = resolve })
-        fs.rename = async (...args) => {
-          try {
-            started()
-            const fail = await gate
-            if (fail) throw new Error('Injected delayed save failure')
-            return await rename(...args)
-          } finally {
-            fs.rename = rename
-          }
-        }
-      })
-      await page.getByRole('button', { name: '次へ', exact: true }).click()
-      await app.evaluate(async () => { await globalThis.heldSaveStarted })
-      assert.equal(await edit.isDisabled(), true)
-      await edit.evaluate((button) => button.click())
-      assert.equal(await page.getByRole('dialog').count(), 0)
-      assert.equal(await readFile(target, 'utf8'), bytes)
-      await app.evaluate((_electron, fail) => globalThis.releaseHeldSave(fail), fail)
-      await page.waitForFunction(() => !document.querySelector('.edit-lineup').disabled)
-      const checkpoint = fail ? 'matilda.start' : 'matilda.items.box'
-      assert.equal(await page.getByTestId('checkpoint-id').textContent(), checkpoint)
-      if (fail) {
-        await page.getByRole('alert').waitFor()
-        assert.equal(await readFile(target, 'utf8'), bytes)
-      }
-      await edit.click()
+      await page.getByRole('button', { name: 'カード', exact: true }).click()
+      await page.getByRole('button', { name: '編成を編集', exact: true }).click()
       const dialog = page.getByRole('dialog')
       await dialog.getByRole('button', { name: '編成から削除 グー N', exact: true }).first().click()
       await dialog.getByRole('button', { name: '編成に追加 グー N', exact: true }).first().click()
+      await app.evaluate(() => {
+        const fs = process.getBuiltinModule('node:fs/promises'), rename = fs.rename
+        let started
+        globalThis.heldSaveStarted = new Promise(resolve => { started = resolve })
+        const gate = new Promise(resolve => { globalThis.releaseHeldSave = resolve })
+        fs.rename = async (...args) => {
+          try { started(); if (await gate) throw new Error('Injected delayed save failure'); return await rename(...args) }
+          finally { fs.rename = rename }
+        }
+      })
       await dialog.getByRole('button', { name: '編成を保存', exact: true }).click()
+      await app.evaluate(async () => { await globalThis.heldSaveStarted })
+      assert.equal(await dialog.getByRole('button', { name: '編成を保存', exact: true }).isDisabled(), true)
+      assert.equal(await dialog.getByRole('button', { name: 'キャンセル', exact: true }).isDisabled(), true)
+      assert.equal(await readFile(target, 'utf8'), bytes)
+      await app.evaluate((_electron, fail) => globalThis.releaseHeldSave(fail), fail)
+      if (fail) {
+        await dialog.getByRole('alert').waitFor()
+        assert.equal(await readFile(target, 'utf8'), bytes)
+        await dialog.getByRole('button', { name: '編成を保存', exact: true }).click()
+      }
       await dialog.waitFor({ state: 'detached' })
       const saved = JSON.parse(await readFile(target, 'utf8'))
-      assert.deepEqual(saved.progress, { ...original.progress, checkpoint_id: checkpoint })
+      assert.deepEqual(saved.progress, original.progress)
       assert.deepEqual(saved.player.deck, cards)
+      assert.deepEqual(saved.player.inventory, original.player.inventory)
       assert.deepEqual(saved.player.prepared_deck, [...cards.slice(1), cards[0]])
     } finally {
-      try {
-        if (app) {
-          await app.evaluate(() => globalThis.releaseHeldSave?.(false)).catch(() => {})
-          await app.close()
-        }
-      } finally { await rm(data, { recursive: true, force: true }) }
+      try { if (app) { await app.evaluate(() => globalThis.releaseHeldSave?.(false)).catch(() => {}); await app.close() } }
+      finally { await rm(data, { recursive: true, force: true }) }
     }
   })
 }
@@ -84,14 +68,14 @@ test('all grades edit, cancel, recover from failed save and resume without rewri
   const target = join(data, 'janken-save.json')
   const inventory = ['rock', 'scissors', 'paper'].flatMap((hand) => [1, 2, 3, 4, 5].map((grade) => ({ hand, grade })))
   const battleDeck = ['rock', 'scissors', 'paper'].flatMap((hand) => Array.from({ length: 3 }, () => ({ hand, grade: 1 })))
-  const content = JSON.parse(await readFile(join(root, 'content/stories/matilda-tutorial.json'), 'utf8'))
   // The recorded battle uses three Normal copies of each hand.
   const owned = [...inventory, ...['rock', 'scissors', 'paper'].flatMap((hand) =>
     Array.from({ length: 2 }, () => ({ hand, grade: 1 })))]
+  const completed = originalDocument.sequences.find(sequence => sequence.id === 'stage2_meet').commands
+    .findIndex(command => command.kind === 'battle') + 1
   const original = { save_version: 1, player: { inventory: owned, deck: battleDeck, money: 17 }, progress: {
-    checkpoint_id: 'matilda.end', flags: ['matilda.tutorial.completed'], tutorial: {
-      battle_id: content.battles[0].id, rounds: [{ player_index: 6, opponent_index: 0 }, { player_index: 0, opponent_index: 3 }], acknowledged: 2
-    }
+    checkpoint_id: 'guild.home', guild_return_checkpoint: originalStage1End, flags: ['original.matilda.tutorial.completed'],
+    original_completed_battles: [`original:stage2_meet:${completed}`]
   } }
   const bytes = JSON.stringify(original)
   let app, page
@@ -99,6 +83,7 @@ test('all grades edit, cancel, recover from failed save and resume without rewri
     app = await electron.launch({ executablePath, args: [join(root, 'dist/game/main/index.js'), `--user-data-dir=${data}`] })
     page = await app.firstWindow()
     await page.getByRole('button', { name: 'つづきから', exact: true }).click()
+    await page.getByRole('button', { name: 'カード', exact: true }).click()
     await page.getByRole('button', { name: '編成を編集', exact: true }).waitFor()
   }
   try {

@@ -1,0 +1,58 @@
+{
+  "format": "godot-story-menu",
+  "version": 1,
+  "source_hashes": {
+    "scene": "ef0c961792f4833e33326a6b524dc07e2481e7c961c3754231b4d2bfde2f10a6",
+    "script": "f5d6b8b1dc0cdd733ad488129678df307e586278f2e646a37ae70168033019a3"
+  },
+  "buttons": [
+    {
+      "id": "ItemButton",
+      "label": "Item",
+      "font_size": 14
+    },
+    {
+      "id": "EquipButton",
+      "label": "Equip",
+      "font_size": 14
+    },
+    {
+      "id": "SkipButton",
+      "label": "Skip",
+      "font_size": 14
+    },
+    {
+      "id": "SaveButton",
+      "label": "Save",
+      "font_size": 14
+    },
+    {
+      "id": "LoadButton",
+      "label": "Load",
+      "font_size": 14
+    },
+    {
+      "id": "ConfigButton",
+      "label": "Config",
+      "font_size": 14
+    },
+    {
+      "id": "ExitButton",
+      "label": "Exit",
+      "font_size": 14
+    }
+  ],
+  "viewers": {
+    "item": {
+      "title": "アイテム",
+      "empty": "アイテムがありません",
+      "close": "閉じる"
+    },
+    "equip": {
+      "title": "装備",
+      "empty": "装備品がありません",
+      "close": "閉じる"
+    }
+  },
+  "gold_prefix": "所持金: "
+}

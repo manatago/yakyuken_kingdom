@@ -190,7 +190,6 @@ func outfit_3(bt):
 		bt.bubble("・・・・・あんまり、まじまじ見るなよぉ・・・・・", {"side": "right"})
 		bt.background("res://assets/backgrounds/prologue/bg05_prison_cell.png")
 		#todo:残り2枚の紙芝居を入れる
-		await bt.play_video("res://assets/videos/prologue_win_1.ogv")
 		bt.set_battle_ui_visible(true)
 		bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.55, "position": [0, 180]})
 
@@ -232,7 +231,6 @@ func outfit_2(bt):
 		bt.bubble("（うううう・・・恥ずかしい・・・）", {"side": "right"})
 		bt.background("res://assets/backgrounds/prologue/bg05_prison_cell.png")
 		#todo:残り1枚の紙芝居を入れる
-		await bt.play_video("res://assets/videos/prologue_win_2.ogv")
 		bt.set_battle_ui_visible(true)
 		bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.55, "position": [0, 180]})
 	elif result == "lose":
@@ -276,7 +274,6 @@ func outfit_1(bt):
 		bt.background("res://assets/characters/main/matilda/clothed/machilda_undressing13.png")
 		bt.bubble("な、なぁ・・・・\nもういい。だろ？", {"side": "right"})
 		bt.background("res://assets/backgrounds/prologue/bg05_prison_cell.png")
-		await bt.play_video("res://assets/videos/prologue_win_3.ogv")
 		bt.set_battle_ui_visible(true)
 		bt.deck("res://assets/battle/decks/pedestal_01_marble.png", {"scale": 0.55, "position": [0, 180]})
 	elif result == "lose":

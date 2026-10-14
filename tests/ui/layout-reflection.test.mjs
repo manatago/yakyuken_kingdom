@@ -28,8 +28,8 @@ test('editor JSON save survives an isolated game rebuild and restart', { timeout
     const target = join(project, 'content/stories/matilda-tutorial.json')
     const original = await readFile(target, 'utf8')
     const source = JSON.parse(original)
-    const renderer = await readFile(join(root, 'electron/renderer/src/matilda-content.ts'), 'utf8')
-    const mappedAssets = [...renderer.matchAll(/from ['"]\.\.\/\.\.\/\.\.\/(godot\/assets\/[^'"]+)\?url['"]/g)]
+    const originalRenderer = await readFile(join(root, 'electron/renderer/src/original-assets.ts'), 'utf8')
+    const mappedAssets = [...originalRenderer.matchAll(/from ['"]\.\.\/\.\.\/\.\.\/(godot\/assets\/[^'"]+)\?url['"]/g)]
       .map((match) => match[1])
     const guildHome = JSON.parse(await readFile(join(project, 'content/screens/guild-home.json'), 'utf8'))
     const belka = JSON.parse(await readFile(join(project, 'content/stories/belka-verification.json'), 'utf8'))
@@ -39,7 +39,7 @@ test('editor JSON save survives an isolated game rebuild and restart', { timeout
       ...Object.values(town.areas).map((area) => area.background),
       ...['rock', 'scissors', 'paper'].flatMap((hand) => ['normal', 'bronze', 'silver', 'gold', 'platinum']
         .map((grade) => `godot/assets/battle/cards/${hand}_${grade}.png`))]
-    for (const path of paths) {
+    for (const path of new Set(paths)) {
       await mkdir(dirname(join(project, path)), { recursive: true })
       await cp(join(root, path), join(project, path))
     }
@@ -64,6 +64,11 @@ test('editor JSON save survives an isolated game rebuild and restart', { timeout
       { cwd: project, encoding: 'utf8', timeout: 90_000 })
     assert.equal(build.error, undefined, String(build.error))
     assert.equal(build.status, 0, build.stdout + build.stderr)
+    const fixture = spawnSync(process.execPath, ['--import', 'tsx', '-e',
+      "process.stdout.write(JSON.stringify(require('./packages/story/original-tutorial-preview.ts').originalTutorialDeckPreview()))"],
+    { cwd: project, encoding: 'utf8', timeout: 30_000 })
+    assert.equal(fixture.status, 0, fixture.stderr)
+    const preview = JSON.parse(fixture.stdout)
     let playerBytes
     for (let attempt = 0; attempt < 2; attempt++) {
       app = await electron.launch({ executablePath, args: [join(project, 'dist/game/main/index.js'),
@@ -71,23 +76,15 @@ test('editor JSON save survives an isolated game rebuild and restart', { timeout
       page = await app.firstWindow()
       await page.getByRole('button', { name: attempt ? 'つづきから' : 'はじめから', exact: true }).click()
       if (!attempt) {
-        for (let step = 0; step < 20; step++) {
-          const checkpoint = await page.getByTestId('checkpoint-id').textContent()
-          if (checkpoint === 'prologue.end') {
-            await page.getByRole('button', { name: 'チュートリアルへ進む', exact: true }).click()
-            await page.waitForFunction(() => document.querySelector('[data-testid="checkpoint-id"]')?.textContent === 'matilda.start')
-            break
-          }
-          const next = page.getByRole('button', { name: '次へ', exact: true })
-          await next.waitFor()
-          await next.click()
-          await page.waitForFunction((previous) => document.querySelector('[data-testid="checkpoint-id"]')?.textContent !== previous,
-            checkpoint)
-        }
+        await page.getByTestId('original-cursor').waitFor()
+        // This test checks geometry, not the entire prologue. Seed a state replayed from its actual commands.
+        await page.evaluate(async save => globalThis.janken.save.write(save), preview)
+        await page.reload()
+        await page.getByRole('button', { name: 'つづきから', exact: true }).click()
       }
       const box = page.getByTestId('card-box')
       await box.waitFor()
-      assert.equal(await box.evaluate((element) => element.style.left), '1510px')
+      assert.ok(Math.abs(await box.evaluate((element) => parseFloat(element.style.left)) - 1453.6) < 1e-9)
       assert.equal(await box.evaluate((element) => element.style.transform), 'scale(0.9, 0.9)')
       await page.waitForFunction(() => [...document.querySelectorAll('.story-stage img')].length > 0 &&
         [...document.querySelectorAll('.story-stage img')].every((img) => img.complete && img.naturalWidth > 0))

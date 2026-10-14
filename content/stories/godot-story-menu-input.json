@@ -1,0 +1,38 @@
+{
+  "action_details": {
+    "echo_preserves_dialogue": true,
+    "viewer_stays_open": true
+  },
+  "background": "res://assets/backgrounds/prologue/bg01_university.png",
+  "cursor": 15,
+  "dialogue": {
+    "band_visible": true,
+    "l_body": "今日も数理解析概論の講義をバックレたった...",
+    "l_speaker": "サトシ",
+    "l_speaker_vis": false,
+    "l_visible": false,
+    "n_body": "一方、幼馴染の女の子は有名私大の弁論サークルに所属しており、政治家秘書のバイトをやっており、将来は政治家を目指している。弁論大会で多数の受賞歴を誇る。",
+    "n_body_vis": false,
+    "n_speaker": "Speaker",
+    "n_speaker_vis": false,
+    "r_body": "あ、サトシ。こんなとこでブラブラして...また講義サボったでしょ。",
+    "r_speaker": "みのり",
+    "r_speaker_vis": true,
+    "r_visible": true
+  },
+  "end_cursor": 17,
+  "position_cache": {
+    "heroine": "(0.0, 100.0)",
+    "main": "(0.0, 0.0)"
+  },
+  "scope": "ui-accept-with-focused-viewer-close",
+  "sequence": "prologue",
+  "side_cache": {
+    "heroine": "right",
+    "main": "left"
+  },
+  "source_hashes": {
+    "game/StoryScene.gd": "f5d6b8b1dc0cdd733ad488129678df307e586278f2e646a37ae70168033019a3",
+    "story/StoryCommands.gd": "75346141e18cbdb1c3579859f3925313472604c7594043a9800b74b3a202450d"
+  }
+}

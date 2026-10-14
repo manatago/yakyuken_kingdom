@@ -1,0 +1,7116 @@
+{
+  "chapters": [
+    {
+      "background": "res://assets/backgrounds/stage2/bg_inn_meeting.png",
+      "bayes_eye": true,
+      "can_gain_cards": true,
+      "can_lose_cards": true,
+      "card_reward": {
+        "grade": 5,
+        "hand": "rock"
+      },
+      "chapter_path": "res://battle/chapters/Stage2BattleChapter.gd",
+      "farewell": {
+        "draw": {},
+        "lose": {},
+        "win": {}
+      },
+      "first_battle": true,
+      "flag_key": "stage2_first_battle_done",
+      "gold_reward": {
+        "max": 90,
+        "min": 60
+      },
+      "item_rewards": [
+        "rock_attract_gold"
+      ],
+      "lose_behavior": "continue",
+      "lose_redirect": {},
+      "opponent_deck": [
+        {
+          "grade": 2,
+          "hand": "rock"
+        },
+        {
+          "grade": 2,
+          "hand": "rock"
+        },
+        {
+          "grade": 2,
+          "hand": "rock"
+        },
+        {
+          "grade": 2,
+          "hand": "scissors"
+        },
+        {
+          "grade": 2,
+          "hand": "scissors"
+        },
+        {
+          "grade": 3,
+          "hand": "scissors"
+        },
+        {
+          "grade": 1,
+          "hand": "paper"
+        },
+        {
+          "grade": 2,
+          "hand": "paper"
+        },
+        {
+          "grade": 2,
+          "hand": "paper"
+        }
+      ],
+      "opponent_deck_size": 9,
+      "opponent_hp": 3,
+      "opponent_id": "layla",
+      "opponent_name": "レイラ",
+      "opponent_tendency": {
+        "scissors": 0.4
+      },
+      "player_deck_size": 9,
+      "player_hp": 3,
+      "setup": [
+        {
+          "args": [
+            "res://assets/battle/decks/pedestal_01_marble.png",
+            {
+              "position": [
+                0,
+                180
+              ],
+              "scale": 0.5
+            }
+          ],
+          "kind": "deck"
+        }
+      ],
+      "traces": [
+        {
+          "commands": [
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...では、検証、開始でございます。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...っ。お見事です。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...では、検証、開始でございます。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...一本、いただきました。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...では、検証、開始でございます。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...引き分けでございますか。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...では、続けます。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...読み、お深いですね。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...では、続けます。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...二本目、いただきます。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...では、続けます。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...またですか。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...最後の一本、参ります。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...一本だけ、お返ししました。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...最後の一本、参ります。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...検証、終了でございます。\n再検証の権利は三日以内、一度のみ。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...最後の一本、参ります。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...引き分け。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "draw"
+          ]
+        }
+      ]
+    },
+    {
+      "background": "res://assets/backgrounds/stage2/bg_inn_meeting.png",
+      "bayes_eye": true,
+      "can_gain_cards": true,
+      "can_lose_cards": true,
+      "card_reward": {
+        "grade": 5,
+        "hand": "rock"
+      },
+      "chapter_path": "res://battle/chapters/Stage2BattleChapter.gd",
+      "farewell": {
+        "draw": {},
+        "lose": {},
+        "win": {}
+      },
+      "first_battle": false,
+      "flag_key": "stage2_first_battle_done",
+      "gold_reward": {
+        "max": 90,
+        "min": 60
+      },
+      "item_rewards": [
+        "rock_attract_gold"
+      ],
+      "lose_behavior": "guild_home",
+      "lose_redirect": {
+        "type": "guild_home"
+      },
+      "opponent_deck": [
+        {
+          "grade": 2,
+          "hand": "rock"
+        },
+        {
+          "grade": 2,
+          "hand": "rock"
+        },
+        {
+          "grade": 2,
+          "hand": "rock"
+        },
+        {
+          "grade": 2,
+          "hand": "scissors"
+        },
+        {
+          "grade": 2,
+          "hand": "scissors"
+        },
+        {
+          "grade": 3,
+          "hand": "scissors"
+        },
+        {
+          "grade": 1,
+          "hand": "paper"
+        },
+        {
+          "grade": 2,
+          "hand": "paper"
+        },
+        {
+          "grade": 2,
+          "hand": "paper"
+        }
+      ],
+      "opponent_deck_size": 9,
+      "opponent_hp": 3,
+      "opponent_id": "layla",
+      "opponent_name": "レイラ",
+      "opponent_tendency": {
+        "scissors": 0.4
+      },
+      "player_deck_size": 9,
+      "player_hp": 3,
+      "setup": [
+        {
+          "args": [
+            "res://assets/battle/decks/pedestal_01_marble.png",
+            {
+              "position": [
+                0,
+                180
+              ],
+              "scale": 0.5
+            }
+          ],
+          "kind": "deck"
+        }
+      ],
+      "traces": [
+        {
+          "commands": [
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...再検証、開始いたします。条件は前回と同様。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.55
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...っ。お見事です。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...再検証、開始いたします。条件は前回と同様。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.55
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...サトシ様、お見事です。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...再検証、開始いたします。条件は前回と同様。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.55
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...引き分けでございますか。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...首筋の汗、増えてますよ、と仰いますか。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...読み、お深いですね。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...首筋の汗、増えてますよ、と仰いますか。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...二本目、いただきます。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...首筋の汗、増えてますよ、と仰いますか。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...またですか。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "（涙目）...や、やめっ...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.45
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...完敗、です。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "（涙目）...や、やめっ...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.45
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...ふぅ、危なかった。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "（涙目）...や、やめっ...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.45
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "layla",
+                "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "layla",
+                "...引き分け。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "draw"
+          ]
+        }
+      ]
+    },
+    {
+      "background": "res://assets/backgrounds/subevent2/bg02_church_interior.png",
+      "bayes_eye": true,
+      "can_gain_cards": true,
+      "can_lose_cards": true,
+      "card_reward": {
+        "grade": 5,
+        "hand": "scissors"
+      },
+      "chapter_path": "res://battle/chapters/Stage3BattleChapter.gd",
+      "farewell": {
+        "draw": {},
+        "lose": {},
+        "win": {}
+      },
+      "first_battle": true,
+      "flag_key": "stage3_first_battle_done",
+      "gold_reward": {
+        "max": 120,
+        "min": 80
+      },
+      "item_rewards": [
+        "scissors_attract_gold"
+      ],
+      "lose_behavior": "continue",
+      "lose_redirect": {},
+      "opponent_deck": [
+        {
+          "grade": 2,
+          "hand": "rock"
+        },
+        {
+          "grade": 3,
+          "hand": "rock"
+        },
+        {
+          "grade": 2,
+          "hand": "rock"
+        },
+        {
+          "grade": 2,
+          "hand": "scissors"
+        },
+        {
+          "grade": 2,
+          "hand": "scissors"
+        },
+        {
+          "grade": 2,
+          "hand": "scissors"
+        },
+        {
+          "grade": 2,
+          "hand": "paper"
+        },
+        {
+          "grade": 2,
+          "hand": "paper"
+        },
+        {
+          "grade": 3,
+          "hand": "paper"
+        }
+      ],
+      "opponent_deck_size": 9,
+      "opponent_hp": 3,
+      "opponent_id": "magdalena",
+      "opponent_name": "マグダレナ",
+      "opponent_tendency": {
+        "paper": 0.4
+      },
+      "player_deck_size": 9,
+      "player_hp": 3,
+      "setup": [
+        {
+          "args": [
+            "res://assets/battle/decks/pedestal_01_marble.png",
+            {
+              "position": [
+                0,
+                180
+              ],
+              "scale": 0.5
+            }
+          ],
+          "kind": "deck"
+        }
+      ],
+      "traces": [
+        {
+          "commands": [
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "神よ、光あれ。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...神は、今日は別のお考えのようでございます。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "神よ、光あれ。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...神の御加護、ここに。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "神よ、光あれ。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...引き分け、ですか。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...次は、ございませんよ。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...わたくしの読み、外れた...？",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...次は、ございませんよ。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...神は、まだ私に勝利を授けてくださる。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...次は、ございませんよ。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...またあいこ。困ったお方ですね。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...神の御前で、これ以上の屈辱は許されません。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...神が、今、一瞬目を逸らされました。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...神の御前で、これ以上の屈辱は許されません。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...勝負、ありました。神は、今日、私にお味方くださいました。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...神の御前で、これ以上の屈辱は許されません。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...粘り強い方ですわね。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "draw"
+          ]
+        }
+      ]
+    },
+    {
+      "background": "res://assets/backgrounds/subevent2/bg02_church_interior.png",
+      "bayes_eye": true,
+      "can_gain_cards": true,
+      "can_lose_cards": true,
+      "card_reward": {
+        "grade": 5,
+        "hand": "scissors"
+      },
+      "chapter_path": "res://battle/chapters/Stage3BattleChapter.gd",
+      "farewell": {
+        "draw": {},
+        "lose": {},
+        "win": {}
+      },
+      "first_battle": false,
+      "flag_key": "stage3_first_battle_done",
+      "gold_reward": {
+        "max": 120,
+        "min": 80
+      },
+      "item_rewards": [
+        "scissors_attract_gold"
+      ],
+      "lose_behavior": "guild_home",
+      "lose_redirect": {
+        "type": "guild_home"
+      },
+      "opponent_deck": [
+        {
+          "grade": 2,
+          "hand": "rock"
+        },
+        {
+          "grade": 3,
+          "hand": "rock"
+        },
+        {
+          "grade": 2,
+          "hand": "rock"
+        },
+        {
+          "grade": 2,
+          "hand": "scissors"
+        },
+        {
+          "grade": 2,
+          "hand": "scissors"
+        },
+        {
+          "grade": 2,
+          "hand": "scissors"
+        },
+        {
+          "grade": 2,
+          "hand": "paper"
+        },
+        {
+          "grade": 2,
+          "hand": "paper"
+        },
+        {
+          "grade": 3,
+          "hand": "paper"
+        }
+      ],
+      "opponent_deck_size": 9,
+      "opponent_hp": 3,
+      "opponent_id": "magdalena",
+      "opponent_name": "マグダレナ",
+      "opponent_tendency": {
+        "paper": 0.4
+      },
+      "player_deck_size": 9,
+      "player_hp": 3,
+      "setup": [
+        {
+          "args": [
+            "res://assets/battle/decks/pedestal_01_marble.png",
+            {
+              "position": [
+                0,
+                180
+              ],
+              "scale": 0.5
+            }
+          ],
+          "kind": "deck"
+        }
+      ],
+      "traces": [
+        {
+          "commands": [
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...ええ。罪人の魂、わたくしが受け止めましょう。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.55
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...神は、今日は別のお考えのようでございます。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...ええ。罪人の魂、わたくしが受け止めましょう。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.55
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...神の御加護、ここに。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...ええ。罪人の魂、わたくしが受け止めましょう。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.55
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...引き分け、ですか。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...っ！ そ、その朗読は──！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...わたくしの読み、外れた...？",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...っ！ そ、その朗読は──！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...神は、まだ私に勝利を授けてくださる。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...っ！ そ、その朗読は──！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...またあいこ。困ったお方ですね。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...っ！ お願い、もう、見ないで...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.45
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...完敗、です。本の返却、嫌がらせの停止、承諾いたします。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...っ！ お願い、もう、見ないで...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.45
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...ふぅ、危なかった。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...っ！ お願い、もう、見ないで...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.45
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "magdalena",
+                "res://assets/characters/main/magdalena/clothed/magdalena_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "magdalena",
+                "...粘り強い方ですわね。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "draw"
+          ]
+        }
+      ]
+    },
+    {
+      "background": "res://assets/backgrounds/stage4/bg_dojo_third.png",
+      "bayes_eye": true,
+      "can_gain_cards": true,
+      "can_lose_cards": true,
+      "card_reward": {
+        "grade": 5,
+        "hand": "paper"
+      },
+      "chapter_path": "res://battle/chapters/Stage4BattleChapter.gd",
+      "farewell": {
+        "draw": {},
+        "lose": {},
+        "win": {}
+      },
+      "first_battle": true,
+      "flag_key": "stage4_first_battle_done",
+      "gold_reward": {
+        "max": 150,
+        "min": 100
+      },
+      "item_rewards": [
+        "paper_attract_gold"
+      ],
+      "lose_behavior": "continue",
+      "lose_redirect": {},
+      "opponent_deck": [
+        {
+          "grade": 2,
+          "hand": "rock"
+        },
+        {
+          "grade": 3,
+          "hand": "rock"
+        },
+        {
+          "grade": 3,
+          "hand": "rock"
+        },
+        {
+          "grade": 2,
+          "hand": "scissors"
+        },
+        {
+          "grade": 3,
+          "hand": "scissors"
+        },
+        {
+          "grade": 3,
+          "hand": "scissors"
+        },
+        {
+          "grade": 2,
+          "hand": "paper"
+        },
+        {
+          "grade": 3,
+          "hand": "paper"
+        },
+        {
+          "grade": 3,
+          "hand": "paper"
+        }
+      ],
+      "opponent_deck_size": 9,
+      "opponent_hp": 3,
+      "opponent_id": "seles",
+      "opponent_name": "セレス",
+      "opponent_tendency": {
+        "paper": 0.35,
+        "rock": 0.35
+      },
+      "player_deck_size": 9,
+      "player_hp": 3,
+      "setup": [
+        {
+          "args": [
+            "res://assets/battle/decks/pedestal_01_marble.png",
+            {
+              "position": [
+                0,
+                180
+              ],
+              "scale": 0.5
+            }
+          ],
+          "kind": "deck"
+        }
+      ],
+      "traces": [
+        {
+          "commands": [
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "縛鎖、発動。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...貴殿の、読み...！",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "縛鎖、発動。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "一本。...貴殿の「読み」は、確かに冴えているようだ。\nだが、貴殿の手が封じられていれば、それも、意味をなさぬ。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "縛鎖、発動。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...引き分け。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "縛鎖、発動。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...信じ難い。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "縛鎖、発動。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...二本目、いただきます。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "縛鎖、発動。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...またですか。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "縛鎖、発動。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...惜しい。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "縛鎖、発動。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...予想通りだ。貴殿の『読み』は、出せる手が封じられていれば、\nただの無駄知識に過ぎぬ。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "縛鎖、発動。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...粘りますね。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "draw"
+          ]
+        }
+      ]
+    },
+    {
+      "background": "res://assets/backgrounds/stage4/bg_dojo_third.png",
+      "bayes_eye": true,
+      "can_gain_cards": true,
+      "can_lose_cards": true,
+      "card_reward": {
+        "grade": 5,
+        "hand": "paper"
+      },
+      "chapter_path": "res://battle/chapters/Stage4BattleChapter.gd",
+      "farewell": {
+        "draw": {},
+        "lose": {},
+        "win": {}
+      },
+      "first_battle": false,
+      "flag_key": "stage4_first_battle_done",
+      "gold_reward": {
+        "max": 150,
+        "min": 100
+      },
+      "item_rewards": [
+        "paper_attract_gold"
+      ],
+      "lose_behavior": "guild_home",
+      "lose_redirect": {
+        "type": "guild_home"
+      },
+      "opponent_deck": [
+        {
+          "grade": 2,
+          "hand": "rock"
+        },
+        {
+          "grade": 3,
+          "hand": "rock"
+        },
+        {
+          "grade": 3,
+          "hand": "rock"
+        },
+        {
+          "grade": 2,
+          "hand": "scissors"
+        },
+        {
+          "grade": 3,
+          "hand": "scissors"
+        },
+        {
+          "grade": 3,
+          "hand": "scissors"
+        },
+        {
+          "grade": 2,
+          "hand": "paper"
+        },
+        {
+          "grade": 3,
+          "hand": "paper"
+        },
+        {
+          "grade": 3,
+          "hand": "paper"
+        }
+      ],
+      "opponent_deck_size": 9,
+      "opponent_hp": 3,
+      "opponent_id": "seles",
+      "opponent_name": "セレス",
+      "opponent_tendency": {
+        "paper": 0.35,
+        "rock": 0.35
+      },
+      "player_deck_size": 9,
+      "player_hp": 3,
+      "setup": [
+        {
+          "args": [
+            "res://assets/battle/decks/pedestal_01_marble.png",
+            {
+              "position": [
+                0,
+                180
+              ],
+              "scale": 0.5
+            }
+          ],
+          "kind": "deck"
+        }
+      ],
+      "traces": [
+        {
+          "commands": [
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...そ、そんな、はずは...縛鎖は、私の...完璧な、はず...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...貴殿の、読み...！",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...そ、そんな、はずは...縛鎖は、私の...完璧な、はず...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...一本、いただきます。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...そ、そんな、はずは...縛鎖は、私の...完璧な、はず...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...引き分け。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...こ、これは...私の、魔法が...私自身に...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...信じ難い。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...こ、これは...私の、魔法が...私自身に...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...二本目、いただきます。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...こ、これは...私の、魔法が...私自身に...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...またですか。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...ぁ、ぁぁ...這う...這い、ます...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.45
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...完敗、だ。検証は、完了した。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...ぁ、ぁぁ...這う...這い、ます...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.45
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...助かった。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...ぁ、ぁぁ...這う...這い、ます...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.45
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "seles",
+                "res://assets/characters/main/seles/clothed/seles_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "seles",
+                "...粘りますね。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "draw"
+          ]
+        }
+      ]
+    },
+    {
+      "background": "res://assets/backgrounds/stage5/bg_training_ground.png",
+      "bayes_eye": true,
+      "can_gain_cards": true,
+      "can_lose_cards": true,
+      "card_reward": {},
+      "chapter_path": "res://battle/chapters/Stage5BattleChapter.gd",
+      "farewell": {
+        "draw": {},
+        "lose": {},
+        "win": {}
+      },
+      "first_battle": true,
+      "flag_key": "stage5_first_battle_done",
+      "gold_reward": {
+        "max": 180,
+        "min": 120
+      },
+      "item_rewards": [
+        "rank_up_bracelet",
+        "intimidation"
+      ],
+      "lose_behavior": "continue",
+      "lose_redirect": {},
+      "opponent_deck": [
+        {
+          "grade": 3,
+          "hand": "rock"
+        },
+        {
+          "grade": 3,
+          "hand": "rock"
+        },
+        {
+          "grade": 3,
+          "hand": "rock"
+        },
+        {
+          "grade": 3,
+          "hand": "scissors"
+        },
+        {
+          "grade": 3,
+          "hand": "scissors"
+        },
+        {
+          "grade": 3,
+          "hand": "scissors"
+        },
+        {
+          "grade": 3,
+          "hand": "paper"
+        },
+        {
+          "grade": 3,
+          "hand": "paper"
+        },
+        {
+          "grade": 3,
+          "hand": "paper"
+        }
+      ],
+      "opponent_deck_size": 9,
+      "opponent_hp": 3,
+      "opponent_id": "feria",
+      "opponent_name": "フェリア",
+      "opponent_tendency": {},
+      "player_deck_size": 9,
+      "player_hp": 3,
+      "setup": [
+        {
+          "args": [
+            "res://assets/battle/decks/pedestal_01_marble.png",
+            {
+              "position": [
+                0,
+                180
+              ],
+              "scale": 0.5
+            }
+          ],
+          "kind": "deck"
+        }
+      ],
+      "traces": [
+        {
+          "commands": [
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -215
+                  ],
+                  "scale": 0.4,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "プラチナのグー。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -215
+                  ],
+                  "scale": 0.4,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "...！",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -215
+                  ],
+                  "scale": 0.4,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "プラチナのグー。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "...一本。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -215
+                  ],
+                  "scale": 0.4,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "プラチナのグー。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "...引き分け。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "プラチナのチョキ。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "...貴様...！",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "プラチナのチョキ。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "...二本目。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "プラチナのチョキ。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "...粘るな。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "プラチナのパー。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "...惜しい。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "プラチナのパー。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "勝負、あり。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "プラチナのパー。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "...決着を、急げ。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "draw"
+          ]
+        }
+      ]
+    },
+    {
+      "background": "res://assets/backgrounds/stage5/bg_training_ground.png",
+      "bayes_eye": true,
+      "can_gain_cards": true,
+      "can_lose_cards": true,
+      "card_reward": {},
+      "chapter_path": "res://battle/chapters/Stage5BattleChapter.gd",
+      "farewell": {
+        "draw": {},
+        "lose": {},
+        "win": {}
+      },
+      "first_battle": false,
+      "flag_key": "stage5_first_battle_done",
+      "gold_reward": {
+        "max": 180,
+        "min": 120
+      },
+      "item_rewards": [
+        "rank_up_bracelet",
+        "intimidation"
+      ],
+      "lose_behavior": "guild_home",
+      "lose_redirect": {
+        "type": "guild_home"
+      },
+      "opponent_deck": [
+        {
+          "grade": 3,
+          "hand": "rock"
+        },
+        {
+          "grade": 3,
+          "hand": "rock"
+        },
+        {
+          "grade": 3,
+          "hand": "rock"
+        },
+        {
+          "grade": 3,
+          "hand": "scissors"
+        },
+        {
+          "grade": 3,
+          "hand": "scissors"
+        },
+        {
+          "grade": 3,
+          "hand": "scissors"
+        },
+        {
+          "grade": 3,
+          "hand": "paper"
+        },
+        {
+          "grade": 3,
+          "hand": "paper"
+        },
+        {
+          "grade": 3,
+          "hand": "paper"
+        }
+      ],
+      "opponent_deck_size": 9,
+      "opponent_hp": 3,
+      "opponent_id": "feria",
+      "opponent_name": "フェリア",
+      "opponent_tendency": {},
+      "player_deck_size": 9,
+      "player_hp": 3,
+      "setup": [
+        {
+          "args": [
+            "res://assets/battle/decks/pedestal_01_marble.png",
+            {
+              "position": [
+                0,
+                180
+              ],
+              "scale": 0.5
+            }
+          ],
+          "kind": "deck"
+        }
+      ],
+      "traces": [
+        {
+          "commands": [
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -215
+                  ],
+                  "scale": 0.4,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "...神器が、応答しない...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -215
+                  ],
+                  "scale": 0.4,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "...！",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -215
+                  ],
+                  "scale": 0.4,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "...神器が、応答しない...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "...一本。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -215
+                  ],
+                  "scale": 0.4,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "...神器が、応答しない...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "...引き分け。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "う、うるさい！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "...貴様...！",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "う、うるさい！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "...二本目。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "う、うるさい！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "...粘るな。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "（涙目）や、やめっ...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.4
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "...完敗だ。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "（涙目）や、やめっ...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.4
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "...助かった。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "（涙目）や、やめっ...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.4
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "feria",
+                "res://assets/characters/main/feria/clothed/feria_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "feria",
+                "...決着を、急げ。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "draw"
+          ]
+        }
+      ]
+    },
+    {
+      "background": "res://assets/backgrounds/stage6/bg_royal_hall.png",
+      "bayes_eye": true,
+      "can_gain_cards": true,
+      "can_lose_cards": true,
+      "card_reward": {},
+      "chapter_path": "res://battle/chapters/Stage6BattleChapter.gd",
+      "farewell": {
+        "draw": {},
+        "lose": {},
+        "win": {}
+      },
+      "first_battle": true,
+      "flag_key": "stage6_first_battle_done",
+      "gold_reward": {
+        "max": 250,
+        "min": 150
+      },
+      "item_rewards": [],
+      "lose_behavior": "continue",
+      "lose_redirect": {},
+      "opponent_deck": [
+        {
+          "grade": 3,
+          "hand": "rock"
+        },
+        {
+          "grade": 3,
+          "hand": "rock"
+        },
+        {
+          "grade": 3,
+          "hand": "rock"
+        },
+        {
+          "grade": 3,
+          "hand": "scissors"
+        },
+        {
+          "grade": 3,
+          "hand": "scissors"
+        },
+        {
+          "grade": 3,
+          "hand": "scissors"
+        },
+        {
+          "grade": 3,
+          "hand": "paper"
+        },
+        {
+          "grade": 3,
+          "hand": "paper"
+        },
+        {
+          "grade": 3,
+          "hand": "paper"
+        }
+      ],
+      "opponent_deck_size": 9,
+      "opponent_hp": 3,
+      "opponent_id": "princess",
+      "opponent_name": "王女アレクシア",
+      "opponent_tendency": {},
+      "player_deck_size": 9,
+      "player_hp": 3,
+      "setup": [
+        {
+          "args": [
+            "res://assets/battle/decks/pedestal_01_marble.png",
+            {
+              "position": [
+                0,
+                180
+              ],
+              "scale": 0.5
+            }
+          ],
+          "kind": "deck"
+        }
+      ],
+      "traces": [
+        {
+          "commands": [
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "第一勝負。...勅令、発動。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...！",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "第一勝負。...勅令、発動。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...一本。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "第一勝負。...勅令、発動。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...引き分け。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...予告通り。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...予告通り。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...二本目。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...予告通り。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...またあいこ。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...勝負、つかせていただきます。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...奇跡を、見ました。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...勝負、つかせていただきます。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...第一勝負、予告通り、私の勝利でございます。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...勝負、つかせていただきます。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.0
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...粘り強い、お方ですね。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "draw"
+          ]
+        }
+      ]
+    },
+    {
+      "background": "res://assets/backgrounds/stage6/bg_royal_hall.png",
+      "bayes_eye": true,
+      "can_gain_cards": true,
+      "can_lose_cards": true,
+      "card_reward": {},
+      "chapter_path": "res://battle/chapters/Stage6BattleChapter.gd",
+      "farewell": {
+        "draw": {},
+        "lose": {},
+        "win": {}
+      },
+      "first_battle": false,
+      "flag_key": "stage6_first_battle_done",
+      "gold_reward": {
+        "max": 250,
+        "min": 150
+      },
+      "item_rewards": [],
+      "lose_behavior": "guild_home",
+      "lose_redirect": {
+        "type": "guild_home"
+      },
+      "opponent_deck": [
+        {
+          "grade": 3,
+          "hand": "rock"
+        },
+        {
+          "grade": 3,
+          "hand": "rock"
+        },
+        {
+          "grade": 3,
+          "hand": "rock"
+        },
+        {
+          "grade": 3,
+          "hand": "scissors"
+        },
+        {
+          "grade": 3,
+          "hand": "scissors"
+        },
+        {
+          "grade": 3,
+          "hand": "scissors"
+        },
+        {
+          "grade": 3,
+          "hand": "paper"
+        },
+        {
+          "grade": 3,
+          "hand": "paper"
+        },
+        {
+          "grade": 3,
+          "hand": "paper"
+        }
+      ],
+      "opponent_deck_size": 9,
+      "opponent_hp": 3,
+      "opponent_id": "princess",
+      "opponent_name": "王女アレクシア",
+      "opponent_tendency": {},
+      "player_deck_size": 9,
+      "player_hp": 3,
+      "setup": [
+        {
+          "args": [
+            "res://assets/battle/decks/pedestal_01_marble.png",
+            {
+              "position": [
+                0,
+                180
+              ],
+              "scale": 0.5
+            }
+          ],
+          "kind": "deck"
+        }
+      ],
+      "traces": [
+        {
+          "commands": [
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "（扇で顔を覆う）\n...では、第二勝負、開始、いたします。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...！",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "（扇で顔を覆う）\n...では、第二勝負、開始、いたします。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...一本。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "（扇で顔を覆う）\n...では、第二勝負、開始、いたします。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...引き分け。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...貴方の手、読めません...。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...貴方の手、読めません...。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...二本目。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...貴方の手、読めません...。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...またあいこ。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...覚悟、決めます。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.4
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...敗北を、認めます。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...覚悟、決めます。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.4
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...粘りました。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...覚悟、決めます。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.4
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "princess",
+                "res://assets/characters/main/princess/clothed/princess_clothed_001.png",
+                {
+                  "position": [
+                    0,
+                    -260
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "princess",
+                "...粘り強い、お方ですね。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "draw"
+          ]
+        }
+      ]
+    }
+  ],
+  "format": "godot-campaign-battle-traces",
+  "version": 1
+}

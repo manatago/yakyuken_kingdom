@@ -4,6 +4,7 @@ import { fitViewport } from '../../../packages/story/viewport'
 import { cardPresentation } from '../../../packages/cards/presentation'
 import { getItemDefinition, isBattleUsable, type ItemId } from '../../../packages/domain/item-catalog'
 import { CardView } from './CardView'
+import { OriginalShowdown } from './OriginalShowdown'
 import { randomBattlePortraits, type RandomPortraitPhase } from './random-battle-portraits'
 import guildStreet from '../../../godot/assets/backgrounds/stage1/bg06_st1_001.png?url'
 import market from '../../../godot/assets/backgrounds/stage1/bg08_st1_001.png?url'
@@ -13,7 +14,7 @@ import outside from '../../../godot/assets/backgrounds/stage1/bg11_st1_001.png?u
 import port from '../../../godot/assets/backgrounds/stage1/bg12_st1_001.png?url'
 import { townContent, TOWN_CHECKPOINT, TOWN_ENCOUNTER_CHECKPOINT, RANDOM_BATTLE_CHECKPOINT,
   acceptTownEncounter, acknowledgeRandomBattleRound, continueTownAfterBattle, declineTownEncounter,
-  enterTown, playRandomBattleRound, randomBattleDialogue, randomBattleProbabilities, randomBattleView,
+  enterTown, playRandomBattleRound, randomBattleDialogue, randomBattleProbabilities, randomBattleView, randomBattlePreResultView,
   returnToGuildFromTown, settleRandomBattle, travelTown } from '../../../packages/battle/random'
 
 const areaBackgrounds: Record<string, string> = {
@@ -46,6 +47,7 @@ export function RandomBattleScreen({ save, onSave, onTitle }: {
         ? view?.outcome === 'win' ? 'farewell_win' : 'farewell_lose' : undefined
   const opponentPortrait = ledger && portraitPhase ? randomBattlePortraits[ledger.opponent_id]?.[portraitPhase] : undefined
   const resultPending = !!ledger && ledger.rounds.length > ledger.acknowledged
+  const presentationView = resultPending ? randomBattlePreResultView(save) : view
   const probabilities = checkpoint === RANDOM_BATTLE_CHECKPOINT && ledger ? randomBattleProbabilities(save,
     selected === null ? undefined : ledger.player_deck[selected], selectedItem ?? undefined)
     : { rock: 0, scissors: 0, paper: 0 }
@@ -151,12 +153,12 @@ export function RandomBattleScreen({ save, onSave, onTitle }: {
             <p>グー {Math.round(probabilities.rock * 100)}% ／ チョキ {Math.round(probabilities.scissors * 100)}% ／ パー {Math.round(probabilities.paper * 100)}%</p></aside>
           <aside className="deck-panel fixed-deck" aria-label="ランダム戦デッキ" data-testid="random-deck"
             style={{ left: 350, top: 800, right: 'auto', bottom: 'auto', width: 1220 }}>
-            <h2>選択カード・残り {ledger.player_deck.length - view.usedPlayer.length}枚</h2>
+            <h2>選択カード・残り {ledger.player_deck.length - presentationView!.usedPlayer.length}枚</h2>
             <div className="deck-grid">{ledger.player_deck.map((card, index) => {
               const presentation = cardPresentation(card)
               return <button key={index} className={`card-button ${selected === index ? 'card-selected' : ''}`}
                 aria-label={`選択 ${presentation.handLabel} ${presentation.gradeLabel}`} aria-pressed={selected === index}
-                disabled={busy || resultPending || !!view.outcome || !!proposal.current || view.usedPlayer.includes(index)}
+                disabled={busy || resultPending || !!view.outcome || !!proposal.current || presentationView!.usedPlayer.includes(index)}
                 onClick={() => { if (!pending.current && !proposal.current) setSelected(index) }}>
                 <CardView card={card} /><span className="card-hand">{presentation.handLabel} {presentation.gradeLabel}</span>
               </button>
@@ -172,18 +174,22 @@ export function RandomBattleScreen({ save, onSave, onTitle }: {
                 {usableItems.map((id, index) => <option key={`${id}-${index}`} value={id}>{getItemDefinition(id)?.name ?? id}</option>)}
               </select>
             </div>}
-            {resultPending ? <div data-testid="random-result"><h2>{view.last!.result === 'win' ? '勝ち' : view.last!.result === 'lose' ? '負け' : '引き分け'}</h2>
-              <p>あなたのHP {view.playerHp}/1 ・相手HP {view.opponentHp}/1</p>
-              <button disabled={disabled('round-result')} onClick={() => { void commit('round-result', () => view.outcome
-                ? settleRandomBattle(save, Math.random(), Math.random()) : acknowledgeRandomBattleRound(save)) }}>
-                {view.outcome ? '結果を確定' : '引き分け・次のカードへ'}</button></div>
+            {resultPending ? <div>
+              <p data-testid="random-showdown-hp">あなたのHP {presentationView!.playerHp}/1 ・相手HP {presentationView!.opponentHp}/1</p>
+              {error && proposalAction.current === 'round-result' && <button disabled={disabled('round-result')}
+                onClick={() => { void commit('round-result', () => view.outcome
+                  ? settleRandomBattle(save, Math.random(), Math.random()) : acknowledgeRandomBattleRound(save)) }}>保存を再試行</button>}</div>
               : <><h2>カードを選択してください</h2><p>あなたのHP {view.playerHp}/1 ・相手HP {view.opponentHp}/1</p>
                 <button disabled={disabled('play') || selected === null} onClick={() => { void commit('play', () => playRandomBattleRound(save, selected!, Math.random(), selectedItem ?? undefined)) }}>勝負！</button></>}
             {error && <p role="alert" className="error-message">{error}</p>}
           </section>
-          {view.last && (resultPending || ledger.settled) && <section className="belka-showdown" aria-label="勝負カード">
-            <div>あなた<CardView card={view.last.player} compact={false} /></div><div>{ledger.opponent_name}<CardView card={view.last.opponent} compact={false} /></div>
-          </section>}
+          {resultPending && view.last && !error && <div data-testid="random-result" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+            <OriginalShowdown key={`${ledger.battle_id}:${ledger.rounds.length}`}
+              player={view.last.player} opponent={view.last.opponent} result={view.last.result}
+              onError={cause => setError(String(cause))}
+              onComplete={() => { void commit('round-result', () => view.outcome
+                ? settleRandomBattle(save, Math.random(), Math.random()) : acknowledgeRandomBattleRound(save)) }} />
+          </div>}
         </>}
         {error && checkpoint !== RANDOM_BATTLE_CHECKPOINT && <p role="alert" className="guild-error error-message">{error}</p>}
       </div>
