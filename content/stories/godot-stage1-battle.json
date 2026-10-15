@@ -1,0 +1,716 @@
+{
+  "background": "res://assets/backgrounds/stage1/bg07_st1_001.png",
+  "chapter_path": "res://battle/chapters/Stage1BattleChapter.gd",
+  "format": "godot-battle-traces",
+  "gold_reward": {
+    "max": 15,
+    "min": 5
+  },
+  "opponent_deck": [
+    {
+      "grade": 1,
+      "hand": "rock"
+    },
+    {
+      "grade": 1,
+      "hand": "rock"
+    },
+    {
+      "grade": 1,
+      "hand": "paper"
+    }
+  ],
+  "opponent_hp": 1,
+  "opponent_id": "adventurer_a",
+  "opponent_tendency": {
+    "rock": 2.33
+  },
+  "player_hp": 1,
+  "traces": [
+    {
+      "commands": [
+        {
+          "args": [
+            "adventurer_a",
+            "res://assets/characters/mob/adventurer_a/clothed/adventurer_a_clothed_001.png",
+            {
+              "position": [
+                0,
+                -200
+              ],
+              "scale": 0.5,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:（サトシの肩から）\nおい、サトシ。落ち着け。\nこいつのデッキはスキャン済みだ。ノーマルカードしかない雑魚だ。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            "ピー助:\nランダムバトルのルールを教えてやる。\nHPは1だ。1回負けたら終了。\nデッキは3枚。3回引き分けたらドローで終わりだ。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:（心の声）\n1回負けたら終了...。シビアだな。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\nデッキは俺が組んでやる。グー、チョキ、パー各1枚だ。こいつ相手ならこれで十分だ。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            [
+              {
+                "grade": 1,
+                "hand": "rock"
+              },
+              {
+                "grade": 1,
+                "hand": "scissors"
+              },
+              {
+                "grade": 1,
+                "hand": "paper"
+              }
+            ]
+          ],
+          "kind": "force_build_deck"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:（心の声）\nデッキが勝手にセットされた...。まあ、ピー助に任せるか。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            "サトシ:（心の声）\nよし...。ベイズ・アイを起動する...！",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [],
+          "kind": "show_bayes_eye"
+        },
+        {
+          "args": [
+            "サトシ:（心の声）\n...見える。確率が表示されてる。\nグーの確率が圧倒的に高い...。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\nこういう脳筋タイプはな、最初は必ずグーを出すんだよ。\n「力こそ正義」って顔に書いてあるだろ。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            "ピー助:\n初めての実戦だ。最初の一手だけは俺が選んでやる。\nお前の手、借りるぞ。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            2
+          ],
+          "kind": "force_select_hand"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nうわっ、手が勝手に...！ パー...？",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\nグーが90%だ。パーを出しゃ勝てる。\n確率が一番高い手に勝てるカードを出す。これが「予測勝ち」だ。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            {
+              "grade": 1,
+              "hand": 2,
+              "item": null
+            },
+            {
+              "fixed": "rock"
+            },
+            "win"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [],
+          "kind": "hide_bayes_eye"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:（心の声）\n勝った...！ 本当にグーを出してきた...！\n確率通りだ...。この感覚、覚えたぞ。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\nよし、感覚は掴んだな。ここからは自分の力でやれ。\nデータを信じろ。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        }
+      ],
+      "method": "tutorial",
+      "outcomes": [
+        "win"
+      ]
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "adventurer_a",
+            "res://assets/characters/mob/adventurer_a/clothed/adventurer_a_clothed_001.png",
+            {
+              "position": [
+                0,
+                -200
+              ],
+              "scale": 0.5,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:（サトシの肩から）\nおい、サトシ。落ち着け。\nこいつのデッキはスキャン済みだ。ノーマルカードしかない雑魚だ。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            "ピー助:\nランダムバトルのルールを教えてやる。\nHPは1だ。1回負けたら終了。\nデッキは3枚。3回引き分けたらドローで終わりだ。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:（心の声）\n1回負けたら終了...。シビアだな。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\nデッキは俺が組んでやる。グー、チョキ、パー各1枚だ。こいつ相手ならこれで十分だ。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            [
+              {
+                "grade": 1,
+                "hand": "rock"
+              },
+              {
+                "grade": 1,
+                "hand": "scissors"
+              },
+              {
+                "grade": 1,
+                "hand": "paper"
+              }
+            ]
+          ],
+          "kind": "force_build_deck"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:（心の声）\nデッキが勝手にセットされた...。まあ、ピー助に任せるか。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            "サトシ:（心の声）\nよし...。ベイズ・アイを起動する...！",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [],
+          "kind": "show_bayes_eye"
+        },
+        {
+          "args": [
+            "サトシ:（心の声）\n...見える。確率が表示されてる。\nグーの確率が圧倒的に高い...。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\nこういう脳筋タイプはな、最初は必ずグーを出すんだよ。\n「力こそ正義」って顔に書いてあるだろ。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            "ピー助:\n初めての実戦だ。最初の一手だけは俺が選んでやる。\nお前の手、借りるぞ。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            2
+          ],
+          "kind": "force_select_hand"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nうわっ、手が勝手に...！ パー...？",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\nグーが90%だ。パーを出しゃ勝てる。\n確率が一番高い手に勝てるカードを出す。これが「予測勝ち」だ。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            {
+              "grade": 1,
+              "hand": 2,
+              "item": null
+            },
+            {
+              "fixed": "rock"
+            },
+            "lose"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [],
+          "kind": "hide_bayes_eye"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:（心の声）\n勝った...！ 本当にグーを出してきた...！\n確率通りだ...。この感覚、覚えたぞ。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\nよし、感覚は掴んだな。ここからは自分の力でやれ。\nデータを信じろ。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        }
+      ],
+      "method": "tutorial",
+      "outcomes": [
+        "lose"
+      ]
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "adventurer_a",
+            "res://assets/characters/mob/adventurer_a/clothed/adventurer_a_clothed_001.png",
+            {
+              "position": [
+                0,
+                -200
+              ],
+              "scale": 0.5,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:（サトシの肩から）\nおい、サトシ。落ち着け。\nこいつのデッキはスキャン済みだ。ノーマルカードしかない雑魚だ。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            "ピー助:\nランダムバトルのルールを教えてやる。\nHPは1だ。1回負けたら終了。\nデッキは3枚。3回引き分けたらドローで終わりだ。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:（心の声）\n1回負けたら終了...。シビアだな。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\nデッキは俺が組んでやる。グー、チョキ、パー各1枚だ。こいつ相手ならこれで十分だ。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            [
+              {
+                "grade": 1,
+                "hand": "rock"
+              },
+              {
+                "grade": 1,
+                "hand": "scissors"
+              },
+              {
+                "grade": 1,
+                "hand": "paper"
+              }
+            ]
+          ],
+          "kind": "force_build_deck"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:（心の声）\nデッキが勝手にセットされた...。まあ、ピー助に任せるか。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            "サトシ:（心の声）\nよし...。ベイズ・アイを起動する...！",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [],
+          "kind": "show_bayes_eye"
+        },
+        {
+          "args": [
+            "サトシ:（心の声）\n...見える。確率が表示されてる。\nグーの確率が圧倒的に高い...。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\nこういう脳筋タイプはな、最初は必ずグーを出すんだよ。\n「力こそ正義」って顔に書いてあるだろ。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            "ピー助:\n初めての実戦だ。最初の一手だけは俺が選んでやる。\nお前の手、借りるぞ。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            2
+          ],
+          "kind": "force_select_hand"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nうわっ、手が勝手に...！ パー...？",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\nグーが90%だ。パーを出しゃ勝てる。\n確率が一番高い手に勝てるカードを出す。これが「予測勝ち」だ。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            {
+              "grade": 1,
+              "hand": 2,
+              "item": null
+            },
+            {
+              "fixed": "rock"
+            },
+            "draw"
+          ],
+          "kind": "janken"
+        },
+        {
+          "args": [],
+          "kind": "hide_bayes_eye"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:（心の声）\n勝った...！ 本当にグーを出してきた...！\n確率通りだ...。この感覚、覚えたぞ。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            "bottom-right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\nよし、感覚は掴んだな。ここからは自分の力でやれ。\nデータを信じろ。",
+            "",
+            ""
+          ],
+          "kind": "narrator_band"
+        }
+      ],
+      "method": "tutorial",
+      "outcomes": [
+        "draw"
+      ]
+    }
+  ],
+  "version": 1
+}

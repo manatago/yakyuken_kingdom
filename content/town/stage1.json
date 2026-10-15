@@ -1,0 +1,42 @@
+{
+  "id": "town.stage1",
+  "homeConnections": ["guild_street", "market", "tavern"],
+  "areas": {
+    "guild_street": { "name": "ギルド通り", "background": "godot/assets/backgrounds/stage1/bg06_st1_001.png", "description": "商店や冒険者が行き交うメイン通り。\n時々チンピラに絡まれることも。", "battleRate": 0.6, "connections": ["market", "slum", "tavern", "outside"], "encounters": [
+      { "opponentId": "thug_01", "weight": 3, "gradeMin": 1, "gradeMax": 1 },
+      { "opponentId": "merchant_02", "weight": 2, "gradeMin": 1, "gradeMax": 1 },
+      { "opponentId": "adv_a_01", "weight": 1, "gradeMin": 1, "gradeMax": 1 }
+    ] },
+    "market": { "name": "市場広場", "background": "godot/assets/backgrounds/stage1/bg08_st1_001.png", "description": "露店や行商人が並ぶ賑やかな広場。\n比較的安全な場所。", "battleRate": 0.5, "connections": ["guild_street", "port", "tavern"], "encounters": [
+      { "opponentId": "merchant_01", "weight": 3, "gradeMin": 1, "gradeMax": 1 },
+      { "opponentId": "merchant_02", "weight": 2, "gradeMin": 1, "gradeMax": 1 },
+      { "opponentId": "thug_01", "weight": 1, "gradeMin": 1, "gradeMax": 1 }
+    ] },
+    "tavern": { "name": "酒場", "background": "godot/assets/backgrounds/stage1/bg09_st1_001.png", "description": "冒険者の溜まり場。酔っ払いが多い。\n情報収集には最適だが、絡まれることも。", "battleRate": 0.6, "connections": ["guild_street", "market"], "encounters": [
+      { "opponentId": "drunk_01", "weight": 5, "gradeMin": 1, "gradeMax": 1 },
+      { "opponentId": "thug_01", "weight": 3, "gradeMin": 1, "gradeMax": 1 },
+      { "opponentId": "adv_a_01", "weight": 1, "gradeMin": 1, "gradeMax": 1 }
+    ] },
+    "slum": { "name": "スラム街", "background": "godot/assets/backgrounds/stage1/bg10_st1_001.png", "description": "治安の悪い裏通り。\n危険だが、レアなカードが手に入ることも。", "battleRate": 0.7, "connections": ["guild_street"], "encounters": [
+      { "opponentId": "thug_01", "weight": 5, "gradeMin": 1, "gradeMax": 2 },
+      { "opponentId": "bandit_01", "weight": 3, "gradeMin": 1, "gradeMax": 2 }
+    ] },
+    "outside": { "name": "城壁の外", "background": "godot/assets/backgrounds/stage1/bg11_st1_001.png", "description": "城壁の外の荒野。\n強い相手が多いが、報酬も大きい。", "battleRate": 0.8, "connections": ["guild_street"], "encounters": [
+      { "opponentId": "bandit_01", "weight": 5, "gradeMin": 1, "gradeMax": 2 },
+      { "opponentId": "thug_01", "weight": 3, "gradeMin": 1, "gradeMax": 2 }
+    ] },
+    "port": { "name": "港", "background": "godot/assets/backgrounds/stage1/bg12_st1_001.png", "description": "交易船が行き来する波止場。\n異国の商人や船乗りがいる。", "battleRate": 0.6, "connections": ["market"], "encounters": [
+      { "opponentId": "sailor_01", "weight": 5, "gradeMin": 1, "gradeMax": 2 },
+      { "opponentId": "merchant_01", "weight": 3, "gradeMin": 1, "gradeMax": 1 }
+    ] }
+  },
+  "opponents": {
+    "thug_01": { "name": "ゴロツキ", "deck": [{ "hand": "rock", "grade": 1 }, { "hand": "scissors", "grade": 1 }, { "hand": "paper", "grade": 1 }], "tendency": {}, "goldReward": { "min": 5, "max": 15 }, "charType": "normal", "dialogues": { "greetings": ["ヘッ、弱そうなやつ発見。カードよこしな！", "おっと、そこの新顔。通行料代わりに勝負だ！", "チッ、金はねぇのか。ならカードで払え！"], "battleStart": ["さっさと出しな！", "もたもたすんなよ！", "ほら、早くしろ！"], "farewellsWin": ["嘘だろ...こんなガキに...", "テメェ、覚えとけよ...！", "くそっ...今日は運が悪い！"], "farewellsLose": ["ケッ、こんなもんか。", "弱いくせにウロウロすんな！", "...今日は見逃してやる。"] } },
+    "adv_a_01": { "name": "冒険者A", "deck": [{ "hand": "rock", "grade": 1 }, { "hand": "rock", "grade": 1 }, { "hand": "paper", "grade": 1 }], "tendency": { "rock": 2.33 }, "goldReward": { "min": 5, "max": 15 }, "charType": "rare", "dialogues": { "greetings": ["また会ったな！ 今度こそ負けねぇ！", "テメェか...！ ずっと探してたんだぞ！", "逃げんなよ！ 借りを返す機会を待ってたんだ！"], "battleStart": ["今度は本気でいくぞ！", "前回みたいにはいかねぇ！", "カード出せ！ 終わらせてやる！"], "farewellsWin": ["くそっ...また負けた...！", "な、なんで...！ 練習したのに！", "覚えてろよ...！ 絶対リベンジしてやる！"], "farewellsLose": ["ガハハ！ ようやくだ！ これで借りは返したぞ！", "どうだ！ 今度は俺の勝ちだ！", "やっと勝てた...！ これで気が済んだ！"] } },
+    "drunk_01": { "name": "酔っ払い冒険者", "deck": [{ "hand": "rock", "grade": 1 }, { "hand": "scissors", "grade": 1 }, { "hand": "scissors", "grade": 1 }], "tendency": { "scissors": 1.5 }, "goldReward": { "min": 3, "max": 10 }, "charType": "normal", "dialogues": { "greetings": ["うぃ～...おまえ、じゃんけん...できるかぁ？", "ひっく...俺と勝負しろぉ...負けたことねぇんだよ...", "なぁ...一杯おごれよ...いや、カードでいいや..."], "battleStart": ["うぃ～...いくぞぉ...", "ひっく...まだ酔ってねぇからな...", "よっしゃ...勝負だぁ..."], "farewellsWin": ["うぇ...酔いが覚めちまった...", "ひっく...ま、まぐれだからな...", "うぅ...カード返せよぉ..."], "farewellsLose": ["ひっひっひ...やっぱ酔拳は最強だな...", "酒代ゲットぉ～！", "ひっく...もう一杯飲めるぜぇ..."] } },
+    "merchant_01": { "name": "恰幅のいい商人", "deck": [{ "hand": "paper", "grade": 1 }, { "hand": "paper", "grade": 1 }, { "hand": "scissors", "grade": 1 }], "tendency": { "paper": 1.5 }, "goldReward": { "min": 10, "max": 25 }, "charType": "normal", "dialogues": { "greetings": ["いらっしゃいませ。カードで勝負しましょう？", "ふふふ、お兄さん、お店寄っていくかい？ まずは腕試し。", "ここいらの決まりは、カードで勝つことさ"], "battleStart": ["さぁ、商売開始だよ。", "ふふふ、いい取引にしようじゃないか。", "お手柔らかにね。"], "farewellsWin": ["ふっ、服は返してください...", "ひぃ、おゆるしを...", "どっ、どうか服だけは返してください..."], "farewellsLose": ["商売は勝ってこそ、だよ。ふふふ。お金とカードはもらっていくよ", "いい取引だったねぇ。またよろしく。お金とカードはもらっていくよ", "ふふ、これも商売の一環さ。お金とカードはもらっていくよ"] } },
+    "merchant_02": { "name": "怪しい商人", "deck": [{ "hand": "paper", "grade": 1 }, { "hand": "paper", "grade": 1 }, { "hand": "scissors", "grade": 1 }], "tendency": { "paper": 1.5 }, "goldReward": { "min": 10, "max": 25 }, "charType": "normal", "dialogues": { "greetings": ["いらっしゃいませ。カードで勝負しましょう？", "これはこれは、いらっしゃませ？ まずは腕試しから。", "ここの所倍の決まりは、カードで勝つことですよ"], "battleStart": ["さぁ、商売開始だよ。", "ふふふ、いい取引にしようじゃないか。", "お手柔らかにね。"], "farewellsWin": ["ふっ、服は返してください...", "ひぃ、おゆるしを...", "どっ、どうか服だけは返してください..."], "farewellsLose": ["商売は勝ってこそ、だよ。ふふふ。お金とカードはもらっていくよ", "いい取引だったねぇ。またよろしく。お金とカードはもらっていくよ", "ふふ、これも商売の一環さ。お金とカードはもらっていくよ"] } },
+    "sailor_01": { "name": "荒くれ船乗り", "deck": [{ "hand": "rock", "grade": 1 }, { "hand": "rock", "grade": 1 }, { "hand": "scissors", "grade": 1 }], "tendency": { "rock": 1.5 }, "goldReward": { "min": 8, "max": 20 }, "charType": "normal", "dialogues": { "greetings": ["港町のルールだ！ 通りたきゃカードで勝負しな！", "おう、陸の人間か。海の男の強さ見せてやるよ！", "退屈でよぉ。お前、相手しろ！"], "battleStart": ["海の男を舐めんなよ！", "波に揉まれた俺の拳を見せてやる！", "さぁ、錨を上げろ！"], "farewellsWin": ["ぐぬぬ...次は負けねぇ", "くそっ、覚えていろよ", "マジかよ...くそが！"], "farewellsLose": ["ガハハ！ 海の男にゃ敵わねぇだろ！", "陸の人間はこんなもんか！", "大海原を渡ってきた俺に勝てるわけねぇ！"] } },
+    "bandit_01": { "name": "野盗", "deck": [{ "hand": "rock", "grade": 1 }, { "hand": "scissors", "grade": 1 }, { "hand": "paper", "grade": 1 }], "tendency": {}, "goldReward": { "min": 10, "max": 30 }, "charType": "normal", "dialogues": { "greetings": ["城壁の外は俺たちの縄張りだ。カードを置いていけ！", "ここを通りたきゃ、カードで勝負だ！", "ケケケ...いいカード持ってそうだな！"], "battleStart": ["覚悟しろ！", "カードを全部いただくぜ！", "ケケケ、楽しませてもらうぜ！"], "farewellsWin": ["ちっ...仲間呼ぶぞ！ 覚えてろ！", "くそ...今日は運が悪かった...", "テメェ...次はねぇぞ！"], "farewellsLose": ["ケケケ、カードは没収だ！", "二度とここに来るんじゃねぇぞ！", "ヒャッハー！ いただきだ！"] } }
+  }
+}

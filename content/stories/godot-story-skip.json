@@ -1,0 +1,234 @@
+{
+  "scope": "single-skip-prebattle-input-boundaries",
+  "version": 1,
+  "cases": [
+    {
+      "background": "res://assets/backgrounds/prologue/bg02_room.png",
+      "cursor": 15,
+      "dialogue": {
+        "band_visible": true,
+        "l_body": "（部屋はエロゲ箱と数学書が大和積まれている。俺の人生を縮図みたく語ってくれるインスタレーションアートだ。）",
+        "l_speaker": "サトシ",
+        "l_speaker_vis": true,
+        "l_visible": true,
+        "n_body": "一方、幼馴染の女の子は有名私大の弁論サークルに所属しており、政治家秘書のバイトをやっており、将来は政治家を目指している。弁論大会で多数の受賞歴を誇る。",
+        "n_body_vis": false,
+        "n_speaker": "Speaker",
+        "n_speaker_vis": false,
+        "r_body": "あ、サトシ。こんなとこでブラブラして...また講義サボったでしょ。",
+        "r_speaker": "みのり",
+        "r_speaker_vis": false,
+        "r_visible": false
+      },
+      "end_cursor": 47,
+      "position_cache": {
+        "main": "(0.0, 0.0)"
+      },
+      "scope": "single-skip-from-reconstructed-prefix",
+      "sequence": "prologue",
+      "side_cache": {
+        "main": "left"
+      },
+      "source_hashes": {
+        "game/StoryScene.gd": "f5d6b8b1dc0cdd733ad488129678df307e586278f2e646a37ae70168033019a3",
+        "story/StoryCommands.gd": "75346141e18cbdb1c3579859f3925313472604c7594043a9800b74b3a202450d"
+      }
+    },
+    {
+      "background": "res://assets/backgrounds/prologue/bg03-1_lab.png",
+      "cursor": 50,
+      "dialogue": {
+        "band_visible": true,
+        "l_body": "ここが噂の研究施設...SPring-8にそっくりじゃないか。",
+        "l_speaker": "サトシ",
+        "l_speaker_vis": true,
+        "l_visible": true,
+        "n_body": "スマホが震えた。みのりからのメッセージだ。",
+        "n_body_vis": false,
+        "n_speaker": "Speaker",
+        "n_speaker_vis": false,
+        "r_body": "あんたの大学のサイトに出てたけど、「大型加速器実験補助、履修認定あり」って募集、知ってる？\n締切明日までだって。",
+        "r_speaker": "みのり",
+        "r_speaker_vis": false,
+        "r_visible": false
+      },
+      "end_cursor": 64,
+      "position_cache": {
+        "main": "(0.0, 0.0)"
+      },
+      "scope": "single-skip-from-reconstructed-prefix",
+      "sequence": "prologue",
+      "side_cache": {
+        "main": "left"
+      },
+      "source_hashes": {
+        "game/StoryScene.gd": "f5d6b8b1dc0cdd733ad488129678df307e586278f2e646a37ae70168033019a3",
+        "story/StoryCommands.gd": "75346141e18cbdb1c3579859f3925313472604c7594043a9800b74b3a202450d"
+      }
+    },
+    {
+      "background": "res://assets/backgrounds/prologue/bg03-2_lab.png",
+      "cursor": 75,
+      "dialogue": {
+        "band_visible": true,
+        "l_body": "うわっ！",
+        "l_speaker": "サトシ",
+        "l_speaker_vis": true,
+        "l_visible": true,
+        "n_body": "",
+        "n_body_vis": false,
+        "n_speaker": "Speaker",
+        "n_speaker_vis": false,
+        "r_body": "ふふ、みんなそう言うわ。でもね、ここの装置、ちょっと気まぐれなの。\n何かあったらすぐ赤いボタンを押して。非常停止だから。",
+        "r_speaker": "受付嬢",
+        "r_speaker_vis": false,
+        "r_visible": false
+      },
+      "end_cursor": 88,
+      "position_cache": {
+        "main": "(0.0, 0.0)"
+      },
+      "scope": "single-skip-from-reconstructed-prefix",
+      "sequence": "prologue",
+      "side_cache": {
+        "main": "left"
+      },
+      "source_hashes": {
+        "game/StoryScene.gd": "f5d6b8b1dc0cdd733ad488129678df307e586278f2e646a37ae70168033019a3",
+        "story/StoryCommands.gd": "75346141e18cbdb1c3579859f3925313472604c7594043a9800b74b3a202450d"
+      }
+    },
+    {
+      "background": "res://assets/backgrounds/prologue/bg04-1_teleport_square.png",
+      "cursor": 90,
+      "dialogue": {
+        "band_visible": true,
+        "l_body": "制御盤が真っ白になってる!? 聞いてないぞ、こんなフラッシュ！\nひっ、ひぃ～",
+        "l_speaker": "サトシ",
+        "l_speaker_vis": false,
+        "l_visible": false,
+        "n_body": "うわぁぁぁぁ",
+        "n_body_vis": true,
+        "n_speaker": "サトシ",
+        "n_speaker_vis": true,
+        "r_body": "ふふ、みんなそう言うわ。でもね、ここの装置、ちょっと気まぐれなの。\n何かあったらすぐ赤いボタンを押して。非常停止だから。",
+        "r_speaker": "受付嬢",
+        "r_speaker_vis": false,
+        "r_visible": false
+      },
+      "end_cursor": 100,
+      "position_cache": {
+        "main": "(0.0, -400.0)"
+      },
+      "scope": "single-skip-from-reconstructed-prefix",
+      "sequence": "prologue",
+      "side_cache": {
+        "main": "center"
+      },
+      "source_hashes": {
+        "game/StoryScene.gd": "f5d6b8b1dc0cdd733ad488129678df307e586278f2e646a37ae70168033019a3",
+        "story/StoryCommands.gd": "75346141e18cbdb1c3579859f3925313472604c7594043a9800b74b3a202450d"
+      }
+    },
+    {
+      "background": "res://assets/backgrounds/prologue/bg05_prison_cell.png",
+      "cursor": 105,
+      "dialogue": {
+        "band_visible": true,
+        "l_body": "ちょっ、まっ、まって。いたい、いたい、、、",
+        "l_speaker": "サトシ",
+        "l_speaker_vis": false,
+        "l_visible": false,
+        "n_body": "サトシが気が付くと、そこは牢の中だった。服が着せられていた。",
+        "n_body_vis": true,
+        "n_speaker": "サトシ",
+        "n_speaker_vis": false,
+        "r_body": "何の騒ぎだ。...おい、そこの露出狂の変態！ 何してやがる。",
+        "r_speaker": "番兵",
+        "r_speaker_vis": false,
+        "r_visible": false
+      },
+      "end_cursor": 143,
+      "position_cache": {},
+      "scope": "single-skip-from-reconstructed-prefix",
+      "sequence": "prologue",
+      "side_cache": {},
+      "source_hashes": {
+        "game/StoryScene.gd": "f5d6b8b1dc0cdd733ad488129678df307e586278f2e646a37ae70168033019a3",
+        "story/StoryCommands.gd": "75346141e18cbdb1c3579859f3925313472604c7594043a9800b74b3a202450d"
+      }
+    },
+    {
+      "background": "res://assets/backgrounds/prologue/bg05_prison_cell.png",
+      "cursor": 145,
+      "dialogue": {
+        "band_visible": true,
+        "l_body": "えっ、ちょ、いきなり注射!? 説明――いっっっ!!",
+        "l_speaker": "サトシ",
+        "l_speaker_vis": false,
+        "l_visible": false,
+        "n_body": "マチルダに無理やり注射をされて、サトシのうなじに激痛が走った...",
+        "n_body_vis": true,
+        "n_speaker": "サトシ",
+        "n_speaker_vis": false,
+        "r_body": "起きたか、変態。",
+        "r_speaker": "マチルダ",
+        "r_speaker_vis": false,
+        "r_visible": false
+      },
+      "end_cursor": 188,
+      "position_cache": {},
+      "scope": "single-skip-from-reconstructed-prefix",
+      "sequence": "prologue",
+      "side_cache": {},
+      "source_hashes": {
+        "game/StoryScene.gd": "f5d6b8b1dc0cdd733ad488129678df307e586278f2e646a37ae70168033019a3",
+        "story/StoryCommands.gd": "75346141e18cbdb1c3579859f3925313472604c7594043a9800b74b3a202450d"
+      }
+    }
+  ],
+  "battle_boundary": {
+    "action_details": {
+      "main_source_hash": "31571141955af7276cce3878d30e4caec914584ddfecd21a8824f342f9238f9e",
+      "pending_battles": [
+        {
+          "kind": "pending_battle",
+          "minigame": false,
+          "tutorial": true
+        },
+        {
+          "kind": "pending_battle",
+          "minigame": false,
+          "tutorial": false
+        }
+      ],
+      "story_visible": false
+    },
+    "background": "res://assets/backgrounds/prologue/bg05_prison_cell.png",
+    "cursor": 190,
+    "dialogue": {
+      "band_visible": true,
+      "l_body": "（くそっ、言いたい放題... んっ、そういえば、この人なんか、さっき最初はグーを出したな。\n俺の事馬鹿にしているから、また最初にグーを出すんじゃないのか...）",
+      "l_speaker": "サトシ",
+      "l_speaker_vis": false,
+      "l_visible": false,
+      "n_body": "その瞬間、視界が一変した。",
+      "n_body_vis": false,
+      "n_speaker": "サトシ",
+      "n_speaker_vis": false,
+      "r_body": "おっ、小心者の変態にもそんな度胸があったんだな。\nいいぜ、受けてやるよ。",
+      "r_speaker": "マチルダ",
+      "r_speaker_vis": false,
+      "r_visible": false
+    },
+    "end_cursor": 234,
+    "position_cache": {},
+    "scope": "actual-story-loop-main-bridge-with-pending-battle-io",
+    "sequence": "prologue",
+    "side_cache": {},
+    "source_hashes": {
+      "game/StoryScene.gd": "f5d6b8b1dc0cdd733ad488129678df307e586278f2e646a37ae70168033019a3",
+      "story/StoryCommands.gd": "75346141e18cbdb1c3579859f3925313472604c7594043a9800b74b3a202450d"
+    }
+  }
+}

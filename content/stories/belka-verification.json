@@ -1,0 +1,26 @@
+{
+  "assets": [
+    { "id": "background.belka.arena", "path": "godot/assets/backgrounds/prologue/bg06_prison_arena.png" }
+  ],
+  "layouts": [
+    { "id": "layout.cards.box", "x": 1554, "y": 190, "scale": 1, "flipped": false },
+    { "id": "layout.cards.deck", "x": 350, "y": 800, "scale": 1, "flipped": false },
+    { "id": "layout.cards.showdown", "x": 350, "y": 170, "scale": 1, "flipped": false }
+  ],
+  "battles": [{
+    "id": "battle.belka", "opponent_id": "belka", "background_asset_id": "background.belka.arena",
+    "player_deck_size": 9, "opponent_deck_size": 9,
+    "opponent_card_ids": ["rock_normal", "rock_normal", "rock_bronze", "scissors_normal", "scissors_normal", "scissors_bronze", "paper_normal", "paper_bronze", "paper_bronze"],
+    "gold_reward": { "min": 40, "max": 60 }, "transfer_cards": false,
+    "hp": { "player": 3, "opponent": 3, "grade_effect_passes": 2, "lose_gold": 25 },
+    "opponent_tendency": { "paper": 0.4 }, "bayes_eye": true, "result_route": "guild_home",
+    "phases": [{ "id": "phase.belka", "rules": [] }]
+  }],
+  "stories": [{
+    "id": "story.belka.verification", "start_id": "belka.await",
+    "steps": [
+      { "id": "belka.await", "kind": "battle", "battle_id": "battle.belka", "next_id": "belka.end" },
+      { "id": "belka.end", "kind": "end" }
+    ]
+  }]
+}

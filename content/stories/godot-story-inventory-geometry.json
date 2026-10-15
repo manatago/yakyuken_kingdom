@@ -1,0 +1,233 @@
+{
+  "icon_hash": "4309b3e07ffa2fe2a0022a6dc139f0e32c29642a51b347abf6258169cb25c870",
+  "lifecycle": {
+    "gold_after_state_change": "所持金: 75",
+    "rows_after_state_change": 2,
+    "visible_after_scene_return": true,
+    "visible_with_hidden_band": true,
+    "visible_with_hidden_scene": false
+  },
+  "scope": "actual-imported-populated-story-inventory",
+  "source_hashes": {
+    "StoryScene.tscn": "ef0c961792f4833e33326a6b524dc07e2481e7c961c3754231b4d2bfde2f10a6",
+    "game/GameState.gd": "990e920a4bab553914cb988c771ee420d46ea20b579c42c80a49a1529d35d511",
+    "game/StoryScene.gd": "f5d6b8b1dc0cdd733ad488129678df307e586278f2e646a37ae70168033019a3"
+  },
+  "viewers": {
+    "empty_equip": {
+      "close_rect": [
+        730,
+        437,
+        460,
+        31
+      ],
+      "empty_rect": [
+        730,
+        403,
+        460,
+        26
+      ],
+      "rect": [
+        710,
+        340,
+        500,
+        400
+      ],
+      "rows": [],
+      "title_rect": [
+        730,
+        356,
+        460,
+        39
+      ]
+    },
+    "empty_item": {
+      "close_rect": [
+        730,
+        476,
+        460,
+        31
+      ],
+      "empty_rect": [
+        730,
+        442,
+        460,
+        26
+      ],
+      "gold": {
+        "icon_rect": [
+          730,
+          403,
+          28,
+          31
+        ],
+        "rect": [
+          730,
+          403,
+          460,
+          31
+        ],
+        "text": "所持金: 75",
+        "text_rect": [
+          764,
+          403,
+          103,
+          31
+        ]
+      },
+      "rect": [
+        710,
+        340,
+        500,
+        400
+      ],
+      "rows": [],
+      "title_rect": [
+        730,
+        356,
+        460,
+        39
+      ]
+    },
+    "equip": {
+      "close_rect": [
+        730,
+        693,
+        460,
+        31
+      ],
+      "rect": [
+        710,
+        340,
+        500,
+        400
+      ],
+      "rows": [
+        {
+          "icon_rect": [
+            730,
+            403,
+            28,
+            28
+          ],
+          "rect": [
+            730,
+            403,
+            154,
+            28
+          ],
+          "text": "金運のお守り",
+          "text_rect": [
+            764,
+            403,
+            120,
+            28
+          ]
+        }
+      ],
+      "scroll_rect": [
+        730,
+        403,
+        460,
+        282
+      ],
+      "title_rect": [
+        730,
+        356,
+        460,
+        39
+      ]
+    },
+    "item": {
+      "close_rect": [
+        730,
+        696.5,
+        460,
+        31
+      ],
+      "gold": {
+        "icon_rect": [
+          730,
+          399.5,
+          28,
+          31
+        ],
+        "rect": [
+          730,
+          399.5,
+          460,
+          31
+        ],
+        "text": "所持金: 75",
+        "text_rect": [
+          764,
+          399.5,
+          103,
+          31
+        ]
+      },
+      "rect": [
+        710,
+        336.5,
+        500,
+        407
+      ],
+      "rows": [
+        {
+          "icon_rect": [
+            730,
+            438.5,
+            28,
+            28
+          ],
+          "rect": [
+            730,
+            438.5,
+            174,
+            28
+          ],
+          "text": "鉄の盾 × 2",
+          "text_rect": [
+            764,
+            438.5,
+            94,
+            28
+          ]
+        },
+        {
+          "icon_rect": [
+            730,
+            470.5,
+            28,
+            28
+          ],
+          "rect": [
+            730,
+            470.5,
+            174,
+            28
+          ],
+          "text": "身代わりカード",
+          "text_rect": [
+            764,
+            470.5,
+            140,
+            28
+          ]
+        }
+      ],
+      "scroll_rect": [
+        730,
+        438.5,
+        460,
+        250
+      ],
+      "title_rect": [
+        730,
+        352.5,
+        460,
+        39
+      ]
+    }
+  }
+}

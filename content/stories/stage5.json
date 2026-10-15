@@ -1,0 +1,81 @@
+{
+  "assets": [
+    { "id": "background.stage5.guild", "path": "godot/assets/backgrounds/stage1/bg07_st1_001.png" },
+    { "id": "background.stage5.street", "path": "godot/assets/backgrounds/stage5/bg_royal_street.png" },
+    { "id": "background.stage5.interview", "path": "godot/assets/backgrounds/stage5/bg_interrogation_room.png" },
+    { "id": "background.stage5.training", "path": "godot/assets/backgrounds/stage5/bg_training_ground.png" },
+    { "id": "background.stage5.resting", "path": "godot/assets/backgrounds/stage2/bg_guild_resting.png" },
+    { "id": "portrait.stage5.hero", "path": "godot/assets/characters/main/satoshi/isekai/satoshi_isekai_004.png" },
+    { "id": "portrait.feria", "path": "godot/assets/characters/main/feria/clothed/feria_clothed_001.png" },
+    { "id": "portrait.receptionist", "path": "godot/assets/characters/main/receptionist/clothed/receptionist_clothed_005.png" }
+  ],
+  "layouts": [
+    { "id": "layout.stage5.hero", "x": 490, "y": 465, "scale": 0.62, "flipped": true },
+    { "id": "layout.stage5.feria", "x": 1430, "y": 465, "scale": 0.62, "flipped": false },
+    { "id": "layout.stage5.receptionist", "x": 1430, "y": 465, "scale": 0.55, "flipped": false }
+  ],
+  "battles": [
+    {
+      "id": "battle.stage5.first", "opponent_id": "feria", "background_asset_id": "background.stage5.training",
+      "player_deck_size": 9, "opponent_deck_size": 9, "round_limit": 3,
+      "opponent_card_ids": ["rock_silver", "rock_silver", "rock_silver", "scissors_silver", "scissors_silver", "scissors_silver", "paper_silver", "paper_silver", "paper_silver"],
+      "item_reward_ids": ["rank_up_bracelet", "intimidation"],
+      "gold_reward": { "min": 120, "max": 180 }, "transfer_cards": true,
+      "hp": { "player": 3, "opponent": 3, "grade_effect_passes": 1, "lose_gold": 0, "forced_outcome": "lose" },
+      "bayes_eye": true, "phases": [{ "id": "phase.stage5.first", "rules": [] }]
+    },
+    {
+      "id": "battle.stage5.rematch", "opponent_id": "feria", "background_asset_id": "background.stage5.training",
+      "player_deck_size": 9, "opponent_deck_size": 9, "round_limit": 3,
+      "opponent_card_ids": ["rock_silver", "rock_silver", "rock_silver", "scissors_silver", "scissors_silver", "scissors_silver", "paper_silver", "paper_silver", "paper_silver"],
+      "item_reward_ids": ["rank_up_bracelet", "intimidation"],
+      "gold_reward": { "min": 120, "max": 180 }, "transfer_cards": true,
+      "hp": { "player": 3, "opponent": 3, "grade_effect_passes": 1, "lose_gold": 0 },
+      "bayes_eye": true, "result_route": "guild_home", "lose_checkpoint_id": "stage5.rematch.loss.end",
+      "phases": [{ "id": "phase.stage5.rematch", "rules": [] }]
+    }
+  ],
+  "stories": [
+    { "id": "story.stage5.summon", "start_id": "stage5.summon.background", "steps": [
+      { "id": "stage5.summon.background", "kind": "background", "asset_id": "background.stage5.street", "next_id": "stage5.summon.hero" },
+      { "id": "stage5.summon.hero", "kind": "show_portrait", "slot_id": "hero", "asset_id": "portrait.stage5.hero", "layout_id": "layout.stage5.hero", "next_id": "stage5.summon.notice" },
+      { "id": "stage5.summon.notice", "kind": "line", "speaker_id": "サトシ", "text": "王都騎士団から、王女に関する不審事案の事情聴取を求める正式書面が届いた。身に覚えはないが、記録を残して応じよう。", "next_id": "stage5.summon.guild" },
+      { "id": "stage5.summon.guild", "kind": "background", "asset_id": "background.stage5.guild", "next_id": "stage5.summon.receptionist" },
+      { "id": "stage5.summon.receptionist", "kind": "show_portrait", "slot_id": "receptionist", "asset_id": "portrait.receptionist", "layout_id": "layout.stage5.receptionist", "next_id": "stage5.summon.advice" },
+      { "id": "stage5.summon.advice", "kind": "line", "speaker_id": "受付嬢", "text": "心鏡の珠は心の動揺を示すだけで、虚偽を判定する道具ではありません。質問の前提と手続きも、記録に残してください。", "next_id": "stage5.summon.end" },
+      { "id": "stage5.summon.end", "kind": "end" }
+    ] },
+    { "id": "story.stage5.interrogation", "start_id": "stage5.interrogation.background", "steps": [
+      { "id": "stage5.interrogation.background", "kind": "background", "asset_id": "background.stage5.interview", "next_id": "stage5.interrogation.feria" },
+      { "id": "stage5.interrogation.feria", "kind": "show_portrait", "slot_id": "feria", "asset_id": "portrait.feria", "layout_id": "layout.stage5.feria", "next_id": "stage5.interrogation.opening" },
+      { "id": "stage5.interrogation.opening", "kind": "line", "speaker_id": "フェリア", "text": "心鏡の珠が赤く反応しました。これを王女への特別な関心の証拠とします。", "next_id": "stage5.interrogation.hero" },
+      { "id": "stage5.interrogation.hero", "kind": "line", "speaker_id": "サトシ", "text": "動揺は質問の内容にも左右されます。反応だけで嫌疑を確定せず、根拠と手続きを示してください。", "next_id": "stage5.interrogation.pisuke" },
+      { "id": "stage5.interrogation.pisuke", "kind": "line", "speaker_id": "ピー助", "text": "珠は嘘発見器じゃない。質問の記録を照合して、偏った前提を指摘しよう。", "next_id": "stage5.interrogation.battle" },
+      { "id": "stage5.interrogation.battle", "kind": "battle", "battle_id": "battle.stage5.first", "next_id": "stage5.interrogation.result" },
+      { "id": "stage5.interrogation.result", "kind": "line", "speaker_id": "ピー助", "text": "初戦は敗北だ。だが、公開された手続きと質問の記録は残った。内容を照合して、再審を求めよう。", "next_id": "stage5.interrogation.end" },
+      { "id": "stage5.interrogation.end", "kind": "end" }
+    ] },
+    { "id": "story.stage5.recover", "start_id": "stage5.recover.background", "steps": [
+      { "id": "stage5.recover.background", "kind": "background", "asset_id": "background.stage5.resting", "next_id": "stage5.recover.hero" },
+      { "id": "stage5.recover.hero", "kind": "show_portrait", "slot_id": "hero", "asset_id": "portrait.stage5.hero", "layout_id": "layout.stage5.hero", "next_id": "stage5.recover.explain" },
+      { "id": "stage5.recover.explain", "kind": "line", "speaker_id": "ピー助", "text": "珠の反応記録と質問記録を照らせば、個人の関心を示す質問が証拠として不適切だと分かる。該当する記録を選ぼう。", "next_id": "stage5.recover.end" },
+      { "id": "stage5.recover.end", "kind": "end" }
+    ] },
+    { "id": "story.stage5.rematch", "start_id": "stage5.rematch.background", "steps": [
+      { "id": "stage5.rematch.background", "kind": "background", "asset_id": "background.stage5.training", "next_id": "stage5.rematch.feria" },
+      { "id": "stage5.rematch.feria", "kind": "show_portrait", "slot_id": "feria", "asset_id": "portrait.feria", "layout_id": "layout.stage5.feria", "next_id": "stage5.rematch.start" },
+      { "id": "stage5.rematch.start", "kind": "line", "speaker_id": "サトシ", "text": "記録を確認しました。正式な再審として、もう一度勝負をお願いします。", "next_id": "stage5.rematch.battle" },
+      { "id": "stage5.rematch.battle", "kind": "battle", "battle_id": "battle.stage5.rematch", "next_id": "stage5.rematch.result" },
+      { "id": "stage5.rematch.result", "kind": "line", "speaker_id": "フェリア", "text": "勝負はあなたの勝ちです。尋問記録の再審査を命じます。", "next_id": "stage5.rematch.end" },
+      { "id": "stage5.rematch.end", "kind": "end" }
+    ] },
+    { "id": "story.stage5.post", "start_id": "stage5.post.background", "steps": [
+      { "id": "stage5.post.background", "kind": "background", "asset_id": "background.stage5.guild", "next_id": "stage5.post.hero" },
+      { "id": "stage5.post.hero", "kind": "show_portrait", "slot_id": "hero", "asset_id": "portrait.stage5.hero", "layout_id": "layout.stage5.hero", "next_id": "stage5.post.resolve" },
+      { "id": "stage5.post.resolve", "kind": "line", "speaker_id": "フェリア", "text": "調査結果を見直しました。あなたへの嫌疑は撤回し、誤った判断について正式に謝罪します。", "next_id": "stage5.post.invitation" },
+      { "id": "stage5.post.invitation", "kind": "line", "speaker_id": "受付嬢", "text": "王宮から、王女殿下主催の晩餐会への招待状が届いております。", "next_id": "stage5.post.end" },
+      { "id": "stage5.post.end", "kind": "end" }
+    ] },
+    { "id": "story.stage5.loss", "start_id": "stage5.rematch.loss.end", "steps": [{ "id": "stage5.rematch.loss.end", "kind": "end" }] }
+  ]
+}

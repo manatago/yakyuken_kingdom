@@ -1,0 +1,6098 @@
+{
+  "chapters": [
+    {
+      "background": "res://assets/backgrounds/prologue/bg06_prison_arena.png",
+      "bayes_eye": true,
+      "can_gain_cards": true,
+      "can_lose_cards": true,
+      "chapter_path": "res://battle/chapters/ThiefJinBattleChapter.gd",
+      "farewell": {
+        "draw": {},
+        "lose": {
+          "narration": "サトシは盗賊ジンに敗北した。\nこれ以上先に進むのは危険だ...。",
+          "portrait": "res://assets/characters/mob/jin/clothed/jin_clothed_001.png",
+          "portrait_scale": 0.33,
+          "text": "へっ！ 雑魚が！ 出直してこい！"
+        },
+        "win": {}
+      },
+      "gold_reward": {
+        "max": 8,
+        "min": 3
+      },
+      "item_rewards": [
+        "paper_attract_white",
+        "rock_break_white"
+      ],
+      "lose_behavior": "abort",
+      "lose_redirect": {
+        "type": "guild_home"
+      },
+      "opponent_deck": [
+        {
+          "grade": 2,
+          "hand": "scissors"
+        },
+        {
+          "grade": 1,
+          "hand": "scissors"
+        },
+        {
+          "grade": 1,
+          "hand": "rock"
+        }
+      ],
+      "opponent_deck_size": 3,
+      "opponent_hp": 1,
+      "opponent_id": "jin",
+      "opponent_name": "盗賊ジン",
+      "opponent_tendency": {
+        "scissors": 2.0
+      },
+      "player_deck_size": 3,
+      "player_hp": 1,
+      "setup": [
+        {
+          "args": [
+            "res://assets/battle/decks/pedestal_01_marble.png",
+            {
+              "position": [
+                0,
+                180
+              ],
+              "scale": 0.55
+            }
+          ],
+          "kind": "deck"
+        },
+        {
+          "args": [
+            "jin",
+            "res://assets/characters/mob/jin/nude/jin_nude_001.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.33,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        }
+      ],
+      "traces": [
+        {
+          "commands": [
+            {
+              "args": [
+                "jin",
+                "res://assets/characters/mob/jin/nude/jin_nude_001.png",
+                {
+                  "position": [
+                    0,
+                    -199
+                  ],
+                  "scale": 0.33,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "jin",
+                "俺の「疾風のハサミ」を食らいな！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {},
+                "win"
+              ],
+              "kind": "janken"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "jin",
+                "res://assets/characters/mob/jin/nude/jin_nude_001.png",
+                {
+                  "position": [
+                    0,
+                    -199
+                  ],
+                  "scale": 0.33,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "jin",
+                "俺の「疾風のハサミ」を食らいな！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {},
+                "lose"
+              ],
+              "kind": "janken"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "jin",
+                "res://assets/characters/mob/jin/nude/jin_nude_001.png",
+                {
+                  "position": [
+                    0,
+                    -199
+                  ],
+                  "scale": 0.33,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "jin",
+                "俺の「疾風のハサミ」を食らいな！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {},
+                "draw"
+              ],
+              "kind": "janken"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "draw"
+          ]
+        }
+      ]
+    },
+    {
+      "background": "res://assets/backgrounds/prologue/bg06_prison_arena.png",
+      "bayes_eye": true,
+      "can_gain_cards": true,
+      "can_lose_cards": true,
+      "chapter_path": "res://battle/chapters/ThiefMarcoBattleChapter.gd",
+      "farewell": {
+        "draw": {},
+        "lose": {
+          "narration": "サトシは盗賊マルコに敗北した。\nこれ以上先に進むのは危険だ...。",
+          "portrait": "res://assets/characters/mob/marco/clothed/marco_clothed_001.png",
+          "portrait_scale": 0.34,
+          "text": "......。帰れ。"
+        },
+        "win": {}
+      },
+      "gold_reward": {
+        "max": 10,
+        "min": 5
+      },
+      "item_rewards": [
+        "substitute_card",
+        "iron_shield"
+      ],
+      "lose_behavior": "abort",
+      "lose_redirect": {
+        "type": "guild_home"
+      },
+      "opponent_deck": [
+        {
+          "grade": 1,
+          "hand": "rock"
+        },
+        {
+          "grade": 1,
+          "hand": "scissors"
+        },
+        {
+          "grade": 2,
+          "hand": "paper"
+        }
+      ],
+      "opponent_deck_size": 3,
+      "opponent_hp": 1,
+      "opponent_id": "marco",
+      "opponent_name": "盗賊マルコ",
+      "opponent_tendency": {},
+      "player_deck_size": 3,
+      "player_hp": 1,
+      "setup": [
+        {
+          "args": [
+            "res://assets/battle/decks/pedestal_01_marble.png",
+            {
+              "position": [
+                0,
+                180
+              ],
+              "scale": 0.55
+            }
+          ],
+          "kind": "deck"
+        },
+        {
+          "args": [
+            "marco",
+            "res://assets/characters/mob/marco/nude/marco_nude_001.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.35,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        }
+      ],
+      "traces": [
+        {
+          "commands": [
+            {
+              "args": [
+                "marco",
+                "res://assets/characters/mob/marco/nude/marco_nude_001.png",
+                {
+                  "position": [
+                    0,
+                    -199
+                  ],
+                  "scale": 0.35,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "marco",
+                "......。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {},
+                "win"
+              ],
+              "kind": "janken"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "marco",
+                "res://assets/characters/mob/marco/nude/marco_nude_001.png",
+                {
+                  "position": [
+                    0,
+                    -199
+                  ],
+                  "scale": 0.35,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "marco",
+                "......。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {},
+                "lose"
+              ],
+              "kind": "janken"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "marco",
+                "res://assets/characters/mob/marco/nude/marco_nude_001.png",
+                {
+                  "position": [
+                    0,
+                    -199
+                  ],
+                  "scale": 0.35,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "marco",
+                "......。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {},
+                "draw"
+              ],
+              "kind": "janken"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "draw"
+          ]
+        }
+      ]
+    },
+    {
+      "background": "res://assets/backgrounds/prologue/bg06_prison_arena.png",
+      "bayes_eye": true,
+      "can_gain_cards": true,
+      "can_lose_cards": true,
+      "chapter_path": "res://battle/chapters/ThiefGaldBattleChapter.gd",
+      "farewell": {
+        "draw": {},
+        "lose": {
+          "narration": "サトシはガルドに敗北した。\nこれ以上先に進むのは危険だ...。",
+          "portrait": "res://assets/characters/mob/gald/clothed/gald_clothed_002.png",
+          "portrait_scale": 0.33,
+          "text": "ガハハ！ 帰んな、弱虫！"
+        },
+        "win": {}
+      },
+      "gold_reward": {
+        "max": 15,
+        "min": 8
+      },
+      "item_rewards": [
+        "scissors_attract_white",
+        "paper_seal_white"
+      ],
+      "lose_behavior": "abort",
+      "lose_redirect": {
+        "type": "guild_home"
+      },
+      "opponent_deck": [
+        {
+          "grade": 2,
+          "hand": "rock"
+        },
+        {
+          "grade": 1,
+          "hand": "rock"
+        },
+        {
+          "grade": 1,
+          "hand": "scissors"
+        }
+      ],
+      "opponent_deck_size": 3,
+      "opponent_hp": 1,
+      "opponent_id": "gald",
+      "opponent_name": "ガルド",
+      "opponent_tendency": {
+        "rock": 2.0
+      },
+      "player_deck_size": 3,
+      "player_hp": 1,
+      "setup": [
+        {
+          "args": [
+            "res://assets/battle/decks/pedestal_01_marble.png",
+            {
+              "position": [
+                0,
+                180
+              ],
+              "scale": 0.55
+            }
+          ],
+          "kind": "deck"
+        },
+        {
+          "args": [
+            "gald",
+            "res://assets/characters/mob/gald/nude/gald_nude_001.png",
+            {
+              "position": [
+                0,
+                -199
+              ],
+              "scale": 0.34,
+              "side": "center"
+            }
+          ],
+          "kind": "set_portrait"
+        }
+      ],
+      "traces": [
+        {
+          "commands": [
+            {
+              "args": [
+                "gald",
+                "res://assets/characters/mob/gald/nude/gald_nude_001.png",
+                {
+                  "position": [
+                    0,
+                    -199
+                  ],
+                  "scale": 0.34,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "gald",
+                "ガハハ！ 俺の拳で吹っ飛ばしてやる！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {},
+                "win"
+              ],
+              "kind": "janken"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "gald",
+                "res://assets/characters/mob/gald/nude/gald_nude_001.png",
+                {
+                  "position": [
+                    0,
+                    -199
+                  ],
+                  "scale": 0.34,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "gald",
+                "ガハハ！ 俺の拳で吹っ飛ばしてやる！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {},
+                "lose"
+              ],
+              "kind": "janken"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "gald",
+                "res://assets/characters/mob/gald/nude/gald_nude_001.png",
+                {
+                  "position": [
+                    0,
+                    -199
+                  ],
+                  "scale": 0.34,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "gald",
+                "ガハハ！ 俺の拳で吹っ飛ばしてやる！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {},
+                "draw"
+              ],
+              "kind": "janken"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "draw"
+          ]
+        }
+      ]
+    },
+    {
+      "background": "res://assets/backgrounds/prologue/bg06_prison_arena.png",
+      "bayes_eye": true,
+      "can_gain_cards": true,
+      "can_lose_cards": true,
+      "chapter_path": "res://battle/chapters/BelkaBattleChapter.gd",
+      "farewell": {
+        "draw": {},
+        "lose": {
+          "narration": "サトシはベルカに敗北した。\n盗賊団のアジトから撤退するしかない...。",
+          "portrait": "res://assets/characters/main/belka/nude/belka_nude_003.png",
+          "portrait_scale": 0.64,
+          "text": "ゲハハ！ ボクに勝てると思ったのかよ？\n出直してきな！"
+        },
+        "win": {}
+      },
+      "gold_reward": {
+        "max": 60,
+        "min": 40
+      },
+      "item_rewards": [
+        "greed_ring",
+        "rock_attract_crimson"
+      ],
+      "lose_behavior": "abort",
+      "lose_redirect": {
+        "type": "guild_home"
+      },
+      "opponent_deck": [
+        {
+          "grade": 1,
+          "hand": "rock"
+        },
+        {
+          "grade": 1,
+          "hand": "rock"
+        },
+        {
+          "grade": 2,
+          "hand": "rock"
+        },
+        {
+          "grade": 1,
+          "hand": "scissors"
+        },
+        {
+          "grade": 1,
+          "hand": "scissors"
+        },
+        {
+          "grade": 2,
+          "hand": "scissors"
+        },
+        {
+          "grade": 1,
+          "hand": "paper"
+        },
+        {
+          "grade": 2,
+          "hand": "paper"
+        },
+        {
+          "grade": 2,
+          "hand": "paper"
+        }
+      ],
+      "opponent_deck_size": 9,
+      "opponent_hp": 3,
+      "opponent_id": "belka",
+      "opponent_name": "ベルカ",
+      "opponent_tendency": {
+        "paper": 0.4
+      },
+      "player_deck_size": 9,
+      "player_hp": 3,
+      "setup": [
+        {
+          "args": [
+            "res://assets/battle/decks/pedestal_01_marble.png",
+            {
+              "position": [
+                0,
+                180
+              ],
+              "scale": 0.55
+            }
+          ],
+          "kind": "deck"
+        }
+      ],
+      "traces": [
+        {
+          "commands": [
+            {
+              "args": [
+                "belka",
+                "res://assets/characters/main/belka/nude/belka_nude_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    20,
+                    -222
+                  ],
+                  "scale": 0.39,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "belka",
+                "へっ、ボクに勝てると思ってんの？",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {},
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "belka",
+                "res://assets/characters/main/belka/nude/belka_nude_002.png",
+                {
+                  "position": [
+                    0,
+                    -227
+                  ],
+                  "scale": 0.39,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "belka",
+                "...っ！ やるじゃん...。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [
+                0.0
+              ],
+              "kind": "wait"
+            },
+            {
+              "args": [
+                "belka",
+                {}
+              ],
+              "kind": "leave"
+            },
+            {
+              "args": [
+                "",
+                {}
+              ],
+              "kind": "deck"
+            },
+            {
+              "args": [
+                false
+              ],
+              "kind": "set_battle_ui_visible"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_cloth_001.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "くそっ・・・\n仕方ないな・・・・",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_cloth_002.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "次は絶対お前を脱がしてやるからな！",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_cloth_003.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "（もう負けられない・・・・）",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/backgrounds/prologue/bg06_prison_arena.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                0.0
+              ],
+              "kind": "wait"
+            },
+            {
+              "args": [
+                true
+              ],
+              "kind": "set_battle_ui_visible"
+            },
+            {
+              "args": [
+                "res://assets/battle/decks/pedestal_01_marble.png",
+                {
+                  "position": [
+                    0,
+                    180
+                  ],
+                  "scale": 0.55
+                }
+              ],
+              "kind": "deck"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "belka",
+                "res://assets/characters/main/belka/nude/belka_nude_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    20,
+                    -222
+                  ],
+                  "scale": 0.39,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "belka",
+                "へっ、ボクに勝てると思ってんの？",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {},
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "belka",
+                "res://assets/characters/main/belka/nude/belka_nude_003.png",
+                {
+                  "position": [
+                    0,
+                    -199
+                  ],
+                  "scale": 0.39,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "belka",
+                "ゲハハ！ ボクの読み、甘く見んなよ。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "belka",
+                "res://assets/characters/main/belka/nude/belka_nude_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    20,
+                    -222
+                  ],
+                  "scale": 0.39,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "belka",
+                "へっ、ボクに勝てると思ってんの？",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {},
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "belka",
+                "res://assets/characters/main/belka/nude/belka_nude_004.png",
+                {
+                  "position": [
+                    0,
+                    -194
+                  ],
+                  "scale": 0.39,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "belka",
+                "あいこ？ ...ふーん、なかなかやるね。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "belka",
+                "res://assets/characters/main/belka/nude/belka_nude_005.png",
+                {
+                  "position": [
+                    0,
+                    -207
+                  ],
+                  "scale": 0.39,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "belka",
+                "...ちっ、調子乗んなよ。ここからが本気だ。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "belka",
+                "res://assets/characters/main/belka/nude/belka_nude_006.png",
+                {
+                  "position": [
+                    0,
+                    -49
+                  ],
+                  "scale": 0.49,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "belka",
+                "...マジかよ。あんた、ボクの手を読んでるだろ。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [
+                0.0
+              ],
+              "kind": "wait"
+            },
+            {
+              "args": [
+                "belka",
+                {}
+              ],
+              "kind": "leave"
+            },
+            {
+              "args": [
+                "",
+                {}
+              ],
+              "kind": "deck"
+            },
+            {
+              "args": [
+                false
+              ],
+              "kind": "set_battle_ui_visible"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_bra_001.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "や、やっぱり脱がないと、ダメか？",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_bra_002.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "ま、まぁ・・・\nルールだしな・・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_bra_003.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "脱ぐところ見るんじゃねーよ！",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_bra_004.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "な、なぁ・・・・\nこれでいいよな・・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "（思ったより恥ずかしがるな・・・・）",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "いいわけないだろ！",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_bra_005.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "わ、私のなんて見ても・・・・\nしょうがないだろ・・・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_bra_006.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "な、なぁ・・・\nも、もういいよな？",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "いや、まだ10分は見たい。",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_bra_007.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "お前どんだけおっぱい好きなんだよ・・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/backgrounds/prologue/bg06_prison_arena.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                0.0
+              ],
+              "kind": "wait"
+            },
+            {
+              "args": [
+                true
+              ],
+              "kind": "set_battle_ui_visible"
+            },
+            {
+              "args": [
+                "res://assets/battle/decks/pedestal_01_marble.png",
+                {
+                  "position": [
+                    0,
+                    180
+                  ],
+                  "scale": 0.55
+                }
+              ],
+              "kind": "deck"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "belka",
+                "res://assets/characters/main/belka/nude/belka_nude_005.png",
+                {
+                  "position": [
+                    0,
+                    -207
+                  ],
+                  "scale": 0.39,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "belka",
+                "...ちっ、調子乗んなよ。ここからが本気だ。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "belka",
+                "res://assets/characters/main/belka/nude/belka_nude_007.png",
+                {
+                  "position": [
+                    0,
+                    -203
+                  ],
+                  "scale": 0.39,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "belka",
+                "へへっ、まだまだだね。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "belka",
+                "res://assets/characters/main/belka/nude/belka_nude_005.png",
+                {
+                  "position": [
+                    0,
+                    -207
+                  ],
+                  "scale": 0.39,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "belka",
+                "...ちっ、調子乗んなよ。ここからが本気だ。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "belka",
+                "res://assets/characters/main/belka/nude/belka_nude_008.png",
+                {
+                  "position": [
+                    0,
+                    -201
+                  ],
+                  "scale": 0.39,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "belka",
+                "...また引き分けかよ。しつこいヤツだな。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "belka",
+                "res://assets/characters/main/belka/nude/belka_nude_009.png",
+                {
+                  "position": [
+                    0,
+                    -194
+                  ],
+                  "scale": 0.39,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "belka",
+                "...っ！ こ、これ以上はダメだって！ 見んな！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.4
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "belka",
+                "res://assets/characters/main/belka/nude/belka_nude_010.png",
+                {
+                  "position": [
+                    0,
+                    -175
+                  ],
+                  "scale": 0.39,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "belka",
+                "う、うそだろ...ボクが...負けた...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [
+                0.0
+              ],
+              "kind": "wait"
+            },
+            {
+              "args": [
+                "belka",
+                {}
+              ],
+              "kind": "leave"
+            },
+            {
+              "args": [
+                "",
+                {}
+              ],
+              "kind": "deck"
+            },
+            {
+              "args": [
+                false
+              ],
+              "kind": "set_battle_ui_visible"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_panty_001.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "な、なぁ。お前の要求通りにするから\nここで終わりってことにしないか？",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_panty_002.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "いやいや、ルールはルールだから。",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "え・・・\nいや・・・・\nちょっ・・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_panty_003.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "ちょっと待って！\n見えちゃう！見えちゃうからっ！",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_panty_004.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "淡々と脱がすなーっ！",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_panty_005.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "お前・・・・\nこれ以上・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "とりあえず立ってみて",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_panty_006.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "なぁ、もうこの辺でいいだろ？",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_panty_007.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "いや、ちょ・・・\nやめ・・・・\n見えちゃうっ！",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_panty_008.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "やだぁ・・・・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "とりあえず後ろに手を回そうか",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_panty_009.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "（気の強い女が涙目で全裸・・・・\nこれは良いものだ・・・・）",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_panty_010.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "（もう全部見られちゃった・・・\n誰にも見られたことないのに・・・・）",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "ものは相談だが・・・・\nこれを履いてみてくれないか？",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_panty_011.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "靴下？今更靴下履いたところで\n焼け石に水だけど・・・・\nまぁ全裸よりマシかな・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_panty_012.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "こんな感じでいいのか？",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_panty_013.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "あれ？なんか・・・\n全裸より・・・恥ずかしいかも・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_panty_014.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "（なんで・・・なんで靴下履いた方が\n恥ずかしいんだ・・・・？）",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "さぁ、足を開いて！",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_panty_015.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "こ・・・こう・・・か？",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/belka/clothed/belka_undressing_panty_016.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "（凄ぇ・・・・先端着衣の威力・・・\nパネぇっす・・・・・）",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/backgrounds/prologue/bg06_prison_arena.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                0.0
+              ],
+              "kind": "wait"
+            },
+            {
+              "args": [
+                true
+              ],
+              "kind": "set_battle_ui_visible"
+            },
+            {
+              "args": [
+                "res://assets/battle/decks/pedestal_01_marble.png",
+                {
+                  "position": [
+                    0,
+                    180
+                  ],
+                  "scale": 0.55
+                }
+              ],
+              "kind": "deck"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "belka",
+                "res://assets/characters/main/belka/nude/belka_nude_009.png",
+                {
+                  "position": [
+                    0,
+                    -194
+                  ],
+                  "scale": 0.39,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "belka",
+                "...っ！ こ、これ以上はダメだって！ 見んな！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.4
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "belka",
+                "res://assets/characters/main/belka/nude/belka_nude_011.png",
+                {
+                  "position": [
+                    0,
+                    -202
+                  ],
+                  "scale": 0.39,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "belka",
+                "...ふぅ。危なかった...。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "belka",
+                "res://assets/characters/main/belka/nude/belka_nude_009.png",
+                {
+                  "position": [
+                    0,
+                    -194
+                  ],
+                  "scale": 0.39,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "belka",
+                "...っ！ こ、これ以上はダメだって！ 見んな！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.4
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "belka",
+                "res://assets/characters/main/belka/nude/belka_nude_012.png",
+                {
+                  "position": [
+                    0,
+                    -217
+                  ],
+                  "scale": 0.39,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "belka",
+                "...まだ続くのかよ...勘弁してくれ...。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "draw"
+          ]
+        }
+      ]
+    },
+    {
+      "background": "res://assets/backgrounds/subevent2/bg05_church_peep_room.png",
+      "bayes_eye": true,
+      "can_gain_cards": true,
+      "can_lose_cards": true,
+      "chapter_path": "res://battle/chapters/SisterBattleChapter.gd",
+      "farewell": {
+        "draw": {},
+        "lose": {},
+        "win": {}
+      },
+      "gold_reward": {
+        "max": 80,
+        "min": 50
+      },
+      "item_rewards": [
+        "gold_charm",
+        "scissors_attract_crimson"
+      ],
+      "lose_behavior": "redirect",
+      "lose_redirect": {
+        "sequence_id": "subevent2_battle_lose",
+        "type": "story_sequence_then_guild_home"
+      },
+      "opponent_deck": [
+        {
+          "grade": 1,
+          "hand": "rock"
+        },
+        {
+          "grade": 2,
+          "hand": "rock"
+        },
+        {
+          "grade": 2,
+          "hand": "rock"
+        },
+        {
+          "grade": 1,
+          "hand": "scissors"
+        },
+        {
+          "grade": 2,
+          "hand": "scissors"
+        },
+        {
+          "grade": 2,
+          "hand": "scissors"
+        },
+        {
+          "grade": 1,
+          "hand": "paper"
+        },
+        {
+          "grade": 1,
+          "hand": "paper"
+        },
+        {
+          "grade": 2,
+          "hand": "paper"
+        }
+      ],
+      "opponent_deck_size": 9,
+      "opponent_hp": 3,
+      "opponent_id": "sister_head",
+      "opponent_name": "シスター長",
+      "opponent_tendency": {
+        "paper": 0.3
+      },
+      "player_deck_size": 9,
+      "player_hp": 3,
+      "setup": [
+        {
+          "args": [
+            "res://assets/battle/decks/pedestal_01_marble.png",
+            {
+              "position": [
+                0,
+                180
+              ],
+              "scale": 0.5
+            }
+          ],
+          "kind": "deck"
+        }
+      ],
+      "traces": [
+        {
+          "commands": [
+            {
+              "args": [
+                "sister_head",
+                "res://assets/characters/main/sister_head/clothed/sister_head_clothed_janken_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    0
+                  ],
+                  "scale": 0.42,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "sister_head",
+                "...神の御前で、正直になりましょうか。\n迷いは、私にはお見通しよ。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {},
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "sister_head",
+                "res://assets/characters/main/sister_head/clothed/sister_head_clothed_janken_002.png",
+                {
+                  "position": [
+                    0,
+                    11
+                  ],
+                  "scale": 0.42,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "sister_head",
+                "...あら。悪運だけはお強いようね。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [
+                0.0
+              ],
+              "kind": "wait"
+            },
+            {
+              "args": [
+                "sister_head",
+                {}
+              ],
+              "kind": "leave"
+            },
+            {
+              "args": [
+                "",
+                {}
+              ],
+              "kind": "deck"
+            },
+            {
+              "args": [
+                false
+              ],
+              "kind": "set_battle_ui_visible"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_cloth_001.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "この私が脱ぐことになるなんて・・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_cloth_002.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "(男の人に見られちゃうなんて・・・・)",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_cloth_003.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "な、なんか、・・・\nうまく脱げなくて・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_cloth_004.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "こ、これでいいんですよ・・・ね・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/backgrounds/subevent2/bg05_church_peep_room.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                0.0
+              ],
+              "kind": "wait"
+            },
+            {
+              "args": [
+                true
+              ],
+              "kind": "set_battle_ui_visible"
+            },
+            {
+              "args": [
+                "res://assets/battle/decks/pedestal_01_marble.png",
+                {
+                  "position": [
+                    0,
+                    180
+                  ],
+                  "scale": 0.5
+                }
+              ],
+              "kind": "deck"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "sister_head",
+                "res://assets/characters/main/sister_head/clothed/sister_head_clothed_janken_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    0
+                  ],
+                  "scale": 0.42,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "sister_head",
+                "...神の御前で、正直になりましょうか。\n迷いは、私にはお見通しよ。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {},
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "sister_head",
+                "res://assets/characters/main/sister_head/clothed/sister_head_clothed_janken_003.png",
+                {
+                  "position": [
+                    0,
+                    6
+                  ],
+                  "scale": 0.42,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "sister_head",
+                "ふふ。読み通りよ。\n...あなたの迷い、手に取るように分かる。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "sister_head",
+                "res://assets/characters/main/sister_head/clothed/sister_head_clothed_janken_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    0
+                  ],
+                  "scale": 0.42,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "sister_head",
+                "...神の御前で、正直になりましょうか。\n迷いは、私にはお見通しよ。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {},
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "sister_head",
+                "res://assets/characters/main/sister_head/clothed/sister_head_clothed_janken_004.png",
+                {
+                  "position": [
+                    0,
+                    14
+                  ],
+                  "scale": 0.42,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "sister_head",
+                "あら、偶然ね。...次は、そうはいきませんわ。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "sister_head",
+                "res://assets/characters/main/sister_head/underwear/sister_head_underwear_janken_001.png",
+                {
+                  "position": [
+                    0,
+                    -71
+                  ],
+                  "scale": 0.8,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "sister_head",
+                "...こんなはずでは、と思ってる？\nふふ、ここからが本番ですわ。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "sister_head",
+                "res://assets/characters/main/sister_head/underwear/sister_head_underwear_janken_002.png",
+                {
+                  "position": [
+                    0,
+                    -66
+                  ],
+                  "scale": 0.8,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "sister_head",
+                "...まさか、私の読みを裏切るなんて。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [
+                0.0
+              ],
+              "kind": "wait"
+            },
+            {
+              "args": [
+                "sister_head",
+                {}
+              ],
+              "kind": "leave"
+            },
+            {
+              "args": [
+                "",
+                {}
+              ],
+              "kind": "deck"
+            },
+            {
+              "args": [
+                false
+              ],
+              "kind": "set_battle_ui_visible"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_bra_001.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "（ま、まさかおっぱい見せることになるなんて・・・）",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_bra_002.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "・・・・・・・・・・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_bra_003.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "や、やっぱブラ・・・外さなきゃ\nだめ・・ですか？",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_bra_004.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "こ・・・これでいですよね？",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "いや、乳首までじっくり\n確認しないと・・・",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_bra_005.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "はぁ・・・はぁっ・・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_bra_006.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "も、もう・・・いいですか？",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "だめです。手を下ろして・・・",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_bra_007.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "はい・・・・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/backgrounds/subevent2/bg05_church_peep_room.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                0.0
+              ],
+              "kind": "wait"
+            },
+            {
+              "args": [
+                true
+              ],
+              "kind": "set_battle_ui_visible"
+            },
+            {
+              "args": [
+                "res://assets/battle/decks/pedestal_01_marble.png",
+                {
+                  "position": [
+                    0,
+                    180
+                  ],
+                  "scale": 0.5
+                }
+              ],
+              "kind": "deck"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "sister_head",
+                "res://assets/characters/main/sister_head/underwear/sister_head_underwear_janken_001.png",
+                {
+                  "position": [
+                    0,
+                    -71
+                  ],
+                  "scale": 0.8,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "sister_head",
+                "...こんなはずでは、と思ってる？\nふふ、ここからが本番ですわ。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "sister_head",
+                "res://assets/characters/main/sister_head/underwear/sister_head_underwear_janken_003.png",
+                {
+                  "position": [
+                    0,
+                    -45
+                  ],
+                  "scale": 0.8,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "sister_head",
+                "ご覧なさい。これが「神の裁き」よ。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "sister_head",
+                "res://assets/characters/main/sister_head/underwear/sister_head_underwear_janken_001.png",
+                {
+                  "position": [
+                    0,
+                    -71
+                  ],
+                  "scale": 0.8,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "sister_head",
+                "...こんなはずでは、と思ってる？\nふふ、ここからが本番ですわ。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "sister_head",
+                "res://assets/characters/main/sister_head/underwear/sister_head_underwear_janken_004.png",
+                {
+                  "position": [
+                    0,
+                    -40
+                  ],
+                  "scale": 0.8,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "sister_head",
+                "...あいこ。面白い冒険者ね、あなた。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "sister_head",
+                "res://assets/characters/main/sister_head/topless/sister_head_topless_janken_001.png",
+                {
+                  "position": [
+                    0,
+                    -59
+                  ],
+                  "scale": 0.8,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "sister_head",
+                "...っ！ こんな...こんな屈辱、許さない...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.4
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "sister_head",
+                "res://assets/characters/main/sister_head/topless/sister_head_topless_janken_002.png",
+                {
+                  "position": [
+                    0,
+                    -55
+                  ],
+                  "scale": 0.8,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "sister_head",
+                "...そんな。わたしが...負けた...。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [
+                0.0
+              ],
+              "kind": "wait"
+            },
+            {
+              "args": [
+                "sister_head",
+                {}
+              ],
+              "kind": "leave"
+            },
+            {
+              "args": [
+                "",
+                {}
+              ],
+              "kind": "deck"
+            },
+            {
+              "args": [
+                false
+              ],
+              "kind": "set_battle_ui_visible"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_panty_001.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "これ・・・・脱ぐん・・・ですよね・・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "ルールですからね。",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_panty_002.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "わ・・・わかりました・・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_panty_003.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "ほ、本当に、脱いじゃいますよ・・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_panty_004.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "後ろから見るのは反則です！",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "いや、別にそんなルールないし・・・",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_panty_005.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "前もだ、だめです！",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "いや、どっちから見ろと・・・",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_panty_006.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "もう・・・おとなしくしててください！",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_panty_007.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "（これ脱いじゃったら・・・・もう・・・）",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_panty_008.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "脱ぎました・・・\nこれで終わり・・・ですよね？",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_panty_009.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "え・・・いや・・・\n私のなんて見ても・・・\nつまんないですよ？",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_panty_010.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "ほ、ほら・・・・\n仮にも神に仕える身ですし",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "だからこそより興奮します。",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_panty_011.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "こ、これで、・・・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "よく見えないですね。",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_panty_012.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "そんな・・・・\n意地悪言わないで・・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "もっと足を開いて！",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_panty_013.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "ひんっ・・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_panty_014.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "も、もうこれ以上は・・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_panty_015.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "な、何をするんですか！",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "いや、近眼なもので・・・",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/sister_head/clothed/sister_head_undressing_panty_016.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "（・・・・・・・・）",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/backgrounds/subevent2/bg05_church_peep_room.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                0.0
+              ],
+              "kind": "wait"
+            },
+            {
+              "args": [
+                true
+              ],
+              "kind": "set_battle_ui_visible"
+            },
+            {
+              "args": [
+                "res://assets/battle/decks/pedestal_01_marble.png",
+                {
+                  "position": [
+                    0,
+                    180
+                  ],
+                  "scale": 0.5
+                }
+              ],
+              "kind": "deck"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "sister_head",
+                "res://assets/characters/main/sister_head/topless/sister_head_topless_janken_001.png",
+                {
+                  "position": [
+                    0,
+                    -59
+                  ],
+                  "scale": 0.8,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "sister_head",
+                "...っ！ こんな...こんな屈辱、許さない...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.4
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "sister_head",
+                "res://assets/characters/main/sister_head/topless/sister_head_topless_janken_003.png",
+                {
+                  "position": [
+                    0,
+                    -46
+                  ],
+                  "scale": 0.8,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "sister_head",
+                "...ふう。危なかった。\nあなたも、もう終わりよ。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "sister_head",
+                "res://assets/characters/main/sister_head/topless/sister_head_topless_janken_001.png",
+                {
+                  "position": [
+                    0,
+                    -59
+                  ],
+                  "scale": 0.8,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "sister_head",
+                "...っ！ こんな...こんな屈辱、許さない...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.4
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "sister_head",
+                "res://assets/characters/main/sister_head/topless/sister_head_topless_janken_004.png",
+                {
+                  "position": [
+                    0,
+                    -64
+                  ],
+                  "scale": 0.8,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "sister_head",
+                "...まだ、粘るの？ 往生際が悪いですわ。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "draw"
+          ]
+        }
+      ]
+    },
+    {
+      "background": "res://assets/backgrounds/subevent3/bg_noble_room.png",
+      "bayes_eye": true,
+      "can_gain_cards": true,
+      "can_lose_cards": true,
+      "chapter_path": "res://battle/chapters/FionaBattleChapter.gd",
+      "farewell": {
+        "draw": {},
+        "lose": {},
+        "win": {}
+      },
+      "gold_reward": {
+        "max": 150,
+        "min": 100
+      },
+      "item_rewards": [
+        "crystal_fragment",
+        "paper_attract_crimson"
+      ],
+      "lose_behavior": "redirect",
+      "lose_redirect": {
+        "sequence_id": "subevent3_battle_lose",
+        "type": "story_sequence_then_guild_home"
+      },
+      "opponent_deck": [
+        {
+          "grade": 2,
+          "hand": "rock"
+        },
+        {
+          "grade": 2,
+          "hand": "rock"
+        },
+        {
+          "grade": 2,
+          "hand": "rock"
+        },
+        {
+          "grade": 2,
+          "hand": "scissors"
+        },
+        {
+          "grade": 2,
+          "hand": "scissors"
+        },
+        {
+          "grade": 2,
+          "hand": "scissors"
+        },
+        {
+          "grade": 2,
+          "hand": "paper"
+        },
+        {
+          "grade": 2,
+          "hand": "paper"
+        },
+        {
+          "grade": 3,
+          "hand": "paper"
+        }
+      ],
+      "opponent_deck_size": 9,
+      "opponent_hp": 3,
+      "opponent_id": "fiona",
+      "opponent_name": "フィオナ",
+      "opponent_tendency": {
+        "paper": 0.35
+      },
+      "player_deck_size": 9,
+      "player_hp": 3,
+      "setup": [
+        {
+          "args": [
+            "res://assets/battle/decks/pedestal_01_marble.png",
+            {
+              "position": [
+                0,
+                180
+              ],
+              "scale": 0.5
+            }
+          ],
+          "kind": "deck"
+        }
+      ],
+      "traces": [
+        {
+          "commands": [
+            {
+              "args": [
+                "fiona",
+                "res://assets/characters/main/fiona/clothed/fiona_clothed_janken_001_v1.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    206
+                  ],
+                  "scale": 0.77,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "fiona",
+                "...は、はい...お、お願い、します...。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.55
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "fiona",
+                "res://assets/characters/main/fiona/clothed/fiona_clothed_janken_002_v1.png",
+                {
+                  "position": [
+                    2,
+                    289
+                  ],
+                  "scale": 0.82,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "fiona",
+                "...あ...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [
+                0.0
+              ],
+              "kind": "wait"
+            },
+            {
+              "args": [
+                "fiona",
+                {}
+              ],
+              "kind": "leave"
+            },
+            {
+              "args": [
+                "",
+                {}
+              ],
+              "kind": "deck"
+            },
+            {
+              "args": [
+                false
+              ],
+              "kind": "set_battle_ui_visible"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/fiona/undressing/fiona_undressing_clothes_001.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "...",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/fiona/undressing/fiona_undressing_clothes_002.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "...",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/fiona/undressing/fiona_undressing_clothes_003.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "...",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/fiona/undressing/fiona_undressing_clothes_004.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "...",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/backgrounds/subevent3/bg_noble_room.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                0.0
+              ],
+              "kind": "wait"
+            },
+            {
+              "args": [
+                true
+              ],
+              "kind": "set_battle_ui_visible"
+            },
+            {
+              "args": [
+                "res://assets/battle/decks/pedestal_01_marble.png",
+                {
+                  "position": [
+                    0,
+                    180
+                  ],
+                  "scale": 0.5
+                }
+              ],
+              "kind": "deck"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "fiona",
+                "res://assets/characters/main/fiona/clothed/fiona_clothed_janken_001_v1.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    206
+                  ],
+                  "scale": 0.77,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "fiona",
+                "...は、はい...お、お願い、します...。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.55
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "fiona",
+                "res://assets/characters/main/fiona/clothed/fiona_clothed_janken_003_v1.png",
+                {
+                  "position": [
+                    -2,
+                    203
+                  ],
+                  "scale": 0.76,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "fiona",
+                "...あの、ご、ごめんなさい...。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "fiona",
+                "res://assets/characters/main/fiona/clothed/fiona_clothed_janken_001_v1.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    206
+                  ],
+                  "scale": 0.77,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "fiona",
+                "...は、はい...お、お願い、します...。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.55
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "fiona",
+                "res://assets/characters/main/fiona/clothed/fiona_clothed_janken_004_v1.png",
+                {
+                  "position": [
+                    -5,
+                    267
+                  ],
+                  "scale": 0.82,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "fiona",
+                "...あ、あいこ、です...。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "fiona",
+                "res://assets/characters/main/fiona/underwear/fiona_underwear_janken_001_v1.png",
+                {
+                  "position": [
+                    10,
+                    -135
+                  ],
+                  "scale": 0.55,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "fiona",
+                "...呪い、まだ、効いて...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "fiona",
+                "res://assets/characters/main/fiona/underwear/fiona_underwear_janken_002_v1.png",
+                {
+                  "position": [
+                    -7,
+                    60
+                  ],
+                  "scale": 0.69,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "fiona",
+                "...や、やった...？",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [
+                0.0
+              ],
+              "kind": "wait"
+            },
+            {
+              "args": [
+                "fiona",
+                {}
+              ],
+              "kind": "leave"
+            },
+            {
+              "args": [
+                "",
+                {}
+              ],
+              "kind": "deck"
+            },
+            {
+              "args": [
+                false
+              ],
+              "kind": "set_battle_ui_visible"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/fiona/undressing/fiona_undressing_bra_001.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "...",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/fiona/undressing/fiona_undressing_bra_002.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "...",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/fiona/undressing/fiona_undressing_bra_003.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "...",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/fiona/undressing/fiona_undressing_bra_004.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "...",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/fiona/undressing/fiona_undressing_bra_005.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "...",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/backgrounds/subevent3/bg_noble_room.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                0.0
+              ],
+              "kind": "wait"
+            },
+            {
+              "args": [
+                true
+              ],
+              "kind": "set_battle_ui_visible"
+            },
+            {
+              "args": [
+                "res://assets/battle/decks/pedestal_01_marble.png",
+                {
+                  "position": [
+                    0,
+                    180
+                  ],
+                  "scale": 0.5
+                }
+              ],
+              "kind": "deck"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "fiona",
+                "res://assets/characters/main/fiona/underwear/fiona_underwear_janken_001_v1.png",
+                {
+                  "position": [
+                    10,
+                    -135
+                  ],
+                  "scale": 0.55,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "fiona",
+                "...呪い、まだ、効いて...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "fiona",
+                "res://assets/characters/main/fiona/underwear/fiona_underwear_janken_003_v1.png",
+                {
+                  "position": [
+                    3,
+                    -119
+                  ],
+                  "scale": 0.58,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "fiona",
+                "...ご、ごめん、なさい...！",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "fiona",
+                "res://assets/characters/main/fiona/underwear/fiona_underwear_janken_001_v1.png",
+                {
+                  "position": [
+                    10,
+                    -135
+                  ],
+                  "scale": 0.55,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "fiona",
+                "...呪い、まだ、効いて...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "fiona",
+                "res://assets/characters/main/fiona/underwear/fiona_underwear_janken_004_v1.png",
+                {
+                  "position": [
+                    -7,
+                    -165
+                  ],
+                  "scale": 0.55,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "fiona",
+                "...！",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "fiona",
+                "res://assets/characters/main/fiona/topless/fiona_topless_janken_001_v1.png",
+                {
+                  "position": [
+                    -13,
+                    -179
+                  ],
+                  "scale": 0.55,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "fiona",
+                "...ぁ...こ、これで、最後...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.45
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "fiona",
+                "res://assets/characters/main/fiona/topless/fiona_topless_janken_002_v1.png",
+                {
+                  "position": [
+                    -13,
+                    -233
+                  ],
+                  "scale": 0.51,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "fiona",
+                "...！ や、やった、です...呪いが、解けます...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [
+                0.0
+              ],
+              "kind": "wait"
+            },
+            {
+              "args": [
+                "fiona",
+                {}
+              ],
+              "kind": "leave"
+            },
+            {
+              "args": [
+                "",
+                {}
+              ],
+              "kind": "deck"
+            },
+            {
+              "args": [
+                false
+              ],
+              "kind": "set_battle_ui_visible"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/fiona/undressing/fiona_undressing_panty_001.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "...",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/fiona/undressing/fiona_undressing_panty_002.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "...",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/fiona/undressing/fiona_undressing_panty_003.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "...",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/fiona/undressing/fiona_undressing_panty_004.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "...",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/fiona/undressing/fiona_undressing_panty_005.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "...",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/fiona/undressing/fiona_undressing_panty_006.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "...",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/fiona/undressing/fiona_undressing_panty_007.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "...",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/fiona/undressing/fiona_undressing_panty_008.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "...",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/fiona/undressing/fiona_undressing_panty_009.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "...",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/fiona/undressing/fiona_undressing_panty_010.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "...",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/fiona/undressing/fiona_undressing_panty_011.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "...",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/fiona/undressing/fiona_undressing_panty_012.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "...",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/fiona/undressing/fiona_undressing_panty_013.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "...",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/backgrounds/subevent3/bg_noble_room.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                0.0
+              ],
+              "kind": "wait"
+            },
+            {
+              "args": [
+                true
+              ],
+              "kind": "set_battle_ui_visible"
+            },
+            {
+              "args": [
+                "res://assets/battle/decks/pedestal_01_marble.png",
+                {
+                  "position": [
+                    0,
+                    180
+                  ],
+                  "scale": 0.5
+                }
+              ],
+              "kind": "deck"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "fiona",
+                "res://assets/characters/main/fiona/topless/fiona_topless_janken_001_v1.png",
+                {
+                  "position": [
+                    -13,
+                    -179
+                  ],
+                  "scale": 0.55,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "fiona",
+                "...ぁ...こ、これで、最後...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.45
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "fiona",
+                "res://assets/characters/main/fiona/topless/fiona_topless_janken_003_v2.png",
+                {
+                  "position": [
+                    -3,
+                    -16
+                  ],
+                  "scale": 0.65,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "fiona",
+                "...ぁ...そんな...呪いが、まだ...！",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "fiona",
+                "res://assets/characters/main/fiona/topless/fiona_topless_janken_001_v1.png",
+                {
+                  "position": [
+                    -13,
+                    -179
+                  ],
+                  "scale": 0.55,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "fiona",
+                "...ぁ...こ、これで、最後...！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.45
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "fiona",
+                "res://assets/characters/main/fiona/topless/fiona_topless_janken_004_v1.png",
+                {
+                  "position": [
+                    2,
+                    -186
+                  ],
+                  "scale": 0.52,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "fiona",
+                "...！",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "draw"
+          ]
+        }
+      ]
+    },
+    {
+      "background": "res://assets/backgrounds/stage1/bg07_st1_001.png",
+      "bayes_eye": true,
+      "can_gain_cards": true,
+      "can_lose_cards": true,
+      "chapter_path": "res://battle/chapters/ReceptionistBattleChapter.gd",
+      "farewell": {
+        "draw": {},
+        "lose": {},
+        "win": {}
+      },
+      "gold_reward": {
+        "max": 50,
+        "min": 30
+      },
+      "item_rewards": [
+        "rare_find_pendant",
+        "rank_up_talisman"
+      ],
+      "lose_behavior": "continue",
+      "lose_redirect": {},
+      "opponent_deck": [
+        {
+          "grade": 1,
+          "hand": "rock"
+        },
+        {
+          "grade": 1,
+          "hand": "rock"
+        },
+        {
+          "grade": 2,
+          "hand": "rock"
+        },
+        {
+          "grade": 1,
+          "hand": "scissors"
+        },
+        {
+          "grade": 1,
+          "hand": "scissors"
+        },
+        {
+          "grade": 2,
+          "hand": "scissors"
+        },
+        {
+          "grade": 1,
+          "hand": "paper"
+        },
+        {
+          "grade": 1,
+          "hand": "paper"
+        },
+        {
+          "grade": 2,
+          "hand": "paper"
+        }
+      ],
+      "opponent_deck_size": 9,
+      "opponent_hp": 3,
+      "opponent_id": "receptionist",
+      "opponent_name": "受付嬢",
+      "opponent_tendency": {
+        "paper": 0.5
+      },
+      "player_deck_size": 9,
+      "player_hp": 3,
+      "setup": [
+        {
+          "args": [
+            "res://assets/battle/decks/pedestal_01_marble.png",
+            {
+              "position": [
+                0,
+                180
+              ],
+              "scale": 0.5
+            }
+          ],
+          "kind": "deck"
+        }
+      ],
+      "traces": [
+        {
+          "commands": [
+            {
+              "args": [
+                "receptionist",
+                "res://assets/characters/main/receptionist/topless/receptionist_topless_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    120
+                  ],
+                  "scale": 0.55,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "receptionist",
+                "ギルドの受付嬢を甘く見ないでね。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {},
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "receptionist",
+                "res://assets/characters/main/receptionist/topless/receptionist_topless_002.png",
+                {
+                  "position": [
+                    0,
+                    0
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "receptionist",
+                "え...うそ...。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [
+                0.0
+              ],
+              "kind": "wait"
+            },
+            {
+              "args": [
+                "receptionist",
+                {}
+              ],
+              "kind": "leave"
+            },
+            {
+              "args": [
+                "",
+                {}
+              ],
+              "kind": "deck"
+            },
+            {
+              "args": [
+                false
+              ],
+              "kind": "set_battle_ui_visible"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/receptionist/clothed/receiptionist_undressing_001.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "ルールですから脱ぎますけど・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/receptionist/clothed/receiptionist_undressing_002.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "あんまりジロジロ見ないで欲しいんですが・・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/receptionist/clothed/receiptionist_undressing_003.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "（ああ、もう頭の中で私、汚されてるのね・・・）",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/backgrounds/stage1/bg07_st1_001.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                true
+              ],
+              "kind": "set_battle_ui_visible"
+            },
+            {
+              "args": [
+                "res://assets/battle/decks/pedestal_01_marble.png",
+                {
+                  "position": [
+                    0,
+                    180
+                  ],
+                  "scale": 0.5
+                }
+              ],
+              "kind": "deck"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "receptionist",
+                "res://assets/characters/main/receptionist/topless/receptionist_topless_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    120
+                  ],
+                  "scale": 0.55,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "receptionist",
+                "ギルドの受付嬢を甘く見ないでね。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {},
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "receptionist",
+                "res://assets/characters/main/receptionist/topless/receptionist_topless_003.png",
+                {
+                  "position": [
+                    0,
+                    0
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "receptionist",
+                "ふふ、まだまだね。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "receptionist",
+                "res://assets/characters/main/receptionist/topless/receptionist_topless_001.png",
+                {
+                  "appear_duration": 0.4,
+                  "appear_effect": "fade_slide",
+                  "appear_from": "right",
+                  "position": [
+                    0,
+                    120
+                  ],
+                  "scale": 0.55,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "receptionist",
+                "ギルドの受付嬢を甘く見ないでね。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {},
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "receptionist",
+                "res://assets/characters/main/receptionist/topless/receptionist_topless_004.png",
+                {
+                  "position": [
+                    0,
+                    0
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "receptionist",
+                "あら、引き分け？",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_3",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "receptionist",
+                "res://assets/characters/main/receptionist/topless/receptionist_topless_005.png",
+                {
+                  "position": [
+                    0,
+                    -114
+                  ],
+                  "scale": 0.45,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "receptionist",
+                "...ちょっと、見ないでよ。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "receptionist",
+                "res://assets/characters/main/receptionist/topless/receptionist_topless_006.png",
+                {
+                  "position": [
+                    0,
+                    0
+                  ],
+                  "scale": 0.5,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "receptionist",
+                "...っ、また負けた...。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [
+                0.0
+              ],
+              "kind": "wait"
+            },
+            {
+              "args": [
+                "receptionist",
+                {}
+              ],
+              "kind": "leave"
+            },
+            {
+              "args": [
+                "",
+                {}
+              ],
+              "kind": "deck"
+            },
+            {
+              "args": [
+                false
+              ],
+              "kind": "set_battle_ui_visible"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/receptionist/clothed/receiptionist_undressing_bra_001.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "ほ、ほんとに・・・\n脱ぐんですか？",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/receptionist/clothed/receiptionist_undressing_bra_002.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "ほんとに変態ですね・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/receptionist/clothed/receiptionist_undressing_bra_003.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "こ、これでいいよね・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "いいわけないじゃないですか！手を外して",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/receptionist/clothed/receiptionist_undressing_bra_004.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "ううう・・・・恥ずかしい・・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/receptionist/clothed/receiptionist_undressing_bra_005.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "こんな変態に私の・・・見られちゃうなんて・・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/backgrounds/stage1/bg07_st1_001.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                true
+              ],
+              "kind": "set_battle_ui_visible"
+            },
+            {
+              "args": [
+                "res://assets/battle/decks/pedestal_01_marble.png",
+                {
+                  "position": [
+                    0,
+                    180
+                  ],
+                  "scale": 0.5
+                }
+              ],
+              "kind": "deck"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "receptionist",
+                "res://assets/characters/main/receptionist/topless/receptionist_topless_005.png",
+                {
+                  "position": [
+                    0,
+                    -114
+                  ],
+                  "scale": 0.45,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "receptionist",
+                "...ちょっと、見ないでよ。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "receptionist",
+                "res://assets/characters/main/receptionist/topless/receptionist_topless_007.png",
+                {
+                  "position": [
+                    0,
+                    -195
+                  ],
+                  "scale": 0.4,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "receptionist",
+                "ほら、油断するからよ。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "receptionist",
+                "res://assets/characters/main/receptionist/topless/receptionist_topless_005.png",
+                {
+                  "position": [
+                    0,
+                    -114
+                  ],
+                  "scale": 0.45,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "receptionist",
+                "...ちょっと、見ないでよ。",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.5
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "receptionist",
+                "res://assets/characters/main/receptionist/topless/receptionist_topless_008.png",
+                {
+                  "position": [
+                    0,
+                    -100
+                  ],
+                  "scale": 0.45,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "receptionist",
+                "また引き分け...集中しなさい。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_2",
+          "outcomes": [
+            "draw"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "receptionist",
+                "res://assets/characters/main/receptionist/topless/receptionist_topless_009.png",
+                {
+                  "position": [
+                    0,
+                    -105
+                  ],
+                  "scale": 0.45,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "receptionist",
+                "...こ、これ以上は絶対にダメ！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.4
+                },
+                "win"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "receptionist",
+                "res://assets/characters/main/receptionist/topless/receptionist_topless_010.png",
+                {
+                  "position": [
+                    0,
+                    -120
+                  ],
+                  "scale": 0.45,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "receptionist",
+                "いやぁぁぁ！！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [
+                0.0
+              ],
+              "kind": "wait"
+            },
+            {
+              "args": [
+                "receptionist",
+                {}
+              ],
+              "kind": "leave"
+            },
+            {
+              "args": [
+                "",
+                {}
+              ],
+              "kind": "deck"
+            },
+            {
+              "args": [
+                false
+              ],
+              "kind": "set_battle_ui_visible"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/receptionist/clothed/receiptionist_undressing_panty_001.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "ちょっと脱ぐところ見ないでくださいよ。\n脱いでる時は視線を外すのがエチケットですよ！",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "嫌だ、ガン見する！",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/receptionist/clothed/receiptionist_undressing_panty_002.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "・・・・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/receptionist/clothed/receiptionist_undressing_panty_003.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "いろんな角度から見ないでください！",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/receptionist/clothed/receiptionist_undressing_panty_004.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "（だ、大丈夫だよね。私の・・・\n変じゃないよね・・・）",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/receptionist/clothed/receiptionist_undressing_panty_005.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "あの・・・・\nまだ・・・\n見たい・・・ですか？",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/receptionist/clothed/receiptionist_undressing_panty_006.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "下から見ないでください！",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/receptionist/clothed/receiptionist_undressing_panty_007.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "もう・・・・\nほんっと変態ですね。",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/receptionist/clothed/receiptionist_undressing_panty_008.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "も、もう全部脱いだから\nいいでしょ？",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "ダメです。気をつけっ！",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "は、はいっ！",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/receptionist/clothed/receiptionist_undressing_panty_009.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "・・・・・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/receptionist/clothed/receiptionist_undressing_panty_010.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "も、もうだめっ！\nこれでいいですよね？",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "次は四つん這いになってください。",
+                {
+                  "side": "left"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/receptionist/clothed/receiptionist_undressing_panty_011.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "ええっ？\nそんなぁ・・・",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/characters/main/receptionist/clothed/receiptionist_undressing_panty_012.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                "（見られてる・・・・\n至近距離で・・・見られてる・・・）",
+                {
+                  "side": "right"
+                }
+              ],
+              "kind": "bubble"
+            },
+            {
+              "args": [
+                "res://assets/backgrounds/stage1/bg07_st1_001.png"
+              ],
+              "kind": "background"
+            },
+            {
+              "args": [
+                true
+              ],
+              "kind": "set_battle_ui_visible"
+            },
+            {
+              "args": [
+                "res://assets/battle/decks/pedestal_01_marble.png",
+                {
+                  "position": [
+                    0,
+                    180
+                  ],
+                  "scale": 0.5
+                }
+              ],
+              "kind": "deck"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "win"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "receptionist",
+                "res://assets/characters/main/receptionist/topless/receptionist_topless_009.png",
+                {
+                  "position": [
+                    0,
+                    -105
+                  ],
+                  "scale": 0.45,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "receptionist",
+                "...こ、これ以上は絶対にダメ！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.4
+                },
+                "lose"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "receptionist",
+                "res://assets/characters/main/receptionist/topless/receptionist_topless_011.png",
+                {
+                  "position": [
+                    0,
+                    -100
+                  ],
+                  "scale": 0.45,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "receptionist",
+                "ふぅ...助かった...。",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "lose"
+          ]
+        },
+        {
+          "commands": [
+            {
+              "args": [
+                "receptionist",
+                "res://assets/characters/main/receptionist/topless/receptionist_topless_009.png",
+                {
+                  "position": [
+                    0,
+                    -105
+                  ],
+                  "scale": 0.45,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "receptionist",
+                "...こ、これ以上は絶対にダメ！",
+                {}
+              ],
+              "kind": "band"
+            },
+            {
+              "args": [],
+              "kind": "select_hand"
+            },
+            {
+              "args": [
+                0,
+                {
+                  "win_rate": 0.4
+                },
+                "draw"
+              ],
+              "kind": "janken"
+            },
+            {
+              "args": [
+                "receptionist",
+                "res://assets/characters/main/receptionist/topless/receptionist_topless_012.png",
+                {
+                  "position": [
+                    0,
+                    -100
+                  ],
+                  "scale": 0.45,
+                  "side": "center"
+                }
+              ],
+              "kind": "set_portrait"
+            },
+            {
+              "args": [
+                "receptionist",
+                "...まだ終わらないの？",
+                {}
+              ],
+              "kind": "band"
+            }
+          ],
+          "method": "outfit_1",
+          "outcomes": [
+            "draw"
+          ]
+        }
+      ]
+    }
+  ],
+  "format": "godot-quest-battle-traces",
+  "lose_narrations": {
+    "ids": [
+      "A-1",
+      "A-2",
+      "A-3",
+      "B-1",
+      "B-2",
+      "B-3",
+      "C-1",
+      "C-2",
+      "C-3",
+      "D-1",
+      "D-2",
+      "D-3"
+    ],
+    "patterns": {
+      "A-1": {
+        "category": "A",
+        "frames": [
+          [
+            "narrator",
+            "チップが発動し、サトシの両手が勝手に動き出す。\n意思に反して、襟元を緩め、ボタンを外し、シャツを脱ぎ捨てる。\n続いてベルトが緩み、ズボンが床に滑り落ちた。"
+          ],
+          [
+            "narrator",
+            "制御が外れた瞬間、サトシは床に散らばった衣服に飛びつき、\n{opponent}の手が伸びるより先にひったくった。"
+          ],
+          [
+            "satoshi",
+            "ご、ごめんなさいごめんなさい！"
+          ],
+          [
+            "narrator",
+            "半裸で衣服を抱え、サトシは脱兎のごとく駆け出した。"
+          ]
+        ],
+        "outcome": "recover_clothes"
+      },
+      "A-2": {
+        "category": "A",
+        "frames": [
+          [
+            "narrator",
+            "チップに体を乗っ取られ、サトシは無表情のままシャツを脱ぎ、\nズボンを下ろし、床にきれいに揃えて置いた。"
+          ],
+          [
+            "narrator",
+            "制御が解けると同時にサトシは床に転がり、\n散らばった服を必死にかき集めた。"
+          ],
+          [
+            "satoshi",
+            "俺の、俺のだから……！"
+          ],
+          [
+            "narrator",
+            "両手で衣服を抱え込み、半裸のまま、\nサトシは情けない悲鳴を上げて駆け出した。"
+          ]
+        ],
+        "outcome": "recover_clothes"
+      },
+      "A-3": {
+        "category": "A",
+        "frames": [
+          [
+            "narrator",
+            "チップが発動。意思を奪われたサトシは、\nシャツのボタンを一つずつ外し、ズボンのベルトを緩め、\n衣服を一枚ずつ床に脱ぎ落としていく。"
+          ],
+          [
+            "narrator",
+            "制御が外れた瞬間、サトシは目を血走らせて床の服に飛びついた。"
+          ],
+          [
+            "satoshi",
+            "う、うわぁぁ、返せ、返せぇぇ！"
+          ],
+          [
+            "narrator",
+            "涙と鼻水でぐしゃぐしゃになりながら、\nサトシは服を抱え、転げるように退散した。"
+          ]
+        ],
+        "outcome": "recover_clothes"
+      },
+      "B-1": {
+        "category": "B",
+        "frames": [
+          [
+            "narrator",
+            "チップが発動。サトシの体が勝手に動き、シャツが、ズボンが、\nひとつずつ床に脱ぎ落とされていく。"
+          ],
+          [
+            "narrator",
+            "意思を取り戻したサトシは、両手で前を押さえてその場で土下座した。"
+          ],
+          [
+            "satoshi",
+            "ご、ごめんなさいごめんなさいごめんなさいぃぃ！\nふ、服だけは、服だけは返してくださいぃぃ！"
+          ],
+          [
+            "narrator",
+            "涙と鼻水で床を濡らし、何度も何度も額を擦りつけて詫びた。\n{opponent}は呆れた様子で、足元の衣服をぽいと放り投げた。"
+          ],
+          [
+            "pisuke",
+            "（小声）...プライドってもんが無いのか、お前は。"
+          ],
+          [
+            "narrator",
+            "サトシは服を抱きしめ、半泣きで退散した。"
+          ]
+        ],
+        "outcome": "recover_clothes"
+      },
+      "B-2": {
+        "category": "B",
+        "frames": [
+          [
+            "narrator",
+            "チップに乗っ取られたサトシは、自らの手でシャツを脱ぎ、\nベルトを緩め、ズボンを床に落とした。"
+          ],
+          [
+            "narrator",
+            "制御が解けると同時に、がくがくと膝をつき、\n頭を床に擦りつけた。"
+          ],
+          [
+            "satoshi",
+            "な、なんでもします、なんでもしますからぁぁ！\nふ、服だけは、お情けを、お情けをぉぉ！"
+          ],
+          [
+            "narrator",
+            "涙でぐしゃぐしゃになった顔で詫び続けるサトシに、\n{opponent}はため息混じりに服を投げて寄越した。"
+          ],
+          [
+            "satoshi",
+            "あ、ありがとうございますぅぅ！"
+          ],
+          [
+            "narrator",
+            "情けなく感謝を述べ、サトシは衣服を抱えて駆け出した。"
+          ]
+        ],
+        "outcome": "recover_clothes"
+      },
+      "B-3": {
+        "category": "B",
+        "frames": [
+          [
+            "narrator",
+            "チップが発動。サトシは無表情のまま、ほぼ全ての衣服を\nひとつずつ床に脱ぎ落としていった。"
+          ],
+          [
+            "narrator",
+            "制御が解けたサトシは、両手で前を押さえ、その場で土下座した。"
+          ],
+          [
+            "satoshi",
+            "許してくださいぃ、ふ、服を、服をどうかぁぁ！"
+          ],
+          [
+            "narrator",
+            "小刻みに震える肩、涙で曇る視界、額を必死に床に擦り続ける。\n{opponent}は呆れ果てて、衣服を「持ってけ」と放り投げた。"
+          ],
+          [
+            "narrator",
+            "サトシは抱きしめるように服を取り、よろよろと退散した。"
+          ]
+        ],
+        "outcome": "recover_clothes"
+      },
+      "C-1": {
+        "category": "C",
+        "frames": [
+          [
+            "narrator",
+            "チップが発動。サトシは意思に反してシャツのボタンを外し、\nベルトを緩め、ズボンを床に落とした。"
+          ],
+          [
+            "narrator",
+            "為す術もなく両手で前を押さえるサトシの代わりに、\nピー助が囁き始めた。"
+          ],
+          [
+            "pisuke",
+            "（サトシの声で）...いやぁ、見事な技でした。\nあなたほどの方なら、敗者の服など興味ないでしょう？\nあれは家族の形見でして、私の手元にあって初めて意味があるもの。"
+          ],
+          [
+            "narrator",
+            "{opponent}は満更でもない顔で、足元の衣服をぽいと投げて寄越した。"
+          ],
+          [
+            "pisuke",
+            "（小声）...サトシ、いいか、いつ何時もプライドはくすぐっておけ。"
+          ],
+          [
+            "narrator",
+            "サトシは情けない顔のまま、衣服を抱えて退散した。"
+          ]
+        ],
+        "outcome": "recover_clothes"
+      },
+      "C-2": {
+        "category": "C",
+        "frames": [
+          [
+            "narrator",
+            "チップに体を奪われ、サトシはシャツとズボンを次々に脱ぎ捨てた。\n口をパクパクさせて言葉が出ないサトシの代わりに、\nピー助が囁いた。"
+          ],
+          [
+            "pisuke",
+            "（サトシの声で）...これ、王都中央広場で晒されたら、あなたの方も\n品位を疑われますよ。\n「冒険者を全裸にして喜ぶ」と。\n...返していただけますね？"
+          ],
+          [
+            "narrator",
+            "{opponent}は鼻白んで、衣服を投げ寄越した。"
+          ],
+          [
+            "pisuke",
+            "（小声）...口は災いの元、ってのを利用するんだよ。"
+          ],
+          [
+            "narrator",
+            "サトシは涙目でうなずきながら、服を掻き集めて駆け出した。"
+          ]
+        ],
+        "outcome": "recover_clothes"
+      },
+      "C-3": {
+        "category": "C",
+        "frames": [
+          [
+            "narrator",
+            "チップ発動でシャツが脱げ、ズボンが床に落ちる。\nサトシは半泣きで何も言えない。"
+          ],
+          [
+            "pisuke",
+            "（サトシの声で・しおらしく）...すみません。こいつ、本当にこれしか着るものがないんです。\n実家から仕送りも止まってまして...。\nどうか、ご慈悲を...。"
+          ],
+          [
+            "narrator",
+            "{opponent}は呆れた様子で、「持ってけ、馬鹿が」と\n衣服を投げて寄越した。"
+          ],
+          [
+            "pisuke",
+            "（小声）...嘘も方便ってな。お前、感謝しろよ。"
+          ],
+          [
+            "narrator",
+            "サトシは服を抱え、ぐすぐすと泣きながら退散した。"
+          ]
+        ],
+        "outcome": "recover_clothes"
+      },
+      "D-1": {
+        "category": "D",
+        "frames": [
+          [
+            "narrator",
+            "チップが発動。サトシは自分の手で、シャツも、ズボンも、\n一枚ずつ床に脱ぎ落とした。"
+          ],
+          [
+            "narrator",
+            "{opponent}は床の衣服を見下ろし、つまむように拾い上げた。\n汚れた男の使い古しなど、誰も家宝にはしない。\nだが裏路地の古着屋に流せば、銅貨数枚にはなる。"
+          ],
+          [
+            "narrator",
+            "両手で前を押さえ、サトシはがたがた震える。"
+          ],
+          [
+            "pisuke",
+            "（焦った声で）サトシ、もう諦めろ！ 走れ、走るんだ！"
+          ],
+          [
+            "satoshi",
+            "う、うわぁぁぁ、嫌だ嫌だ嫌だぁぁぁ！"
+          ],
+          [
+            "narrator",
+            "人目を避ける場所を必死に探しながら、\nサトシは半裸でギルドへ駆け戻った。"
+          ]
+        ],
+        "outcome": "lose_clothes"
+      },
+      "D-2": {
+        "category": "D",
+        "frames": [
+          [
+            "narrator",
+            "チップに体を奪われ、サトシは無感情にシャツとズボンを脱ぎ、\n床に揃えて置いた。"
+          ],
+          [
+            "narrator",
+            "{opponent}はその衣服を一瞥もせず、足で蹴り散らかしてから\n部屋を出ていった。"
+          ],
+          [
+            "narrator",
+            "サトシは床に散った服に手を伸ばすが、ピー助が叫んだ。"
+          ],
+          [
+            "pisuke",
+            "サトシ、それ、もう拾うな！ 罠かもしれん！\n...今は、逃げろ！"
+          ],
+          [
+            "satoshi",
+            "で、でも俺の服がぁぁ...！"
+          ],
+          [
+            "narrator",
+            "ピー助に強引に引かれ、サトシは半裸で人目を忍びつつ、\nギルドへ逃げ帰った。"
+          ]
+        ],
+        "outcome": "lose_clothes"
+      },
+      "D-3": {
+        "category": "D",
+        "frames": [
+          [
+            "narrator",
+            "チップが発動。サトシは意思とは無関係に、シャツとズボンを\nひとつずつ脱ぎ捨てた。"
+          ],
+          [
+            "narrator",
+            "{opponent}は床の衣服を、ぞんざいに拾い上げた。\n古着屋に持ち込めば、捨てるよりはマシな値が付く。\nそれすら惜しい代物だが、「一応」貰っておく、という顔で。"
+          ],
+          [
+            "satoshi",
+            "そ、そんなぁぁ！"
+          ],
+          [
+            "narrator",
+            "両手で前を押さえ、その場でへたり込むサトシ。"
+          ],
+          [
+            "pisuke",
+            "（深いため息）...諦めろ、サトシ。買い直すぞ。"
+          ],
+          [
+            "narrator",
+            "ピー助はサトシの腕を引き、半裸で号泣するサトシを、\n裏路地伝いにギルドまで連れ帰った。"
+          ]
+        ],
+        "outcome": "lose_clothes"
+      }
+    },
+    "replacement_cost": 50
+  },
+  "version": 1
+}

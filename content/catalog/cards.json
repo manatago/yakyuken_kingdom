@@ -1,0 +1,17 @@
+[
+  { "id": "rock_normal", "hand": "rock", "grade": 1, "imagePath": "godot/assets/battle/cards/rock_normal.png" },
+  { "id": "scissors_normal", "hand": "scissors", "grade": 1, "imagePath": "godot/assets/battle/cards/scissors_normal.png" },
+  { "id": "paper_normal", "hand": "paper", "grade": 1, "imagePath": "godot/assets/battle/cards/paper_normal.png" },
+  { "id": "rock_bronze", "hand": "rock", "grade": 2, "imagePath": "godot/assets/battle/cards/rock_bronze.png" },
+  { "id": "scissors_bronze", "hand": "scissors", "grade": 2, "imagePath": "godot/assets/battle/cards/scissors_bronze.png" },
+  { "id": "paper_bronze", "hand": "paper", "grade": 2, "imagePath": "godot/assets/battle/cards/paper_bronze.png" },
+  { "id": "rock_silver", "hand": "rock", "grade": 3, "imagePath": "godot/assets/battle/cards/rock_silver.png" },
+  { "id": "scissors_silver", "hand": "scissors", "grade": 3, "imagePath": "godot/assets/battle/cards/scissors_silver.png" },
+  { "id": "paper_silver", "hand": "paper", "grade": 3, "imagePath": "godot/assets/battle/cards/paper_silver.png" },
+  { "id": "rock_gold", "hand": "rock", "grade": 4, "imagePath": "godot/assets/battle/cards/rock_gold.png" },
+  { "id": "scissors_gold", "hand": "scissors", "grade": 4, "imagePath": "godot/assets/battle/cards/scissors_gold.png" },
+  { "id": "paper_gold", "hand": "paper", "grade": 4, "imagePath": "godot/assets/battle/cards/paper_gold.png" },
+  { "id": "rock_platinum", "hand": "rock", "grade": 5, "imagePath": "godot/assets/battle/cards/rock_platinum.png" },
+  { "id": "scissors_platinum", "hand": "scissors", "grade": 5, "imagePath": "godot/assets/battle/cards/scissors_platinum.png" },
+  { "id": "paper_platinum", "hand": "paper", "grade": 5, "imagePath": "godot/assets/battle/cards/paper_platinum.png" }
+]

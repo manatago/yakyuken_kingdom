@@ -1,0 +1,6647 @@
+{
+  "chapter_path": "res://battle/chapters/Stage2MinigameChapter.gd",
+  "choice_keys": [
+    "shake",
+    "blush",
+    "sweat",
+    "panic"
+  ],
+  "ending": {
+    "lose": "レイラが一歩踏み込んだ。\n視界が真っ赤に染まる——冷たい刃の感触。",
+    "win": "レイラの殺気が、ふっと霧散した。\n真っ赤な顔で後ずさる。「...あ、もう...知らない！」"
+  },
+  "expressions": {
+    "blush": {
+      "badge": "紅潮",
+      "choice": "顔、赤くなってません？",
+      "color": [
+        1.0,
+        0.550000011920929,
+        0.649999976158142,
+        1.0
+      ]
+    },
+    "panic": {
+      "badge": "狼狽",
+      "choice": "動揺してません？",
+      "color": [
+        1.0,
+        0.699999988079071,
+        0.449999988079071,
+        1.0
+      ]
+    },
+    "shake": {
+      "badge": "震え",
+      "choice": "手、震えてません？",
+      "color": [
+        0.550000011920929,
+        0.850000023841858,
+        1.0,
+        1.0
+      ]
+    },
+    "sweat": {
+      "badge": "汗",
+      "choice": "汗、かいてません？",
+      "color": [
+        0.949999988079071,
+        0.949999988079071,
+        0.550000011920929,
+        1.0
+      ]
+    }
+  },
+  "format": "godot-stage2-minigame",
+  "gauge_max": 130,
+  "gauge_start": 100,
+  "hit_delta": -40,
+  "intro": [
+    {
+      "args": [
+        "layla",
+        "res://assets/characters/main/layla/clothed/layla_clothed_001.png",
+        {
+          "position": [
+            0,
+            130
+          ],
+          "scale": 0.55,
+          "side": "center"
+        }
+      ],
+      "kind": "set_portrait"
+    },
+    {
+      "args": [
+        "narrator",
+        "【相手の表情を読め】\nアサシン・レイラは超純情な処女。\nピー助の不意打ちで動揺した表情を見抜いて指摘し、殺気を削げ。",
+        true
+      ],
+      "kind": "dialogue_band"
+    },
+    {
+      "args": [
+        0.0
+      ],
+      "kind": "wait"
+    },
+    {
+      "args": [
+        "narrator",
+        "【勝敗】\n「冷静度」を 0 で勝利。\n130 到達でサトシは斬殺される。",
+        true
+      ],
+      "kind": "dialogue_band"
+    },
+    {
+      "args": [
+        0.0
+      ],
+      "kind": "wait"
+    },
+    {
+      "args": [],
+      "kind": "hide_dialogue_band"
+    },
+    {
+      "args": [
+        0.0
+      ],
+      "kind": "wait"
+    },
+    {
+      "args": [
+        "right"
+      ],
+      "kind": "set_bubble_side"
+    },
+    {
+      "args": [
+        "レイラ:\n...再検証、開始いたします。\n条件は、前回と同様で。",
+        "layla",
+        "res://assets/ui/speakers/layla_default.png"
+      ],
+      "kind": "narrator_band"
+    },
+    {
+      "args": [
+        0.0
+      ],
+      "kind": "wait"
+    },
+    {
+      "args": [
+        "bottom-left"
+      ],
+      "kind": "set_bubble_side"
+    },
+    {
+      "args": [
+        "サトシ（ピー助の声色で）:\n...レイラさん、一つだけ、\n伺ってもよろしいですか。",
+        "satoshi",
+        "res://assets/ui/speakers/satoshi_nervous.png"
+      ],
+      "kind": "narrator_band"
+    },
+    {
+      "args": [
+        0.0
+      ],
+      "kind": "wait"
+    },
+    {
+      "args": [
+        "right"
+      ],
+      "kind": "set_bubble_side"
+    },
+    {
+      "args": [
+        "レイラ:\n...ええ、どうぞ。",
+        "layla",
+        "res://assets/ui/speakers/layla_default.png"
+      ],
+      "kind": "narrator_band"
+    },
+    {
+      "args": [
+        0.0
+      ],
+      "kind": "wait"
+    },
+    {
+      "args": [
+        "bottom-left"
+      ],
+      "kind": "set_bubble_side"
+    },
+    {
+      "args": [
+        "サトシ（ピー助の声色で）:\nあなたの所作、見事でした。\nですが、一点だけ、引っかかって。",
+        "satoshi",
+        "res://assets/ui/speakers/satoshi_nervous.png"
+      ],
+      "kind": "narrator_band"
+    },
+    {
+      "args": [
+        0.0
+      ],
+      "kind": "wait"
+    },
+    {
+      "args": [
+        "サトシ（ピー助の声色で）:\n本当は、男に触れたこと、\n一度もないんでしょう？",
+        "satoshi",
+        "res://assets/ui/speakers/satoshi_nervous.png"
+      ],
+      "kind": "narrator_band"
+    },
+    {
+      "args": [
+        0.0
+      ],
+      "kind": "wait"
+    },
+    {
+      "args": [
+        "right"
+      ],
+      "kind": "set_bubble_side"
+    },
+    {
+      "args": [
+        "レイラ:\n...っ、ふざけたことを。\n男の体なんて、何度でも、見てきたわ。",
+        "layla",
+        "res://assets/ui/speakers/layla_default.png"
+      ],
+      "kind": "narrator_band"
+    },
+    {
+      "args": [
+        0.0
+      ],
+      "kind": "wait"
+    },
+    {
+      "args": [
+        "bottom-left"
+      ],
+      "kind": "set_bubble_side"
+    },
+    {
+      "args": [
+        "サトシ（ピー助の声色で）:\nじゃあ、確かめさせてもらいますね。\n表情を動かさなければ、信じます。",
+        "satoshi",
+        "res://assets/ui/speakers/satoshi_nervous.png"
+      ],
+      "kind": "narrator_band"
+    },
+    {
+      "args": [
+        0.0
+      ],
+      "kind": "wait"
+    }
+  ],
+  "miss_delta": 5,
+  "pisuke_unlock_turn": 1,
+  "questions": [
+    [
+      {
+        "args": [
+          "bottom-left"
+        ],
+        "kind": "set_bubble_side"
+      },
+      {
+        "args": [
+          "ピー助:\n男たちは、揺れている胸に釘付けですよ。",
+          "pisuke",
+          ""
+        ],
+        "kind": "narrator_band"
+      },
+      {
+        "args": [
+          0.0
+        ],
+        "kind": "wait"
+      }
+    ],
+    [
+      {
+        "args": [
+          "bottom-left"
+        ],
+        "kind": "set_bubble_side"
+      },
+      {
+        "args": [
+          "ピー助:\n下着の色、周りの男に透けて見えてるかも。",
+          "pisuke",
+          ""
+        ],
+        "kind": "narrator_band"
+      },
+      {
+        "args": [
+          0.0
+        ],
+        "kind": "wait"
+      }
+    ],
+    [
+      {
+        "args": [
+          "bottom-left"
+        ],
+        "kind": "set_bubble_side"
+      },
+      {
+        "args": [
+          "ピー助:\n男たちは、あなたの太ももの間を妄想してます。",
+          "pisuke",
+          ""
+        ],
+        "kind": "narrator_band"
+      },
+      {
+        "args": [
+          0.0
+        ],
+        "kind": "wait"
+      }
+    ],
+    [
+      {
+        "args": [
+          "bottom-left"
+        ],
+        "kind": "set_bubble_side"
+      },
+      {
+        "args": [
+          "ピー助:\n戦闘中の汗の匂い、男には媚薬らしいですよ。",
+          "pisuke",
+          ""
+        ],
+        "kind": "narrator_band"
+      },
+      {
+        "args": [
+          0.0
+        ],
+        "kind": "wait"
+      }
+    ],
+    [
+      {
+        "args": [
+          "bottom-left"
+        ],
+        "kind": "set_bubble_side"
+      },
+      {
+        "args": [
+          "ピー助:\n男たちは、お尻の皺を数えたがっていますよ。",
+          "pisuke",
+          ""
+        ],
+        "kind": "narrator_band"
+      },
+      {
+        "args": [
+          0.0
+        ],
+        "kind": "wait"
+      }
+    ],
+    [
+      {
+        "args": [
+          "bottom-left"
+        ],
+        "kind": "set_bubble_side"
+      },
+      {
+        "args": [
+          "ピー助:\n下の毛、生えてますか？",
+          "pisuke",
+          ""
+        ],
+        "kind": "narrator_band"
+      },
+      {
+        "args": [
+          0.0
+        ],
+        "kind": "wait"
+      }
+    ],
+    [
+      {
+        "args": [
+          "bottom-left"
+        ],
+        "kind": "set_bubble_side"
+      },
+      {
+        "args": [
+          "ピー助:\n男性は、勃起するって知ってます？",
+          "pisuke",
+          ""
+        ],
+        "kind": "narrator_band"
+      },
+      {
+        "args": [
+          0.0
+        ],
+        "kind": "wait"
+      }
+    ],
+    [
+      {
+        "args": [
+          "bottom-left"
+        ],
+        "kind": "set_bubble_side"
+      },
+      {
+        "args": [
+          "ピー助:\n男性のアソコ、見たことあります？",
+          "pisuke",
+          ""
+        ],
+        "kind": "narrator_band"
+      },
+      {
+        "args": [
+          0.0
+        ],
+        "kind": "wait"
+      }
+    ],
+    [
+      {
+        "args": [
+          "bottom-left"
+        ],
+        "kind": "set_bubble_side"
+      },
+      {
+        "args": [
+          "ピー助:\n子供の作り方、知ってますか？",
+          "pisuke",
+          ""
+        ],
+        "kind": "narrator_band"
+      },
+      {
+        "args": [
+          0.0
+        ],
+        "kind": "wait"
+      }
+    ],
+    [
+      {
+        "args": [
+          "bottom-left"
+        ],
+        "kind": "set_bubble_side"
+      },
+      {
+        "args": [
+          "ピー助:\nアナルセックスって、知ってますか？",
+          "pisuke",
+          ""
+        ],
+        "kind": "narrator_band"
+      },
+      {
+        "args": [
+          0.0
+        ],
+        "kind": "wait"
+      }
+    ]
+  ],
+  "scenes": [
+    {
+      "expression": "blush",
+      "layla_pile": "...っ！ ...う、動けない、動いたら、もっと、揺れちゃう...！",
+      "pile_on": "──戦うたびに、ぼいん、ぼいん、って大きく揺れて。\n──ブラの中で、乳首が擦れて、カリカリに尖ってますよね？\n──激しく動くたび、男たちは寸前まで興奮してます。\n──今、何人射精させたか、数えてあげましょうか？",
+      "pisuke_line": "男たちは、揺れている胸に釘付けですよ。",
+      "reaction": "気になってた視線の話を突きつけられ、レイラの唇が結ばれ、頬が紅潮した。",
+      "satoshi_hit": "頬、真っ赤に紅潮してますよ、レイラさん。\n胸の揺れ、見られてること、自覚してましたよね？"
+    },
+    {
+      "expression": "blush",
+      "layla_pile": "...っ！ ...み、見ないで、お尻、お尻ぃ...！",
+      "pile_on": "──暗殺服、汗で張り付いたら、もう全部スケスケ。\n──しゃがんだ瞬間、お尻の谷間に、下着の食い込み、線まで、くっきり。\n──今日も、白ですか？　それとも、戦勝祈願で勝負下着？\n──ちなみに、シミの形も、男たちは観察してますよ。",
+      "pisuke_line": "下着の色、周りの男に透けて見えてるかも。",
+      "reaction": "気になってた不安を的中させられ、レイラの胸元が紅潮し、両手で胸を隠そうとする。",
+      "satoshi_hit": "胸元から首まで、ぱあっと紅潮してますね。\n下着、見られてる前提で、生きてたんでしょ？"
+    },
+    {
+      "expression": "shake",
+      "layla_pile": "...っ！ ...み、見せたくない、見せたくないぃ、わざとじゃないぃ...！",
+      "pile_on": "──スリットの奥、ぐっしょり濡れた下着、見えてるんでしょ？\n──毎晩、何十人もの男が、太ももの間を舐め回す想像、してますよ。\n──スカート短いの、わざと、ですよね？　見せたいんでしょ？\n──今夜の標的の男、あなたを犯す妄想で、興奮しながら寝てますよ。",
+      "pisuke_line": "男たちは、あなたの太ももの間を妄想してます。",
+      "reaction": "薄々想像してた視線を明言されて、レイラの手が太ももを押さえ、指先が震えた。",
+      "satoshi_hit": "太ももを押さえる手、ぷるぷる震えてますよ。\n妄想されてること、薄々わかってたんでしょ？"
+    },
+    {
+      "expression": "sweat",
+      "layla_pile": "...っ！ ...や、やめて、私の匂い、私の匂いぃ...！",
+      "pile_on": "──男たちは、あなたの汗をビン詰めにして、家で嗅ぎたいんですよ。\n──下着の匂い、こっそり盗まれてる可能性、ありますね。\n──戦闘中の体臭で、男を勃たせるのが、本当の暗殺術じゃないですか？\n──今夜、誰の枕元で、あなたの匂い嗅がれてるんでしょうね？",
+      "pisuke_line": "戦闘中の汗の匂い、男には媚薬らしいですよ。",
+      "reaction": "薄々想像してたかもしれない効果を突かれ、レイラの胸元が一気に汗ばむ。",
+      "satoshi_hit": "言われた途端、胸元、ぱっと汗ばみましたね。\n媚薬扱いされてること、想像してましたよね？"
+    },
+    {
+      "expression": "shake",
+      "layla_pile": "...っ！ ...み、見ないで、数えないで、お尻ぃ...！",
+      "pile_on": "──スリット越しのお尻、皺の本数、男たちが集計してます。\n──Sランク暗殺者の皺は、十六本だ、って噂です。\n──今この瞬間も、後ろから、男が、本数を数えてますよ。\n──今夜、彼らのオカズに、あなたの皺が、ばっちり登場します。",
+      "pisuke_line": "男たちは、お尻の皺を数えたがっていますよ。",
+      "reaction": "薄々想像してた背後の視線を指摘され、レイラの手がお尻を隠し、指先が震えた。",
+      "satoshi_hit": "お尻を隠す手、震えてますよ、レイラさん。\n後ろから数えられてること、想像してましたよね？"
+    },
+    {
+      "expression": "sweat",
+      "layla_pile": "...っ！ ...み、見ないで、想像しないでぇ、お願いぃ...！",
+      "pile_on": "──アソコの周り、もじゃもじゃ、生え揃ってますよね？\n──手入れしないと、変態の趣味って思われちゃいますよ。\n──今、男全員が想像してます。あなたのアソコの毛が、何センチで、どんな形か。\n──正方形に剃るのが、最近の流行りらしいですよ？",
+      "pisuke_line": "下の毛、生えてますか？",
+      "reaction": "踏み込まれた話題に動悸が走り、レイラの胸元が熱を帯び、じっとりと汗ばんだ。",
+      "satoshi_hit": "胸元、じっとり汗ばんでますよ。\nそんなとこまで突かれるとは、思ってなかったんでしょ？"
+    },
+    {
+      "expression": "shake",
+      "layla_pile": "...っ！ ...や、やめてぇ、想像、しないでぇ...！",
+      "pile_on": "──興奮すると、ズボンの中で、ぐぐぐっと硬くなるんです。\n──今、あなたを見てる男、全員が勃起してますよ。\n──戦ってるあなたを見ながら、夜、自分でしごくんです、毎晩。\n──あなたの姿で、何リットル、男の汁が排出されたか、ご存知ですか？",
+      "pisuke_line": "男性は、勃起するって知ってます？",
+      "reaction": "初耳の言葉を反芻するように、レイラの手元が大きく揺れ、指先が震えた。",
+      "satoshi_hit": "指、震えてますね、レイラさん。\n勃起、って単語、初めて聞いたんでしょ？"
+    },
+    {
+      "expression": "shake",
+      "layla_pile": "...っ！ ...や、やだ、消えて、頭から消えてぇ...！",
+      "pile_on": "──じゃあ今、想像してください、レイラさん。\n──血管が浮き出て、ぴくぴく動く、太くて硬い棒。\n──ぱんぱんに張り詰めて、先っちょから、透明な汁が、滲み出てる。\n──今、目の前に、ぶらーんって、ぶら下がってる絵、見えますよね？",
+      "pisuke_line": "男性のアソコ、見たことあります？",
+      "reaction": "初耳の単語に動揺し、レイラの手が口元を覆い、小刻みに震え始めた。",
+      "satoshi_hit": "手、震えてますよ、レイラさん。\nアソコの話で、こんなに動揺するなんて。"
+    },
+    {
+      "expression": "blush",
+      "layla_pile": "...っ！ ...い、嫌、嫌っ、頭から、消えない、消えてぇ...！",
+      "pile_on": "──じゃあ、教えてあげますね、レイラさん。\n──男の硬く太いアレを、女のアソコに、ずぶずぶ深く突っ込んで。\n──白いのを、奥に、たっぷり、注ぎ込むんですよ。\n──今、頭の中で、その光景、見えてますよね？",
+      "pisuke_line": "子供の作り方、知ってますか？",
+      "reaction": "初耳の言葉に衝撃が走り、レイラの唇が固く結ばれ、頬が真っ赤に紅潮した。",
+      "satoshi_hit": "顔、真っ赤ですよ、レイラさん。\n初めての話で、頭の中で想像しちゃったんでしょ？"
+    },
+    {
+      "expression": "sweat",
+      "layla_pile": "...っ！ ...ぃ、いやだ、お尻の穴、お尻の穴ぁ...！",
+      "pile_on": "──お尻の穴を、無理やり広げて、男の硬いのを、ぶち込むんですよ。\n──最初は痛い、痛い、痛いって叫んで、涙が出るらしいです。\n──でも慣れると、アソコより気持ちいいって、皆さん。\n──あなたのお尻、誰が最初に開発するんでしょうね？",
+      "pisuke_line": "アナルセックスって、知ってますか？",
+      "reaction": "初耳の単語に動悸が走り、レイラの胸元が紅潮し、じわりと汗ばむ。",
+      "satoshi_hit": "胸元、汗ばんでますよ、レイラさん。\nアナル、って単語で、心臓の鼓動、上がってますよね？"
+    }
+  ],
+  "traces": [
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n手、震えてません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n彼女、ぴくりとも震えてないだろ！\nもっと別の場所、よく見ろ！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "shake",
+      "scene": 0
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n頬、真っ赤に紅潮してますよ、レイラさん。\n胸の揺れ、見られてること、自覚してましたよね？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──戦うたびに、ぼいん、ぼいん、って大きく揺れて。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──ブラの中で、乳首が擦れて、カリカリに尖ってますよね？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──激しく動くたび、男たちは寸前まで興奮してます。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──今、何人射精させたか、数えてあげましょうか？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...っ！ ...う、動けない、動いたら、もっと、揺れちゃう...！",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "クリティカル！\n（冷静度 -40）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": -40,
+      "pick": "blush",
+      "scene": 0
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n汗、かいてません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n汗、どこにも！\n表情の別の変化、見えてるはずだ！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "sweat",
+      "scene": 0
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n動揺してません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n狼狽？　彼女、案外冷静だぞ！\n反応は別のところに出てる！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "panic",
+      "scene": 0
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...えっと、何て言えば──",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "ピー助（小声）:\n...これだ。「顔、赤くなってません？」、と聞け。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n頬、真っ赤に紅潮してますよ、レイラさん。\n胸の揺れ、見られてること、自覚してましたよね？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──戦うたびに、ぼいん、ぼいん、って大きく揺れて。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──ブラの中で、乳首が擦れて、カリカリに尖ってますよね？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──激しく動くたび、男たちは寸前まで興奮してます。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──今、何人射精させたか、数えてあげましょうか？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...っ！ ...う、動けない、動いたら、もっと、揺れちゃう...！",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "クリティカル！\n（冷静度 -40）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": -40,
+      "pick": "_pisuke",
+      "scene": 0
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n手、震えてません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n彼女、ぴくりとも震えてないだろ！\nもっと別の場所、よく見ろ！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "shake",
+      "scene": 1
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n胸元から首まで、ぱあっと紅潮してますね。\n下着、見られてる前提で、生きてたんでしょ？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──暗殺服、汗で張り付いたら、もう全部スケスケ。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──しゃがんだ瞬間、お尻の谷間に、下着の食い込み、線まで、くっきり。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──今日も、白ですか？　それとも、戦勝祈願で勝負下着？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──ちなみに、シミの形も、男たちは観察してますよ。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...っ！ ...み、見ないで、お尻、お尻ぃ...！",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "クリティカル！\n（冷静度 -40）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": -40,
+      "pick": "blush",
+      "scene": 1
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n汗、かいてません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n汗、どこにも！\n表情の別の変化、見えてるはずだ！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "sweat",
+      "scene": 1
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n動揺してません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n狼狽？　彼女、案外冷静だぞ！\n反応は別のところに出てる！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "panic",
+      "scene": 1
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...えっと、何て言えば──",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "ピー助（小声）:\n...これだ。「顔、赤くなってません？」、と聞け。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n胸元から首まで、ぱあっと紅潮してますね。\n下着、見られてる前提で、生きてたんでしょ？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──暗殺服、汗で張り付いたら、もう全部スケスケ。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──しゃがんだ瞬間、お尻の谷間に、下着の食い込み、線まで、くっきり。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──今日も、白ですか？　それとも、戦勝祈願で勝負下着？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──ちなみに、シミの形も、男たちは観察してますよ。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...っ！ ...み、見ないで、お尻、お尻ぃ...！",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "クリティカル！\n（冷静度 -40）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": -40,
+      "pick": "_pisuke",
+      "scene": 1
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n太ももを押さえる手、ぷるぷる震えてますよ。\n妄想されてること、薄々わかってたんでしょ？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──スリットの奥、ぐっしょり濡れた下着、見えてるんでしょ？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──毎晩、何十人もの男が、太ももの間を舐め回す想像、してますよ。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──スカート短いの、わざと、ですよね？　見せたいんでしょ？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──今夜の標的の男、あなたを犯す妄想で、興奮しながら寝てますよ。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...っ！ ...み、見せたくない、見せたくないぃ、わざとじゃないぃ...！",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "クリティカル！\n（冷静度 -40）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": -40,
+      "pick": "shake",
+      "scene": 2
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n顔、赤くなってません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n顔、赤くなってないぞ！\n他の場所が反応してる、見落とすな！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "blush",
+      "scene": 2
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n汗、かいてません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n汗、どこにも！\n表情の別の変化、見えてるはずだ！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "sweat",
+      "scene": 2
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n動揺してません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n狼狽？　彼女、案外冷静だぞ！\n反応は別のところに出てる！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "panic",
+      "scene": 2
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...えっと、何て言えば──",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "ピー助（小声）:\n...これだ。「手、震えてません？」、と聞け。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n太ももを押さえる手、ぷるぷる震えてますよ。\n妄想されてること、薄々わかってたんでしょ？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──スリットの奥、ぐっしょり濡れた下着、見えてるんでしょ？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──毎晩、何十人もの男が、太ももの間を舐め回す想像、してますよ。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──スカート短いの、わざと、ですよね？　見せたいんでしょ？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──今夜の標的の男、あなたを犯す妄想で、興奮しながら寝てますよ。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...っ！ ...み、見せたくない、見せたくないぃ、わざとじゃないぃ...！",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "クリティカル！\n（冷静度 -40）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": -40,
+      "pick": "_pisuke",
+      "scene": 2
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n手、震えてません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n彼女、ぴくりとも震えてないだろ！\nもっと別の場所、よく見ろ！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "shake",
+      "scene": 3
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n顔、赤くなってません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n顔、赤くなってないぞ！\n他の場所が反応してる、見落とすな！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "blush",
+      "scene": 3
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n言われた途端、胸元、ぱっと汗ばみましたね。\n媚薬扱いされてること、想像してましたよね？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──男たちは、あなたの汗をビン詰めにして、家で嗅ぎたいんですよ。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──下着の匂い、こっそり盗まれてる可能性、ありますね。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──戦闘中の体臭で、男を勃たせるのが、本当の暗殺術じゃないですか？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──今夜、誰の枕元で、あなたの匂い嗅がれてるんでしょうね？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...っ！ ...や、やめて、私の匂い、私の匂いぃ...！",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "クリティカル！\n（冷静度 -40）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": -40,
+      "pick": "sweat",
+      "scene": 3
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n動揺してません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n狼狽？　彼女、案外冷静だぞ！\n反応は別のところに出てる！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "panic",
+      "scene": 3
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...えっと、何て言えば──",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "ピー助（小声）:\n...これだ。「汗、かいてません？」、と聞け。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n言われた途端、胸元、ぱっと汗ばみましたね。\n媚薬扱いされてること、想像してましたよね？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──男たちは、あなたの汗をビン詰めにして、家で嗅ぎたいんですよ。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──下着の匂い、こっそり盗まれてる可能性、ありますね。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──戦闘中の体臭で、男を勃たせるのが、本当の暗殺術じゃないですか？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──今夜、誰の枕元で、あなたの匂い嗅がれてるんでしょうね？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...っ！ ...や、やめて、私の匂い、私の匂いぃ...！",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "クリティカル！\n（冷静度 -40）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": -40,
+      "pick": "_pisuke",
+      "scene": 3
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nお尻を隠す手、震えてますよ、レイラさん。\n後ろから数えられてること、想像してましたよね？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──スリット越しのお尻、皺の本数、男たちが集計してます。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──Sランク暗殺者の皺は、十六本だ、って噂です。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──今この瞬間も、後ろから、男が、本数を数えてますよ。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──今夜、彼らのオカズに、あなたの皺が、ばっちり登場します。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...っ！ ...み、見ないで、数えないで、お尻ぃ...！",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "クリティカル！\n（冷静度 -40）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": -40,
+      "pick": "shake",
+      "scene": 4
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n顔、赤くなってません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n顔、赤くなってないぞ！\n他の場所が反応してる、見落とすな！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "blush",
+      "scene": 4
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n汗、かいてません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n汗、どこにも！\n表情の別の変化、見えてるはずだ！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "sweat",
+      "scene": 4
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n動揺してません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n狼狽？　彼女、案外冷静だぞ！\n反応は別のところに出てる！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "panic",
+      "scene": 4
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...えっと、何て言えば──",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "ピー助（小声）:\n...これだ。「手、震えてません？」、と聞け。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\nお尻を隠す手、震えてますよ、レイラさん。\n後ろから数えられてること、想像してましたよね？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──スリット越しのお尻、皺の本数、男たちが集計してます。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──Sランク暗殺者の皺は、十六本だ、って噂です。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──今この瞬間も、後ろから、男が、本数を数えてますよ。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──今夜、彼らのオカズに、あなたの皺が、ばっちり登場します。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...っ！ ...み、見ないで、数えないで、お尻ぃ...！",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "クリティカル！\n（冷静度 -40）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": -40,
+      "pick": "_pisuke",
+      "scene": 4
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n手、震えてません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n彼女、ぴくりとも震えてないだろ！\nもっと別の場所、よく見ろ！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "shake",
+      "scene": 5
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n顔、赤くなってません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n顔、赤くなってないぞ！\n他の場所が反応してる、見落とすな！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "blush",
+      "scene": 5
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n胸元、じっとり汗ばんでますよ。\nそんなとこまで突かれるとは、思ってなかったんでしょ？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──アソコの周り、もじゃもじゃ、生え揃ってますよね？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──手入れしないと、変態の趣味って思われちゃいますよ。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──今、男全員が想像してます。あなたのアソコの毛が、何センチで、どんな形か。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──正方形に剃るのが、最近の流行りらしいですよ？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...っ！ ...み、見ないで、想像しないでぇ、お願いぃ...！",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "クリティカル！\n（冷静度 -40）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": -40,
+      "pick": "sweat",
+      "scene": 5
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n動揺してません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n狼狽？　彼女、案外冷静だぞ！\n反応は別のところに出てる！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "panic",
+      "scene": 5
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...えっと、何て言えば──",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "ピー助（小声）:\n...これだ。「汗、かいてません？」、と聞け。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n胸元、じっとり汗ばんでますよ。\nそんなとこまで突かれるとは、思ってなかったんでしょ？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──アソコの周り、もじゃもじゃ、生え揃ってますよね？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──手入れしないと、変態の趣味って思われちゃいますよ。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──今、男全員が想像してます。あなたのアソコの毛が、何センチで、どんな形か。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──正方形に剃るのが、最近の流行りらしいですよ？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...っ！ ...み、見ないで、想像しないでぇ、お願いぃ...！",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "クリティカル！\n（冷静度 -40）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": -40,
+      "pick": "_pisuke",
+      "scene": 5
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n指、震えてますね、レイラさん。\n勃起、って単語、初めて聞いたんでしょ？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──興奮すると、ズボンの中で、ぐぐぐっと硬くなるんです。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──今、あなたを見てる男、全員が勃起してますよ。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──戦ってるあなたを見ながら、夜、自分でしごくんです、毎晩。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──あなたの姿で、何リットル、男の汁が排出されたか、ご存知ですか？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...っ！ ...や、やめてぇ、想像、しないでぇ...！",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "クリティカル！\n（冷静度 -40）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": -40,
+      "pick": "shake",
+      "scene": 6
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n顔、赤くなってません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n顔、赤くなってないぞ！\n他の場所が反応してる、見落とすな！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "blush",
+      "scene": 6
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n汗、かいてません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n汗、どこにも！\n表情の別の変化、見えてるはずだ！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "sweat",
+      "scene": 6
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n動揺してません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n狼狽？　彼女、案外冷静だぞ！\n反応は別のところに出てる！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "panic",
+      "scene": 6
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...えっと、何て言えば──",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "ピー助（小声）:\n...これだ。「手、震えてません？」、と聞け。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n指、震えてますね、レイラさん。\n勃起、って単語、初めて聞いたんでしょ？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──興奮すると、ズボンの中で、ぐぐぐっと硬くなるんです。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──今、あなたを見てる男、全員が勃起してますよ。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──戦ってるあなたを見ながら、夜、自分でしごくんです、毎晩。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──あなたの姿で、何リットル、男の汁が排出されたか、ご存知ですか？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...っ！ ...や、やめてぇ、想像、しないでぇ...！",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "クリティカル！\n（冷静度 -40）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": -40,
+      "pick": "_pisuke",
+      "scene": 6
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n手、震えてますよ、レイラさん。\nアソコの話で、こんなに動揺するなんて。",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──じゃあ今、想像してください、レイラさん。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──血管が浮き出て、ぴくぴく動く、太くて硬い棒。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──ぱんぱんに張り詰めて、先っちょから、透明な汁が、滲み出てる。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──今、目の前に、ぶらーんって、ぶら下がってる絵、見えますよね？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...っ！ ...や、やだ、消えて、頭から消えてぇ...！",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "クリティカル！\n（冷静度 -40）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": -40,
+      "pick": "shake",
+      "scene": 7
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n顔、赤くなってません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n顔、赤くなってないぞ！\n他の場所が反応してる、見落とすな！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "blush",
+      "scene": 7
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n汗、かいてません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n汗、どこにも！\n表情の別の変化、見えてるはずだ！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "sweat",
+      "scene": 7
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n動揺してません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n狼狽？　彼女、案外冷静だぞ！\n反応は別のところに出てる！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "panic",
+      "scene": 7
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...えっと、何て言えば──",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "ピー助（小声）:\n...これだ。「手、震えてません？」、と聞け。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n手、震えてますよ、レイラさん。\nアソコの話で、こんなに動揺するなんて。",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──じゃあ今、想像してください、レイラさん。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──血管が浮き出て、ぴくぴく動く、太くて硬い棒。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──ぱんぱんに張り詰めて、先っちょから、透明な汁が、滲み出てる。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──今、目の前に、ぶらーんって、ぶら下がってる絵、見えますよね？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...っ！ ...や、やだ、消えて、頭から消えてぇ...！",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "クリティカル！\n（冷静度 -40）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": -40,
+      "pick": "_pisuke",
+      "scene": 7
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n手、震えてません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n彼女、ぴくりとも震えてないだろ！\nもっと別の場所、よく見ろ！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "shake",
+      "scene": 8
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n顔、真っ赤ですよ、レイラさん。\n初めての話で、頭の中で想像しちゃったんでしょ？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──じゃあ、教えてあげますね、レイラさん。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──男の硬く太いアレを、女のアソコに、ずぶずぶ深く突っ込んで。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──白いのを、奥に、たっぷり、注ぎ込むんですよ。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──今、頭の中で、その光景、見えてますよね？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...っ！ ...い、嫌、嫌っ、頭から、消えない、消えてぇ...！",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "クリティカル！\n（冷静度 -40）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": -40,
+      "pick": "blush",
+      "scene": 8
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n汗、かいてません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n汗、どこにも！\n表情の別の変化、見えてるはずだ！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "sweat",
+      "scene": 8
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n動揺してません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n狼狽？　彼女、案外冷静だぞ！\n反応は別のところに出てる！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "panic",
+      "scene": 8
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...えっと、何て言えば──",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "ピー助（小声）:\n...これだ。「顔、赤くなってません？」、と聞け。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n顔、真っ赤ですよ、レイラさん。\n初めての話で、頭の中で想像しちゃったんでしょ？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──じゃあ、教えてあげますね、レイラさん。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──男の硬く太いアレを、女のアソコに、ずぶずぶ深く突っ込んで。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──白いのを、奥に、たっぷり、注ぎ込むんですよ。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──今、頭の中で、その光景、見えてますよね？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...っ！ ...い、嫌、嫌っ、頭から、消えない、消えてぇ...！",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "クリティカル！\n（冷静度 -40）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": -40,
+      "pick": "_pisuke",
+      "scene": 8
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n手、震えてません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n彼女、ぴくりとも震えてないだろ！\nもっと別の場所、よく見ろ！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "shake",
+      "scene": 9
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n顔、赤くなってません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n顔、赤くなってないぞ！\n他の場所が反応してる、見落とすな！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "blush",
+      "scene": 9
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n胸元、汗ばんでますよ、レイラさん。\nアナル、って単語で、心臓の鼓動、上がってますよね？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──お尻の穴を、無理やり広げて、男の硬いのを、ぶち込むんですよ。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──最初は痛い、痛い、痛いって叫んで、涙が出るらしいです。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──でも慣れると、アソコより気持ちいいって、皆さん。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──あなたのお尻、誰が最初に開発するんでしょうね？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...っ！ ...ぃ、いやだ、お尻の穴、お尻の穴ぁ...！",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "クリティカル！\n（冷静度 -40）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": -40,
+      "pick": "sweat",
+      "scene": 9
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n動揺してません？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...はぁ？　見当違いね。",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（小声で叱責）:\n狼狽？　彼女、案外冷静だぞ！\n反応は別のところに出てる！",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "見当違い、シラけられた。\n（冷静度 +5）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": 5,
+      "pick": "panic",
+      "scene": 9
+    },
+    {
+      "commands": [
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n...えっと、何て言えば──",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "ピー助（小声）:\n...これだ。「汗、かいてません？」、と聞け。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "サトシ:\n胸元、汗ばんでますよ、レイラさん。\nアナル、って単語で、心臓の鼓動、上がってますよね？",
+            "satoshi",
+            "res://assets/ui/speakers/satoshi_nervous.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助（畳みかけて）:\n──お尻の穴を、無理やり広げて、男の硬いのを、ぶち込むんですよ。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──最初は痛い、痛い、痛いって叫んで、涙が出るらしいです。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──でも慣れると、アソコより気持ちいいって、皆さん。",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "bottom-left"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "ピー助:\n──あなたのお尻、誰が最初に開発するんでしょうね？",
+            "pisuke",
+            ""
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "right"
+          ],
+          "kind": "set_bubble_side"
+        },
+        {
+          "args": [
+            "レイラ:\n...っ！ ...ぃ、いやだ、お尻の穴、お尻の穴ぁ...！",
+            "layla",
+            "res://assets/ui/speakers/layla_default.png"
+          ],
+          "kind": "narrator_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [
+            "narrator",
+            "クリティカル！\n（冷静度 -40）",
+            true
+          ],
+          "kind": "dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        },
+        {
+          "args": [],
+          "kind": "hide_dialogue_band"
+        },
+        {
+          "args": [
+            0.0
+          ],
+          "kind": "wait"
+        }
+      ],
+      "delta": -40,
+      "pick": "_pisuke",
+      "scene": 9
+    }
+  ],
+  "version": 1
+}

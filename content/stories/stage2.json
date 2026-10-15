@@ -1,0 +1,136 @@
+{
+  "assets": [
+    { "id": "background.stage2.guild", "path": "godot/assets/backgrounds/stage1/bg07_st1_001.png" },
+    { "id": "background.stage2.inn", "path": "godot/assets/backgrounds/stage2/bg_inn_meeting.png" },
+    { "id": "background.stage2.resting", "path": "godot/assets/backgrounds/stage2/bg_guild_resting.png" },
+    { "id": "portrait.layla", "path": "godot/assets/characters/main/layla/clothed/layla_clothed_001.png" },
+    { "id": "portrait.stage2.hero", "path": "godot/assets/characters/main/satoshi/isekai/satoshi_isekai_004.png" }
+  ],
+  "layouts": [
+    { "id": "layout.stage2.layla", "x": 1430, "y": 465, "scale": 0.62, "flipped": false },
+    { "id": "layout.stage2.hero", "x": 490, "y": 465, "scale": 0.62, "flipped": true },
+    { "id": "layout.stage2.cards.box", "x": 1554, "y": 190, "scale": 1, "flipped": false },
+    { "id": "layout.stage2.cards.deck", "x": 350, "y": 884, "scale": 1, "flipped": false },
+    { "id": "layout.stage2.cards.showdown", "x": 350, "y": 170, "scale": 1, "flipped": false }
+  ],
+  "battles": [
+    {
+      "id": "battle.stage2.first",
+      "opponent_id": "layla",
+      "background_asset_id": "background.stage2.inn",
+      "player_deck_size": 9,
+      "opponent_deck_size": 9,
+      "round_limit": 3,
+      "opponent_card_ids": ["rock_bronze", "rock_bronze", "rock_bronze", "scissors_bronze", "scissors_bronze", "scissors_silver", "paper_normal", "paper_bronze", "paper_bronze"],
+      "item_reward_ids": ["rock_attract_gold"],
+      "card_reward": { "hand": "rock", "grade": 5 },
+      "gold_reward": { "min": 60, "max": 90 },
+      "transfer_cards": true,
+      "hp": { "player": 3, "opponent": 3, "grade_effect_passes": 1, "lose_gold": 0, "forced_outcome": "lose" },
+      "opponent_tendency": { "scissors": 0.4 },
+      "bayes_eye": true,
+      "phases": [{ "id": "phase.stage2.first", "rules": [] }]
+    },
+    {
+      "id": "battle.stage2.rematch",
+      "opponent_id": "layla",
+      "background_asset_id": "background.stage2.inn",
+      "player_deck_size": 9,
+      "opponent_deck_size": 9,
+      "round_limit": 3,
+      "opponent_card_ids": ["rock_bronze", "rock_bronze", "rock_bronze", "scissors_bronze", "scissors_bronze", "scissors_silver", "paper_normal", "paper_bronze", "paper_bronze"],
+      "item_reward_ids": ["rock_attract_gold"],
+      "card_reward": { "hand": "rock", "grade": 5 },
+      "gold_reward": { "min": 60, "max": 90 },
+      "transfer_cards": true,
+      "hp": { "player": 3, "opponent": 3, "grade_effect_passes": 1, "lose_gold": 0 },
+      "opponent_tendency": { "scissors": 0.4 },
+      "bayes_eye": true,
+      "result_route": "guild_home",
+      "lose_checkpoint_id": "stage2.battle2.loss.end",
+      "phases": [{ "id": "phase.stage2.rematch", "rules": [] }]
+    }
+  ],
+  "stories": [
+    {
+      "id": "story.stage2.pre",
+      "start_id": "stage2.pre.guild.background",
+      "steps": [
+        { "id": "stage2.pre.guild.background", "kind": "background", "asset_id": "background.stage2.guild", "next_id": "stage2.pre.hero.portrait" },
+        { "id": "stage2.pre.hero.portrait", "kind": "show_portrait", "slot_id": "hero", "asset_id": "portrait.stage2.hero", "layout_id": "layout.stage2.hero", "next_id": "stage2.pre.accusation" },
+        { "id": "stage2.pre.accusation", "kind": "line", "speaker_id": "職員B", "text": "祖母の形見の指輪が見当たりません。昨日、カウンター裏へ出入りした人を確認してください。", "next_id": "stage2.pre.suspicion" },
+        { "id": "stage2.pre.suspicion", "kind": "line", "speaker_id": "受付嬢", "text": "複数の証言と過去の記録から、サトシ様を暗部の検証へ送致いたします。", "next_id": "stage2.pre.hero" },
+        { "id": "stage2.pre.hero", "kind": "line", "speaker_id": "サトシ", "text": "話を聞いてください！ どうしてじゃんけんの勝負で疑いを晴らすことになるんですか？", "next_id": "stage2.pre.pisuke" },
+        { "id": "stage2.pre.pisuke", "kind": "line", "speaker_id": "ピー助", "text": "まずは検証を受けるしかない。相手のデッキと癖をよく観察しろ。", "next_id": "stage2.pre.end" },
+        { "id": "stage2.pre.end", "kind": "end" }
+      ]
+    },
+    {
+      "id": "story.stage2.meet",
+      "start_id": "stage2.meet.background",
+      "steps": [
+        { "id": "stage2.meet.background", "kind": "background", "asset_id": "background.stage2.inn", "next_id": "stage2.meet.hero.portrait" },
+        { "id": "stage2.meet.hero.portrait", "kind": "show_portrait", "slot_id": "hero", "asset_id": "portrait.stage2.hero", "layout_id": "layout.stage2.hero", "next_id": "stage2.meet.layla" },
+        { "id": "stage2.meet.layla", "kind": "show_portrait", "slot_id": "layla", "asset_id": "portrait.layla", "layout_id": "layout.stage2.layla", "next_id": "stage2.meet.intro" },
+        { "id": "stage2.meet.intro", "kind": "line", "speaker_id": "レイラ", "text": "暗部調査部門のレイラです。判断力を確かめるため、三本勝負を行います。", "next_id": "stage2.meet.hero" },
+        { "id": "stage2.meet.hero", "kind": "line", "speaker_id": "サトシ", "text": "分かりました。ピー助、相手の傾向を分析してくれ。", "next_id": "stage2.first.start" },
+        { "id": "stage2.first.start", "kind": "line", "speaker_id": "レイラ", "text": "それでは、検証を始めます。", "next_id": "stage2.first.await" },
+        { "id": "stage2.first.await", "kind": "battle", "battle_id": "battle.stage2.first", "next_id": "stage2.first.result" },
+        { "id": "stage2.first.result", "kind": "line", "speaker_id": "サトシ", "text": "完敗だ……。ベイズ・アイがまるで当たらなかった。", "next_id": "stage2.first.end" },
+        { "id": "stage2.first.end", "kind": "end" }
+      ]
+    },
+    {
+      "id": "story.stage2.recover",
+      "start_id": "stage2.recover.background",
+      "steps": [
+        { "id": "stage2.recover.background", "kind": "background", "asset_id": "background.stage2.resting", "next_id": "stage2.recover.hero.portrait" },
+        { "id": "stage2.recover.hero.portrait", "kind": "show_portrait", "slot_id": "hero", "asset_id": "portrait.stage2.hero", "layout_id": "layout.stage2.hero", "next_id": "stage2.recover.analysis" },
+        { "id": "stage2.recover.analysis", "kind": "line", "speaker_id": "ピー助", "text": "対戦の記録を分析した。レイラには実戦経験が少なく、予想外の質問に動揺が表れる。", "next_id": "stage2.recover.plan" },
+        { "id": "stage2.recover.plan", "kind": "line", "speaker_id": "サトシ", "text": "表情から動揺の種類を見抜いて指摘するんだな。やってみるよ。", "next_id": "stage2.recover.end" },
+        { "id": "stage2.recover.end", "kind": "end" }
+      ]
+    },
+    {
+      "id": "story.stage2.rematch",
+      "start_id": "stage2.battle2.background",
+      "steps": [
+        { "id": "stage2.battle2.background", "kind": "background", "asset_id": "background.stage2.inn", "next_id": "stage2.battle2.hero.portrait" },
+        { "id": "stage2.battle2.hero.portrait", "kind": "show_portrait", "slot_id": "hero", "asset_id": "portrait.stage2.hero", "layout_id": "layout.stage2.hero", "next_id": "stage2.battle2.layla.portrait" },
+        { "id": "stage2.battle2.layla.portrait", "kind": "show_portrait", "slot_id": "layla", "asset_id": "portrait.layla", "layout_id": "layout.stage2.layla", "next_id": "stage2.battle2.start" },
+        { "id": "stage2.battle2.start", "kind": "battle", "battle_id": "battle.stage2.rematch", "next_id": "stage2.battle2.result" },
+        { "id": "stage2.battle2.result", "kind": "line", "speaker_id": "レイラ", "text": "……完敗です。検証の結果を報告いたします。", "next_id": "stage2.battle2.end" },
+        { "id": "stage2.battle2.end", "kind": "end" }
+      ]
+    },
+    {
+      "id": "story.stage2.post",
+      "start_id": "stage2.post.background",
+      "steps": [
+        { "id": "stage2.post.background", "kind": "background", "asset_id": "background.stage2.inn", "next_id": "stage2.post.layla.portrait" },
+        { "id": "stage2.post.layla.portrait", "kind": "show_portrait", "slot_id": "layla", "asset_id": "portrait.layla", "layout_id": "layout.stage2.layla", "next_id": "stage2.post.start" },
+        { "id": "stage2.post.start", "kind": "line", "speaker_id": "レイラ", "text": "検証には負けました。でも、この屈辱は忘れません。", "next_id": "stage2.post.layla" },
+        { "id": "stage2.post.layla", "kind": "line", "speaker_id": "レイラ", "text": "公的には介入しません。ですが、あなたのことは一生忘れません。", "next_id": "stage2.post.hero" },
+        { "id": "stage2.post.hero", "kind": "line", "speaker_id": "サトシ", "text": "勝ったのに、どうしてこうなるんだ……。", "next_id": "stage2.post.end" },
+        { "id": "stage2.post.end", "kind": "end" }
+      ]
+    },
+    {
+      "id": "story.stage2.close",
+      "start_id": "stage2.close.start",
+      "steps": [
+        { "id": "stage2.close.start", "kind": "background", "asset_id": "background.stage2.guild", "next_id": "stage2.close.receptionist" },
+        { "id": "stage2.close.receptionist", "kind": "line", "speaker_id": "受付嬢", "text": "指輪はギルド裏の廃品置き場で見つかりました。ただし、誰が置いたかは分かっておりません。", "next_id": "stage2.close.hero" },
+        { "id": "stage2.close.hero", "kind": "line", "speaker_id": "サトシ", "text": "疑いは晴れなかったのか……。", "next_id": "stage2.close.end" },
+        { "id": "stage2.close.end", "kind": "end" }
+      ]
+    },
+    {
+      "id": "story.stage2.loss",
+      "start_id": "stage2.battle2.loss.end",
+      "steps": [
+        { "id": "stage2.battle2.loss.end", "kind": "end" }
+      ]
+    }
+  ]
+}

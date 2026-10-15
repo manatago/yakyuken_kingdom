@@ -1,0 +1,13 @@
+.editor-app { height: 100vh; min-height: 0; padding: 16px; display: flex; flex-direction: column; align-items: stretch; gap: 12px; text-align: left; }
+.editor-app > header h1 { font-size: 28px; margin: 0; }
+.editor-app > header p { font-size: 14px; margin: 8px 0 0; }
+.editor-workspace { display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 16px; flex: 1; min-height: 0; }
+.editor-tools { overflow: auto; padding: 12px; border: 1px solid #c7a66a; background: #111829; font-size: 14px; }
+.editor-tools label { display: block; margin-bottom: 12px; }
+.editor-tools select, .editor-tools input[type=number] { display: block; box-sizing: border-box; width: 100%; margin-top: 4px; padding: 8px; color: #f4e8d2; background: #243149; border: 1px solid #c7a66a; }
+.editor-tools button { display: block; width: 100%; font-size: 16px; margin-bottom: 8px; padding: 10px; }
+.editor-preview { position: relative; min-width: 0; overflow: hidden; touch-action: none; background: #000; user-select: none; }
+.editor-preview .story-viewport { position: absolute; }
+.editor-preview [data-layout-id] { cursor: move; }
+.editor-preview button { pointer-events: none; }
+.editor-preview img { -webkit-user-drag: none; }

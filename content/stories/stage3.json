@@ -1,0 +1,106 @@
+{
+  "assets": [
+    { "id": "background.stage3.guild", "path": "godot/assets/backgrounds/stage1/bg07_st1_001.png" },
+    { "id": "background.stage3.inn", "path": "godot/assets/backgrounds/stage3/bg_inn_exterior.png" },
+    { "id": "background.stage3.church", "path": "godot/assets/backgrounds/subevent2/bg02_church_interior.png" },
+    { "id": "background.stage3.resting", "path": "godot/assets/backgrounds/stage2/bg_guild_resting.png" },
+    { "id": "background.stage3.cathedral", "path": "godot/assets/backgrounds/stage3/bg_cathedral_night.png" },
+    { "id": "portrait.magdalena", "path": "godot/assets/characters/main/magdalena/clothed/magdalena_clothed_001.png" },
+    { "id": "portrait.stage3.hero", "path": "godot/assets/characters/main/satoshi/isekai/satoshi_isekai_004.png" }
+  ],
+  "layouts": [
+    { "id": "layout.stage3.magdalena", "x": 1430, "y": 465, "scale": 0.62, "flipped": false },
+    { "id": "layout.stage3.hero", "x": 490, "y": 465, "scale": 0.62, "flipped": true }
+  ],
+  "battles": [
+    {
+      "id": "battle.stage3.first",
+      "opponent_id": "magdalena",
+      "background_asset_id": "background.stage3.church",
+      "player_deck_size": 9,
+      "opponent_deck_size": 9,
+      "round_limit": 3,
+      "opponent_card_ids": ["rock_bronze", "rock_silver", "rock_bronze", "scissors_bronze", "scissors_bronze", "scissors_bronze", "paper_bronze", "paper_bronze", "paper_silver"],
+      "gold_reward": { "min": 80, "max": 120 },
+      "transfer_cards": true,
+      "item_reward_ids": ["scissors_attract_gold"],
+      "card_reward": { "hand": "scissors", "grade": 5 },
+      "hp": { "player": 3, "opponent": 3, "grade_effect_passes": 1, "lose_gold": 0, "forced_outcome": "lose" },
+      "opponent_tendency": { "paper": 0.4 },
+      "bayes_eye": true,
+      "phases": [{ "id": "phase.stage3.first", "rules": [] }]
+    },
+    {
+      "id": "battle.stage3.rematch",
+      "opponent_id": "magdalena",
+      "background_asset_id": "background.stage3.church",
+      "player_deck_size": 9,
+      "opponent_deck_size": 9,
+      "round_limit": 3,
+      "opponent_card_ids": ["rock_bronze", "rock_silver", "rock_bronze", "scissors_bronze", "scissors_bronze", "scissors_bronze", "paper_bronze", "paper_bronze", "paper_silver"],
+      "gold_reward": { "min": 80, "max": 120 },
+      "transfer_cards": true,
+      "item_reward_ids": ["scissors_attract_gold"],
+      "card_reward": { "hand": "scissors", "grade": 5 },
+      "hp": { "player": 3, "opponent": 3, "grade_effect_passes": 1, "lose_gold": 0 },
+      "opponent_tendency": { "paper": 0.4 },
+      "bayes_eye": true,
+      "result_route": "guild_home",
+      "lose_checkpoint_id": "stage3.rematch.loss.end",
+      "phases": [{ "id": "phase.stage3.rematch", "rules": [] }]
+    }
+  ],
+  "stories": [
+    {
+      "id": "story.stage3.pre",
+      "start_id": "stage3.pre.background",
+      "steps": [
+        { "id": "stage3.pre.background", "kind": "background", "asset_id": "background.stage3.inn", "next_id": "stage3.pre.hero" },
+        { "id": "stage3.pre.hero", "kind": "show_portrait", "slot_id": "hero", "asset_id": "portrait.stage3.hero", "layout_id": "layout.stage3.hero", "next_id": "stage3.pre.notice" },
+        { "id": "stage3.pre.notice", "kind": "line", "speaker_id": "サトシ", "text": "教会からの文書が毎日のように届く。宿や市場でも、身に覚えのない噂が広がり始めた。", "next_id": "stage3.pre.pisuke" },
+        { "id": "stage3.pre.pisuke", "kind": "line", "speaker_id": "ピー助", "text": "うわさを追いかけるより、正式な申し立ての記録を確認する。ギルドの権限だけでは止められないらしい。", "next_id": "stage3.pre.reception" },
+        { "id": "stage3.pre.reception", "kind": "line", "speaker_id": "受付嬢", "text": "異議があるのでしたら、教会の公開審査に申し立てる方法がございます。事実と記録で説明してください。", "next_id": "stage3.pre.end" },
+        { "id": "stage3.pre.end", "kind": "end" }
+      ]
+    },
+    {
+      "id": "story.stage3.first",
+      "start_id": "stage3.first.background",
+      "steps": [
+        { "id": "stage3.first.background", "kind": "background", "asset_id": "background.stage3.church", "next_id": "stage3.first.magdalena" },
+        { "id": "stage3.first.magdalena", "kind": "show_portrait", "slot_id": "magdalena", "asset_id": "portrait.magdalena", "layout_id": "layout.stage3.magdalena", "next_id": "stage3.first.challenge" },
+        { "id": "stage3.first.challenge", "kind": "line", "speaker_id": "マグダレナ", "text": "公開審査を始めます。今回の申し立てに関する記録は、こちらが管理しています。", "next_id": "stage3.first.hero" },
+        { "id": "stage3.first.hero", "kind": "line", "speaker_id": "サトシ", "text": "一方の話だけで決めず、記録を確かめてください。勝負に勝てば、審査をやり直す約束です。", "next_id": "stage3.first.battle" },
+        { "id": "stage3.first.battle", "kind": "battle", "battle_id": "battle.stage3.first", "next_id": "stage3.first.result" },
+        { "id": "stage3.first.result", "kind": "line", "speaker_id": "ピー助", "text": "初戦は負けたが、これで終わりじゃない。記録の食い違いを探して再審査を申し込もう。", "next_id": "stage3.first.end" },
+        { "id": "stage3.first.end", "kind": "end" }
+      ]
+    },
+    {
+      "id": "story.stage3.rematch",
+      "start_id": "stage3.rematch.background",
+      "steps": [
+        { "id": "stage3.rematch.background", "kind": "background", "asset_id": "background.stage3.cathedral", "next_id": "stage3.rematch.hero" },
+        { "id": "stage3.rematch.hero", "kind": "show_portrait", "slot_id": "hero", "asset_id": "portrait.stage3.hero", "layout_id": "layout.stage3.hero", "next_id": "stage3.rematch.magdalena" },
+        { "id": "stage3.rematch.magdalena", "kind": "show_portrait", "slot_id": "magdalena", "asset_id": "portrait.magdalena", "layout_id": "layout.stage3.magdalena", "next_id": "stage3.rematch.start" },
+        { "id": "stage3.rematch.start", "kind": "line", "speaker_id": "サトシ", "text": "審査をやり直してください。根拠となる記録の矛盾を示します。", "next_id": "stage3.rematch.battle" },
+        { "id": "stage3.rematch.battle", "kind": "battle", "battle_id": "battle.stage3.rematch", "next_id": "stage3.rematch.result" },
+        { "id": "stage3.rematch.result", "kind": "line", "speaker_id": "マグダレナ", "text": "その証拠を確認します。審査結果を記録しましょう。", "next_id": "stage3.rematch.end" },
+        { "id": "stage3.rematch.end", "kind": "end" }
+      ]
+    },
+    {
+      "id": "story.stage3.post",
+      "start_id": "stage3.post.background",
+      "steps": [
+        { "id": "stage3.post.background", "kind": "background", "asset_id": "background.stage3.church", "next_id": "stage3.post.magdalena" },
+        { "id": "stage3.post.magdalena", "kind": "show_portrait", "slot_id": "magdalena", "asset_id": "portrait.magdalena", "layout_id": "layout.stage3.magdalena", "next_id": "stage3.post.outcome" },
+        { "id": "stage3.post.outcome", "kind": "line", "speaker_id": "マグダレナ", "text": "審査記録の誤りを認めます。申し立てを訂正し、関連する苦情も取り下げます。", "next_id": "stage3.post.hero" },
+        { "id": "stage3.post.hero", "kind": "line", "speaker_id": "サトシ", "text": "これからは、誰の申し立ても、根拠と手続きの両方を確認してほしい。", "next_id": "stage3.post.reception" },
+        { "id": "stage3.post.reception", "kind": "line", "speaker_id": "受付嬢", "text": "今回の結論と訂正内容をギルドの記録にも残しておきます。", "next_id": "stage3.post.end" },
+        { "id": "stage3.post.end", "kind": "end" }
+      ]
+    },
+    { "id": "story.stage3.loss", "start_id": "stage3.rematch.loss.end", "steps": [{ "id": "stage3.rematch.loss.end", "kind": "end" }] }
+  ]
+}

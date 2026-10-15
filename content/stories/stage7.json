@@ -1,0 +1,40 @@
+{
+  "assets": [
+    { "id": "background.stage7.hall", "path": "godot/assets/backgrounds/stage6/bg_royal_hall.png" },
+    { "id": "background.stage7.guild", "path": "godot/assets/backgrounds/stage1/bg07_st1_001.png" },
+    { "id": "background.stage7.sunset", "path": "godot/assets/backgrounds/stage7/bg_capital_sunset.png" },
+    { "id": "portrait.stage7.hero", "path": "godot/assets/characters/main/satoshi/isekai/satoshi_isekai_004.png" },
+    { "id": "portrait.stage7.princess", "path": "godot/assets/characters/main/princess/clothed/princess_clothed_001.png" },
+    { "id": "portrait.stage7.feria", "path": "godot/assets/characters/main/feria/clothed/feria_clothed_001.png" },
+    { "id": "portrait.stage7.receptionist", "path": "godot/assets/characters/main/receptionist/clothed/receptionist_clothed_005.png" }
+  ],
+  "layouts": [
+    { "id": "layout.stage7.hero", "x": 490, "y": 465, "scale": 0.62, "flipped": true },
+    { "id": "layout.stage7.princess", "x": 1430, "y": 465, "scale": 0.62, "flipped": false },
+    { "id": "layout.stage7.feria", "x": 1430, "y": 465, "scale": 0.62, "flipped": false },
+    { "id": "layout.stage7.receptionist", "x": 1430, "y": 465, "scale": 0.55, "flipped": false }
+  ],
+  "battles": [],
+  "stories": [
+    { "id": "story.stage7.throne", "start_id": "stage7.throne.background", "steps": [
+      { "id": "stage7.throne.background", "kind": "background", "asset_id": "background.stage7.hall", "next_id": "stage7.throne.feria" },
+      { "id": "stage7.throne.feria", "kind": "show_portrait", "slot_id": "feria", "asset_id": "portrait.stage7.feria", "layout_id": "layout.stage7.feria", "next_id": "stage7.throne.declaration" },
+      { "id": "stage7.throne.declaration", "kind": "line", "speaker_id": "侍従長", "text": "古法と公開記録に基づき、サトシ殿の勝利が確定しました。王位継承の手続きを正式に開始します。", "next_id": "stage7.throne.princess" },
+      { "id": "stage7.throne.princess", "kind": "show_portrait", "slot_id": "princess", "asset_id": "portrait.stage7.princess", "layout_id": "layout.stage7.princess", "next_id": "stage7.throne.choice" },
+      { "id": "stage7.throne.choice", "kind": "line", "speaker_id": "アレクシア", "text": "勝者が王位を継ぐ規定は有効です。ですが、国の運営は評議会と法に従ってください。", "next_id": "stage7.throne.hero" },
+      { "id": "stage7.throne.hero", "kind": "show_portrait", "slot_id": "hero", "asset_id": "portrait.stage7.hero", "layout_id": "layout.stage7.hero", "next_id": "stage7.throne.accept" },
+      { "id": "stage7.throne.accept", "kind": "line", "speaker_id": "サトシ", "text": "勝負の結果は引き受けます。ただし、これからは記録を公開し、皆さんと相談しながら務めを果たします。", "next_id": "stage7.throne.end" },
+      { "id": "stage7.throne.end", "kind": "end" }
+    ] },
+    { "id": "story.stage7.epilogue", "start_id": "stage7.epilogue.background", "steps": [
+      { "id": "stage7.epilogue.background", "kind": "background", "asset_id": "background.stage7.sunset", "next_id": "stage7.epilogue.hero.portrait" },
+      { "id": "stage7.epilogue.hero.portrait", "kind": "show_portrait", "slot_id": "hero", "asset_id": "portrait.stage7.hero", "layout_id": "layout.stage7.hero", "next_id": "stage7.epilogue.reception" },
+      { "id": "stage7.epilogue.reception", "kind": "show_portrait", "slot_id": "receptionist", "asset_id": "portrait.stage7.receptionist", "layout_id": "layout.stage7.receptionist", "next_id": "stage7.epilogue.congratulations" },
+      { "id": "stage7.epilogue.congratulations", "kind": "line", "speaker_id": "受付嬢", "text": "国王ご就任、おめでとうございます。これまでの案件記録は適切に保管し、関係者以外には公開しない方針です。", "next_id": "stage7.epilogue.hero.line" },
+      { "id": "stage7.epilogue.hero.line", "kind": "line", "speaker_id": "サトシ", "text": "ありがとう。勝負に勝ったことだけでなく、約束と記録を守ることも忘れないようにするよ。", "next_id": "stage7.epilogue.feria" },
+      { "id": "stage7.epilogue.feria", "kind": "show_portrait", "slot_id": "feria", "asset_id": "portrait.stage7.feria", "layout_id": "layout.stage7.feria", "next_id": "stage7.epilogue.closing" },
+      { "id": "stage7.epilogue.closing", "kind": "line", "speaker_id": "フェリア", "text": "公務の記録は私が確認します。次は、王としての判断を見せていただきましょう。", "next_id": "stage7.epilogue.end" },
+      { "id": "stage7.epilogue.end", "kind": "end" }
+    ] }
+  ]
+}
