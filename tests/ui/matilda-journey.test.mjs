@@ -37,7 +37,7 @@ test('new game reads every original opening/tutorial line, prepares, plays twice
     }
   }
   try {
-    await open('はじめから')
+    await open('新しく始める')
     const sequence = originalDocument.sequences.find(entry => entry.id === 'prologue')
     const tutorialIndex = sequence.commands.findIndex(command => command.kind === 'battle' && command.parameters.is_tutorial)
     assert.equal(tutorialIndex, 197)

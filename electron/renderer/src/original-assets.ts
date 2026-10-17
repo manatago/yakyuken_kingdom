@@ -1,4 +1,5 @@
 // Generated from the original command document; no fallback substitutions.
+import contentAssets from 'virtual:janken-content-assets'
 import showdownBack from '../../../godot/assets/battle/cards/card_back.png?url'
 import storyItemIcon from '../../../godot/assets/ui/icons/gold.png?url'
 import battleHighlightArrow from '../../../godot/assets/ui/arrow2.png?url'
@@ -816,8 +817,12 @@ export const originalAssets: Readonly<Record<string, string>> = {
   "res://assets/ui/speech_bubble_2_small.png": asset275,
 }
 
+let assetResolver: ((path: string) => string | undefined) | undefined
+export function configureOriginalAssetResolver(resolver: (path: string) => string | undefined) { assetResolver = resolver }
 export function originalAsset(path: string): string {
-  const url = originalAssets[path] || originalQuestAssets[path]
+  const resolved = assetResolver?.(path)
+  if (resolved) return resolved
+  const url = contentAssets[path] || originalAssets[path] || originalQuestAssets[path]
   if (!url) throw new Error(`Unmapped original asset: ${path}`)
   return url
 }

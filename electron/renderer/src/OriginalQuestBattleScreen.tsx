@@ -123,8 +123,8 @@ export function OriginalQuestBattleScreen({ save, onSave, onExit }: {
         : lossScene ? <OriginalBackground path={originalAsset(lossScene.background)} filtered={lossScene.backgroundFiltered} duration={0} />
         : frame || surface?.blurred === false ? <img className="story-background" alt="背景" src={originalAsset(state?.background || chapter.background)} />
           : <OriginalBattleBackground path={originalAsset(state?.background || chapter.background)} />}
-      {state && !frame && <><OriginalPortrait id="deck" value={portrait(state.pedestal, state.pedestalOptions)} />
-        <OriginalPortrait id={chapter.opponent_id} value={portrait(state.portrait, state.portraitOptions)} command={portraitCommand} /></>}
+      {state && !frame && <><OriginalPortrait id={chapter.opponent_id} value={portrait(state.portrait, state.portraitOptions)} command={portraitCommand} />
+        <OriginalPortrait id="deck" value={portrait(state.pedestal, state.pedestalOptions)} /></>}
       {lossScene ? originalPortraitSlots(lossScene).filter(slot => slot.value.visible).map(slot =>
         <OriginalPortrait key={slot.side} id={slot.id} value={slot.value} />)
         : frame?.portrait && <OriginalPortrait id={chapter.opponent_id} rawLayout value={{ ...portrait(frame.portrait, { scale: frame.scale, side: 'right' }), flip: 0 }} />}
@@ -164,7 +164,7 @@ export function OriginalQuestBattleScreen({ save, onSave, onExit }: {
         {surface?.bubble && <OriginalBattleBubble
           testId={phase === 'dialogue' && bubbleSide ? 'original-quest-dialogue' : 'original-quest-bubble'}
           textTestId={phase === 'dialogue' && bubbleSide ? 'original-quest-text' : undefined}
-          text={surface.bubble.text} side={surface.bubble.side} revision={surface.bubble.revision}
+          text={surface.bubble.text} side={surface.bubble.side} revision={surface.bubble.revision} fontSize={surface.bubble.fontSize}
           waitForInput={phase === 'dialogue' && !!bubbleSide} onReady={() => setBubbleReady(true)}
           visibleCharacters={phase === 'dialogue' && bubbleSide ? visibleChars : originalBattleTypingText(surface.bubble.text, surface.bubble.side).length}
           onAdvance={advance} />}

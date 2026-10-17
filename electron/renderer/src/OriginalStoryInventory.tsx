@@ -6,6 +6,7 @@ import geometry from '../../../content/stories/godot-story-menu-geometry.json'
 import inventoryGeometry from '../../../content/stories/godot-story-inventory-geometry.json'
 import { originalItemIcon } from './original-assets'
 import type { OriginalValue } from '../../../packages/story/original'
+import { useGameExit } from './GameExit'
 
 const rgba = (color: number[]) => `rgba(${color.slice(0, 3).map(value => value * 255).join(',')},${color[3]})`
 const position = (rect: number[], parent: number[] = [0, 0]) => ({ position: 'absolute' as const,
@@ -19,6 +20,7 @@ interface ViewerGeometry {
 /** Godot's story viewers do not consume items or change equipment. */
 export function OriginalStoryInventory({ player: currentPlayer, menuVisible = true, palette, menuOffsetY = 0 }: { player?: SaveData['player']; menuVisible?: boolean; palette?: OriginalValue; menuOffsetY?: number }) {
   const { viewer: openViewer, setViewer } = useOriginalStoryViewer()
+  const exit = useGameExit()
   const viewer = openViewer?.kind
   const player = openViewer?.player
   const labels = viewer ? source.viewers[viewer] : undefined
@@ -41,10 +43,11 @@ export function OriginalStoryInventory({ player: currentPlayer, menuVisible = tr
         .original-story-menu button:hover:not(:disabled) { background: ${rgba(hover)}; color: ${rgba(geometry.styles.font_hover)}; }`}</style>
       {source.buttons.filter(button => button.id !== 'SkipButton').map(button => {
         const rect = geometry.buttons.find(original => original.id === button.id)!.rect
-        return <button key={button.id} style={{ position: 'absolute', left: rect[0] - geometry.menu_rect[0],
+        return <button key={button.id} disabled={button.id === 'ExitButton' && !exit} style={{ position: 'absolute', left: rect[0] - geometry.menu_rect[0],
           top: rect[1] - geometry.menu_rect[1], width: rect[2], height: rect[3],
           fontSize: button.font_size, padding: '3px 10px', border: 0, borderRadius: 4 }}
           onClick={() => {
+            if (button.id === 'ExitButton') { setViewer(null); exit?.(); return }
             if (button.id === 'ItemButton' || button.id === 'EquipButton') {
               setViewer(current => current ? null : { kind: button.id === 'ItemButton' ? 'item' : 'equip',
                 player: currentPlayer ? structuredClone(currentPlayer) : undefined })

@@ -56,6 +56,10 @@ func export_commands() -> void:
         push_error("Expected output JSON path")
         quit(1)
         return
+    if FileAccess.file_exists(args[0] + ".bak"):
+        push_error("Editor backup exists; export to a separate file and reconcile edits instead of overwriting " + args[0])
+        quit(1)
+        return
     var story = load("res://story/DefaultStory.gd").new()
     var cast := {}
     for id in story.get_cast():

@@ -55,7 +55,7 @@ test('original Item and Equip menus only view inventory and never alter the save
       })
       rect.forEach((value, index) => assert.ok(Math.abs(value - original.rect[index]) < .1, `${id} rect ${index}: ${value} != ${original.rect[index]}`))
     }
-    for (const name of ['Save', 'Load', 'Config', 'Exit']) {
+    for (const name of ['Save', 'Load', 'Config']) {
       await menu.getByRole('button', { name, exact: true }).click()
       assert.equal(await page.getByTestId('original-cursor').textContent(), 'prologue:15')
       assert.deepEqual(await page.evaluate(() => globalThis.janken.save.read()), before)

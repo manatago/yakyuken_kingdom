@@ -60,3 +60,9 @@ archives/
 content/stories/matilda-tutorial.json.bak
 content/stories/.matilda-layout.*.tmp*
 content/stories/.matilda-layout.lock/
+content/stories/godot-original.json.bak
+content/stories/.original-story-editor.*.tmp*
+content/stories/.original-story-editor.lock/
+content/stories/godot-*.json.bak
+content/stories/.trace-editor.*.tmp*
+content/stories/.trace-editor-*.lock/

@@ -84,7 +84,7 @@ function cssColor(value: OriginalValue): string {
 }
 
 /** Original-data playback surface. Battle commands are explicit suspension points, never skipped. */
-export function OriginalStoryScreen({ sequenceId = 'prologue', cursor = 0, initialFlags, incomingScene, completedBattles, completed = false, onExit, onCheckpoint, onBattle, onComplete, ending, layouts, player, debugControls = false }: {
+export function OriginalStoryScreen({ sequenceId = 'prologue', cursor = 0, initialFlags, incomingScene, completedBattles, completed = false, onExit, onCheckpoint, onBattle, onComplete, ending, layouts, player, debugControls = false, editorState }: {
   sequenceId?: string; cursor?: number; onExit: () => void
   initialFlags?: Record<string, boolean>
   completedBattles?: readonly string[]
@@ -97,17 +97,18 @@ export function OriginalStoryScreen({ sequenceId = 'prologue', cursor = 0, initi
   layouts?: Pick<ContentPack, 'layouts'>
   player?: SaveData['player']
   debugControls?: boolean
+  editorState?: OriginalStoryState
 }) {
   const container = useRef<HTMLElement>(null)
   const running = useRef(false)
   const alive = useRef(true)
-  const [state, setState] = useState(() => restoreOriginalStoryState(sequenceId, cursor, initialFlags, incomingScene))
+  const [state, setState] = useState(() => editorState ?? restoreOriginalStoryState(sequenceId, cursor, initialFlags, incomingScene))
   const stateRef = useRef(state)
   const [command, setCommand] = useState<OriginalCommand>()
   const [waiting, setWaiting] = useState(false)
   const [ended, setEnded] = useState(completed)
   const [error, setError] = useState('')
-  const [visibleChars, setVisibleChars] = useState(0)
+  const [visibleChars, setVisibleChars] = useState(editorState?.text.length ?? 0)
   const [fit, setFit] = useState(() => fitViewport(0, 0))
   const [terminal, setTerminal] = useState<OriginalCommand>()
   const terminalInput = useRef<(() => void) | null>(null)
@@ -184,7 +185,7 @@ export function OriginalStoryScreen({ sequenceId = 'prologue', cursor = 0, initi
   useEffect(() => {
     alive.current = true
     if (document.activeElement === document.body) container.current?.focus({ preventScroll: true })
-    if (completed) return () => { alive.current = false }
+    if (completed || editorState) return () => { alive.current = false }
     if (cursor && !completedBattles?.includes(`original:${sequenceId}:${cursor}`) && ['line', 'band', 'battle'].includes(originalStory.sequences.find(s => s.id === sequenceId)!.commands[cursor - 1]?.kind)) {
       const c = originalStory.sequences.find(s => s.id === sequenceId)!.commands[cursor - 1]
       setCommand(c); setWaiting(c.kind !== 'battle'); setVisibleChars(stateRef.current.text.length)

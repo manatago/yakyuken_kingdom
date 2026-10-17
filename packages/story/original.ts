@@ -59,15 +59,15 @@ function originalCommandReturnsSignal(command: OriginalCommand) {
   return false
 }
 
-export function createOriginalStoryState(sequenceId: string, flags: Record<string, boolean> = {}): OriginalStoryState {
-  if (!originalStory.sequences.some(s => s.id === sequenceId)) throw new Error(`Unknown original sequence: ${sequenceId}`)
+export function createOriginalStoryState(sequenceId: string, flags: Record<string, boolean> = {}, source = originalStory): OriginalStoryState {
+  if (!source.sequences.some(s => s.id === sequenceId)) throw new Error(`Unknown original sequence: ${sequenceId}`)
   return { sequenceId, cursor: 0, flags: { ...flags }, background: '', backgroundFiltered: false, portraits: {}, text: '',
     speakerId: '', bandVisible: false, bandColor: null }
 }
 
-function showCharacter(state: OriginalStoryState, id: string, p: Record<string, OriginalValue>) {
+function showCharacter(state: OriginalStoryState, id: string, p: Record<string, OriginalValue>, source = originalStory) {
   const cached = state.portraits[id]?.cache_valid === false ? undefined : state.portraits[id]
-  const portrait = p.portrait_id || cached?.portrait_id || originalStory.cast[id]?.default_portrait || ''
+  const portrait = p.portrait_id || cached?.portrait_id || source.cast[id]?.default_portrait || ''
   const side = String(p.side_override || cached?.side_override ||
     ['left', 'right', 'center'].find(candidate => !Object.values(state.portraits)
       .some(entry => entry.visible && entry.side_override === candidate)) || 'left')
@@ -131,8 +131,8 @@ export function originalPortraitLayout(portrait: Record<string, OriginalValue>, 
 
 // One source command per call: UI must await its effects before requesting the next.
 // In particular, battle/terminal/pause commands must never be collapsed on replay.
-export function executeOriginalCommand(previous: OriginalStoryState): { state: OriginalStoryState; command?: OriginalCommand } {
-  const sequence = originalStory.sequences.find(s => s.id === previous.sequenceId)
+export function executeOriginalCommand(previous: OriginalStoryState, source = originalStory): { state: OriginalStoryState; command?: OriginalCommand } {
+  const sequence = source.sequences.find(s => s.id === previous.sequenceId)
   if (!sequence) throw new Error(`Unknown original sequence: ${previous.sequenceId}`)
   if (!Number.isInteger(previous.cursor) || previous.cursor < 0 || previous.cursor > sequence.commands.length) {
     throw new Error('Invalid original story cursor')
@@ -147,7 +147,7 @@ export function executeOriginalCommand(previous: OriginalStoryState): { state: O
     case 'background': state.background = String(p.path); break
     case 'show_character': {
       const id = String(p.character_id)
-      showCharacter(state, id, p)
+      showCharacter(state, id, p, source)
       break
     }
     case 'hide_character': {
@@ -173,11 +173,11 @@ export function executeOriginalCommand(previous: OriginalStoryState): { state: O
       // Godot apply_band_command replaces text, even when append is set.
       if (p.clear_text || text) state.text = String(text ?? '')
       state.speakerId = String(p.speaker_id ?? '')
-      if (state.speakerId && state.speakerId !== 'narrator' && originalStory.cast[state.speakerId]) {
-        showCharacter(state, state.speakerId, { portrait_id: p.portrait_id, side_override: p.side_override })
+      if (state.speakerId && state.speakerId !== 'narrator' && source.cast[state.speakerId]) {
+        showCharacter(state, state.speakerId, { portrait_id: p.portrait_id, side_override: p.side_override }, source)
       }
       const side = state.portraits[state.speakerId]?.side_override
-      state.backgroundFiltered = state.speakerId !== 'narrator' && Boolean(originalStory.cast[state.speakerId]) && (side === 'left' || side === 'right')
+      state.backgroundFiltered = state.speakerId !== 'narrator' && Boolean(source.cast[state.speakerId]) && (side === 'left' || side === 'right')
       break
     }
     case 'band_color': state.bandColor = p.color; break

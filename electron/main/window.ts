@@ -1,12 +1,15 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, screen } from 'electron'
 import { join } from 'node:path'
 import { authorizeWindow } from './window-ipc'
 
 export function startWindow(title: string, capability: string): void {
   const createWindow = (): void => {
+    const workArea = screen.getPrimaryDisplay().workAreaSize
+    const size = capability === 'save'
+      ? { width: Math.min(1920, workArea.width), height: Math.min(1080, workArea.height) }
+      : { width: 1280, height: 720 }
     const window = new BrowserWindow({
-      width: 1280,
-      height: 720,
+      ...size,
       title,
       webPreferences: {
         preload: join(__dirname, '../preload/index.js'),
@@ -43,7 +46,7 @@ export function startWindow(title: string, capability: string): void {
           windowKeys: string[]
           hasNodeRequire: boolean
         }) => {
-          const expectedKeys = [capability, 'windowControls'].sort().join(',')
+          const expectedKeys = [capability, 'windowControls', ...(capability === 'save' ? ['launcher'] : [])].sort().join(',')
           if (result.heading !== title || result.bridgeKeys.join(',') !== expectedKeys ||
               result.windowKeys.join(',') !== 'close,minimize,toggleMaximize' || result.hasNodeRequire) {
             throw new Error(`Unexpected screen or bridge for ${title}: ${JSON.stringify(result)}`)
@@ -67,10 +70,14 @@ export function startWindow(title: string, capability: string): void {
 
     const devUrl = process.env.ELECTRON_RENDERER_URL
     const originalSequence = capability === 'save' ? app.commandLine.getSwitchValue('original-story') : ''
-    const query = originalSequence ? { original: originalSequence } : undefined
+    const resume = capability === 'save' && process.argv.includes('--isolated-play')
+    const editorView = capability === 'content' ? app.commandLine.getSwitchValue('editor-view') : ''
+    const query: Record<string, string> | undefined = originalSequence ? { original: originalSequence } : resume ? { resume: '1' } : editorView ? { editor: editorView } : undefined
     if (devUrl) {
       const url = new URL(devUrl)
       if (originalSequence) url.searchParams.set('original', originalSequence)
+      if (resume) url.searchParams.set('resume', '1')
+      if (editorView) url.searchParams.set('editor', editorView)
       void window.loadURL(url.href)
     } else {
       void window.loadFile(join(__dirname, '../renderer/index.html'), { query })
@@ -85,6 +92,6 @@ export function startWindow(title: string, capability: string): void {
   })
 
   app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit()
+    if (process.platform !== 'darwin' || process.argv.includes('--isolated-play') || process.argv.includes('--editor-launch')) app.quit()
   })
 }

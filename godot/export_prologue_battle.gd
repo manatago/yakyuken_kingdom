@@ -38,6 +38,11 @@ class TraceContext extends RefCounted:
     func bubble(text, options = {}): add("bubble", [text, options])
 
 func _initialize() -> void:
+    var args := OS.get_cmdline_user_args()
+    if args.size() > 0 and FileAccess.file_exists(args[0] + ".bak"):
+        push_error("Editor backup exists; export to a separate file and reconcile edits instead of overwriting " + args[0])
+        quit(1)
+        return
     call_deferred("export_traces")
 
 func export_traces() -> void:

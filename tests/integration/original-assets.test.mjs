@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url'
 import test from 'node:test'
 
 const root = fileURLToPath(new URL('../..', import.meta.url))
-test('every original story image is mapped, fetched by CI and has actual PNG bytes', () => {
+test('every original story image is mapped, fetched by CI and has actual supported image bytes', () => {
   const script = join(root, '.github/scripts/pull-original-assets.mjs')
   const result = spawnSync(process.execPath, [script, '--list'], { encoding: 'utf8' })
   assert.equal(result.status, 0, result.stderr)

@@ -1,5 +1,45 @@
 # Test results
 
+## 2026-10-16 — 下部Exitから最上位タイトルへ戻る
+
+- ExitButtonは従来クリック処理なし。通常会話＋Item閲覧中のExitがタイトルへ戻らないREDを確認後、共通GameExit contextを接続。個別戦闘のviewer providerから独立し、通常会話・戦闘・ミニゲームへ共通適用。editor previewでは無効。
+- Exitはアプリを終了せず最上位titleへ戻す。ジャンプ／イベント選択とは別。通常saveファイルはExit自身で書かない。一時session／閲覧modalを閉じ、既に開始済みのnormal writeをdrain→readしてResumeへ渡す。旧世代のwrite/setSaved/setActive通知を抑止する。
+- 対象UI6/6成功：通常会話＋modal、ジャンプtutorial、単独event、minigame、遅延normal checkpoint、既存Item/Equip。既存testの「Exitも無処理」の期待だけを新仕様に合わせて除外し、保存・所持品・矩形の期待は維持した。ログ `/private/tmp/janken-exit-target-ui.log`。
+- Unit349/349、Integration42/42、型チェック、Game/Editorビルド・両Smoke成功。全UI87/87成功（`/private/tmp/janken-exit-all-ui.log`、188.36秒）。Macホストnative Electron、隔離userDataのテストはfinallyで閉じて清掃。本番save・外部API/DBを使わない。coverage今回は再計測なし。stage/commit/Pushなし。
+
+## 2026-10-16 — バトルのテーブル描画順
+
+- GodotのStorySceneは背景→立ち絵3slot→index5へ挿入したテーブル→会話/UI。Electronではtableをportraitより前に描いていたため、人物がテーブルの前に出ていた。通常戦・依頼/章戦・マチルダチュートリアル・trace編集previewのDOM順のみ修正。座標・サイズ・motion・asset・save/勝敗は不変。
+- RED：マチルダ通常戦でactorBeforeTable=false。修正後、原本の通常イベント戦10件それぞれでactor→table→HUDを確認。チュートリアルと編集previewも同順、関連UI6/6成功（`/private/tmp/janken-table-green2.log`）。最初のpreviewテストは空pathのtable削除命令を誤選択したため、表示pathのあるdeck命令を選ぶようfixtureを修正した。
+- Unit349/349、Integration42/42、型チェック、両build成功。ベルカ戦の実描画を`/private/tmp/janken-table-fixed.png`で目視。今回全UI/coverage再計測なし。Macホストnative Electron＋隔離userDataを使用し、テスト後に解放した。
+- 現在のユーザー画面は一時プレイのマチルダtutorial:52、通常saveはguild.home。reloadで今の一時進行が失われるため、ユーザーgameを勝手に再読込/終了していない。修正版は次回reload/起動から反映。通常save変更なし。stage/commit/Pushなし。
+
+## 2026-10-16 — 手札の絵が見えない表示不具合
+
+- ベルカ戦の編成画面で再現。表面画像は正しいが、カードbutton約68pxに通常button用の左右paddingが入り、CardViewが約19pxへ縮小。28pxのグレードラベルに覆われて絵を識別できなかった。Godotの裏面使用は勝負overlayの反転演出であり、これとは別。
+- `style.css`でCardViewを直接含むbuttonだけpaddingを0にした。画像・表裏演出・勝敗・保存処理は不変。UI回帰で手持ちと選択済みデッキの絵幅がbuttonの90%超、正しい表面asset、反転transformなしを確認。RED→GREENログは `/private/tmp/janken-hand-red2.log` と `/private/tmp/janken-hand-green.log`。
+- 型チェック、両ビルド、Unit349/349、Integration42/42、関連UI9/9成功。全UI再実行はしていない。修正前後の実描画を `/private/tmp/janken-hand-before.png`、`/private/tmp/janken-hand-after.png`で目視し、手の形が見えることを確認。
+- 全native UIは専用Macホスト環境・隔離userDataを使用し、テスト後アプリ／一時saveを解放。通常save不変。旧依存環境でplaywright-coreのentry欠落を検出したため、別ディレクトリへlockどおりnpm ciし、この隔離worktreeのnode_modulesリンクだけ付け替えた。依存version/lock変更なし。npm監査の既存high1件は別件として残る。
+- 通常起動中の旧ゲーム1プロセスを終了し、修正版を1つ起動。コミット・Pushなし。
+
+## 2026-10-15 — ゲーム入口の階層復元
+
+- 原本`godot/Main.tscn`の4入口と`Main.gd`のジャンプ／編集サブメニューを照合。中断選択は保存再開と別であることを確認し、同じゲームウィンドウへ場面／イベント選択を復元した。実編集は別ビルドを起動する。
+- RED：`title-hierarchy.test.mjs`で「中断から始める」が存在せず失敗（`/private/tmp/janken-title-red.log`）。修正後、入口・戻る・通常セーブ保持・イベント戦起動・固定エディタ起動と既存保存再開のUI10/10成功（`/private/tmp/janken-title-green2.log`）。
+- Unit349/349、Integration42/42、型チェック、両ビルド成功。イベント一覧が原本の`mode: battle`10件と一致し、全件が非チュートリアルの該当戦闘へ開始することを単体確認。エディタの画面指定には固定3値のみを許可。
+- 通常セーブを作成→場面選択→退出→通常の保存再開を実行し、保存ファイルのbytes不変を検証。単独イベントの開始と退出も正常セーブを作成しない。通常ストーリーに存在しないタイトルボタンを想定したテスト1件は、通常状態の再読込と、一時セッション専用の戻る操作に分けて修正した。
+- 全UI78/78成功（`/private/tmp/janken-title-all-ui.log`、182.42秒）。エディタ初期画面3種とMacの起動窓終了も含む。追加対象6/6再実行、両SmokeともSMOKE_OK。入口とシーン選択の画像を取得・目視し、FHDでボタンの重なりや横はみ出しがないことを確認した（`/private/tmp/janken-title-screen.png`と同`.scenes.png`）。修正済みの入口だけで統合開発機能の移植完了とは判断しない。未実装メニューは理由付きで無効化する。
+- 本番DB・外部APIは使用しない。テストはMacホストのネイティブElectron＋隔離userDataで実行し、finallyでテストアプリと一時保存先を解放。既存のユーザーゲームはテストから操作しない。今回カバレッジ再計測なし。ステージ・コミット・Pushなし。
+
+## 2026-10-15 — 開発機能移植の途中検証（統合タスク未完了）
+
+- 型チェック、Game/Editorビルド、Unit347/347、Integration42/42成功。Unit最新ログは `/private/tmp/janken-developer-final-unit.log`、Integrationは `/private/tmp/janken-developer-validation.log`。
+- 全Electron UI72件は71成功・新規構造化フォームのラベル選択1件失敗（`/private/tmp/janken-developer-all-ui.log`）。明示aria-label修正後、該当テスト1/1成功。修正後の全72件再実行成功とは扱わない。
+- 修正後の開発機能対象UI5/5成功（`/private/tmp/janken-developer-final-target-ui.log`）。Game/Editorの隔離SmokeともSMOKE_OK。通常セーブを変更しない。
+- RED→GREEN：画像live protocolのWebGL CORS、途中開始の自動再開、編集フォームのラベル指定。レビュー指摘の整形後JSON容量超過はtrace/story双方に保存前ガードを追加し、元file不変・再読込成功を単体確認。
+- Godotのtrace再抽出保護を実行確認：editorの.bakがある出力へquest exporterを実行すると親初期化でexit1、編集済み出力不変。sandbox内Godotのログ書込/CA警告も出たが、上書き防止エラーと出力保持を確認した。検証用2fileは削除済み。
+- 画像加工、ランダム戦編集、バトルシステム確認、台詞／ページ追加削除、専用開始地点、全保存後ゲーム反映などは残っている。移植完了・Publish可能とは判断しない。コミット・Pushなし。
+
 ## 2026-10-14 — developからmainへの移植統合
 
 - 隔離worktreeでmainとdevelopのマージ結果を検証。main固有のGodot修正9ファイルとElectron側のdevelop内容をそれぞれ保持。

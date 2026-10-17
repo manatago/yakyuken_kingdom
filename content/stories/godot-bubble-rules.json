@@ -1,0 +1,55 @@
+{
+  "format": "godot-bubble-rules",
+  "version": 1,
+  "anchors": {
+    "left": {
+      "l": 0.02,
+      "r": 0.24,
+      "t": 0.05,
+      "b": 0.23
+    },
+    "right": {
+      "l": 0.76,
+      "r": 0.98,
+      "t": 0.05,
+      "b": 0.23
+    },
+    "center": {
+      "l": 0.3333,
+      "r": 0.6667,
+      "t": 0.05,
+      "b": 0.23
+    },
+    "bottom-left": {
+      "l": 0.02,
+      "r": 0.24,
+      "t": 0.64,
+      "b": 0.82
+    },
+    "bottom-right": {
+      "l": 0.76,
+      "r": 0.98,
+      "t": 0.64,
+      "b": 0.82
+    }
+  },
+  "font_size": 34,
+  "line_height": 47,
+  "max_height_ratio": 0.62,
+  "label_width_ratio": 0.92,
+  "label_height_ratio": 0.8,
+  "max_chars": 16,
+  "breaks": [
+    "、",
+    "。",
+    "！",
+    "？",
+    "　",
+    ","
+  ],
+  "source_hashes": {
+    "game/BattleScene.gd": "612c12a0e2729458447d4518fab98ac3e03a3e9a172864c3565697ca34474e99",
+    "ui/BubbleFit.gd": "92ee9d215e68041868e201ea10d7795936f0f9615af7b82eb43c13a6cd37f670",
+    "ui/BubbleWrap.gd": "bd8941b22db2a4f5cce8494100740eae6df6f225ca1be58cf5133ce319be3a6c"
+  }
+}

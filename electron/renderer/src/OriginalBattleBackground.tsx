@@ -9,6 +9,7 @@ export function OriginalBattleBackground({ path }: { path: string }) {
     let active = true
     let dispose = () => {}
     const image = new Image()
+    if (path.startsWith('janken-project-image:')) image.crossOrigin = 'anonymous'
     setError('')
     image.onload = () => {
       if (!active || !canvas.current) return

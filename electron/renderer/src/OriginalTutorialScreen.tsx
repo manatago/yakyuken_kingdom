@@ -90,10 +90,10 @@ export function OriginalTutorialScreen({ save, onSave, onExit, layouts = layoutC
     <div className="story-frame" style={{ width: fit.width, height: fit.height }}>
       <div className="story-stage" style={{ transform: `scale(${fit.scale})`, fontFamily: "Arial, 'Hiragino Kaku Gothic ProN', sans-serif" }}>
         <OriginalBattleBackground path={originalAsset('res://assets/backgrounds/prologue/bg05_prison_cell.png')} />
+        <OriginalPortrait id="matilda" value={portrait} layoutId="layout.matilda.explanation" layouts={layouts} />
         <OriginalPortrait id="deck" value={{ portrait_id: 'res://assets/battle/decks/pedestal_01_marble.png',
           portrait_scale: 0.55, side_override: 'center', position_mode: 'offset',
           position: { type: 'Vector2', x: 0, y: 180 }, visible: true }} />
-        <OriginalPortrait id="matilda" value={portrait} layoutId="layout.matilda.explanation" layouts={layouts} />
         <section data-testid="original-opponent-hp" data-original-highlight-target="opponent_hp" style={{ position: 'absolute', left: '38%', right: '38%', top: 8,
           padding: 8, background: '#211c28', textAlign: 'center', fontSize: 22 }}>
           マチルダ HP: {presentationBattle.opponentHp}/3</section>

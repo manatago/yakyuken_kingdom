@@ -72,8 +72,8 @@ export function OriginalNormalScreen({ save, onSave, onExit }: {
       <div className="story-stage" style={{ transform: `scale(${fit.scale})` }}>
         {surface.blurred ? <OriginalBattleBackground path={originalAsset(state.background)} />
           : <img className="story-background" alt="背景" src={originalAsset(state.background)} />}
-        <OriginalPortrait id="deck" value={portrait(state.pedestal, state.pedestalOptions)} />
         <OriginalPortrait id="matilda" value={portrait(state.portrait, state.portraitOptions)} />
+        <OriginalPortrait id="deck" value={portrait(state.pedestal, state.pedestalOptions)} />
         {state.uiVisible && <>
           <section data-testid="original-opponent-hp" style={{ position: 'absolute', top: 8, left: '40%', fontSize: 24 }}>マチルダ HP: {presentationBattle.opponentHp}/3</section>
           <section data-testid="original-player-hp" style={{ position: 'absolute', bottom: 160, right: 40, fontSize: 24 }}>HP: {presentationBattle.playerHp}/3</section>
@@ -104,7 +104,7 @@ export function OriginalNormalScreen({ save, onSave, onExit }: {
           text={state.phase === 'dialogue' && !state.bubbleSide ? surface.band.text.slice(0, visibleChars) : surface.band.text} onAdvance={advance} />}
         {surface.bubble && <OriginalBattleBubble testId={state.phase === 'dialogue' && state.bubbleSide ? 'original-normal-dialogue' : 'original-normal-bubble'}
           textTestId={state.phase === 'dialogue' && state.bubbleSide ? 'original-normal-text' : undefined}
-          text={surface.bubble.text} side={surface.bubble.side} waitForInput={state.phase === 'dialogue' && !!state.bubbleSide}
+          text={surface.bubble.text} side={surface.bubble.side} fontSize={surface.bubble.fontSize} waitForInput={state.phase === 'dialogue' && !!state.bubbleSide}
           revision={surface.bubble.revision} onReady={() => setBubbleReady(true)}
           visibleCharacters={state.phase === 'dialogue' && state.bubbleSide ? visibleChars : originalBattleTypingText(surface.bubble.text, surface.bubble.side).length}
           onAdvance={advance} />}

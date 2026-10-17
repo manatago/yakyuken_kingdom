@@ -24,8 +24,17 @@ for (const application of [
     try {
       const page = await app.firstWindow()
       await page.getByRole('heading', { name: application.title }).waitFor()
+      const dimensions = await app.evaluate(({ BrowserWindow, screen }) => ({
+        bounds: BrowserWindow.getAllWindows()[0].getBounds(),
+        workArea: screen.getPrimaryDisplay().workAreaSize
+      }))
+      const expected = application.build === 'game'
+        ? { width: Math.min(1920, dimensions.workArea.width), height: Math.min(1080, dimensions.workArea.height) }
+        : { width: 1280, height: 720 }
+      assert.equal(dimensions.bounds.width, expected.width)
+      assert.equal(dimensions.bounds.height, expected.height)
       const bridgeKeys = await page.evaluate(() => Object.keys(globalThis.janken ?? {}).sort())
-      assert.deepEqual(bridgeKeys, [application.capability, 'windowControls'].sort())
+      assert.deepEqual(bridgeKeys, [application.capability, 'windowControls', ...(application.build === 'game' ? ['launcher'] : [])].sort())
     } finally {
       await app.close()
       await rm(userData, { recursive: true, force: true })
@@ -42,7 +51,7 @@ test('new game starts the Godot prologue and Continue restores it after restart'
     let page = await app.firstWindow()
     await page.getByRole('heading', { name: 'Janken Kingdom' }).waitFor()
     assert.equal(await page.getByRole('button', { name: 'つづきから' }).isDisabled(), true)
-    await page.getByRole('button', { name: 'はじめから' }).click()
+    await page.getByRole('button', { name: '新しく始める' }).click()
     await page.getByTestId('original-text').filter({ hasText: '5月の大学キャンパス。' }).waitFor()
     assert.equal(await page.getByTestId('original-cursor').textContent(), 'prologue:6')
     const save = JSON.parse(await readFile(join(userData, 'janken-save.json'), 'utf8'))
@@ -75,7 +84,7 @@ test('failed save stays on title and shows an error', async () => {
     await page.waitForFunction(() => !document.querySelector('.title-actions button')?.disabled)
     // Reading succeeds first; the obstruction then isolates the write-failure path.
     await mkdir(join(userData, 'janken-save.json'))
-    await page.getByRole('button', { name: 'はじめから' }).click()
+    await page.getByRole('button', { name: '新しく始める' }).click()
     await page.getByRole('alert').getByText('保存に失敗しました').waitFor()
     assert.equal(await page.getByRole('heading', { name: 'Janken Kingdom' }).isVisible(), true)
   } finally {
@@ -104,7 +113,7 @@ test('existing save requires explicit overwrite confirmation and cancel preserve
     if (process.env.JANKEN_UI_SCREENSHOT_DIR) {
       await page.screenshot({ path: join(process.env.JANKEN_UI_SCREENSHOT_DIR, 'title.png') })
     }
-    await page.getByRole('button', { name: 'はじめから' }).click()
+    await page.getByRole('button', { name: '新しく始める' }).click()
     await page.getByRole('alertdialog').waitFor()
     assert.equal(await readFile(target, 'utf8'), original)
     if (process.env.JANKEN_UI_SCREENSHOT_DIR) {
@@ -115,7 +124,7 @@ test('existing save requires explicit overwrite confirmation and cancel preserve
     await page.getByRole('button', { name: 'つづきから' }).click()
     await page.getByRole('heading', { name: '保存地点' }).waitFor()
     await page.getByRole('button', { name: 'タイトルに戻る' }).click()
-    await page.getByRole('button', { name: 'はじめから' }).click()
+    await page.getByRole('button', { name: '新しく始める' }).click()
     await page.getByRole('button', { name: '保存を上書きして開始' }).click()
     await page.getByTestId('original-text').filter({ hasText: '5月の大学キャンパス。' }).waitFor()
     const replaced = JSON.parse(await readFile(target, 'utf8'))
@@ -141,10 +150,10 @@ test('unreadable save disables new game and preserves the file', async () => {
     })
     const page = await app.firstWindow()
     await page.getByRole('alert').waitFor()
-    assert.equal(await page.getByRole('button', { name: 'はじめから' }).isDisabled(), true)
+    assert.equal(await page.getByRole('button', { name: '新しく始める' }).isDisabled(), true)
     assert.equal(await page.getByRole('button', { name: 'つづきから' }).isDisabled(), true)
     // Native disabled controls must also reject direct DOM clicks.
-    await page.getByRole('button', { name: 'はじめから' }).evaluate((button) => button.click())
+    await page.getByRole('button', { name: '新しく始める' }).evaluate((button) => button.click())
     assert.equal(await readFile(target, 'utf8'), original)
     assert.equal(await page.getByRole('heading', { name: 'Janken Kingdom' }).isVisible(), true)
   } finally {

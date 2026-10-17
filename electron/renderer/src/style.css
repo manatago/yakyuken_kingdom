@@ -76,6 +76,17 @@ button:disabled { opacity: .45; cursor: default; }
 .story-background { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .story-portrait { position: absolute; height: 1024px; width: auto; }
 .random-opponent-portrait { position: absolute; z-index: 3; top: 160px; right: 40px; width: 340px; height: 620px; object-fit: contain; pointer-events: none; filter: drop-shadow(0 8px 18px #000b); }
+.title-submenu { width: min(760px, 85vw); text-align: left; }
+.title-submenu h2 { margin-top: 0; }
+.title-panel--submenu { width: min(100%, 760px); }
+.title-panel--submenu .title-actions { width: 100%; margin-top: 1.5rem; }
+.title-panel--submenu .title-submenu { width: 100%; }
+.title-submenu p { font-size: 15px; }
+.title-scene-list { display: grid; gap: 8px; max-height: 52vh; overflow-y: auto; padding: 8px; }
+.title-scene-list button { width: 100%; text-align: left; }
+.title-scene-list small { display: block; padding: 4px; }
+.title-menu-list { display: grid; gap: 10px; margin-top: 16px; }
+.scene-session-return { position: fixed; top: 12px; right: 16px; z-index: 1000; }
 .story-header { position: absolute; top: 24px; left: 40px; right: 40px; display: flex; align-items: center; gap: 24px; padding: 16px 24px; background: #111829d9; }
 .story-header h1 { font-size: 28px; margin: 0; }
 .story-checkpoint { font: 18px monospace; margin-left: auto; }
@@ -101,6 +112,7 @@ button:disabled { opacity: .45; cursor: default; }
 .card-grade { position: absolute; right: 4px; top: 4px; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; background: #eee2c5; color: #211a2a; border: 2px solid #211a2a; font: bold 18px Arial, sans-serif; }
 .card-unavailable { color: #211a2a; font-size: 16px; }
 .card-button { padding: 0; border: 0; background: transparent; min-width: 0; border-radius: 8px; }
+button:has(> .card-view) { padding: 0; }
 .card-hand { display: block; font-size: 18px; padding: 2px; }
 .card-box, .deck-panel, .card-preview { position: absolute; background: #111829e8; border: 1px solid #c7a66a; padding: 12px; }
 .card-box h2, .deck-panel h2, .card-preview h2 { font-size: 22px; margin: 0 0 8px; }

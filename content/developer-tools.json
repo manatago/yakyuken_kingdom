@@ -1,0 +1,5848 @@
+{
+  "battle_targets": [
+    {
+      "bg": "res://assets/backgrounds/prologue/bg05_prison_cell.png",
+      "id": "prologue_tutorial",
+      "mode": "tutorial",
+      "name": "プロローグ チュートリアル",
+      "path": "res://battle/chapters/PrologueBattleChapter.gd"
+    },
+    {
+      "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png",
+      "id": "stage1",
+      "mode": "tutorial",
+      "name": "ステージ1 チュートリアル（冒険者A戦）",
+      "path": "res://battle/chapters/Stage1BattleChapter.gd"
+    },
+    {
+      "bg": "res://assets/backgrounds/prologue/bg05_prison_cell.png",
+      "id": "prologue",
+      "mode": "battle",
+      "name": "プロローグ（マチルダ戦）",
+      "path": "res://battle/chapters/PrologueBattleChapter.gd"
+    },
+    {
+      "bg": "res://assets/backgrounds/prologue/bg06_prison_arena.png",
+      "id": "subevent1_boss",
+      "mode": "battle",
+      "name": "サブイベント1（ベルカ戦）",
+      "path": "res://battle/chapters/BelkaBattleChapter.gd"
+    },
+    {
+      "bg": "res://assets/backgrounds/subevent2/bg05_church_peep_room.png",
+      "id": "subevent2_boss",
+      "mode": "battle",
+      "name": "サブイベント2（シスター長戦）",
+      "path": "res://battle/chapters/SisterBattleChapter.gd"
+    },
+    {
+      "bg": "res://assets/backgrounds/subevent3/bg_noble_room.png",
+      "id": "subevent3_fiona",
+      "mode": "battle",
+      "name": "サブイベント3（フィオナ戦）",
+      "path": "res://battle/chapters/FionaBattleChapter.gd"
+    },
+    {
+      "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png",
+      "id": "subevent4_recep",
+      "mode": "battle",
+      "name": "サブイベント4（受付嬢戦）",
+      "path": "res://battle/chapters/ReceptionistBattleChapter.gd"
+    },
+    {
+      "bg": "res://assets/backgrounds/stage2/bg_inn_meeting.png",
+      "id": "stage2",
+      "mode": "battle",
+      "name": "ステージ2（レイラ戦）",
+      "path": "res://battle/chapters/Stage2BattleChapter.gd"
+    },
+    {
+      "bg": "res://assets/backgrounds/subevent2/bg02_church_interior.png",
+      "id": "stage3",
+      "mode": "battle",
+      "name": "ステージ3（マグダレナ戦）",
+      "path": "res://battle/chapters/Stage3BattleChapter.gd"
+    },
+    {
+      "bg": "res://assets/backgrounds/stage4/bg_dojo_third.png",
+      "id": "stage4",
+      "mode": "battle",
+      "name": "ステージ4（セレス戦）",
+      "path": "res://battle/chapters/Stage4BattleChapter.gd"
+    },
+    {
+      "bg": "res://assets/backgrounds/stage5/bg_training_ground.png",
+      "id": "stage5",
+      "mode": "battle",
+      "name": "ステージ5（フェリア戦）",
+      "path": "res://battle/chapters/Stage5BattleChapter.gd"
+    },
+    {
+      "bg": "res://assets/backgrounds/stage6/bg_royal_hall.png",
+      "id": "stage6",
+      "mode": "battle",
+      "name": "ステージ6（王女戦）",
+      "path": "res://battle/chapters/Stage6BattleChapter.gd"
+    },
+    {
+      "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png",
+      "id": "minigame_smoke",
+      "mode": "minigame",
+      "name": "＜ミニゲーム＞スモークテスト",
+      "path": "res://battle/chapters/MinigameSmokeChapter.gd"
+    },
+    {
+      "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png",
+      "id": "minigame_subevent3",
+      "mode": "minigame",
+      "name": "＜ミニゲーム＞サブイベント3（羞恥の儀）",
+      "path": "res://battle/chapters/Subevent3MinigameChapter.gd"
+    },
+    {
+      "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png",
+      "id": "minigame_stage2",
+      "mode": "minigame",
+      "name": "＜ミニゲーム＞ST2（レイラ・相手の動揺を指摘せよ）",
+      "path": "res://battle/chapters/Stage2MinigameChapter.gd"
+    },
+    {
+      "bg": "res://assets/backgrounds/subevent2/bg05_church_peep_room.png",
+      "id": "minigame_stage3",
+      "mode": "minigame",
+      "name": "＜ミニゲーム＞ST3（マグダレナ・書棚で妄想を誘発せよ）",
+      "path": "res://battle/chapters/Stage3MinigameChapter.gd"
+    },
+    {
+      "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png",
+      "id": "minigame_stage4",
+      "mode": "minigame",
+      "name": "＜ミニゲーム＞ST4（セレス・強度を合わせて崩せ）",
+      "path": "res://battle/chapters/Stage4MinigameChapter.gd"
+    },
+    {
+      "bg": "res://assets/backgrounds/stage1/bg07_st1_001.png",
+      "id": "minigame_stage5",
+      "mode": "minigame",
+      "name": "＜ミニゲーム＞ST5（フェリア・距離を詰めて自白を引き出せ）",
+      "path": "res://battle/chapters/Stage5MinigameChapter.gd"
+    }
+  ],
+  "format": "godot-developer-tools",
+  "jump_points": [
+    {
+      "label": "scene_university",
+      "name": "大学",
+      "state": {
+        "flags": {},
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "scene_room",
+      "name": "自室",
+      "state": {
+        "flags": {},
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "scene_lab1",
+      "name": "研究室1",
+      "state": {
+        "flags": {},
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "scene_lab2",
+      "name": "研究室2",
+      "state": {
+        "flags": {},
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "scene_teleport1",
+      "name": "転送広場1",
+      "state": {
+        "flags": {},
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "scene_teleport2",
+      "name": "転送広場2",
+      "state": {
+        "flags": {},
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "scene_prison",
+      "name": "牢獄",
+      "state": {
+        "flags": {},
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "tutorial_start",
+      "name": "チュートリアル",
+      "state": {
+        "flags": {},
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "after_tutorial",
+      "name": "チュートリアル後〜バトル前",
+      "state": {
+        "flags": {},
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "battle_start",
+      "name": "本番バトル",
+      "state": {
+        "flags": {},
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "_result:win",
+      "name": "バトル後（勝利）",
+      "state": {
+        "flags": {},
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "_result:lose",
+      "name": "バトル後（敗北）",
+      "state": {
+        "flags": {},
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "_matilda_lose",
+      "name": "マチルダ敗北後",
+      "state": {
+        "flags": {},
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "scene_guild_street",
+      "name": "--- Stage1 ---",
+      "state": {
+        "flags": {
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "scene_guild_street",
+      "name": "ギルド通り",
+      "sequence": "stage1",
+      "state": {
+        "flags": {
+          "met_pisuke": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "scene_analysis",
+      "name": "道中・解析",
+      "sequence": "stage1",
+      "state": {
+        "flags": {
+          "met_pisuke": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "scene_guild_hall",
+      "name": "冒険者ギルド",
+      "sequence": "stage1",
+      "state": {
+        "flags": {
+          "met_pisuke": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "stage1_battle_start",
+      "name": "冒険者Aバトル",
+      "sequence": "stage1",
+      "state": {
+        "flags": {
+          "met_pisuke": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "scene_guild_reception",
+      "name": "ギルド受付",
+      "sequence": "stage1",
+      "state": {
+        "flags": {
+          "met_pisuke": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "_guild_home",
+      "name": "ギルドホーム",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "met_pisuke": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "_subevent_pre1:subevent1",
+      "name": "サブイベント1 前半1（ギルドホーム）",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "met_pisuke": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 100
+      }
+    },
+    {
+      "label": "_subevent_pre2:subevent1",
+      "name": "サブイベント1 前半2（盗賊団アジト）",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "met_pisuke": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 100
+      }
+    },
+    {
+      "label": "subevent1_jin_battle",
+      "name": "  └ ジン戦 戦闘前",
+      "sequence": "subevent1_hideout",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "met_pisuke": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 100
+      }
+    },
+    {
+      "label": "subevent1_jin_battle_done",
+      "name": "  └ ジン戦 戦闘後",
+      "sequence": "subevent1_hideout",
+      "state": {
+        "flags": {
+          "encounter_jin_seen": true,
+          "guild_registered": true,
+          "met_pisuke": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 100
+      }
+    },
+    {
+      "label": "subevent1_marco_battle",
+      "name": "  └ マルコ戦 戦闘前",
+      "sequence": "subevent1_hideout",
+      "state": {
+        "flags": {
+          "encounter_jin_seen": true,
+          "guild_registered": true,
+          "met_pisuke": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 100
+      }
+    },
+    {
+      "label": "subevent1_marco_battle_done",
+      "name": "  └ マルコ戦 戦闘後",
+      "sequence": "subevent1_hideout",
+      "state": {
+        "flags": {
+          "encounter_jin_seen": true,
+          "encounter_marco_seen": true,
+          "guild_registered": true,
+          "met_pisuke": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 100
+      }
+    },
+    {
+      "label": "subevent1_gald_battle",
+      "name": "  └ ガルド戦 戦闘前",
+      "sequence": "subevent1_hideout",
+      "state": {
+        "flags": {
+          "encounter_jin_seen": true,
+          "encounter_marco_seen": true,
+          "guild_registered": true,
+          "met_pisuke": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 100
+      }
+    },
+    {
+      "label": "subevent1_gald_battle_done",
+      "name": "  └ ガルド戦 戦闘後",
+      "sequence": "subevent1_hideout",
+      "state": {
+        "flags": {
+          "encounter_gald_seen": true,
+          "encounter_jin_seen": true,
+          "encounter_marco_seen": true,
+          "guild_registered": true,
+          "met_pisuke": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 100
+      }
+    },
+    {
+      "label": "subevent1_boss_battle",
+      "name": "  └ ベルカ戦 戦闘前",
+      "sequence": "subevent1_hideout",
+      "state": {
+        "flags": {
+          "encounter_gald_seen": true,
+          "encounter_jin_seen": true,
+          "encounter_marco_seen": true,
+          "guild_registered": true,
+          "met_pisuke": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 100
+      }
+    },
+    {
+      "label": "subevent1_belka_battle_done",
+      "name": "  └ ベルカ戦 戦闘後",
+      "sequence": "subevent1_hideout",
+      "state": {
+        "flags": {
+          "encounter_belka_seen": true,
+          "encounter_gald_seen": true,
+          "encounter_jin_seen": true,
+          "encounter_marco_seen": true,
+          "guild_registered": true,
+          "met_pisuke": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 100
+      }
+    },
+    {
+      "label": "_subevent_post:subevent1",
+      "name": "サブイベント1 後半（ベルカ決着後）",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "met_pisuke": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 100
+      }
+    },
+    {
+      "label": "_subevent_pre1:subevent2",
+      "name": "サブイベント2 前半1（ギルド→教会裏庭）",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "met_pisuke": true,
+          "prologue_complete": true,
+          "subevent1_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 200
+      }
+    },
+    {
+      "label": "_subevent_pre2:subevent2",
+      "name": "サブイベント2 前半2（礼拝室→シスター長戦）",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "met_pisuke": true,
+          "prologue_complete": true,
+          "subevent1_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 200
+      }
+    },
+    {
+      "label": "subevent2_boss_battle",
+      "name": "  └ シスター長戦 戦闘前",
+      "sequence": "subevent2_pre2",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "met_pisuke": true,
+          "prologue_complete": true,
+          "subevent1_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 200
+      }
+    },
+    {
+      "label": "subevent2_boss_battle_done",
+      "name": "  └ シスター長戦 戦闘後",
+      "sequence": "subevent2_pre2",
+      "state": {
+        "flags": {
+          "encounter_sister_long_seen": true,
+          "guild_registered": true,
+          "met_pisuke": true,
+          "prologue_complete": true,
+          "subevent1_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 200
+      }
+    },
+    {
+      "label": "_subevent_post:subevent2",
+      "name": "サブイベント2 後半（シスター長決着後）",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "met_pisuke": true,
+          "prologue_complete": true,
+          "subevent1_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 200
+      }
+    },
+    {
+      "label": "subevent2_rematch_battle",
+      "name": "  └ シスター長 再戦 戦闘前",
+      "sequence": "subevent2_rematch",
+      "state": {
+        "flags": {
+          "encounter_sister_long_seen": true,
+          "guild_registered": true,
+          "met_pisuke": true,
+          "prologue_complete": true,
+          "subevent1_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 200
+      }
+    },
+    {
+      "label": "subevent2_rematch_battle_done",
+      "name": "  └ シスター長 再戦 戦闘後",
+      "sequence": "subevent2_rematch",
+      "state": {
+        "flags": {
+          "encounter_sister_long_seen": true,
+          "guild_registered": true,
+          "met_pisuke": true,
+          "prologue_complete": true,
+          "subevent1_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 200
+      }
+    },
+    {
+      "label": "_subevent_pre:subevent3",
+      "name": "--- サブイベント3（フィオナ） ---",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 300
+      }
+    },
+    {
+      "label": "_subevent_pre:subevent3",
+      "name": "場面1 依頼受注",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 300
+      }
+    },
+    {
+      "label": "_subevent_pre2:subevent3",
+      "name": "場面2 鍛冶屋ゴルン",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 300
+      }
+    },
+    {
+      "label": "_subevent_pre3:subevent3",
+      "name": "場面3-7 エドモンド邸",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 300
+      }
+    },
+    {
+      "label": "subevent3_battle_start",
+      "name": "  └ フィオナ戦 戦闘前",
+      "sequence": "subevent3_visit",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 300
+      }
+    },
+    {
+      "label": "_subevent_post:subevent3",
+      "name": "  └ フィオナ戦 戦闘後（場面8 決着）",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 300
+      }
+    },
+    {
+      "label": "_subevent_pre:subevent4",
+      "name": "--- サブイベント4（受付嬢） ---",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 300
+      }
+    },
+    {
+      "label": "_subevent_pre:subevent4",
+      "name": "前半",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 300
+      }
+    },
+    {
+      "label": "subevent4_battle_start",
+      "name": "  └ 受付嬢戦 戦闘前",
+      "sequence": "subevent4_pre",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 300
+      }
+    },
+    {
+      "label": "_subevent_post:subevent4",
+      "name": "  └ 受付嬢戦 戦闘後（後半）",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 300
+      }
+    },
+    {
+      "label": "stage2_pre",
+      "name": "--- Stage2 (レイラ) ---",
+      "sequence": "stage2_pre",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "subevent1_complete": true,
+          "subevent2_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 200
+      }
+    },
+    {
+      "label": "stage2_pre",
+      "name": "場面1 盗難濡れ衣",
+      "sequence": "stage2_pre",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "subevent1_complete": true,
+          "subevent2_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 200
+      }
+    },
+    {
+      "label": "stage2_meet",
+      "name": "場面2 月の葉亭・対面",
+      "sequence": "stage2_meet",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "subevent1_complete": true,
+          "subevent2_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 200
+      }
+    },
+    {
+      "label": "stage2_battle1_start",
+      "name": "  └ 1戦目 戦闘前",
+      "sequence": "stage2_meet",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "subevent1_complete": true,
+          "subevent2_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 200
+      }
+    },
+    {
+      "label": "stage2_battle1_done",
+      "name": "  └ 1戦目 戦闘後",
+      "sequence": "stage2_meet",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "subevent1_complete": true,
+          "subevent2_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 200
+      }
+    },
+    {
+      "label": "stage2_recover",
+      "name": "場面4 作戦会議",
+      "sequence": "stage2_recover",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "subevent1_complete": true,
+          "subevent2_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 200
+      }
+    },
+    {
+      "label": "stage2_battle2_start",
+      "name": "  └ 2戦目 戦闘前",
+      "sequence": "stage2_recover",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage2_first_battle_done": true,
+          "subevent1_complete": true,
+          "subevent2_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 200
+      }
+    },
+    {
+      "label": "stage2_battle2_done",
+      "name": "  └ 2戦目 戦闘後",
+      "sequence": "stage2_recover",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage2_first_battle_done": true,
+          "subevent1_complete": true,
+          "subevent2_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 200
+      }
+    },
+    {
+      "label": "stage2_post",
+      "name": "場面7 敗北後の恨み",
+      "sequence": "stage2_post",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "subevent1_complete": true,
+          "subevent2_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 200
+      }
+    },
+    {
+      "label": "stage2_close",
+      "name": "場面8 ギルド帰還",
+      "sequence": "stage2_close",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "subevent1_complete": true,
+          "subevent2_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 200
+      }
+    },
+    {
+      "label": "stage3_harass",
+      "name": "--- Stage3 (マグダレナ) ---",
+      "sequence": "stage3_harass",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage2_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 300
+      }
+    },
+    {
+      "label": "stage3_harass",
+      "name": "場面1-2 教会嫌がらせ",
+      "sequence": "stage3_harass",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage2_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 300
+      }
+    },
+    {
+      "label": "stage3_challenge",
+      "name": "場面3 教会乗り込み",
+      "sequence": "stage3_challenge",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage2_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 300
+      }
+    },
+    {
+      "label": "stage3_battle1_start",
+      "name": "  └ 1戦目 戦闘前",
+      "sequence": "stage3_challenge",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage2_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 300
+      }
+    },
+    {
+      "label": "stage3_battle1_done",
+      "name": "  └ 1戦目 戦闘後",
+      "sequence": "stage3_challenge",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage2_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 300
+      }
+    },
+    {
+      "label": "stage3_recover",
+      "name": "場面5 作戦会議",
+      "sequence": "stage3_recover",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage2_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 300
+      }
+    },
+    {
+      "label": "stage3_battle2_start",
+      "name": "  └ 2戦目 戦闘前",
+      "sequence": "stage3_recover",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage2_complete": true,
+          "stage3_first_battle_done": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 300
+      }
+    },
+    {
+      "label": "stage3_battle2_done",
+      "name": "  └ 2戦目 戦闘後",
+      "sequence": "stage3_recover",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage2_complete": true,
+          "stage3_first_battle_done": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 300
+      }
+    },
+    {
+      "label": "stage3_post",
+      "name": "場面8 嫌がらせ停止",
+      "sequence": "stage3_post",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage2_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 300
+      }
+    },
+    {
+      "label": "stage4_pre",
+      "name": "--- Stage4 (セレス) ---",
+      "sequence": "stage4_pre",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage3_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 400
+      }
+    },
+    {
+      "label": "stage4_pre",
+      "name": "場面1 挑戦状",
+      "sequence": "stage4_pre",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage3_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 400
+      }
+    },
+    {
+      "label": "stage4_infiltrate",
+      "name": "場面2 潜入失敗",
+      "sequence": "stage4_infiltrate",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage3_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 400
+      }
+    },
+    {
+      "label": "stage4_meet",
+      "name": "場面3 セレス対面",
+      "sequence": "stage4_meet",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage3_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 400
+      }
+    },
+    {
+      "label": "stage4_battle1_start",
+      "name": "  └ 1戦目 戦闘前",
+      "sequence": "stage4_meet",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage3_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 400
+      }
+    },
+    {
+      "label": "stage4_battle1_done",
+      "name": "  └ 1戦目 戦闘後",
+      "sequence": "stage4_meet",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage3_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 400
+      }
+    },
+    {
+      "label": "stage4_contract",
+      "name": "場面4.5 契約執行",
+      "sequence": "stage4_contract",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage3_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 400
+      }
+    },
+    {
+      "label": "stage4_recover",
+      "name": "場面5 ミニゲーム準備",
+      "sequence": "stage4_recover",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage3_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 400
+      }
+    },
+    {
+      "label": "stage4_battle2_start",
+      "name": "  └ 2戦目 戦闘前",
+      "sequence": "stage4_recover",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage3_complete": true,
+          "stage4_first_battle_done": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 400
+      }
+    },
+    {
+      "label": "stage4_battle2_done",
+      "name": "  └ 2戦目 戦闘後",
+      "sequence": "stage4_recover",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage3_complete": true,
+          "stage4_first_battle_done": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 400
+      }
+    },
+    {
+      "label": "stage4_post",
+      "name": "場面8 セレスの執着",
+      "sequence": "stage4_post",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage3_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 400
+      }
+    },
+    {
+      "label": "stage4_close",
+      "name": "場面9 ギルド帰還",
+      "sequence": "stage4_close",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage3_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 400
+      }
+    },
+    {
+      "label": "stage5_summon",
+      "name": "--- Stage5 (フェリア) ---",
+      "sequence": "stage5_summon",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage4_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 500
+      }
+    },
+    {
+      "label": "stage5_summon",
+      "name": "場面1-2 出頭命令",
+      "sequence": "stage5_summon",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage4_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 500
+      }
+    },
+    {
+      "label": "stage5_interrogation",
+      "name": "場面3 取り調べ・決闘",
+      "sequence": "stage5_interrogation",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage4_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 500
+      }
+    },
+    {
+      "label": "stage5_battle1_start",
+      "name": "  └ 1戦目 戦闘前",
+      "sequence": "stage5_interrogation",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage4_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 500
+      }
+    },
+    {
+      "label": "stage5_battle1_done",
+      "name": "  └ 1戦目 戦闘後",
+      "sequence": "stage5_interrogation",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage4_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 500
+      }
+    },
+    {
+      "label": "stage5_recover",
+      "name": "場面5 作戦会議",
+      "sequence": "stage5_recover",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage4_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 500
+      }
+    },
+    {
+      "label": "stage5_battle2_start",
+      "name": "  └ 2戦目 戦闘前",
+      "sequence": "stage5_recover",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage4_complete": true,
+          "stage5_first_battle_done": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 500
+      }
+    },
+    {
+      "label": "stage5_battle2_done",
+      "name": "  └ 2戦目 戦闘後",
+      "sequence": "stage5_recover",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage4_complete": true,
+          "stage5_first_battle_done": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 500
+      }
+    },
+    {
+      "label": "stage5_post",
+      "name": "場面7 再戦勝利後",
+      "sequence": "stage5_post",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage4_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 500
+      }
+    },
+    {
+      "label": "stage5_close",
+      "name": "場面9 ギルド帰還",
+      "sequence": "stage5_close",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage4_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 500
+      }
+    },
+    {
+      "label": "stage6_pre",
+      "name": "--- Stage6 (王女) ---",
+      "sequence": "stage6_pre",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage5_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 600
+      }
+    },
+    {
+      "label": "stage6_pre",
+      "name": "場面1 招待状",
+      "sequence": "stage6_pre",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage5_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 600
+      }
+    },
+    {
+      "label": "stage6_banquet",
+      "name": "場面2 晩餐会・初戦",
+      "sequence": "stage6_banquet",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage5_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 600
+      }
+    },
+    {
+      "label": "stage6_battle1_start",
+      "name": "  └ 1戦目 戦闘前",
+      "sequence": "stage6_banquet",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage5_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 600
+      }
+    },
+    {
+      "label": "stage6_battle1_done",
+      "name": "  └ 1戦目 戦闘後",
+      "sequence": "stage6_banquet",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage5_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 600
+      }
+    },
+    {
+      "label": "stage6_recover",
+      "name": "場面3 控えの間・ブチギレ",
+      "sequence": "stage6_recover",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage5_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 600
+      }
+    },
+    {
+      "label": "stage6_battle2_start",
+      "name": "  └ 2戦目 戦闘前",
+      "sequence": "stage6_recover",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage5_complete": true,
+          "stage6_first_battle_done": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 600
+      }
+    },
+    {
+      "label": "stage6_battle2_done",
+      "name": "  └ 2戦目 戦闘後",
+      "sequence": "stage6_recover",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage5_complete": true,
+          "stage6_first_battle_done": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 600
+      }
+    },
+    {
+      "label": "stage6_post",
+      "name": "場面4 再戦勝利・余韻",
+      "sequence": "stage6_post",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage5_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 600
+      }
+    },
+    {
+      "label": "stage7_throne",
+      "name": "--- Stage7 (エンディング) ---",
+      "sequence": "stage7_throne",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage6_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 800
+      }
+    },
+    {
+      "label": "stage7_throne",
+      "name": "場面1 王座継承",
+      "sequence": "stage7_throne",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage6_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 800
+      }
+    },
+    {
+      "label": "stage7_epilogue",
+      "name": "場面2 エピローグ",
+      "sequence": "stage7_epilogue",
+      "state": {
+        "flags": {
+          "guild_registered": true,
+          "prologue_complete": true,
+          "stage6_complete": true
+        },
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 800
+      }
+    },
+    {
+      "label": "_minigame:minigame_smoke",
+      "name": "--- ミニゲーム ---",
+      "state": {
+        "flags": {},
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "_minigame:minigame_smoke",
+      "name": "＜ミニゲーム＞スモークテスト",
+      "state": {
+        "flags": {},
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "_minigame:minigame_subevent3",
+      "name": "＜ミニゲーム＞サブイベント3（羞恥の儀）",
+      "state": {
+        "flags": {},
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "_minigame:minigame_stage2",
+      "name": "＜ミニゲーム＞ST2（レイラ・相手の動揺を指摘せよ）",
+      "state": {
+        "flags": {},
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "_minigame:minigame_stage3",
+      "name": "＜ミニゲーム＞ST3（マグダレナ・書棚で妄想を誘発せよ）",
+      "state": {
+        "flags": {},
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "_minigame:minigame_stage4",
+      "name": "＜ミニゲーム＞ST4（セレス・強度を合わせて崩せ）",
+      "state": {
+        "flags": {},
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    },
+    {
+      "label": "_minigame:minigame_stage5",
+      "name": "＜ミニゲーム＞ST5（フェリア・距離を詰めて自白を引き出せ）",
+      "state": {
+        "flags": {},
+        "inventory": [
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "rock"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "scissors"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          },
+          {
+            "grade": 1,
+            "hand": "paper"
+          }
+        ],
+        "money": 0
+      }
+    }
+  ],
+  "source_hashes": {
+    "const DEFAULT_INVENTORY:": "b8dd0f32dcb3be9b700cde9bddbd11a06193c1897c1bac1bf9c4e79943d91902",
+    "const EVENT_BATTLE_CHAPTERS": "3b302f8b7d5f4abd29e308852e2923557ad5640584a6276e65624d203b3c9ea8",
+    "const STORY_EDIT_SEQUENCES": "7ec79d6acd04db7a455e57319dd7169afcf5b2a9f4f937b268afd4ee18b9ef90",
+    "var _jump_points:": "5550552816aa856bc0a3a7b96d9b0d696686a9b82abd3104f30a86ced46beaea"
+  },
+  "story_targets": [
+    {
+      "id": "prologue",
+      "label": "scene_university",
+      "name": "大学"
+    },
+    {
+      "id": "prologue",
+      "label": "scene_room",
+      "name": "自室"
+    },
+    {
+      "id": "prologue",
+      "label": "scene_lab1",
+      "name": "研究室1"
+    },
+    {
+      "id": "prologue",
+      "label": "scene_lab2",
+      "name": "研究室2"
+    },
+    {
+      "id": "prologue",
+      "label": "scene_teleport1",
+      "name": "転送広場1"
+    },
+    {
+      "id": "prologue",
+      "label": "scene_teleport2",
+      "name": "転送広場2"
+    },
+    {
+      "id": "prologue",
+      "label": "scene_prison",
+      "name": "牢獄"
+    },
+    {
+      "id": "prologue",
+      "label": "tutorial_start",
+      "name": "チュートリアル"
+    },
+    {
+      "id": "prologue",
+      "label": "after_tutorial",
+      "name": "チュートリアル後〜バトル前"
+    },
+    {
+      "id": "prologue",
+      "label": "battle_start",
+      "name": "本番バトル"
+    },
+    {
+      "id": "prologue_battle_win",
+      "name": "マチルダ戦 勝利後"
+    },
+    {
+      "id": "prologue_battle_lose",
+      "name": "マチルダ戦 敗北後"
+    },
+    {
+      "name": "--- Stage1 ---",
+      "separator": true
+    },
+    {
+      "id": "stage1",
+      "label": "scene_guild_street",
+      "name": "ギルド通り"
+    },
+    {
+      "id": "stage1",
+      "label": "scene_analysis",
+      "name": "道中・解析"
+    },
+    {
+      "id": "stage1",
+      "label": "scene_guild_hall",
+      "name": "冒険者ギルド"
+    },
+    {
+      "id": "stage1",
+      "label": "stage1_battle_start",
+      "name": "冒険者Aバトル"
+    },
+    {
+      "id": "stage1",
+      "label": "scene_guild_reception",
+      "name": "ギルド受付"
+    },
+    {
+      "name": "--- サブイベント ---",
+      "separator": true
+    },
+    {
+      "chapter": "Subevent1ChapterScript",
+      "id": "subevent1_pre",
+      "name": "サブイベント1 前半1（ギルドホーム）"
+    },
+    {
+      "chapter": "Subevent1ChapterScript",
+      "id": "subevent1_hideout",
+      "name": "サブイベント1 前半2（盗賊団アジト）"
+    },
+    {
+      "chapter": "Subevent1ChapterScript",
+      "id": "subevent1_post",
+      "name": "サブイベント1 後半（ベルカ決着後）"
+    },
+    {
+      "chapter": "Subevent2ChapterScript",
+      "id": "subevent2_pre1",
+      "name": "サブイベント2 前半1（ギルド→教会裏庭）"
+    },
+    {
+      "chapter": "Subevent2ChapterScript",
+      "id": "subevent2_pre2",
+      "name": "サブイベント2 前半2（礼拝室→シスター長戦）"
+    },
+    {
+      "chapter": "Subevent2ChapterScript",
+      "id": "subevent2_post",
+      "name": "サブイベント2 後半（シスター長決着後）"
+    },
+    {
+      "name": "--- サブイベント3（フィオナ） ---",
+      "separator": true
+    },
+    {
+      "id": "subevent3_pre",
+      "name": "サブイベント3 場面1 依頼受注"
+    },
+    {
+      "id": "subevent3_blacksmith",
+      "name": "サブイベント3 場面2 鍛冶屋"
+    },
+    {
+      "id": "subevent3_visit",
+      "name": "サブイベント3 場面3-7 エドモンド邸"
+    },
+    {
+      "id": "subevent3_post",
+      "name": "サブイベント3 場面8 決着・後日談"
+    },
+    {
+      "name": "--- サブイベント4（受付嬢） ---",
+      "separator": true
+    },
+    {
+      "id": "subevent4_pre",
+      "name": "サブイベント4 前半"
+    },
+    {
+      "id": "subevent4_post",
+      "name": "サブイベント4 後半"
+    },
+    {
+      "name": "--- Stage2 ---",
+      "separator": true
+    },
+    {
+      "id": "stage2_pre",
+      "name": "Stage2 場面1 盗難濡れ衣"
+    },
+    {
+      "id": "stage2_meet",
+      "name": "Stage2 場面2 月の葉亭・対面"
+    },
+    {
+      "id": "stage2_recover",
+      "name": "Stage2 場面4 作戦会議"
+    },
+    {
+      "id": "stage2_post",
+      "name": "Stage2 場面7 敗北後の恨み"
+    },
+    {
+      "id": "stage2_close",
+      "name": "Stage2 場面8 ギルド帰還"
+    },
+    {
+      "name": "--- Stage3 ---",
+      "separator": true
+    },
+    {
+      "id": "stage3_harass",
+      "name": "Stage3 場面1-2 教会嫌がらせ"
+    },
+    {
+      "id": "stage3_challenge",
+      "name": "Stage3 場面3 教会乗り込み"
+    },
+    {
+      "id": "stage3_recover",
+      "name": "Stage3 場面5 作戦会議"
+    },
+    {
+      "id": "stage3_post",
+      "name": "Stage3 場面8 嫌がらせ停止"
+    },
+    {
+      "name": "--- Stage4 ---",
+      "separator": true
+    },
+    {
+      "id": "stage4_pre",
+      "name": "Stage4 場面1 挑戦状"
+    },
+    {
+      "id": "stage4_infiltrate",
+      "name": "Stage4 場面2 潜入失敗"
+    },
+    {
+      "id": "stage4_meet",
+      "name": "Stage4 場面3 セレス対面"
+    },
+    {
+      "id": "stage4_contract",
+      "name": "Stage4 場面4.5 契約執行"
+    },
+    {
+      "id": "stage4_recover",
+      "name": "Stage4 場面5 ミニゲーム準備"
+    },
+    {
+      "id": "stage4_post",
+      "name": "Stage4 場面8 セレスの執着"
+    },
+    {
+      "id": "stage4_close",
+      "name": "Stage4 場面9 ギルド帰還"
+    },
+    {
+      "name": "--- Stage5 ---",
+      "separator": true
+    },
+    {
+      "id": "stage5_summon",
+      "name": "Stage5 場面1-2 出頭命令"
+    },
+    {
+      "id": "stage5_interrogation",
+      "name": "Stage5 場面3 取り調べ・決闘"
+    },
+    {
+      "id": "stage5_recover",
+      "name": "Stage5 場面5 作戦会議"
+    },
+    {
+      "id": "stage5_post",
+      "name": "Stage5 場面7 再戦勝利後"
+    },
+    {
+      "id": "stage5_close",
+      "name": "Stage5 場面9 ギルド帰還"
+    },
+    {
+      "name": "--- Stage6 (王女) ---",
+      "separator": true
+    },
+    {
+      "id": "stage6_pre",
+      "name": "Stage6 場面1 招待状"
+    },
+    {
+      "id": "stage6_banquet",
+      "name": "Stage6 場面2 晩餐会・初戦"
+    },
+    {
+      "id": "stage6_recover",
+      "name": "Stage6 場面3 控えの間・ブチギレ"
+    },
+    {
+      "id": "stage6_post",
+      "name": "Stage6 場面4 再戦勝利・余韻"
+    },
+    {
+      "name": "--- Stage7 (エンディング) ---",
+      "separator": true
+    },
+    {
+      "id": "stage7_throne",
+      "name": "Stage7 場面1 王座継承"
+    },
+    {
+      "id": "stage7_epilogue",
+      "name": "Stage7 場面2 エピローグ"
+    }
+  ],
+  "version": 1
+}

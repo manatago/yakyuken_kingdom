@@ -49,5 +49,8 @@ test('game and editor build outputs are distinct', () => {
   assert.match(readTree(game), /Janken Kingdom/)
   assert.doesNotMatch(readTree(game), /Janken Editor|Editor workspace|content:read|content:write|editor-content\.json/)
   assert.match(readTree(editor), /Janken Editor/)
-  assert.doesNotMatch(readTree(editor), /save:read|save:write|janken-save\.json/)
+  // Developer play creates an isolated game save, but must not expose normal save IPC.
+  assert.doesNotMatch(readTree(editor), /save:read|save:write/)
+  assert.match(readTree(editor), /janken-developer-play-/)
+  assert.doesNotMatch(readTree(game), /content:launch-jump|content:story-write|janken-developer-play-/)
 })

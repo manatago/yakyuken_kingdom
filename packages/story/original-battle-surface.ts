@@ -4,7 +4,7 @@ export interface OriginalBattleSurface {
   blurred: boolean
   bandVisible: boolean
   band?: { text: string; speaker: string }
-  bubble?: { text: string; side: string; revision: number }
+  bubble?: { text: string; side: string; revision: number; fontSize?: number }
 }
 export const createOriginalBattleSurface = (): OriginalBattleSurface => ({ blurred: true, bandVisible: false })
 
@@ -19,7 +19,9 @@ export function applyOriginalBattleSurface(surface: OriginalBattleSurface, comma
     surface.band = { text: String(args[0]), speaker: '' }
     surface.bandVisible = true
   } else if (command.kind === 'bubble') {
-    surface.bubble = { text: String(args[0]), side: String((args[1] as Record<string, unknown>)?.side ?? 'center'), revision: (surface.bubble?.revision ?? 0) + 1 }
+    const options = args[1] as Record<string, unknown> | undefined
+    surface.bubble = { text: String(args[0]), side: String(options?.side ?? 'center'), revision: (surface.bubble?.revision ?? 0) + 1,
+      ...(Number(options?.font_size) > 0 ? { fontSize: Number(options?.font_size) } : {}) }
   } else if (command.kind === 'set_battle_ui_visible') {
     surface.bandVisible = Boolean(args[0])
     if (!surface.bandVisible) surface.blurred = false

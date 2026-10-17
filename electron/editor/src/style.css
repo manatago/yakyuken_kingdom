@@ -11,3 +11,12 @@
 .editor-preview [data-layout-id] { cursor: move; }
 .editor-preview button { pointer-events: none; }
 .editor-preview img { -webkit-user-drag: none; }
+.developer-tabs { display: flex; gap: 8px; padding: 8px 16px; background: #111829; }
+.developer-tabs button { padding: 6px 12px; font-size: 15px; }
+.developer-shell > div > .editor-app, .developer-shell > .editor-app { height: calc(100vh - 62px); }
+.developer-shell [hidden] { display: none; }
+.developer-jump { overflow: auto; padding: 16px; max-width: 1000px; }
+.developer-jump select { display: block; max-width: 100%; padding: 10px; margin-top: 8px; }
+.developer-jump dd { overflow-wrap: anywhere; margin-bottom: 10px; }
+.editor-tools textarea, .editor-tools input:not([type]) { display: block; width: 100%; box-sizing: border-box; padding: 6px; background: #243149; color: #f4e8d2; }
+.editor-tools textarea { min-height: 64px; resize: vertical; }

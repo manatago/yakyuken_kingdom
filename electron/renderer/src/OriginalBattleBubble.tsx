@@ -1,11 +1,13 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { originalBubbleLayout } from '../../../packages/story/original-bubble'
 import { originalAsset } from './original-assets'
 import { useOriginalDialogueInput } from './OriginalBattleDialogue'
 
-export function OriginalBattleBubble({ text, side, visibleCharacters, testId, textTestId, onAdvance, waitForInput = true, revision = 0, onReady }: {
+export function OriginalBattleBubble({ text, side, visibleCharacters, testId, textTestId, onAdvance, waitForInput = true, revision = 0, onReady, fontSize = 0, editedPreview = false }: {
   text: string; side: string; visibleCharacters: number; testId?: string; textTestId?: string; onAdvance: () => void; waitForInput?: boolean
   revision?: number; onReady?: () => void
+  fontSize?: number
+  editedPreview?: boolean
 }) {
   const section = useRef<HTMLElement>(null)
   const indicator = useRef<HTMLSpanElement>(null)
@@ -14,7 +16,14 @@ export function OriginalBattleBubble({ text, side, visibleCharacters, testId, te
   latest.current = onReady
   const [ready, setReady] = useState(false)
   useOriginalDialogueInput(section, onAdvance, waitForInput && ready)
-  const layout = originalBubbleLayout(text, side)
+  const layout = useMemo(() => {
+    const measure = document.createElement('canvas').getContext('2d')
+    return originalBubbleLayout(text, side, fontSize, (character, size) => {
+      if (!measure) return size
+      measure.font = `${size}px ${getComputedStyle(document.documentElement).fontFamily}`
+      return measure.measureText(character).width
+    }, editedPreview)
+  }, [text, side, fontSize, editedPreview])
   useLayoutEffect(() => {
     const node = section.current!
     let active = true
@@ -41,7 +50,7 @@ export function OriginalBattleBubble({ text, side, visibleCharacters, testId, te
       } catch { /* Cancellation on navigation does not advance the saved game. */ }
     })()
     return () => { active = false; animations.forEach(animation => animation.cancel()); ghost?.remove() }
-  }, [text, side, revision])
+  }, [text, side, revision, fontSize])
   useLayoutEffect(() => { snapshot.current = section.current?.cloneNode(true) as HTMLElement }, [text, side, visibleCharacters, ready])
   const complete = ready && visibleCharacters >= layout.wrapped.length
   useLayoutEffect(() => {

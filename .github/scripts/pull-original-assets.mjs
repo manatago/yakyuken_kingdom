@@ -1,16 +1,27 @@
 import { spawnSync } from 'node:child_process'
-import { readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { dirname, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = fileURLToPath(new URL('../..', import.meta.url))
 const mapping = resolve(root, 'electron/renderer/src/original-assets.ts')
 const imports = [...readFileSync(mapping, 'utf8').matchAll(/\bimport\s+\w+\s+from\s+['"]([^'"]+\.png)\?url['"]/g)]
-const paths = [...new Set(imports.map(([, path]) => {
+const referenced = new Set(imports.map(([, path]) => {
   const name = relative(root, resolve(dirname(mapping), path)).split(sep).join('/')
   if (!name.startsWith('godot/assets/') || name.includes('..') || /[,\r\n]/.test(name)) throw new Error(`Invalid original asset path: ${name}`)
   return name
-}))].sort()
+}))
+function collect(value) {
+  if (typeof value === 'string' && value.startsWith('res://assets/') && /\.(?:png|jpe?g|webp)$/i.test(value)) {
+    const name = `godot/${value.slice(6)}`
+    if (name.includes('..') || /[,\r\n\\*?\[\]]/.test(name)) throw new Error(`Invalid content image: ${name}`)
+    if (existsSync(resolve(root, name))) referenced.add(name)
+  } else if (value && typeof value === 'object') Object.values(value).forEach(collect)
+}
+for (const file of readdirSync(resolve(root, 'content/stories')).filter(file => file.endsWith('.json'))) {
+  collect(JSON.parse(readFileSync(resolve(root, 'content/stories', file), 'utf8')))
+}
+const paths = [...referenced].sort()
 if (!paths.length) throw new Error('No original assets found')
 const mode = process.argv[2]
 if (process.argv.length !== 3 || !['--list', '--check', '--pull'].includes(mode)) throw new Error('Usage: pull-original-assets.mjs --list|--check|--pull')
@@ -19,9 +30,13 @@ if (mode === '--list') {
 } else if (mode === '--check') {
   const signature = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])
   for (const path of paths) {
-    if (!readFileSync(resolve(root, path)).subarray(0, 8).equals(signature)) throw new Error(`Original asset is not fetched PNG data: ${path}`)
+    const bytes = readFileSync(resolve(root, path))
+    const png = bytes.subarray(0, 8).equals(signature)
+    const jpeg = bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255
+    const webp = bytes.subarray(0, 4).toString() === 'RIFF' && bytes.subarray(8, 12).toString() === 'WEBP'
+    if (!png && !jpeg && !webp) throw new Error(`Original asset is not fetched PNG/JPEG/WebP data: ${path}`)
   }
-  console.log(`Original PNG assets verified: ${paths.length}`)
+  console.log(`Original image assets verified: ${paths.length}`)
 } else {
   // Keep each argument below Windows command-line limits; use the existing CI credential helper.
   const batches = [[]]

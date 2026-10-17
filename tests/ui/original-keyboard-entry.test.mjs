@@ -28,7 +28,7 @@ for (const mode of ['new', 'resume']) for (const key of ['Enter', 'Space']) {
           progress: { checkpoint_id: `original:prologue:${cursor}`, flags: [] } })
         await page.reload()
         await page.getByRole('button', { name: 'つづきから', exact: true }).click()
-      } else await page.getByRole('button', { name: 'はじめから', exact: true }).click()
+      } else await page.getByRole('button', { name: '新しく始める', exact: true }).click()
       await page.getByTestId('original-cursor').filter({ hasText: `prologue:${cursor}` }).waitFor()
       await page.waitForFunction(text => document.querySelector('[data-testid="original-text"]')?.textContent === text,
         commands[cursor - 1].parameters.text)
@@ -47,6 +47,7 @@ test('changing an editor preview does not steal keyboard focus from its selector
     args: [join(root, 'dist/editor/main/index.js'), `--user-data-dir=${directory}`] })
   try {
     const page = await app.firstWindow()
+    await page.getByRole('button', { name: 'マチルダ配置編集', exact: true }).click()
     const selector = page.getByLabel('配置ID')
     await selector.waitFor()
     await page.waitForFunction(() => !document.querySelector('[aria-label="配置ID"]').disabled)

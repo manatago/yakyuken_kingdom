@@ -19,7 +19,7 @@ test('editor JSON save survives an isolated game rebuild and restart', { timeout
   try {
     // Vite resolves HTML inputs to real paths; Windows TEMP can use 8.3 aliases.
     const project = await realpath(temporary)
-    for (const path of ['electron', 'packages', 'content', 'package.json', 'tsconfig.json', 'electron.vite.game.config.ts']) {
+    for (const path of ['electron', 'packages', 'content', 'package.json', 'tsconfig.json', 'electron.vite.game.config.ts', 'electron.asset-plugin.ts']) {
       await cp(join(root, path), join(project, path), { recursive: true })
     }
     const rendererRoot = join(project, 'electron/renderer')
@@ -46,6 +46,7 @@ test('editor JSON save survives an isolated game rebuild and restart', { timeout
     app = await electron.launch({ executablePath, args: [join(root, 'dist/editor/main/index.js'),
       `--user-data-dir=${join(project, 'editor-user')}`, `--content-root=${project}`] })
     let page = await app.firstWindow()
+    await page.getByRole('button', { name: 'マチルダ配置編集', exact: true }).click()
     await page.getByLabel('配置ID').waitFor()
     await page.waitForFunction(() => !document.querySelector('[aria-label="配置ID"]').disabled)
     await page.getByLabel('配置ID').selectOption('layout.cards.box')
@@ -74,7 +75,7 @@ test('editor JSON save survives an isolated game rebuild and restart', { timeout
       app = await electron.launch({ executablePath, args: [join(project, 'dist/game/main/index.js'),
         `--user-data-dir=${join(project, 'game-user')}`] })
       page = await app.firstWindow()
-      await page.getByRole('button', { name: attempt ? 'つづきから' : 'はじめから', exact: true }).click()
+      await page.getByRole('button', { name: attempt ? 'つづきから' : '新しく始める', exact: true }).click()
       if (!attempt) {
         await page.getByTestId('original-cursor').waitFor()
         // This test checks geometry, not the entire prologue. Seed a state replayed from its actual commands.

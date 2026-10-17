@@ -31,7 +31,7 @@ test('Godot story displays real portraits, fits letterboxed viewports and resume
   try {
     app = await electron.launch({ executablePath, args })
     let page = await app.firstWindow()
-    await page.getByRole('button', { name: 'はじめから', exact: true }).click()
+    await page.getByRole('button', { name: '新しく始める', exact: true }).click()
     await page.getByTestId('original-cursor').filter({ hasText: 'prologue:6' }).waitFor()
     await page.waitForFunction(text => document.querySelector('[data-testid="original-text"]')?.textContent === text, opening[5].parameters.text)
     await page.waitForFunction(() => [...document.querySelectorAll('.story-stage img')].length >= 2 &&
@@ -78,7 +78,7 @@ test('failed original dialogue save keeps the visible and persisted checkpoint u
   try {
     app = await electron.launch({ executablePath, args: [join(root, 'dist/game/main/index.js'), `--user-data-dir=${userData}`] })
     const page = await app.firstWindow()
-    await page.getByRole('button', { name: 'はじめから', exact: true }).click()
+    await page.getByRole('button', { name: '新しく始める', exact: true }).click()
     await page.getByTestId('original-cursor').filter({ hasText: 'prologue:6' }).waitFor()
     await page.waitForFunction(text => document.querySelector('[data-testid="original-text"]')?.textContent === text, opening[5].parameters.text)
     const target = join(userData, 'janken-save.json')

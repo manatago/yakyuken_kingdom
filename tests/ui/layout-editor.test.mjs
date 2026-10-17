@@ -29,6 +29,7 @@ test('layout editor previews scaled dragging, saves one ID and reloads without t
     const open = async () => {
       app = await electron.launch({ executablePath, args })
       const page = await app.firstWindow()
+      await page.getByRole('button', { name: 'マチルダ配置編集', exact: true }).click()
       await page.getByLabel('配置ID').waitFor()
       await page.waitForFunction(() => !document.querySelector('[aria-label="配置ID"]').disabled)
       return page

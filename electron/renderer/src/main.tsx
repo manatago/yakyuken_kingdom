@@ -1,9 +1,11 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createNewGameSave } from '../../../packages/domain/new-game'
-import type { SaveData } from '../../../packages/domain/save'
+import { parseSave, type SaveData } from '../../../packages/domain/save'
 import type { GameApi } from '../../preload/api'
 import './style.css'
+import { TitleNavigation, type TitleMenu } from './TitleNavigation'
+import { GameExitProvider } from './GameExit'
 import { OriginalStoryViewerProvider, useOriginalStoryViewer } from './OriginalStoryViewer'
 import { GuildHome } from './GuildHome'
 import { GUILD_CHECKPOINT, ORIGINAL_STAGE1_END } from '../../../packages/guild/routes'
@@ -28,11 +30,46 @@ const OriginalEvidenceScreen = lazy(() => import('./OriginalEvidenceScreen').the
 const OriginalStrengthScreen = lazy(() => import('./OriginalStrengthScreen').then(module => ({ default: module.OriginalStrengthScreen })))
 const OriginalQuestionScreen = lazy(() => import('./OriginalQuestionScreen').then(module => ({ default: module.OriginalQuestionScreen })))
 
-const game = (globalThis as typeof globalThis & { janken: GameApi }).janken
+const gameBridge = (globalThis as typeof globalThis & { janken: GameApi }).janken
 
 function GameScreen() {
-  const [saved, setSaved] = useState<SaveData | null>(null)
-  const [active, setActive] = useState<SaveData | null>(null)
+  const [saved, setSavedState] = useState<SaveData | null>(null)
+  const [active, setActiveState] = useState<SaveData | null>(null)
+  const [menu, setMenu] = useState<TitleMenu>('title')
+  const session = useRef<{ normalSave: SaveData | null; origin: 'jump' | 'events' } | null>(null)
+  const generation = useRef(0)
+  const currentGeneration = generation.current
+  const pendingWrites = useRef(new Set<Promise<void>>())
+  const currentSession = session.current
+  function setSaved(next: SaveData | null) {
+    if (currentGeneration !== generation.current) return
+    if (currentSession && currentSession !== session.current) return
+    setSavedState(next)
+  }
+  // Scene selection is disposable play in this window, not a write to the normal save.
+  const game = { save: { read: gameBridge.save.read, write: async (next: SaveData) => {
+    if (currentGeneration !== generation.current) return
+    if (currentSession) { parseSave(next); return }
+    const pending = gameBridge.save.write(next)
+    pendingWrites.current.add(pending)
+    try { await pending } finally { pendingWrites.current.delete(pending) }
+  } } }
+  function setActive(next: SaveData | null) {
+    if (currentGeneration !== generation.current) return
+    if (currentSession && currentSession !== session.current) return
+    const eventFinished = session.current?.origin === 'events' && active && next && (
+      active.progress.original_normal && !next.progress.original_normal ||
+      active.progress.original_quest_battle && (!next.progress.original_quest_battle || next.progress.original_quest_battle.settlement))
+    if ((!next || eventFinished) && session.current) {
+      setSaved(session.current.normalSave); setMenu(session.current.origin); session.current = null
+      setActiveState(null); return
+    }
+    setActiveState(next)
+  }
+  function beginScene(next: SaveData, origin: 'jump' | 'events') {
+    session.current = { normalSave: saved, origin }
+    setSaved(next); setError(''); setActiveState(next)
+  }
   const questIncomingScene = useMemo(() => active ? originalQuestIncomingScene(active) ?? originalMainIncomingScene(active) : undefined, [active])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -46,7 +83,10 @@ function GameScreen() {
   useEffect(() => {
     let mounted = true
     void game.save.read().then((save) => {
-      if (mounted) setSaved(save)
+      if (mounted) {
+        setSaved(save)
+        if (save && new URLSearchParams(location.search).get('resume') === '1') setActive(save)
+      }
     }).catch(() => {
       if (mounted) {
         setReadFailed(true)
@@ -75,6 +115,25 @@ function GameScreen() {
     }
   }
 
+  function exitToTitle() {
+    const previous = session.current
+    generation.current++
+    const exitGeneration = generation.current
+    session.current = null
+    if (previous) setSavedState(previous.normalSave)
+    setActiveState(null); setMenu('title'); setConfirming(false); setViewer(null); setError(''); setSaving(false)
+    originalTransitionPending.current = false
+    if (!previous) {
+      setLoading(true)
+      void Promise.allSettled([...pendingWrites.current]).then(() => gameBridge.save.read()).then(next => {
+        if (generation.current === exitGeneration) setSavedState(next)
+      }).catch(() => {
+        if (generation.current === exitGeneration) { setReadFailed(true); setError('保存データを読み込めませんでした。') }
+      }).finally(() => { if (generation.current === exitGeneration) setLoading(false) })
+    }
+  }
+
+  function renderScreen() {
   if (active) {
     if (active.progress.original_question_game) {
       return <Suspense fallback={<main>原本のミニゲームを読み込んでいます…</main>}>
@@ -160,7 +219,9 @@ function GameScreen() {
         } catch { setError('保存に失敗しました') }
         finally { originalTransitionPending.current = false; setSaving(false) }
       }
-      return <Suspense fallback={<main>原本データを読み込んでいます…</main>}>
+      return <>{currentSession && <button className="scene-session-return" onClick={() => setActive(null)}>
+        {currentSession.origin === 'events' ? 'イベント選択に戻る' : '場面選択に戻る'}</button>}
+      <Suspense fallback={<main>原本データを読み込んでいます…</main>}>
         <OriginalStoryScreen key={sequenceId} sequenceId={sequenceId} cursor={cursor} player={active.player}
           incomingScene={questIncomingScene}
           completedBattles={[...(active.progress.original_quest?.completed_battles ?? []), ...(active.progress.original_completed_minigames ?? []), ...(active.progress.original_completed_battles ?? [])]}
@@ -262,7 +323,7 @@ function GameScreen() {
             await game.save.write(nextSave)
             setSaved(nextSave)
           }} />
-      </Suspense>
+      </Suspense></>
     }
     if ([TOWN_CHECKPOINT, TOWN_ENCOUNTER_CHECKPOINT, RANDOM_BATTLE_CHECKPOINT].includes(active.progress.checkpoint_id)) {
       return <RandomBattleScreen save={active} onTitle={() => setActive(null)} onSave={async (nextSave) => {
@@ -290,11 +351,15 @@ function GameScreen() {
   }
 
   return <main className="title-screen">
-    <div className="title-panel">
+    <div className={menu === 'title' ? 'title-panel' : 'title-panel title-panel--submenu'}>
       <p className="eyebrow">A game of cards and fate</p>
       <h1>Janken Kingdom</h1>
       <div className="title-actions">
-        {confirming ? <div role="alertdialog" aria-labelledby="overwrite-title" aria-describedby="overwrite-description">
+        {menu !== 'title' ? <TitleNavigation key={menu} menu={menu} onMenu={setMenu} onPlay={beginScene}
+          disabled={loading || saving || readFailed} onEditor={view => {
+            if (!gameBridge.launcher) return Promise.reject(new Error('Editor launcher unavailable'))
+            return gameBridge.launcher.openEditor(view)
+          }} /> : confirming ? <div role="alertdialog" aria-labelledby="overwrite-title" aria-describedby="overwrite-description">
           <h2 id="overwrite-title">保存データを上書きしますか？</h2>
           <p id="overwrite-description">現在の進行状況は失われます。この操作は取り消せません。</p>
           <div className="confirmation-actions">
@@ -302,13 +367,18 @@ function GameScreen() {
             <button onClick={() => { void startNewGame() }} disabled={saving}>保存を上書きして開始</button>
           </div>
         </div> : <>
-          <button onClick={() => { if (saved) setConfirming(true); else void startNewGame() }} disabled={loading || saving || readFailed}>はじめから</button>
+          <button onClick={() => { if (saved) setConfirming(true); else void startNewGame() }} disabled={loading || saving || readFailed}>新しく始める</button>
+          <button onClick={() => setMenu('jump')} disabled={loading || saving}>中断から始める</button>
+          <button onClick={() => setMenu('events')} disabled={loading || saving}>イベントバトル</button>
+          <button onClick={() => setMenu('edit')} disabled={loading || saving}>編集モードで始める</button>
           <button onClick={() => { if (saved) setActive(saved) }} disabled={loading || saving || !saved}>つづきから</button>
         </>}
       </div>
       {error && <p role="alert" className="error-message">{error}</p>}
     </div>
   </main>
+  }
+  return <GameExitProvider onExit={exitToTitle}>{renderScreen()}</GameExitProvider>
 }
 
 const originalSequence = new URLSearchParams(location.search).get('original')
