@@ -2,7 +2,7 @@
 
 ## 現行Electron開発とWindows引継ぎ
 
-- 最初に `docs/WINDOWS_HANDOFF.md` を読む。古いWindows cloneは保管し、資料と同じ公開ブランチから新規取得する。旧コードを混ぜない。
+- 最初にルートの `Windows移行指示.txt`、次に `docs/WINDOWS_HANDOFF.md` を読む。既存Windowsディレクトリ全体のバックアップを作成・確認してから引継ぎブランチへ切り替える。新規cloneは必須ではない。移行準備ではゲーム・UI／Smokeテストを起動しない。古い変更を自動で混ぜない。
 - 現在の開発対象はElectron版（`electron/`、`packages/`、`content/`、`tests/`）。Godotはストーリー・配置・動作の唯一の移植原本。以下のGodot向け手順は原本確認用。
 - 残作業・保留は `docs/plans/electron-developer-tools-parity.md`、検証履歴は `test-results.md`。全移植を完了済みと推測しない。
 - Node.jsはCIと同じ22.12.0。`npm ci`、`npm run typecheck`、`npm test`、`npm run test:ui`、`npm run smoke:game`、`npm run smoke:editor`で検証。PowerShellでは`npm.cmd`を使用。Macでの成功をWindows成功と扱わない。

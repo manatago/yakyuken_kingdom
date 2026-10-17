@@ -4,7 +4,7 @@ Godot版を唯一の原本として、Electron / React / TypeScriptへ移植し�
 
 ## 開発・引継ぎの入口
 
-- **Windowsへ移行するエージェントは [Windows引継ぎ手順](docs/WINDOWS_HANDOFF.md) を最初に読んでください。** 古いcloneは保管し、同資料と同じ公開ブランチから新規取得します。
+- **Windowsへ移行するエージェントは、ルートの [Windows移行指示.txt](Windows移行指示.txt) を最初に読んでください。** 既存ディレクトリ全体のバックアップを作成・確認し、引継ぎブランチへ切り替えて更新します。新規cloneは必須ではありません。[詳細資料](docs/WINDOWS_HANDOFF.md)も参照してください。
 - [エージェント向けルール](AGENTS.md)
 - [残作業の統合タスク](docs/plans/electron-developer-tools-parity.md)
 - [開発用エディタ](docs/electron-layout-editor.md)
